@@ -459,6 +459,28 @@
     .score-pct { color: #94a3b8; font-size: 0.82rem; }
     .good-score { color: #16a34a; font-weight: 700; }
     .low-score  { color: #dc2626; font-weight: 700; }
+    /* ── Folders ────────────────────────────────────────────────────────────── */
+    .folder-header {
+      padding: 7px 8px 7px 10px; border-radius: 8px; cursor: pointer;
+      display: flex; align-items: center; gap: 5px;
+      color: #334155; font-size: 0.9rem; font-weight: 600;
+      transition: background 0.1s; user-select: none;
+    }
+    .folder-header:hover { background: #f1f5f9; }
+    .folder-toggle { font-size: 0.72rem; color: #94a3b8; display: inline-block; transition: transform 0.15s; flex-shrink: 0; }
+    .folder-toggle.collapsed { transform: rotate(-90deg); }
+    .folder-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; border-radius: 4px; padding: 1px 3px; }
+    .folder-name[contenteditable="true"] { background: #eff6ff; outline: none; box-shadow: 0 0 0 2px #3b82f6; white-space: nowrap; }
+    .folder-del-btn {
+      opacity: 0; width: 18px; height: 18px; border: none; border-radius: 4px;
+      background: transparent; color: #94a3b8; font-size: 0.72rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0; padding: 0; transition: all 0.1s;
+    }
+    .folder-header:hover .folder-del-btn { opacity: 1; }
+    .folder-del-btn:hover { background: #fef2f2; color: #dc2626; }
+    .exercise-item.in-folder { padding-left: 24px; }
+    .no-folder-label { padding: 5px 12px 3px; font-size: 0.72rem; color: #cbd5e1; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+
     .btn-dup {
       padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 8px;
       background: white; color: #475569; font-size: 0.82rem; cursor: pointer;
@@ -571,7 +593,10 @@
   <div class="sidebar">
     <div class="sidebar-header">
       <h3>Exercices</h3>
-      <button class="btn-icon" id="btn-new-exercise" title="Créer un exercice">+</button>
+      <div style="display:flex;gap:4px">
+        <button class="btn-icon" id="btn-new-folder" title="Nouveau dossier" style="background:#6366f1;font-size:0.85rem">📁</button>
+        <button class="btn-icon" id="btn-new-exercise" title="Créer un exercice">+</button>
+      </div>
     </div>
     <div class="exercise-list" id="exercise-list"></div>
     <div class="sidebar-footer">
@@ -593,6 +618,10 @@
         <input type="text" id="exercise-name" placeholder="Nom de l'exercice" maxlength="100">
         <button class="btn-dup" id="btn-duplicate-exercise">Dupliquer</button>
         <button class="btn-danger" id="btn-delete-exercise">Supprimer</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px">
+        <span style="font-size:0.8rem;font-weight:600;color:#64748b;white-space:nowrap;flex-shrink:0">📁 Dossier</span>
+        <select id="exercise-folder" style="flex:1;padding:7px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.88rem;outline:none;font-family:inherit;color:#0f172a;transition:border-color .15s"></select>
       </div>
       <div class="form-group">
         <label class="editor-section-label" for="exercise-instruction">Consigne affichée au patient</label>
@@ -677,6 +706,10 @@
     <div id="patient-detail" style="display:none; max-width:760px;">
       <div class="editor-header">
         <input type="text" id="patient-name-input" placeholder="Nom du patient" maxlength="100">
+        <button class="btn-dup" id="btn-export-patient-csv">📊 CSV</button>
+        <button class="btn-dup" id="btn-export-patient-pdf">📄 PDF</button>
+        <button class="btn-dup" id="btn-import-patient-csv">📥 Importer</button>
+        <input type="file" id="import-patient-csv-input" accept=".csv,.txt" style="display:none">
         <button class="btn-danger" id="btn-delete-patient">Supprimer</button>
       </div>
       <div class="form-group">
@@ -689,11 +722,7 @@
       </div>
       <div class="pairs-header" style="margin-top:8px">
         <span class="editor-section-label">Sessions <span class="badge" id="patient-session-count">0</span></span>
-        <div style="display:flex;align-items:center;gap:8px">
-          <div id="patient-mini-stats" style="display:flex;gap:20px;font-size:0.85rem;color:#64748b;"></div>
-          <button class="btn-dup" id="btn-export-patient-csv">📊 CSV</button>
-          <button class="btn-dup" id="btn-export-patient-pdf">📄 PDF</button>
-        </div>
+        <div id="patient-mini-stats" style="display:flex;gap:20px;font-size:0.85rem;color:#64748b;"></div>
       </div>
       <div id="patient-sessions-wrap" style="margin-top:12px;overflow-x:auto"></div>
     </div>
@@ -809,10 +838,12 @@
   let exercises = JSON.parse(localStorage.getItem('cys_exercises') || '[]');
   let sessions  = JSON.parse(localStorage.getItem('cys_sessions')  || '[]');
   let patients  = JSON.parse(localStorage.getItem('cys_patients')  || '[]');
+  let folders   = JSON.parse(localStorage.getItem('cys_folders')   || '[]');
 
   function saveExercises() { localStorage.setItem('cys_exercises', JSON.stringify(exercises)); }
   function saveSessions()  { localStorage.setItem('cys_sessions',  JSON.stringify(sessions));  }
   function savePatients()  { localStorage.setItem('cys_patients',  JSON.stringify(patients));  }
+  function saveFolders()   { localStorage.setItem('cys_folders',   JSON.stringify(folders));   }
 
   function migratePatients() {
     if (patients.length > 0 || sessions.length === 0) return;
@@ -1062,6 +1093,7 @@
 
   // ── Editor ────────────────────────────────────────────────────────────────────
   let editorSelectedId = null, editingPairId = null, modalImages = { left: null, right: null }, modalAudios = { left: null, right: null };
+  const collapsedFolders = new Set();
   function getSelectedEx() { return exercises.find(e => e.id === editorSelectedId) || null; }
 
   function initEditor() {
@@ -1073,23 +1105,103 @@
   function renderSidebar() {
     const list = document.getElementById('exercise-list');
     list.innerHTML = '';
-    if (exercises.length === 0) {
+    if (exercises.length === 0 && folders.length === 0) {
       list.innerHTML = '<div style="padding:16px;color:#94a3b8;font-size:0.83rem;text-align:center">Aucun exercice</div>';
       return;
     }
-    exercises.forEach(ex => {
-      const div = document.createElement('div');
-      div.className = 'exercise-item' + (ex.id === editorSelectedId ? ' active' : '');
+    const byFolder = {};
+    exercises.forEach(ex => { const k = ex.folderId || '__none__'; (byFolder[k]||(byFolder[k]=[])).push(ex); });
+
+    folders.forEach(folder => {
+      const exList = byFolder[folder.id] || [];
+      const isCollapsed = collapsedFolders.has(folder.id);
+
+      // Folder header
+      const header = document.createElement('div');
+      header.className = 'folder-header';
+      const toggle = document.createElement('span');
+      toggle.className = 'folder-toggle' + (isCollapsed ? ' collapsed' : '');
+      toggle.textContent = '▾';
       const nameSpan = document.createElement('span');
-      nameSpan.textContent = ex.name;
-      nameSpan.style.cssText = 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
+      nameSpan.className = 'folder-name';
+      nameSpan.dataset.folderId = folder.id;
+      nameSpan.textContent = folder.name;
       const countSpan = document.createElement('span');
       countSpan.className = 'pair-count';
-      countSpan.textContent = (ex.pairs||[]).length;
-      div.append(nameSpan, countSpan);
-      div.addEventListener('click', () => { editorSelectedId = ex.id; renderSidebar(); renderExerciseEditor(); });
-      list.appendChild(div);
+      countSpan.textContent = exList.length;
+      const delBtn = document.createElement('button');
+      delBtn.className = 'folder-del-btn'; delBtn.title = 'Supprimer le dossier'; delBtn.textContent = '✕';
+      delBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        if (!confirm('Supprimer le dossier "' + folder.name + '" ? Les exercices seront conservés sans dossier.')) return;
+        exercises.forEach(ex => { if (ex.folderId === folder.id) ex.folderId = null; });
+        folders = folders.filter(f => f.id !== folder.id);
+        saveFolders(); saveExercises(); renderSidebar(); renderFolderSelect();
+      });
+      header.append(toggle, nameSpan, countSpan, delBtn);
+      header.addEventListener('click', e => {
+        if (e.target === delBtn || e.target === nameSpan) return;
+        if (collapsedFolders.has(folder.id)) collapsedFolders.delete(folder.id); else collapsedFolders.add(folder.id);
+        renderSidebar();
+      });
+      // Rename on double-click
+      nameSpan.addEventListener('dblclick', e => {
+        e.stopPropagation();
+        nameSpan.contentEditable = 'true'; nameSpan.focus();
+        const range = document.createRange(); range.selectNodeContents(nameSpan);
+        window.getSelection().removeAllRanges(); window.getSelection().addRange(range);
+      });
+      nameSpan.addEventListener('blur', () => {
+        nameSpan.contentEditable = 'false';
+        const newName = nameSpan.textContent.trim() || folder.name;
+        folder.name = newName; nameSpan.textContent = newName;
+        saveFolders(); renderFolderSelect();
+      });
+      nameSpan.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); nameSpan.blur(); }
+        e.stopPropagation();
+      });
+      list.appendChild(header);
+
+      // Exercises in folder
+      if (!isCollapsed) exList.forEach(ex => list.appendChild(makeExerciseItem(ex, true)));
     });
+
+    // Uncategorized
+    const uncategorized = byFolder['__none__'] || [];
+    if (folders.length > 0 && uncategorized.length > 0) {
+      const label = document.createElement('div');
+      label.className = 'no-folder-label'; label.textContent = 'Sans dossier';
+      list.appendChild(label);
+    }
+    uncategorized.forEach(ex => list.appendChild(makeExerciseItem(ex, folders.length > 0)));
+  }
+
+  function makeExerciseItem(ex, indented) {
+    const div = document.createElement('div');
+    div.className = 'exercise-item' + (ex.id === editorSelectedId ? ' active' : '') + (indented ? ' in-folder' : '');
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = ex.name;
+    nameSpan.style.cssText = 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
+    const countSpan = document.createElement('span');
+    countSpan.className = 'pair-count';
+    countSpan.textContent = (ex.pairs||[]).length;
+    div.append(nameSpan, countSpan);
+    div.addEventListener('click', () => { editorSelectedId = ex.id; renderSidebar(); renderExerciseEditor(); });
+    return div;
+  }
+
+  function renderFolderSelect() {
+    const select = document.getElementById('exercise-folder');
+    if (!select) return;
+    select.innerHTML = '<option value="">— Sans dossier —</option>';
+    folders.forEach(f => {
+      const opt = document.createElement('option');
+      opt.value = f.id; opt.textContent = f.name;
+      select.appendChild(opt);
+    });
+    const ex = getSelectedEx();
+    if (ex) select.value = ex.folderId || '';
   }
 
   function renderExerciseEditor() {
@@ -1100,6 +1212,7 @@
     document.getElementById('exercise-name').value        = ex.name;
     document.getElementById('exercise-instruction').value = ex.instruction || '';
     document.getElementById('pair-count-badge').textContent = (ex.pairs||[]).length;
+    renderFolderSelect();
     renderPairsList(ex);
   }
 
@@ -1152,8 +1265,26 @@
     btn.addEventListener('click', handler); return btn;
   }
 
+  document.getElementById('btn-new-folder').addEventListener('click', () => {
+    const folder = { id: newId('fold'), name: 'Nouveau dossier' };
+    folders.push(folder); saveFolders(); renderSidebar(); renderFolderSelect();
+    setTimeout(() => {
+      const nameEl = document.querySelector('.folder-name[data-folder-id="' + folder.id + '"]');
+      if (!nameEl) return;
+      nameEl.contentEditable = 'true'; nameEl.focus();
+      const range = document.createRange(); range.selectNodeContents(nameEl);
+      window.getSelection().removeAllRanges(); window.getSelection().addRange(range);
+    }, 50);
+  });
+
+  document.getElementById('exercise-folder').addEventListener('change', () => {
+    const ex = getSelectedEx(); if (!ex) return;
+    ex.folderId = document.getElementById('exercise-folder').value || null;
+    saveExercises(); renderSidebar();
+  });
+
   document.getElementById('btn-new-exercise').addEventListener('click', () => {
-    const ex = { id: newId('ex'), name: 'Nouvel exercice', instruction: '', pairs: [] };
+    const ex = { id: newId('ex'), name: 'Nouvel exercice', instruction: '', pairs: [], folderId: null };
     exercises.push(ex); saveExercises();
     editorSelectedId = ex.id; renderSidebar(); renderExerciseEditor();
     setTimeout(() => { const i = document.getElementById('exercise-name'); i.focus(); i.select(); }, 50);
@@ -1647,6 +1778,91 @@ ${patientSessions.length === 0
     win.document.write(html);
     win.document.close();
   }
+
+  document.getElementById('btn-import-patient-csv').addEventListener('click', () => {
+    const p = getSelectedPatient(); if (!p) return;
+    document.getElementById('import-patient-csv-input').click();
+  });
+
+  document.getElementById('import-patient-csv-input').addEventListener('change', e => {
+    const p = getSelectedPatient();
+    const file = e.target.files[0]; if (!file || !p) return;
+    const reader = new FileReader();
+    reader.onload = evt => {
+      try {
+        let text = evt.target.result;
+        if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1); // retirer BOM
+        const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+
+        function parseRow(line) {
+          const cells = []; let inQuote = false, cell = '';
+          for (let i = 0; i < line.length; i++) {
+            const ch = line[i];
+            if (ch === '"') { if (inQuote && line[i+1]==='"') { cell+='"'; i++; } else inQuote=!inQuote; }
+            else if (ch === ';' && !inQuote) { cells.push(cell); cell=''; }
+            else cell += ch;
+          }
+          cells.push(cell); return cells;
+        }
+
+        // Trouver la ligne d'en-tête du tableau de sessions
+        let dataStart = -1;
+        for (let i = 0; i < lines.length; i++) {
+          const cells = parseRow(lines[i]);
+          if (cells[0] === 'Date' && cells[1] === 'Exercice') { dataStart = i + 1; break; }
+        }
+        if (dataStart === -1) throw new Error('Format non reconnu — en-tête "Date;Exercice" introuvable');
+
+        function parseFrDate(str) {
+          // "DD/MM/YYYY HH:MM" → ISO string
+          const [datePart, timePart='00:00'] = str.split(' ');
+          const [d, m, y] = datePart.split('/');
+          const [h, min] = timePart.split(':');
+          return new Date(+y, +m-1, +d, +h, +min).toISOString();
+        }
+
+        let added = 0;
+        for (let i = dataStart; i < lines.length; i++) {
+          const cells = parseRow(lines[i]);
+          if (cells.length < 5) continue;
+          const [dateStr, exerciseName, scoreBrut, , timeS, errLeft='0', errRight='0', , notes=''] = cells;
+          if (!exerciseName || !dateStr) continue;
+          const [scoreNum, totalNum] = scoreBrut.split('/').map(Number);
+          if (isNaN(scoreNum) || isNaN(totalNum) || totalNum === 0) continue;
+          const parsedDate = parseFrDate(dateStr);
+          // Dédoublonnage : même patient + même exercice + même date + même score
+          const duplicate = sessions.some(s =>
+            s.patientId === p.id &&
+            s.exerciseName === exerciseName &&
+            s.score === scoreNum &&
+            s.totalPairs === totalNum &&
+            Math.abs(new Date(s.date) - new Date(parsedDate)) < 60000 // tolérance 1 min
+          );
+          if (duplicate) continue;
+          sessions.push({
+            id: newId('sess'),
+            exerciseId: null,
+            exerciseName,
+            patientName: p.name,
+            patientId: p.id,
+            date: parsedDate,
+            totalTimeMs: (parseFloat(timeS) || 0) * 1000,
+            totalPairs: totalNum,
+            score: scoreNum,
+            errorsLeft: parseInt(errLeft) || 0,
+            errorsRight: parseInt(errRight) || 0,
+            responses: [],
+            notes,
+          });
+          added++;
+        }
+        saveSessions();
+        renderPatientDetail();
+        alert(added + ' session(s) importée(s).');
+      } catch(err) { alert('Erreur import : ' + err.message); }
+    };
+    reader.readAsText(file, 'utf-8'); e.target.value = '';
+  });
 
   document.getElementById('btn-delete-patient').addEventListener('click', () => {
     const p = getSelectedPatient(); if (!p) return;

@@ -62,6 +62,7 @@
       width: 100%;
       max-width: 920px;
       box-shadow: 0 2px 20px rgba(0,0,0,0.09);
+      position: relative;
     }
 
     h1 { font-size: 2rem; color: #0f172a; }
@@ -351,6 +352,37 @@
     }
     .btn-remove-img:hover { background: #fef2f2; }
 
+    /* ── Audio upload ───────────────────────────────────────────────────────── */
+    .btn-upload-audio {
+      width: 100%; padding: 6px 10px; border: 1.5px dashed #cbd5e1; border-radius: 8px;
+      background: #f8fafc; color: #64748b; font-size: 0.82rem; cursor: pointer;
+      font-family: inherit; transition: all 0.1s;
+    }
+    .btn-upload-audio:hover { border-color: #3b82f6; color: #3b82f6; background: #f0f9ff; }
+    .audio-loaded-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 6px 10px; }
+    .audio-loaded-row span { font-size: 0.78rem; color: #166534; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .btn-play-audio { padding: 3px 8px; border: 1px solid #86efac; border-radius: 5px; background: white; color: #166534; font-size: 0.75rem; cursor: pointer; font-family: inherit; transition: background 0.1s; flex-shrink: 0; }
+    .btn-play-audio:hover { background: #dcfce7; }
+
+    /* ── Fullscreen button ──────────────────────────────────────────────────── */
+    .btn-fullscreen {
+      position: absolute; top: 16px; right: 16px;
+      width: 34px; height: 34px; border: 1px solid #e2e8f0; border-radius: 8px;
+      background: white; color: #64748b; font-size: 1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; transition: all 0.1s;
+    }
+    .btn-fullscreen:hover { background: #f1f5f9; color: #0f172a; }
+
+    /* ── Session notes ──────────────────────────────────────────────────────── */
+    .notes-section { margin-top: 24px; }
+    .notes-section label { display: block; font-weight: 600; color: #334155; margin-bottom: 8px; font-size: 0.95rem; }
+    .notes-section textarea {
+      width: 100%; padding: 12px 14px; border: 2px solid #e2e8f0; border-radius: 10px;
+      font-size: 0.95rem; resize: vertical; outline: none; font-family: inherit;
+      color: #0f172a; transition: border-color 0.15s; min-height: 80px;
+    }
+    .notes-section textarea:focus { border-color: #3b82f6; }
+
     /* ── Results page ───────────────────────────────────────────────────────── */
     .results-page { max-width: 1100px; margin: 0 auto; padding: 32px; }
 
@@ -381,7 +413,7 @@
     .r-empty-state p { font-size: 1.1rem; margin-bottom: 6px; }
     .r-empty-state small { font-size: 0.88rem; }
 
-    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; margin-bottom: 28px; }
     .stat-card { background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 20px 22px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
     .stat-card .label { font-size: 0.75rem; color: #94a3b8; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
     .stat-card .value { font-size: 1.7rem; font-weight: 700; color: #0f172a; }
@@ -410,6 +442,8 @@
       font-family: inherit; transition: background 0.1s;
     }
     .btn-delete-session:hover { background: #fef2f2; }
+    tbody td[contenteditable]:hover { background: #f8fafc; }
+    tbody td[contenteditable]:focus { background: #fffbeb; border-bottom: 2px solid #f59e0b; padding-bottom: 10px; }
   </style>
 </head>
 <body>
@@ -463,6 +497,7 @@
 <!-- ── Exercise view ───────────────────────────────────────────────────────── -->
 <div id="view-exercise" class="view centered">
   <div class="screen">
+    <button class="btn-fullscreen" id="btn-fullscreen" title="Plein écran">⛶</button>
     <div class="progress-section">
       <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
       <div class="progress-label" id="progress-label"></div>
@@ -485,6 +520,10 @@
       <div class="result-card"><div class="label">Temps total</div><div class="value" id="res-time">–</div></div>
       <div class="result-card"><div class="label">Erreurs — item gauche manqué</div><div class="value warn" id="res-errors-left">–</div></div>
       <div class="result-card"><div class="label">Erreurs — item droit manqué</div><div class="value warn" id="res-errors-right">–</div></div>
+    </div>
+    <div class="notes-section">
+      <label for="session-notes">Notes du clinicien</label>
+      <textarea id="session-notes" placeholder="Observations, comportement, remarques…"></textarea>
     </div>
     <div class="btn-group">
       <button class="btn btn-primary"   id="btn-restart">Recommencer</button>
@@ -554,6 +593,7 @@
         <div class="stat-card"><div class="label">Score moyen</div><div class="value green"  id="stat-avg-score">–</div></div>
         <div class="stat-card"><div class="label">Dernière session</div><div class="value"        id="stat-last-score">–</div></div>
         <div class="stat-card"><div class="label">Temps moyen</div><div class="value purple" id="stat-avg-time">–</div></div>
+        <div class="stat-card"><div class="label">Réaction moy./paire</div><div class="value" id="stat-avg-reaction">–</div></div>
       </div>
       <div class="charts-row">
         <div class="chart-card"><h3>Score (%)</h3><canvas id="chart-score" height="180"></canvas></div>
@@ -564,7 +604,7 @@
         <table>
           <thead><tr>
             <th>Date</th><th>Patient</th><th>Exercice</th><th>Score</th>
-            <th>Temps</th><th>Err. gauche</th><th>Err. droite</th><th></th>
+            <th>Temps</th><th>Err. gauche</th><th>Err. droite</th><th>Réaction moy.</th><th>Notes</th><th></th>
           </tr></thead>
           <tbody id="sessions-tbody"></tbody>
         </table>
@@ -596,6 +636,16 @@
           <div class="img-thumb-row" id="left-img-thumb-row" style="display:none">
             <img id="left-img-thumb" alt="">
             <button type="button" class="btn-remove-img" id="left-img-remove">✕ Supprimer</button>
+          </div>
+        </div>
+        <div class="field-row">
+          <label>Audio</label>
+          <input type="file" id="left-audio-input" accept="audio/*" style="display:none">
+          <button type="button" class="btn-upload-audio" id="left-audio-btn">🔊 Choisir un audio</button>
+          <div class="audio-loaded-row" id="left-audio-loaded" style="display:none">
+            <span id="left-audio-name"></span>
+            <button type="button" class="btn-play-audio" id="left-audio-play">▶ Écouter</button>
+            <button type="button" class="btn-remove-img" id="left-audio-remove">✕</button>
           </div>
         </div>
         <div class="field-row"><label>Texte</label><input type="text" id="left-text" placeholder="Texte affiché"></div>
@@ -633,6 +683,16 @@
           <div class="img-thumb-row" id="right-img-thumb-row" style="display:none">
             <img id="right-img-thumb" alt="">
             <button type="button" class="btn-remove-img" id="right-img-remove">✕ Supprimer</button>
+          </div>
+        </div>
+        <div class="field-row">
+          <label>Audio</label>
+          <input type="file" id="right-audio-input" accept="audio/*" style="display:none">
+          <button type="button" class="btn-upload-audio" id="right-audio-btn">🔊 Choisir un audio</button>
+          <div class="audio-loaded-row" id="right-audio-loaded" style="display:none">
+            <span id="right-audio-name"></span>
+            <button type="button" class="btn-play-audio" id="right-audio-play">▶ Écouter</button>
+            <button type="button" class="btn-remove-img" id="right-audio-remove">✕</button>
           </div>
         </div>
         <div class="field-row"><label>Texte</label><input type="text" id="right-text" placeholder="Texte affiché"></div>
@@ -764,6 +824,7 @@
   // ── Exercise ──────────────────────────────────────────────────────────────────
   let currentExercise = null, currentPatient = '', currentPairs = [];
   let pairIndex = 0, responses = [], exerciseStartTime = 0, pairStartTime = 0, isWaiting = false;
+  let currentSessionId = null;
 
   document.getElementById('btn-ready').addEventListener('click', () => {
     pairIndex = 0; responses = [];
@@ -785,6 +846,20 @@
     document.getElementById('progress-fill').style.width  = (pairIndex / currentPairs.length * 100) + '%';
     document.getElementById('progress-label').textContent = (pairIndex+1) + ' / ' + currentPairs.length;
     pairStartTime = Date.now();
+    playPairAudios(pair);
+  }
+
+  function playPairAudios(pair) {
+    const urls = [pair.left.audioUrl, pair.right.audioUrl].filter(Boolean);
+    if (urls.length === 0) return;
+    let i = 0;
+    function playNext() {
+      if (i >= urls.length) return;
+      const audio = new Audio(urls[i++]);
+      audio.addEventListener('ended', playNext);
+      audio.play().catch(() => {});
+    }
+    playNext();
   }
 
   function handleClick(side) {
@@ -813,12 +888,15 @@
     let score = 0, errorsLeft = 0, errorsRight = 0;
     responses.forEach(r => { if (r.isCorrect) score++; else if (r.correctAnswer==='left') errorsLeft++; else errorsRight++; });
 
-    sessions.push({
+    const newSession = {
       id: newId('sess'), exerciseId: currentExercise.id, exerciseName: currentExercise.name,
       patientName: currentPatient, date: new Date().toISOString(),
-      totalTimeMs, totalPairs: currentPairs.length, score, errorsLeft, errorsRight, responses,
-    });
+      totalTimeMs, totalPairs: currentPairs.length, score, errorsLeft, errorsRight, responses, notes: '',
+    };
+    sessions.push(newSession);
+    currentSessionId = newSession.id;
     saveSessions();
+    document.getElementById('session-notes').value = '';
 
     document.getElementById('progress-fill').style.width = '100%';
     document.getElementById('results-meta').textContent  = 'Patient : ' + currentPatient + '  ·  ' + currentExercise.name;
@@ -832,8 +910,26 @@
   document.getElementById('btn-restart').addEventListener('click',      () => showView('setup'));
   document.getElementById('btn-see-progress').addEventListener('click', () => showView('results'));
 
+  document.getElementById('session-notes').addEventListener('input', () => {
+    const session = sessions.find(s => s.id === currentSessionId); if (!session) return;
+    session.notes = document.getElementById('session-notes').value;
+    saveSessions();
+  });
+
+  document.getElementById('btn-fullscreen').addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  });
+  document.addEventListener('fullscreenchange', () => {
+    document.getElementById('btn-fullscreen').textContent = document.fullscreenElement ? '✕' : '⛶';
+    document.getElementById('btn-fullscreen').title       = document.fullscreenElement ? 'Quitter le plein écran' : 'Plein écran';
+  });
+
   // ── Editor ────────────────────────────────────────────────────────────────────
-  let editorSelectedId = null, editingPairId = null, modalImages = { left: null, right: null };
+  let editorSelectedId = null, editingPairId = null, modalImages = { left: null, right: null }, modalAudios = { left: null, right: null };
   function getSelectedEx() { return exercises.find(e => e.id === editorSelectedId) || null; }
 
   function initEditor() {
@@ -954,8 +1050,8 @@
   document.getElementById('btn-add-pair').addEventListener('click', () => {
     const ex = getSelectedEx(); if (!ex) return;
     const pair = { id: newId('pair'),
-      left:  { text:'', color:'#1a1a1a', fontSize:32, fontFamily:'Arial', textTransform:'none' },
-      right: { text:'', color:'#1a1a1a', fontSize:32, fontFamily:'Arial', textTransform:'none' },
+      left:  { text:'', color:'#1a1a1a', fontSize:32, fontFamily:'Arial', textTransform:'none', imageUrl:null, audioUrl:null },
+      right: { text:'', color:'#1a1a1a', fontSize:32, fontFamily:'Arial', textTransform:'none', imageUrl:null, audioUrl:null },
       correct: 'left' };
     ex.pairs.push(pair); saveExercises(); renderExerciseEditor(); openPairModal(pair.id);
   });
@@ -1005,6 +1101,8 @@
     pickOption(s+'-transform', item.textTransform||'none');
     modalImages[s] = item.imageUrl || null;
     updateImageThumb(s);
+    modalAudios[s] = item.audioUrl || null;
+    updateAudioUI(s);
   }
 
   function updateImageThumb(s) {
@@ -1016,6 +1114,16 @@
     } else {
       thumb.src = '';
       thumbRow.style.display = 'none';
+    }
+  }
+
+  function updateAudioUI(s) {
+    const row = document.getElementById(s+'-audio-loaded');
+    if (modalAudios[s]) {
+      document.getElementById(s+'-audio-name').textContent = '🎵 Audio chargé';
+      row.style.display = 'flex';
+    } else {
+      row.style.display = 'none';
     }
   }
 
@@ -1031,6 +1139,7 @@
       fontFamily:    document.getElementById(s+'-font').value,
       textTransform: document.getElementById(s+'-transform').value,
       imageUrl:      modalImages[s] || null,
+      audioUrl:      modalAudios[s] || null,
     };
   }
 
@@ -1073,6 +1182,19 @@
       reader.readAsDataURL(file); e.target.value = '';
     });
     document.getElementById(s+'-img-remove').addEventListener('click', () => { modalImages[s] = null; updateImageThumb(s); refreshModalPreview(); });
+
+    document.getElementById(s+'-audio-btn').addEventListener('click', () => document.getElementById(s+'-audio-input').click());
+    document.getElementById(s+'-audio-input').addEventListener('change', e => {
+      const file = e.target.files[0]; if (!file) return;
+      const reader = new FileReader();
+      reader.onload = evt => { modalAudios[s] = evt.target.result; updateAudioUI(s); };
+      reader.readAsDataURL(file); e.target.value = '';
+    });
+    document.getElementById(s+'-audio-remove').addEventListener('click', () => { modalAudios[s] = null; updateAudioUI(s); });
+    document.getElementById(s+'-audio-play').addEventListener('click', () => {
+      if (!modalAudios[s]) return;
+      new Audio(modalAudios[s]).play().catch(() => {});
+    });
   });
 
   document.getElementById('btn-modal-save').addEventListener('click', () => {
@@ -1182,14 +1304,22 @@
     renderStats(filtered); renderCharts(filtered); renderTable(filtered);
   }
 
+  function avgReactionMs(session) {
+    if (!session.responses || session.responses.length === 0) return null;
+    return session.responses.reduce((s, r) => s + r.timeMs, 0) / session.responses.length;
+  }
+
   function renderStats(filtered) {
     const avgPct  = filtered.reduce((s,r)=>s+r.score/r.totalPairs*100,0)/filtered.length;
     const avgTime = filtered.reduce((s,r)=>s+r.totalTimeMs,0)/filtered.length;
     const last    = filtered[filtered.length-1];
-    document.getElementById('stat-sessions').textContent   = filtered.length;
-    document.getElementById('stat-avg-score').textContent  = Math.round(avgPct)+'%';
-    document.getElementById('stat-last-score').textContent = last.score+'/'+last.totalPairs+' ('+Math.round(last.score/last.totalPairs*100)+'%)';
-    document.getElementById('stat-avg-time').textContent   = formatDuration(avgTime);
+    const allReactions = filtered.flatMap(s => (s.responses||[]).map(r => r.timeMs));
+    const avgReaction  = allReactions.length > 0 ? allReactions.reduce((a,b)=>a+b,0)/allReactions.length : null;
+    document.getElementById('stat-sessions').textContent      = filtered.length;
+    document.getElementById('stat-avg-score').textContent     = Math.round(avgPct)+'%';
+    document.getElementById('stat-last-score').textContent    = last.score+'/'+last.totalPairs+' ('+Math.round(last.score/last.totalPairs*100)+'%)';
+    document.getElementById('stat-avg-time').textContent      = formatDuration(avgTime);
+    document.getElementById('stat-avg-reaction').textContent  = avgReaction !== null ? Math.round(avgReaction)+' ms' : '–';
   }
 
   function renderCharts(filtered) {
@@ -1232,6 +1362,7 @@
       const pct = Math.round(session.score/session.totalPairs*100);
       const scoreClass = pct>=80?'good-score':pct<50?'low-score':'';
       const tr = document.createElement('tr');
+      const reaction = avgReactionMs(session);
       tr.innerHTML =
         '<td>'+new Date(session.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+new Date(session.date).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})+'</td>'+
         '<td>'+escapeHtml(session.patientName)+'</td>'+
@@ -1240,7 +1371,21 @@
         '<td>'+formatDuration(session.totalTimeMs)+'</td>'+
         '<td>'+session.errorsLeft+'</td>'+
         '<td>'+session.errorsRight+'</td>'+
+        '<td>'+(reaction !== null ? Math.round(reaction)+' ms' : '–')+'</td>'+
+        '<td></td>'+
         '<td></td>';
+      const notesTd = tr.children[8];
+      notesTd.contentEditable = 'true';
+      notesTd.textContent = session.notes || '';
+      notesTd.style.cssText = 'max-width:220px;min-width:100px;outline:none;color:#475569;font-style:italic;cursor:text;';
+      notesTd.setAttribute('data-placeholder', 'Ajouter une note…');
+      notesTd.addEventListener('focus', () => { if (!notesTd.textContent) notesTd.style.fontStyle='normal'; });
+      notesTd.addEventListener('blur',  () => {
+        session.notes = notesTd.textContent.trim();
+        saveSessions();
+        notesTd.style.fontStyle = session.notes ? 'italic' : 'italic';
+      });
+      notesTd.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); notesTd.blur(); } });
       const btn = document.createElement('button');
       btn.className='btn-delete-session'; btn.textContent='Supprimer';
       btn.addEventListener('click', () => {

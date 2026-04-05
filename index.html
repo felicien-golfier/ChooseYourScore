@@ -694,7 +694,11 @@
   <div class="sidebar">
     <div class="sidebar-header">
       <h3>Patients</h3>
-      <button class="btn-icon" id="btn-new-patient" title="Nouveau patient">+</button>
+      <div style="display:flex;gap:4px">
+        <button class="btn-icon" id="btn-import-patient-csv" title="Importer un patient (CSV)" style="background:#6366f1;font-size:0.85rem">📥</button>
+        <input type="file" id="import-patient-csv-input" accept=".csv,.txt" style="display:none">
+        <button class="btn-icon" id="btn-new-patient" title="Nouveau patient">+</button>
+      </div>
     </div>
     <div class="exercise-list" id="patient-list"></div>
   </div>
@@ -708,8 +712,6 @@
         <input type="text" id="patient-name-input" placeholder="Nom du patient" maxlength="100">
         <button class="btn-dup" id="btn-export-patient-csv">📊 CSV</button>
         <button class="btn-dup" id="btn-export-patient-pdf">📄 PDF</button>
-        <button class="btn-dup" id="btn-import-patient-csv">📥 Importer</button>
-        <input type="file" id="import-patient-csv-input" accept=".csv,.txt" style="display:none">
         <button class="btn-danger" id="btn-delete-patient">Supprimer</button>
       </div>
       <div class="form-group">
@@ -1780,13 +1782,11 @@ ${patientSessions.length === 0
   }
 
   document.getElementById('btn-import-patient-csv').addEventListener('click', () => {
-    const p = getSelectedPatient(); if (!p) return;
     document.getElementById('import-patient-csv-input').click();
   });
 
   document.getElementById('import-patient-csv-input').addEventListener('change', e => {
-    const p = getSelectedPatient();
-    const file = e.target.files[0]; if (!file || !p) return;
+    const file = e.target.files[0]; if (!file) return;
     const reader = new FileReader();
     reader.onload = evt => {
       try {
@@ -1805,6 +1805,21 @@ ${patientSessions.length === 0
           cells.push(cell); return cells;
         }
 
+        // Lire les métadonnées patient dans l'en-tête CSV
+        let csvPatientName = '';
+        for (let i = 0; i < lines.length; i++) {
+          const cells = parseRow(lines[i]);
+          if (cells[0] === 'Nom') { csvPatientName = cells[1] || ''; break; }
+        }
+        if (!csvPatientName) throw new Error('Nom du patient introuvable dans le fichier');
+
+        // Trouver ou créer le patient par correspondance de nom
+        let p = patients.find(pt => pt.name.trim().toLowerCase() === csvPatientName.trim().toLowerCase());
+        if (!p) {
+          p = { id: newId('pat'), name: csvPatientName.trim(), birthDate: '', notes: '', createdAt: new Date().toISOString() };
+          patients.push(p); savePatients();
+        }
+
         // Trouver la ligne d'en-tête du tableau de sessions
         let dataStart = -1;
         for (let i = 0; i < lines.length; i++) {
@@ -1814,7 +1829,6 @@ ${patientSessions.length === 0
         if (dataStart === -1) throw new Error('Format non reconnu — en-tête "Date;Exercice" introuvable');
 
         function parseFrDate(str) {
-          // "DD/MM/YYYY HH:MM" → ISO string
           const [datePart, timePart='00:00'] = str.split(' ');
           const [d, m, y] = datePart.split('/');
           const [h, min] = timePart.split(':');
@@ -1857,8 +1871,10 @@ ${patientSessions.length === 0
           added++;
         }
         saveSessions();
+        patientSelectedId = p.id;
+        renderPatientSidebar();
         renderPatientDetail();
-        alert(added + ' session(s) importée(s).');
+        alert(added + ' session(s) importée(s) pour ' + p.name + '.');
       } catch(err) { alert('Erreur import : ' + err.message); }
     };
     reader.readAsText(file, 'utf-8'); e.target.value = '';

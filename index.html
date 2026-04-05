@@ -336,6 +336,21 @@
     }
     .btn-cancel:hover { background: #e2e8f0; }
 
+    .btn-upload-img {
+      width: 100%; padding: 6px 10px; border: 1.5px dashed #cbd5e1; border-radius: 8px;
+      background: #f8fafc; color: #64748b; font-size: 0.82rem; cursor: pointer;
+      font-family: inherit; transition: all 0.1s;
+    }
+    .btn-upload-img:hover { border-color: #3b82f6; color: #3b82f6; background: #f0f9ff; }
+    .img-thumb-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+    .img-thumb-row img { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; border: 1px solid #e2e8f0; flex-shrink: 0; }
+    .btn-remove-img {
+      padding: 3px 8px; border: 1px solid #fca5a5; border-radius: 5px;
+      background: white; color: #ef4444; font-size: 0.75rem; cursor: pointer;
+      font-family: inherit; transition: background 0.1s;
+    }
+    .btn-remove-img:hover { background: #fef2f2; }
+
     /* ── Results page ───────────────────────────────────────────────────────── */
     .results-page { max-width: 1100px; margin: 0 auto; padding: 32px; }
 
@@ -574,6 +589,15 @@
     <div class="items-edit-grid">
       <div class="item-edit-panel">
         <h4>Item gauche</h4>
+        <div class="field-row">
+          <label>Image</label>
+          <input type="file" id="left-img-input" accept="image/*" style="display:none">
+          <button type="button" class="btn-upload-img" id="left-img-btn">📷 Choisir une image</button>
+          <div class="img-thumb-row" id="left-img-thumb-row" style="display:none">
+            <img id="left-img-thumb" alt="">
+            <button type="button" class="btn-remove-img" id="left-img-remove">✕ Supprimer</button>
+          </div>
+        </div>
         <div class="field-row"><label>Texte</label><input type="text" id="left-text" placeholder="Texte affiché"></div>
         <div class="field-row"><label>Couleur</label><input type="color" id="left-color" value="#1a1a1a"></div>
         <div class="field-row"><label>Taille (px)</label>
@@ -602,6 +626,15 @@
 
       <div class="item-edit-panel">
         <h4>Item droit</h4>
+        <div class="field-row">
+          <label>Image</label>
+          <input type="file" id="right-img-input" accept="image/*" style="display:none">
+          <button type="button" class="btn-upload-img" id="right-img-btn">📷 Choisir une image</button>
+          <div class="img-thumb-row" id="right-img-thumb-row" style="display:none">
+            <img id="right-img-thumb" alt="">
+            <button type="button" class="btn-remove-img" id="right-img-remove">✕ Supprimer</button>
+          </div>
+        </div>
         <div class="field-row"><label>Texte</label><input type="text" id="right-text" placeholder="Texte affiché"></div>
         <div class="field-row"><label>Couleur</label><input type="color" id="right-color" value="#1a1a1a"></div>
         <div class="field-row"><label>Taille (px)</label>
@@ -643,7 +676,15 @@
     el.style.fontSize      = (item.fontSize || 32) + 'px';
     el.style.fontFamily    = item.fontFamily    || 'Arial';
     el.style.textTransform = item.textTransform || 'none';
-    el.textContent         = item.text          || '';
+    if (item.imageUrl) {
+      el.style.backgroundImage    = 'url(' + item.imageUrl + ')';
+      el.style.backgroundSize     = 'cover';
+      el.style.backgroundPosition = 'center';
+      el.innerHTML = item.text ? '<span style="position:relative;text-shadow:0 1px 4px rgba(0,0,0,0.65)">' + escapeHtml(item.text) + '</span>' : '';
+    } else {
+      el.style.backgroundImage = '';
+      el.textContent = item.text || '';
+    }
   }
   function formatDuration(ms) {
     const s = Math.floor(ms / 1000), m = Math.floor(s / 60);
@@ -792,7 +833,7 @@
   document.getElementById('btn-see-progress').addEventListener('click', () => showView('results'));
 
   // ── Editor ────────────────────────────────────────────────────────────────────
-  let editorSelectedId = null, editingPairId = null;
+  let editorSelectedId = null, editingPairId = null, modalImages = { left: null, right: null };
   function getSelectedEx() { return exercises.find(e => e.id === editorSelectedId) || null; }
 
   function initEditor() {
@@ -848,13 +889,14 @@
       preview.appendChild(buildPreviewEl(pair.right, pair.correct==='right'));
       const actions = document.createElement('div');
       actions.className = 'pair-actions';
-      const editBtn   = makePairBtn('✏','edit',  'Modifier',  () => openPairModal(pair.id));
-      const upBtn     = makePairBtn('↑','',      'Monter',    () => movePair(pair.id,-1));
-      const downBtn   = makePairBtn('↓','',      'Descendre', () => movePair(pair.id, 1));
-      const deleteBtn = makePairBtn('✕','delete','Supprimer', () => deletePair(pair.id));
+      const editBtn      = makePairBtn('✏','edit',  'Modifier',   () => openPairModal(pair.id));
+      const duplicateBtn = makePairBtn('⧉','',     'Dupliquer',  () => duplicatePair(pair.id));
+      const upBtn        = makePairBtn('↑','',      'Monter',     () => movePair(pair.id,-1));
+      const downBtn      = makePairBtn('↓','',      'Descendre',  () => movePair(pair.id, 1));
+      const deleteBtn    = makePairBtn('✕','delete','Supprimer',  () => deletePair(pair.id));
       if (i===0)                   upBtn.disabled   = true;
       if (i===ex.pairs.length-1)   downBtn.disabled = true;
-      actions.append(editBtn, upBtn, downBtn, deleteBtn);
+      actions.append(editBtn, duplicateBtn, upBtn, downBtn, deleteBtn);
       row.append(preview, actions);
       list.appendChild(row);
     });
@@ -865,7 +907,15 @@
     div.className = 'pair-item-preview' + (isCorrect ? ' is-correct' : '');
     div.style.color = item.color||'#1a1a1a'; div.style.fontSize = Math.min(item.fontSize||32,22)+'px';
     div.style.fontFamily = item.fontFamily||'Arial'; div.style.textTransform = item.textTransform||'none';
-    div.textContent = item.text||''; return div;
+    if (item.imageUrl) {
+      div.style.backgroundImage    = 'url(' + item.imageUrl + ')';
+      div.style.backgroundSize     = 'cover';
+      div.style.backgroundPosition = 'center';
+      div.innerHTML = item.text ? '<span style="position:relative;text-shadow:0 1px 4px rgba(0,0,0,0.65)">' + escapeHtml(item.text) + '</span>' : '';
+    } else {
+      div.textContent = item.text||'';
+    }
+    return div;
   }
 
   function makePairBtn(icon, cls, title, handler) {
@@ -910,6 +960,18 @@
     ex.pairs.push(pair); saveExercises(); renderExerciseEditor(); openPairModal(pair.id);
   });
 
+  function duplicatePair(pairId) {
+    const ex = getSelectedEx(); if (!ex) return;
+    const index = ex.pairs.findIndex(p => p.id === pairId); if (index === -1) return;
+    const source = ex.pairs[index];
+    const copy = { id: newId('pair'),
+      left:    { ...source.left },
+      right:   { ...source.right },
+      correct: source.correct };
+    ex.pairs.splice(index + 1, 0, copy);
+    saveExercises(); renderExerciseEditor();
+  }
+
   function deletePair(pairId) {
     const ex = getSelectedEx(); if (!ex) return;
     if (!confirm('Supprimer cette paire ?')) return;
@@ -941,6 +1003,20 @@
     pickOption(s+'-size',      String(item.fontSize||32));
     pickOption(s+'-font',      item.fontFamily  ||'Arial');
     pickOption(s+'-transform', item.textTransform||'none');
+    modalImages[s] = item.imageUrl || null;
+    updateImageThumb(s);
+  }
+
+  function updateImageThumb(s) {
+    const thumbRow = document.getElementById(s+'-img-thumb-row');
+    const thumb    = document.getElementById(s+'-img-thumb');
+    if (modalImages[s]) {
+      thumb.src = modalImages[s];
+      thumbRow.style.display = 'flex';
+    } else {
+      thumb.src = '';
+      thumbRow.style.display = 'none';
+    }
   }
 
   function pickOption(id, val) {
@@ -954,6 +1030,7 @@
       fontSize:      parseInt(document.getElementById(s+'-size').value, 10),
       fontFamily:    document.getElementById(s+'-font').value,
       textTransform: document.getElementById(s+'-transform').value,
+      imageUrl:      modalImages[s] || null,
     };
   }
 
@@ -965,10 +1042,18 @@
   }
 
   function applyPreviewBox(el, item, isCorrect) {
-    el.textContent=item.text||'(vide)'; el.style.color=item.color;
-    el.style.fontSize=item.fontSize+'px'; el.style.fontFamily=item.fontFamily;
-    el.style.textTransform=item.textTransform;
+    el.style.color=item.color; el.style.fontSize=item.fontSize+'px';
+    el.style.fontFamily=item.fontFamily; el.style.textTransform=item.textTransform;
     el.className='preview-box'+(isCorrect?' correct-side':'');
+    if (item.imageUrl) {
+      el.style.backgroundImage    = 'url(' + item.imageUrl + ')';
+      el.style.backgroundSize     = 'cover';
+      el.style.backgroundPosition = 'center';
+      el.innerHTML = item.text ? '<span style="position:relative;text-shadow:0 1px 4px rgba(0,0,0,0.65)">' + escapeHtml(item.text) + '</span>' : '';
+    } else {
+      el.style.backgroundImage = '';
+      el.textContent = item.text || '(vide)';
+    }
   }
 
   ['left-text','left-color','left-size','left-font','left-transform',
@@ -977,6 +1062,17 @@
     const el = document.getElementById(id);
     el.addEventListener('input',  refreshModalPreview);
     el.addEventListener('change', refreshModalPreview);
+  });
+
+  ['left', 'right'].forEach(s => {
+    document.getElementById(s+'-img-btn').addEventListener('click', () => document.getElementById(s+'-img-input').click());
+    document.getElementById(s+'-img-input').addEventListener('change', e => {
+      const file = e.target.files[0]; if (!file) return;
+      const reader = new FileReader();
+      reader.onload = evt => { modalImages[s] = evt.target.result; updateImageThumb(s); refreshModalPreview(); };
+      reader.readAsDataURL(file); e.target.value = '';
+    });
+    document.getElementById(s+'-img-remove').addEventListener('click', () => { modalImages[s] = null; updateImageThumb(s); refreshModalPreview(); });
   });
 
   document.getElementById('btn-modal-save').addEventListener('click', () => {
@@ -992,7 +1088,7 @@
     const ex = getSelectedEx();
     if (ex) {
       const pair = ex.pairs.find(p => p.id === editingPairId);
-      if (pair && !pair.left.text && !pair.right.text) {
+      if (pair && !pair.left.text && !pair.right.text && !pair.left.imageUrl && !pair.right.imageUrl) {
         ex.pairs = ex.pairs.filter(p => p.id !== editingPairId);
         saveExercises(); renderExerciseEditor();
       }

@@ -72,14 +72,16 @@
     .form-group { margin-bottom: 24px; }
     .form-group label { display: block; font-weight: 600; color: #334155; margin-bottom: 8px; font-size: 0.95rem; }
     .form-group select,
-    .form-group input[type="text"] {
+    .form-group input[type="text"],
+    .form-group input[type="date"] {
       width: 100%; padding: 12px 16px;
       border: 2px solid #e2e8f0; border-radius: 10px;
       font-size: 1rem; color: #0f172a; outline: none;
       transition: border-color 0.15s; font-family: inherit;
     }
     .form-group select:focus,
-    .form-group input[type="text"]:focus { border-color: #3b82f6; }
+    .form-group input[type="text"]:focus,
+    .form-group input[type="date"]:focus { border-color: #3b82f6; }
 
     .checkbox-row { display: flex; align-items: center; gap: 10px; cursor: pointer; }
     .checkbox-row input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
@@ -373,6 +375,27 @@
     }
     .btn-fullscreen:hover { background: #f1f5f9; color: #0f172a; }
 
+    /* ── Fullscreen exercise layout ─────────────────────────────────────────── */
+    body.is-fullscreen #topbar { display: none; }
+    body.is-fullscreen #view-exercise {
+      padding: 0; justify-content: stretch; align-items: stretch;
+    }
+    body.is-fullscreen #view-exercise .screen {
+      max-width: none; border-radius: 0; box-shadow: none;
+      padding: 40px 56px; flex: 1;
+      display: flex; flex-direction: column; height: 100vh;
+    }
+    body.is-fullscreen .progress-section { margin-bottom: 32px; flex-shrink: 0; }
+    body.is-fullscreen .progress-bar { height: 12px; }
+    body.is-fullscreen .pair-container {
+      flex: 1; gap: 40px;
+    }
+    body.is-fullscreen .item-btn {
+      min-height: 0; height: 100%;
+      border-radius: 28px; padding: 40px;
+    }
+    body.is-fullscreen .keyboard-hint { flex-shrink: 0; font-size: 1rem; margin-top: 24px; }
+
     /* ── Session notes ──────────────────────────────────────────────────────── */
     .notes-section { margin-top: 24px; }
     .notes-section label { display: block; font-weight: 600; color: #334155; margin-bottom: 8px; font-size: 0.95rem; }
@@ -436,6 +459,12 @@
     .score-pct { color: #94a3b8; font-size: 0.82rem; }
     .good-score { color: #16a34a; font-weight: 700; }
     .low-score  { color: #dc2626; font-weight: 700; }
+    .btn-dup {
+      padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 8px;
+      background: white; color: #475569; font-size: 0.82rem; cursor: pointer;
+      font-weight: 500; white-space: nowrap; font-family: inherit; transition: background 0.1s;
+    }
+    .btn-dup:hover { background: #f8fafc; }
     .btn-delete-session {
       padding: 4px 8px; border: 1px solid #fca5a5; border-radius: 5px;
       background: white; color: #ef4444; font-size: 0.75rem; cursor: pointer;
@@ -454,6 +483,7 @@
   <button class="nav-btn active" id="nav-exercise" onclick="showView('setup')">▶ Exercice</button>
   <button class="nav-btn"        id="nav-editor"   onclick="showView('editor')">✏️ Éditeur</button>
   <button class="nav-btn"        id="nav-results"  onclick="showView('results')">📊 Résultats</button>
+  <button class="nav-btn"        id="nav-patients" onclick="showView('patients')">👤 Patients</button>
 </div>
 
 <!-- ── Setup view ──────────────────────────────────────────────────────────── -->
@@ -471,8 +501,12 @@
         <select id="exercise-select"></select>
       </div>
       <div class="form-group">
-        <label for="patient-name">Nom du patient</label>
-        <input id="patient-name" type="text" placeholder="ex. Marie Dubois" autocomplete="off">
+        <label for="patient-select-setup">Patient</label>
+        <select id="patient-select-setup"></select>
+      </div>
+      <div class="form-group" id="new-patient-row" style="display:none">
+        <label for="new-patient-name">Nom du nouveau patient</label>
+        <input id="new-patient-name" type="text" placeholder="ex. Marie Dubois" autocomplete="off">
       </div>
       <div class="form-group">
         <label class="checkbox-row">
@@ -557,6 +591,7 @@
     <div id="exercise-editor" style="display:none">
       <div class="editor-header">
         <input type="text" id="exercise-name" placeholder="Nom de l'exercice" maxlength="100">
+        <button class="btn-dup" id="btn-duplicate-exercise">Dupliquer</button>
         <button class="btn-danger" id="btn-delete-exercise">Supprimer</button>
       </div>
       <div class="form-group">
@@ -565,6 +600,8 @@
       </div>
       <div class="pairs-header">
         <span class="editor-section-label">Paires <span class="badge" id="pair-count-badge">0</span></span>
+        <button class="btn-dup" id="btn-import-csv-pairs">⬆ Importer CSV</button>
+        <input type="file" id="csv-pairs-input" accept=".csv,.txt" style="display:none">
       </div>
       <div class="pairs-list" id="pairs-list"></div>
       <button class="btn-add-pair" id="btn-add-pair">+ Ajouter une paire</button>
@@ -585,6 +622,11 @@
         <select id="exercise-filter"><option value="">— Tous les exercices —</option></select>
       </div>
       <button class="btn-clear" id="btn-clear-filters">Effacer les filtres</button>
+      <div style="display:flex;gap:8px;align-self:flex-end;margin-left:auto">
+        <button class="btn-clear" id="btn-export-results">⬇ Exporter résultats</button>
+        <button class="btn-clear" id="btn-import-results">⬆ Importer résultats</button>
+        <input type="file" id="import-results-input" accept=".json" style="display:none">
+      </div>
     </div>
 
     <div id="r-content" style="display:none">
@@ -614,6 +656,42 @@
     <div id="r-empty-state" class="r-empty-state">
       <p>Aucune session enregistrée</p>
       <small>Les résultats apparaîtront ici après chaque exercice</small>
+    </div>
+  </div>
+</div>
+
+<!-- ── Patients view ───────────────────────────────────────────────────────── -->
+<div id="view-patients" class="view">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h3>Patients</h3>
+      <button class="btn-icon" id="btn-new-patient" title="Nouveau patient">+</button>
+    </div>
+    <div class="exercise-list" id="patient-list"></div>
+  </div>
+  <div class="editor-main">
+    <div id="patient-empty-state" class="empty-state">
+      <p>Aucun patient sélectionné</p>
+      <small>Cliquez sur + pour créer votre premier patient</small>
+    </div>
+    <div id="patient-detail" style="display:none; max-width:760px;">
+      <div class="editor-header">
+        <input type="text" id="patient-name-input" placeholder="Nom du patient" maxlength="100">
+        <button class="btn-danger" id="btn-delete-patient">Supprimer</button>
+      </div>
+      <div class="form-group">
+        <label class="editor-section-label" for="patient-dob">Date de naissance</label>
+        <input type="date" id="patient-dob" style="max-width:240px">
+      </div>
+      <div class="form-group">
+        <label class="editor-section-label" for="patient-notes-field">Notes</label>
+        <textarea id="patient-notes-field" rows="3" placeholder="Informations, antécédents, remarques…"></textarea>
+      </div>
+      <div class="pairs-header" style="margin-top:8px">
+        <span class="editor-section-label">Sessions <span class="badge" id="patient-session-count">0</span></span>
+        <div id="patient-mini-stats" style="display:flex;gap:20px;font-size:0.85rem;color:#64748b;"></div>
+      </div>
+      <div id="patient-sessions-wrap" style="margin-top:12px;overflow-x:auto"></div>
     </div>
   </div>
 </div>
@@ -726,9 +804,21 @@
   // ── Storage ───────────────────────────────────────────────────────────────────
   let exercises = JSON.parse(localStorage.getItem('cys_exercises') || '[]');
   let sessions  = JSON.parse(localStorage.getItem('cys_sessions')  || '[]');
+  let patients  = JSON.parse(localStorage.getItem('cys_patients')  || '[]');
 
   function saveExercises() { localStorage.setItem('cys_exercises', JSON.stringify(exercises)); }
   function saveSessions()  { localStorage.setItem('cys_sessions',  JSON.stringify(sessions));  }
+  function savePatients()  { localStorage.setItem('cys_patients',  JSON.stringify(patients));  }
+
+  function migratePatients() {
+    if (patients.length > 0 || sessions.length === 0) return;
+    const names = [...new Set(sessions.map(s => s.patientName).filter(Boolean))];
+    names.forEach(name => patients.push({ id: newId('pat'), name, birthDate: '', notes: '', createdAt: new Date().toISOString() }));
+    sessions.forEach(s => {
+      if (!s.patientId) { const p = patients.find(p => p.name === s.patientName); if (p) s.patientId = p.id; }
+    });
+    savePatients(); saveSessions();
+  }
 
   // ── Utils ─────────────────────────────────────────────────────────────────────
   function applyItemStyle(el, item) {
@@ -759,7 +849,7 @@
   }
 
   // ── Navigation ────────────────────────────────────────────────────────────────
-  const NAV_BUTTONS = { setup: 'nav-exercise', editor: 'nav-editor', results: 'nav-results' };
+  const NAV_BUTTONS = { setup: 'nav-exercise', editor: 'nav-editor', results: 'nav-results', patients: 'nav-patients' };
 
   function showView(name) {
     document.querySelectorAll('.view').forEach(el => { el.style.display = 'none'; });
@@ -775,9 +865,10 @@
     const navId = NAV_BUTTONS[name] || NAV_BUTTONS[name.replace('session-result','setup').replace('instruction','setup')];
     if (navId) document.getElementById(navId).classList.add('active');
 
-    if (name === 'setup')   initSetup();
-    if (name === 'editor')  initEditor();
-    if (name === 'results') initResults();
+    if (name === 'setup')    initSetup();
+    if (name === 'editor')   initEditor();
+    if (name === 'results')  initResults();
+    if (name === 'patients') initPatientsView();
   }
 
   // ── Setup ─────────────────────────────────────────────────────────────────────
@@ -797,16 +888,51 @@
       opt.textContent = ex.name + ' (' + (ex.pairs||[]).length + ' paires)';
       select.appendChild(opt);
     });
+    populateSetupPatientSelect();
   }
+
+  function populateSetupPatientSelect() {
+    const select = document.getElementById('patient-select-setup');
+    const current = select.value;
+    select.innerHTML = '<option value="">— Sélectionner un patient —</option>';
+    [...patients].sort((a,b) => a.name.localeCompare(b.name)).forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.id; opt.textContent = p.name;
+      if (p.id === current) opt.selected = true;
+      select.appendChild(opt);
+    });
+    const newOpt = document.createElement('option');
+    newOpt.value = '__new__'; newOpt.textContent = '+ Nouveau patient…';
+    select.appendChild(newOpt);
+  }
+
+  document.getElementById('patient-select-setup').addEventListener('change', () => {
+    document.getElementById('new-patient-row').style.display =
+      document.getElementById('patient-select-setup').value === '__new__' ? '' : 'none';
+  });
 
   document.getElementById('btn-start').addEventListener('click', () => {
     currentExercise = exercises.find(ex => ex.id === document.getElementById('exercise-select').value);
     if (!currentExercise) return;
 
-    const nameInput = document.getElementById('patient-name');
-    currentPatient = nameInput.value.trim();
-    if (!currentPatient) { nameInput.style.borderColor = '#ef4444'; nameInput.focus(); return; }
-    nameInput.style.borderColor = '';
+    const patientSelectEl = document.getElementById('patient-select-setup');
+    const patientVal = patientSelectEl.value;
+    if (patientVal === '__new__') {
+      const nameInput = document.getElementById('new-patient-name');
+      const name = nameInput.value.trim();
+      if (!name) { nameInput.style.borderColor = '#ef4444'; nameInput.focus(); return; }
+      nameInput.style.borderColor = '';
+      const newPatient = { id: newId('pat'), name, birthDate: '', notes: '', createdAt: new Date().toISOString() };
+      patients.push(newPatient); savePatients();
+      currentPatientId = newPatient.id; currentPatient = newPatient.name;
+    } else if (patientVal) {
+      const patient = patients.find(p => p.id === patientVal);
+      if (!patient) { patientSelectEl.style.borderColor = '#ef4444'; return; }
+      currentPatientId = patient.id; currentPatient = patient.name;
+    } else {
+      patientSelectEl.style.borderColor = '#ef4444'; patientSelectEl.focus(); return;
+    }
+    patientSelectEl.style.borderColor = '';
 
     if (!currentExercise.pairs || currentExercise.pairs.length === 0) {
       alert("Cet exercice n'a pas de paires. Ajoutez des paires dans l'Éditeur.");
@@ -822,7 +948,7 @@
   });
 
   // ── Exercise ──────────────────────────────────────────────────────────────────
-  let currentExercise = null, currentPatient = '', currentPairs = [];
+  let currentExercise = null, currentPatient = '', currentPatientId = null, currentPairs = [];
   let pairIndex = 0, responses = [], exerciseStartTime = 0, pairStartTime = 0, isWaiting = false;
   let currentSessionId = null;
 
@@ -890,7 +1016,7 @@
 
     const newSession = {
       id: newId('sess'), exerciseId: currentExercise.id, exerciseName: currentExercise.name,
-      patientName: currentPatient, date: new Date().toISOString(),
+      patientName: currentPatient, patientId: currentPatientId, date: new Date().toISOString(),
       totalTimeMs, totalPairs: currentPairs.length, score, errorsLeft, errorsRight, responses, notes: '',
     };
     sessions.push(newSession);
@@ -924,8 +1050,10 @@
     }
   });
   document.addEventListener('fullscreenchange', () => {
-    document.getElementById('btn-fullscreen').textContent = document.fullscreenElement ? '✕' : '⛶';
-    document.getElementById('btn-fullscreen').title       = document.fullscreenElement ? 'Quitter le plein écran' : 'Plein écran';
+    const isFullscreen = !!document.fullscreenElement;
+    document.getElementById('btn-fullscreen').textContent = isFullscreen ? '✕' : '⛶';
+    document.getElementById('btn-fullscreen').title       = isFullscreen ? 'Quitter le plein écran' : 'Plein écran';
+    document.body.classList.toggle('is-fullscreen', isFullscreen);
   });
 
   // ── Editor ────────────────────────────────────────────────────────────────────
@@ -1037,6 +1165,48 @@
     const ex = getSelectedEx(); if (!ex) return;
     ex.instruction = document.getElementById('exercise-instruction').value;
     saveExercises();
+  });
+
+  document.getElementById('btn-duplicate-exercise').addEventListener('click', () => {
+    const ex = getSelectedEx(); if (!ex) return;
+    const copy = JSON.parse(JSON.stringify(ex));
+    copy.id = newId('ex');
+    copy.name = copy.name + ' (copie)';
+    copy.pairs.forEach(p => { p.id = newId('pair'); });
+    exercises.push(copy);
+    editorSelectedId = copy.id;
+    saveExercises(); renderSidebar(); renderExerciseEditor();
+  });
+
+  document.getElementById('btn-import-csv-pairs').addEventListener('click', () => {
+    const ex = getSelectedEx(); if (!ex) return;
+    document.getElementById('csv-pairs-input').click();
+  });
+
+  document.getElementById('csv-pairs-input').addEventListener('change', e => {
+    const ex = getSelectedEx();
+    const file = e.target.files[0]; if (!file || !ex) return;
+    const reader = new FileReader();
+    reader.onload = evt => {
+      const lines = evt.target.result.split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('#'));
+      let added = 0;
+      lines.forEach(line => {
+        const parts = line.split(',');
+        const leftText  = (parts[0] || '').trim();
+        const rightText = (parts[1] || '').trim();
+        if (!leftText && !rightText) return;
+        const correctRaw = (parts[2] || '').trim().toLowerCase();
+        const correct = ['droite','right','d','r','1'].includes(correctRaw) ? 'right' : 'left';
+        ex.pairs.push({ id: newId('pair'),
+          left:  { text: leftText,  color: '#1a1a1a', fontSize: 32, fontFamily: 'Arial', textTransform: 'none', imageUrl: null, audioUrl: null },
+          right: { text: rightText, color: '#1a1a1a', fontSize: 32, fontFamily: 'Arial', textTransform: 'none', imageUrl: null, audioUrl: null },
+          correct });
+        added++;
+      });
+      saveExercises(); renderExerciseEditor();
+      alert(added + ' paire(s) importée(s).');
+    };
+    reader.readAsText(file); e.target.value = '';
   });
 
   document.getElementById('btn-delete-exercise').addEventListener('click', () => {
@@ -1223,6 +1393,142 @@
   document.getElementById('pair-modal').addEventListener('click', e => { if (e.target===document.getElementById('pair-modal')) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key==='Escape' && document.getElementById('pair-modal').style.display!=='none') closeModal(); });
 
+  // ── Patients view ─────────────────────────────────────────────────────────────
+  let patientSelectedId = null;
+  function getSelectedPatient() { return patients.find(p => p.id === patientSelectedId) || null; }
+
+  function initPatientsView() {
+    if (patientSelectedId === null && patients.length > 0) patientSelectedId = patients[0].id;
+    renderPatientSidebar();
+    renderPatientDetail();
+  }
+
+  function renderPatientSidebar() {
+    const list = document.getElementById('patient-list');
+    list.innerHTML = '';
+    if (patients.length === 0) {
+      list.innerHTML = '<div style="padding:16px;color:#94a3b8;font-size:0.83rem;text-align:center">Aucun patient</div>';
+      return;
+    }
+    [...patients].sort((a,b) => a.name.localeCompare(b.name)).forEach(patient => {
+      const sessionCount = sessions.filter(s => s.patientId === patient.id).length;
+      const div = document.createElement('div');
+      div.className = 'exercise-item' + (patient.id === patientSelectedId ? ' active' : '');
+      const nameSpan = document.createElement('span');
+      nameSpan.textContent = patient.name;
+      nameSpan.style.cssText = 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
+      const countSpan = document.createElement('span');
+      countSpan.className = 'pair-count';
+      countSpan.textContent = sessionCount + ' sess.';
+      div.append(nameSpan, countSpan);
+      div.addEventListener('click', () => { patientSelectedId = patient.id; renderPatientSidebar(); renderPatientDetail(); });
+      list.appendChild(div);
+    });
+  }
+
+  function renderPatientDetail() {
+    const patient = getSelectedPatient();
+    document.getElementById('patient-empty-state').style.display = patient ? 'none'  : 'block';
+    document.getElementById('patient-detail').style.display      = patient ? 'block' : 'none';
+    if (!patient) return;
+    document.getElementById('patient-name-input').value  = patient.name;
+    document.getElementById('patient-dob').value         = patient.birthDate || '';
+    document.getElementById('patient-notes-field').value = patient.notes || '';
+
+    const patientSessions = sessions
+      .filter(s => s.patientId === patient.id)
+      .sort((a,b) => new Date(b.date) - new Date(a.date));
+
+    document.getElementById('patient-session-count').textContent = patientSessions.length;
+
+    const miniStats = document.getElementById('patient-mini-stats');
+    if (patientSessions.length > 0) {
+      const avgPct = patientSessions.reduce((s,r) => s + r.score/r.totalPairs*100, 0) / patientSessions.length;
+      const allReactions = patientSessions.flatMap(s => (s.responses||[]).map(r => r.timeMs));
+      const avgReaction  = allReactions.length > 0 ? Math.round(allReactions.reduce((a,b)=>a+b,0)/allReactions.length) : null;
+      miniStats.innerHTML =
+        '<span>Score moy. : <strong>' + Math.round(avgPct) + '%</strong></span>' +
+        (avgReaction !== null ? '<span>Réaction moy. : <strong>' + avgReaction + ' ms</strong></span>' : '');
+    } else {
+      miniStats.innerHTML = '';
+    }
+    renderPatientSessionsTable(patientSessions);
+  }
+
+  function renderPatientSessionsTable(patientSessions) {
+    const wrap = document.getElementById('patient-sessions-wrap');
+    if (patientSessions.length === 0) {
+      wrap.innerHTML = '<p style="color:#94a3b8;font-size:0.9rem;margin-top:8px">Aucune session enregistrée pour ce patient.</p>';
+      return;
+    }
+    const table = document.createElement('table');
+    table.innerHTML = '<thead><tr><th>Date</th><th>Exercice</th><th>Score</th><th>Temps</th><th>Réaction moy.</th><th>Notes</th><th></th></tr></thead>';
+    const tbody = document.createElement('tbody');
+    patientSessions.forEach(session => {
+      const pct = Math.round(session.score/session.totalPairs*100);
+      const scoreClass = pct>=80?'good-score':pct<50?'low-score':'';
+      const reaction = avgReactionMs(session);
+      const tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>'+new Date(session.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'})+'</td>'+
+        '<td>'+escapeHtml(session.exerciseName)+'</td>'+
+        '<td><span class="'+scoreClass+'">'+session.score+'/'+session.totalPairs+'</span> <span class="score-pct">('+pct+'%)</span></td>'+
+        '<td>'+formatDuration(session.totalTimeMs)+'</td>'+
+        '<td>'+(reaction !== null ? Math.round(reaction)+' ms' : '–')+'</td>'+
+        '<td></td><td></td>';
+      const notesTd = tr.children[5];
+      notesTd.contentEditable = 'true';
+      notesTd.textContent = session.notes || '';
+      notesTd.style.cssText = 'max-width:160px;min-width:80px;outline:none;color:#475569;font-style:italic;cursor:text;';
+      notesTd.addEventListener('blur',    () => { session.notes = notesTd.textContent.trim(); saveSessions(); });
+      notesTd.addEventListener('keydown', e => { if (e.key==='Enter') { e.preventDefault(); notesTd.blur(); } });
+      const delBtn = document.createElement('button');
+      delBtn.className = 'btn-delete-session'; delBtn.textContent = 'Supprimer';
+      delBtn.addEventListener('click', () => {
+        if (!confirm('Supprimer cette session ?')) return;
+        sessions = sessions.filter(s => s.id !== session.id); saveSessions(); renderPatientDetail();
+      });
+      tr.lastElementChild.appendChild(delBtn);
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    wrap.innerHTML = '';
+    wrap.appendChild(table);
+  }
+
+  document.getElementById('btn-new-patient').addEventListener('click', () => {
+    const p = { id: newId('pat'), name: 'Nouveau patient', birthDate: '', notes: '', createdAt: new Date().toISOString() };
+    patients.push(p); savePatients();
+    patientSelectedId = p.id; renderPatientSidebar(); renderPatientDetail();
+    setTimeout(() => { const i = document.getElementById('patient-name-input'); i.focus(); i.select(); }, 50);
+  });
+
+  document.getElementById('patient-name-input').addEventListener('input', () => {
+    const p = getSelectedPatient(); if (!p) return;
+    p.name = document.getElementById('patient-name-input').value;
+    savePatients(); renderPatientSidebar();
+  });
+
+  document.getElementById('patient-dob').addEventListener('change', () => {
+    const p = getSelectedPatient(); if (!p) return;
+    p.birthDate = document.getElementById('patient-dob').value;
+    savePatients();
+  });
+
+  document.getElementById('patient-notes-field').addEventListener('input', () => {
+    const p = getSelectedPatient(); if (!p) return;
+    p.notes = document.getElementById('patient-notes-field').value;
+    savePatients();
+  });
+
+  document.getElementById('btn-delete-patient').addEventListener('click', () => {
+    const p = getSelectedPatient(); if (!p) return;
+    if (!confirm('Supprimer le patient "' + p.name + '" ?\nLes sessions associées seront conservées.')) return;
+    patients = patients.filter(pt => pt.id !== patientSelectedId);
+    patientSelectedId = patients.length > 0 ? patients[0].id : null;
+    savePatients(); renderPatientSidebar(); renderPatientDetail();
+  });
+
   // ── Export / Import ───────────────────────────────────────────────────────────
   document.getElementById('btn-export').addEventListener('click', () => {
     const blob = new Blob([JSON.stringify(exercises, null, 2)], {type:'application/json'});
@@ -1247,6 +1553,34 @@
         imported.forEach(ex => { if (!existing.has(ex.id)) { exercises.push(ex); added++; } });
         saveExercises(); renderSidebar(); renderExerciseEditor();
         alert(added+' exercice(s) importé(s).');
+      } catch(err) { alert('Fichier invalide : '+err.message); }
+    };
+    reader.readAsText(file); e.target.value='';
+  });
+
+  // ── Export / Import résultats ─────────────────────────────────────────────────
+  document.getElementById('btn-export-results').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(getFilteredSessions(), null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = Object.assign(document.createElement('a'), {href:url, download:'resultats-cys-'+new Date().toISOString().slice(0,10)+'.json'});
+    a.click(); URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('btn-import-results').addEventListener('click', () => document.getElementById('import-results-input').click());
+
+  document.getElementById('import-results-input').addEventListener('change', e => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = evt => {
+      try {
+        const imported = JSON.parse(evt.target.result);
+        if (!Array.isArray(imported)) throw new Error('Format invalide');
+        if (!confirm('Importer '+imported.length+' session(s) et les ajouter aux existantes ?')) return;
+        const existing = new Set(sessions.map(s=>s.id));
+        let added = 0;
+        imported.forEach(s => { if (!existing.has(s.id)) { sessions.push(s); added++; } });
+        saveSessions(); renderResults();
+        alert(added+' session(s) importée(s).');
       } catch(err) { alert('Fichier invalide : '+err.message); }
     };
     reader.readAsText(file); e.target.value='';
@@ -1406,6 +1740,7 @@
   });
 
   // ── Init ──────────────────────────────────────────────────────────────────────
+  migratePatients();
   initSetup();
 </script>
 </body>

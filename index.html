@@ -713,6 +713,7 @@
       <div class="sequence-display" id="sequence-display"></div>
       <div class="sequence-question" id="sequence-question" style="display:none"></div>
       <div class="sequence-choices" id="sequence-choices" style="display:none"></div>
+      <button id="seq-show-again-btn" style="display:none;padding:6px 14px;border:1.5px solid #cbd5e1;border-radius:8px;background:white;color:#64748b;font-size:0.82rem;cursor:pointer;font-family:inherit;transition:all 0.15s" title="Afficher à nouveau les items">👁 Revoir</button>
     </div>
     <div class="keyboard-hint" id="keyboard-hint">← Flèche gauche &nbsp;|&nbsp; Flèche droite →</div>
   </div>
@@ -965,20 +966,13 @@
         <div id="seq-items-row" style="display:flex; gap:8px; margin-bottom:4px; flex-wrap:wrap"></div>
         <div style="font-size:0.76rem;color:#94a3b8;margin-top:4px">Lettres, chiffres, mots… Un item par case. Mettre 1 item pour afficher un texte entier.</div>
       </div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px">
-        <div class="field-row" id="seq-question-pos-row">
-          <label>Position de la question</label>
-          <select id="seq-question-pos"></select>
-        </div>
-        <div class="field-row">
-          <label>Texte de la question <span style="font-size:0.72rem;color:#94a3b8">(vide = auto)</span></label>
-          <input type="text" id="seq-question-text" placeholder="ex. Quel mot avez-vous vu ?" style="width:100%;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.9rem;outline:none;font-family:inherit;color:#0f172a;transition:border-color .15s">
-        </div>
+      <div class="field-row" style="margin-bottom:16px">
+        <label>Texte de la question</label>
+        <input type="text" id="seq-question-text" placeholder="ex. Quel mot avez-vous vu ?" style="width:100%;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.9rem;outline:none;font-family:inherit;color:#0f172a;transition:border-color .15s">
       </div>
       <div style="margin-bottom:16px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <div style="margin-bottom:8px">
           <label style="font-size:0.78rem;color:#64748b;font-weight:500">Réponses proposées <span style="color:#16a34a;font-size:0.72rem">(1ère = correcte)</span></label>
-          <button type="button" id="seq-generate-btn" style="padding:4px 10px;font-size:0.78rem;border:1.5px solid #cbd5e1;border-radius:6px;background:white;color:#475569;cursor:pointer;font-family:inherit">Auto-générer</button>
         </div>
         <div id="seq-choices-row" style="display:flex; gap:8px; flex-wrap:wrap"></div>
       </div>
@@ -1356,6 +1350,7 @@
     displayEl.style.display  = 'flex';
     questionEl.style.display = 'none';
     choicesEl.style.display  = 'none';
+    document.getElementById('seq-show-again-btn').style.display = 'none';
 
     // Animate timer bar from 100% to 0%
     timerFill.style.transition = 'none';
@@ -1373,12 +1368,17 @@
     const choicesEl  = document.getElementById('sequence-choices');
 
     displayEl.style.display = 'none';
+    const showAgainBtn = document.getElementById('seq-show-again-btn');
+    showAgainBtn.style.display = '';
+    showAgainBtn.textContent = '👁 Revoir';
+    showAgainBtn.onclick = () => {
+      const visible = displayEl.style.display !== 'none';
+      displayEl.style.display = visible ? 'none' : 'flex';
+      showAgainBtn.textContent = visible ? '👁 Revoir' : '🙈 Masquer';
+    };
 
-    const posIdx = (pair.questionPosition || 1) - 1;
     const correctAnswer = (pair.choices || [])[0] || '';
-    const itemForType = (pair.items || [])[posIdx] || correctAnswer;
-    const autoQuestion = buildSequenceQuestion(posIdx, getCharCategory(itemForType));
-    questionEl.textContent = pair.questionText || autoQuestion;
+    questionEl.textContent = pair.questionText || '';
     questionEl.style.display = 'block';
 
     const shuffledChoices = shuffleArray([...(pair.choices || [])]);
@@ -1395,29 +1395,11 @@
     pairStartTime = Date.now();
   }
 
-  function buildSequenceQuestion(posIdx, category) {
-    const ordinalsMasc = ['1er', '2ème', '3ème', '4ème', '5ème'];
-    const ordinalsFem  = ['1ère', '2ème', '3ème', '4ème', '5ème'];
-    if (category === 'letter') {
-      return 'Quelle était la ' + (ordinalsFem[posIdx] || (posIdx+1)+'ème') + ' lettre ?';
-    } else if (category === 'digit') {
-      return 'Quel était le ' + (ordinalsMasc[posIdx] || (posIdx+1)+'ème') + ' chiffre ?';
-    }
-    return 'Quel était le ' + (ordinalsMasc[posIdx] || (posIdx+1)+'ème') + ' symbole ?';
-  }
-
-  function getCharCategory(c) {
-    if (!c) return 'symbol';
-    if (/^[0-9]$/.test(c)) return 'digit';
-    if (/^[a-zA-Z]$/.test(c)) return 'letter';
-    return 'symbol';
-  }
-
   function handleSequenceResponse(chosen, correctAnswer, pair) {
     if (isWaiting) return;
     isWaiting = true;
     const isCorrect = chosen === correctAnswer;
-    responses.push({ pairId: pair.id, type: 'sequence', items: pair.items, questionPosition: pair.questionPosition, chosen, isCorrect, correctAnswer, timeMs: Date.now() - pairStartTime });
+    responses.push({ pairId: pair.id, type: 'sequence', items: pair.items, chosen, isCorrect, correctAnswer, timeMs: Date.now() - pairStartTime });
     const choicesEl = document.getElementById('sequence-choices');
     Array.from(choicesEl.querySelectorAll('.sequence-choice-btn')).forEach(btn => {
       btn.disabled = true;
@@ -2082,7 +2064,6 @@
       pair.type             = 'sequence';
       pair.items            = seqData.items;
       pair.displayDuration  = seqData.displayDuration;
-      pair.questionPosition = seqData.questionPosition;
       pair.questionText     = seqData.questionText;
       pair.choices          = seqData.choices;
       delete pair.left; delete pair.right; delete pair.correct;
@@ -2127,29 +2108,11 @@
         ? 'flex:1;min-width:200px;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:1rem;font-family:inherit;outline:none;color:#0f172a'
         : 'width:80px;padding:8px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:1rem;text-align:center;font-family:Courier New,monospace;font-weight:700;outline:none;color:#0f172a';
       input.value = existing[i] || '';
-      input.addEventListener('input', () => { refreshSequenceQuestionPos(); refreshSequencePreview(); });
+      input.addEventListener('input', refreshSequencePreview);
       input.addEventListener('focus', () => { input.style.borderColor = '#3b82f6'; });
       input.addEventListener('blur',  () => { input.style.borderColor = '#e2e8f0'; });
       row.appendChild(input);
     }
-    // Hide position selector when only 1 item (position is always 1)
-    document.getElementById('seq-question-pos-row').style.display = isSingle ? 'none' : '';
-    refreshSequenceQuestionPos();
-    refreshSequencePreview();
-  }
-
-  function refreshSequenceQuestionPos() {
-    const numItems = parseInt(document.getElementById('seq-num-items').value, 10) || 4;
-    const select = document.getElementById('seq-question-pos');
-    const currentVal = select.value;
-    select.innerHTML = '';
-    const ordinals = ['1er item', '2ème item', '3ème item', '4ème item', '5ème item'];
-    for (let i = 1; i <= numItems; i++) {
-      const opt = document.createElement('option');
-      opt.value = i; opt.textContent = ordinals[i-1] || i + 'ème item';
-      select.appendChild(opt);
-    }
-    if (currentVal && parseInt(currentVal) <= numItems) select.value = currentVal;
     refreshSequencePreview();
   }
 
@@ -2177,57 +2140,22 @@
     refreshSequencePreview();
   }
 
-  function autoGenerateSequenceChoices() {
-    const items = getSequenceItemValues();
-    const posIdx = parseInt(document.getElementById('seq-question-pos').value, 10) - 1;
-    const numChoices = parseInt(document.getElementById('seq-num-choices').value, 10) || 4;
-    const correctAnswer = items[posIdx] || '';
-    const choices = [correctAnswer];
-    // Fill from other sequence items first
-    for (const item of items) {
-      if (choices.length >= numChoices) break;
-      if (item && !choices.includes(item)) choices.push(item);
-    }
-    // Fill remaining with random chars from same category
-    if (choices.length < numChoices) {
-      const pool = getCharPool(getCharCategory(correctAnswer)).filter(c => !choices.includes(c) && !items.includes(c));
-      for (const c of shuffleArray(pool)) {
-        if (choices.length >= numChoices) break;
-        choices.push(c);
-      }
-    }
-    const inputs = document.getElementById('seq-choices-row').querySelectorAll('input');
-    choices.forEach((v, i) => { if (inputs[i]) inputs[i].value = v; });
-    refreshSequencePreview();
-  }
-
-  function getCharPool(category) {
-    if (category === 'digit')  return '0123456789'.split('');
-    if (category === 'letter') return 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-    return '!@#$%&*?+=_-~'.split('');
-  }
-
   function refreshSequencePreview() {
     const items = getSequenceItemValues();
     const isSingle = items.length === 1;
-    const posIdx = isSingle ? 0 : (parseInt(document.getElementById('seq-question-pos').value, 10) - 1);
     const choices = Array.from(document.getElementById('seq-choices-row').querySelectorAll('input')).map(i => i.value);
     const customQuestion = document.getElementById('seq-question-text').value.trim();
     const previewItems = document.getElementById('seq-preview-items');
     previewItems.innerHTML = '';
-    items.forEach((item, i) => {
+    items.forEach(item => {
       const box = document.createElement('div');
-      if (isSingle) {
-        box.style.cssText = 'padding:8px 16px;border:2px solid #3b82f6;border-radius:8px;font-size:1rem;background:#eff6ff;color:#0f172a;max-width:280px;word-break:break-word';
-      } else {
-        box.style.cssText = 'min-width:32px;padding:6px 10px;border:2px solid ' + (i===posIdx ? '#3b82f6' : '#e2e8f0') + ';border-radius:8px;font-size:1rem;font-weight:700;font-family:Courier New,monospace;background:' + (i===posIdx ? '#eff6ff' : 'white') + ';color:#0f172a;text-align:center';
-      }
+      box.style.cssText = isSingle
+        ? 'padding:8px 16px;border:2px solid #3b82f6;border-radius:8px;font-size:1rem;background:#eff6ff;color:#0f172a;max-width:280px;word-break:break-word'
+        : 'min-width:32px;padding:6px 10px;border:2px solid #e2e8f0;border-radius:8px;font-size:1rem;font-weight:700;font-family:Courier New,monospace;background:white;color:#0f172a;text-align:center';
       box.textContent = item || '?';
       previewItems.appendChild(box);
     });
-    const correctItem = items[posIdx] || '';
-    const autoQuestion = buildSequenceQuestion(posIdx, getCharCategory(correctItem));
-    document.getElementById('seq-preview-question').textContent = customQuestion || (posIdx >= 0 && posIdx < items.length ? autoQuestion : '');
+    document.getElementById('seq-preview-question').textContent = customQuestion;
     const previewChoices = document.getElementById('seq-preview-choices');
     previewChoices.innerHTML = '';
     choices.forEach((c, i) => {
@@ -2246,8 +2174,6 @@
     refreshSequenceItemInputs();
     const itemInputs = document.getElementById('seq-items-row').querySelectorAll('input');
     (pair.items || []).forEach((v, i) => { if (itemInputs[i]) itemInputs[i].value = v; });
-    refreshSequenceQuestionPos();
-    if ((pair.items || []).length > 1) document.getElementById('seq-question-pos').value = String(pair.questionPosition || 1);
     document.getElementById('seq-question-text').value = pair.questionText || '';
     refreshSequenceChoicesRow();
     const choiceInputs = document.getElementById('seq-choices-row').querySelectorAll('input');
@@ -2260,10 +2186,9 @@
     const isSingle = items.length === 1;
     return {
       items,
-      displayDuration:  Math.round((parseFloat(document.getElementById('seq-duration').value) || 1) * 1000),
-      questionPosition: isSingle ? 1 : (parseInt(document.getElementById('seq-question-pos').value, 10) || 1),
-      questionText:     document.getElementById('seq-question-text').value.trim(),
-      choices:          Array.from(document.getElementById('seq-choices-row').querySelectorAll('input')).map(i => i.value.trim()),
+      displayDuration: Math.round((parseFloat(document.getElementById('seq-duration').value) || 1) * 1000),
+      questionText:    document.getElementById('seq-question-text').value.trim(),
+      choices:         Array.from(document.getElementById('seq-choices-row').querySelectorAll('input')).map(i => i.value.trim()),
     };
   }
 
@@ -2271,9 +2196,7 @@
   document.getElementById('seq-num-items').addEventListener('change', () => { refreshSequenceItemInputs(); refreshSequenceChoicesRow(); });
   document.getElementById('seq-num-choices').addEventListener('input',  refreshSequenceChoicesRow);
   document.getElementById('seq-num-choices').addEventListener('change', refreshSequenceChoicesRow);
-  document.getElementById('seq-question-pos').addEventListener('change', refreshSequencePreview);
   document.getElementById('seq-question-text').addEventListener('input', refreshSequencePreview);
-  document.getElementById('seq-generate-btn').addEventListener('click', autoGenerateSequenceChoices);
 
   document.getElementById('pair-modal').addEventListener('click', e => { if (e.target===document.getElementById('pair-modal')) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key==='Escape' && document.getElementById('pair-modal').style.display!=='none') closeModal(); });

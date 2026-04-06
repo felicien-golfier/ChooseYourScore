@@ -4,19 +4,57 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ChooseYourScore</title>
+  <script src="chart.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
       background: #f0f4f8;
-      min-height: 100vh;
       display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── Topbar ─────────────────────────────────────────────────────────────── */
+    #topbar {
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+      height: 49px;
+    }
+    #topbar .logo { font-weight: 700; font-size: 1rem; color: #0f172a; margin-right: 12px; }
+    .nav-btn {
+      padding: 7px 14px; border: none; border-radius: 7px;
+      background: transparent; color: #475569; font-size: 0.88rem;
+      font-weight: 500; cursor: pointer; font-family: inherit; transition: background 0.1s;
+    }
+    .nav-btn:hover  { background: #f1f5f9; }
+    .nav-btn.active { background: #eff6ff; color: #1d4ed8; }
+
+    /* ── Views ──────────────────────────────────────────────────────────────── */
+    .view { display: none; flex: 1; overflow-y: auto; }
+
+    /* Centered card views (setup, instruction, exercise, session-result) */
+    .view.centered {
       align-items: flex-start;
       justify-content: center;
       padding: 40px 16px;
     }
+    .view.centered.active { display: flex; }
 
+    /* Editor view */
+    #view-editor.active { display: flex; overflow: hidden; }
+
+    /* Results view */
+    #view-results.active { display: block; }
+
+    /* ── Screen cards ───────────────────────────────────────────────────────── */
     .screen {
       background: white;
       border-radius: 20px;
@@ -24,36 +62,26 @@
       width: 100%;
       max-width: 920px;
       box-shadow: 0 2px 20px rgba(0,0,0,0.09);
-      animation: fadeIn 0.25s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: none; }
+      position: relative;
     }
 
     h1 { font-size: 2rem; color: #0f172a; }
     h2 { font-size: 1.6rem; color: #0f172a; margin-bottom: 24px; }
     .subtitle { color: #64748b; font-size: 0.95rem; margin-top: 4px; margin-bottom: 40px; }
 
-    .top-nav { display: flex; gap: 20px; margin-bottom: 36px; }
-    .top-nav a { color: #3b82f6; text-decoration: none; font-size: 0.9rem; font-weight: 500; }
-    .top-nav a:hover { text-decoration: underline; }
-
     .form-group { margin-bottom: 24px; }
     .form-group label { display: block; font-weight: 600; color: #334155; margin-bottom: 8px; font-size: 0.95rem; }
     .form-group select,
-    .form-group input[type="text"] {
-      width: 100%;
-      padding: 12px 16px;
-      border: 2px solid #e2e8f0;
-      border-radius: 10px;
-      font-size: 1rem;
-      color: #0f172a;
-      outline: none;
-      transition: border-color 0.15s;
+    .form-group input[type="text"],
+    .form-group input[type="date"] {
+      width: 100%; padding: 12px 16px;
+      border: 2px solid #e2e8f0; border-radius: 10px;
+      font-size: 1rem; color: #0f172a; outline: none;
+      transition: border-color 0.15s; font-family: inherit;
     }
     .form-group select:focus,
-    .form-group input[type="text"]:focus { border-color: #3b82f6; }
+    .form-group input[type="text"]:focus,
+    .form-group input[type="date"]:focus { border-color: #3b82f6; }
 
     .checkbox-row { display: flex; align-items: center; gap: 10px; cursor: pointer; }
     .checkbox-row input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
@@ -61,13 +89,11 @@
 
     .btn {
       display: inline-flex; align-items: center; justify-content: center;
-      padding: 13px 28px;
-      border: none; border-radius: 10px;
-      font-size: 1rem; font-weight: 600;
-      cursor: pointer; transition: all 0.15s;
-      text-decoration: none;
+      padding: 13px 28px; border: none; border-radius: 10px;
+      font-size: 1rem; font-weight: 600; cursor: pointer;
+      transition: all 0.15s; text-decoration: none; font-family: inherit;
     }
-    .btn-primary { background: #3b82f6; color: white; }
+    .btn-primary   { background: #3b82f6; color: white; }
     .btn-primary:hover { background: #2563eb; transform: translateY(-1px); }
     .btn-secondary { background: #f1f5f9; color: #334155; }
     .btn-secondary:hover { background: #e2e8f0; }
@@ -78,299 +104,757 @@
       border-radius: 10px; padding: 18px 22px;
       color: #713f12; margin-bottom: 24px;
     }
-    .alert-box a { color: #1d4ed8; }
 
-    /* Instruction screen */
+    /* ── Instruction ────────────────────────────────────────────────────────── */
     .instruction-box {
       background: #eff6ff; border: 2px solid #93c5fd;
       border-radius: 14px; padding: 28px 36px;
       font-size: 1.3rem; line-height: 1.7;
-      color: #1e3a5f; text-align: center;
-      margin-bottom: 36px;
+      color: #1e3a5f; text-align: center; margin-bottom: 36px;
     }
 
-    /* Exercise screen */
+    /* ── Exercise ───────────────────────────────────────────────────────────── */
     .progress-section { margin-bottom: 40px; }
     .progress-bar { height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
     .progress-fill { height: 100%; background: #3b82f6; border-radius: 4px; transition: width 0.35s ease; }
     .progress-label { text-align: right; font-size: 0.85rem; color: #94a3b8; font-weight: 500; }
 
-    /* Choice pairs */
-    .pair-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-    }
+    .pair-container { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
 
     .item-btn {
-      min-height: 200px;
-      border: 3px solid #e2e8f0;
-      border-radius: 18px;
-      background: white;
-      cursor: pointer;
-      transition: all 0.15s;
+      min-height: 200px; border: 3px solid #e2e8f0; border-radius: 18px;
+      background: white; cursor: pointer; transition: all 0.15s;
       display: flex; align-items: center; justify-content: center;
-      padding: 28px;
-      text-align: center;
-      line-height: 1.3;
-      word-break: break-word;
+      padding: 28px; text-align: center; line-height: 1.3; word-break: break-word;
+      font-family: inherit;
     }
     .item-btn:hover:not(:disabled) {
-      border-color: #3b82f6;
-      background: #eff6ff;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(59,130,246,0.15);
+      border-color: #3b82f6; background: #eff6ff;
+      transform: translateY(-2px); box-shadow: 0 4px 12px rgba(59,130,246,0.15);
     }
     .item-btn:disabled { cursor: default; }
     .item-btn.correct   { border-color: #22c55e; background: #f0fdf4; }
     .item-btn.incorrect { border-color: #ef4444; background: #fef2f2; }
     .item-btn.missed    { border-color: #22c55e; background: #f0fdf4; opacity: 0.6; }
+    .keyboard-hint { text-align: center; font-size: 0.8rem; color: #94a3b8; margin-top: 20px; }
 
-    /* Arrow pairs */
-    .arrow-container { display: none; }
-
-    .arrow-card {
-      width: 100%;
-      min-height: 260px;
-      border-radius: 18px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 120px;
-      line-height: 1;
-      user-select: none;
-    }
-    .arrow-card.bg-blue   { background: #3b82f6; color: white; }
-    .arrow-card.bg-yellow { background: #fbbf24; color: #1a1a1a; }
-
-    .arrow-keys {
-      display: flex; flex-direction: column; align-items: center;
-      gap: 8px; margin-top: 24px;
-    }
-    .arrow-keys-row { display: flex; gap: 8px; }
-
-    .arrow-key-btn {
-      width: 64px; height: 64px;
-      border: 2px solid #e2e8f0; border-radius: 12px;
-      background: white; font-size: 1.8rem;
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
-      transition: all 0.15s; font-family: inherit;
-    }
-    .arrow-key-btn:hover:not(:disabled) {
-      border-color: #3b82f6; background: #eff6ff;
-    }
-    .arrow-key-btn:disabled { cursor: default; }
-    .arrow-key-btn.correct   { border-color: #22c55e; background: #f0fdf4; }
-    .arrow-key-btn.incorrect { border-color: #ef4444; background: #fef2f2; }
-    .arrow-key-btn.missed    { border-color: #22c55e; background: #f0fdf4; opacity: 0.6; }
-
-    .keyboard-hint {
-      text-align: center; font-size: 0.8rem;
-      color: #94a3b8; margin-top: 20px;
-    }
-
-    /* Results screen */
+    /* ── Session result ─────────────────────────────────────────────────────── */
     .results-meta { color: #64748b; font-size: 1rem; margin-bottom: 28px; }
-
-    .results-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 32px;
-    }
-    .result-card {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 14px;
-      padding: 22px 26px;
-    }
-    .result-card .label {
-      font-size: 0.8rem; color: #94a3b8; margin-bottom: 6px;
-      text-transform: uppercase; letter-spacing: 0.05em;
-    }
+    .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+    .result-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 22px 26px; }
+    .result-card .label { font-size: 0.8rem; color: #94a3b8; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
     .result-card .value { font-size: 2rem; font-weight: 700; color: #0f172a; }
     .result-card .value.good { color: #16a34a; }
     .result-card .value.warn { color: #dc2626; }
 
-    /* ── Mobile ────────────────────────────────────────────────────────────────── */
-    @media (max-width: 640px) {
-      body { padding: 12px 8px; }
-
-      .screen { padding: 24px 16px; border-radius: 14px; }
-
-      h1 { font-size: 1.5rem; }
-      h2 { font-size: 1.3rem; margin-bottom: 16px; }
-      .subtitle { margin-bottom: 24px; }
-
-      .top-nav { flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
-
-      /* Choice pairs: stack vertically */
-      .pair-container { grid-template-columns: 1fr; gap: 14px; }
-      .item-btn { min-height: 110px; padding: 16px; font-size: inherit; }
-
-      /* Arrow card */
-      .arrow-card { min-height: 200px; font-size: 80px; }
-
-      /* Arrow keys: bigger touch targets */
-      .arrow-key-btn { width: 72px; height: 72px; font-size: 2.2rem; }
-
-      /* Results */
-      .results-grid { grid-template-columns: 1fr; gap: 12px; }
-      .result-card { padding: 16px 18px; }
-      .result-card .value { font-size: 1.6rem; }
-
-      /* Buttons */
-      .btn-group { flex-direction: column; }
-      .btn-group .btn { justify-content: center; }
-      .btn { padding: 14px 20px; }
-
-      /* Instruction */
-      .instruction-box { padding: 20px; font-size: 1.1rem; }
+    /* ── Editor ─────────────────────────────────────────────────────────────── */
+    .sidebar {
+      width: 260px; background: white; border-right: 1px solid #e2e8f0;
+      display: flex; flex-direction: column; flex-shrink: 0;
     }
+    .sidebar-header {
+      padding: 18px 16px 12px; display: flex; align-items: center;
+      justify-content: space-between; border-bottom: 1px solid #e2e8f0;
+    }
+    .sidebar-header h3 { font-size: 0.95rem; color: #334155; font-weight: 600; }
+    .btn-icon {
+      width: 30px; height: 30px; border: none; border-radius: 7px;
+      background: #3b82f6; color: white; font-size: 1.3rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+    }
+    .btn-icon:hover { background: #2563eb; }
+
+    .exercise-list { flex: 1; overflow-y: auto; padding: 8px; }
+    .exercise-item {
+      padding: 10px 12px; border-radius: 8px; cursor: pointer;
+      color: #334155; font-size: 0.92rem; transition: background 0.1s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .exercise-item:hover  { background: #f1f5f9; }
+    .exercise-item.active { background: #eff6ff; color: #1d4ed8; font-weight: 600; }
+    .exercise-item .pair-count {
+      margin-left: auto; font-size: 0.75rem; color: #94a3b8;
+      background: #f1f5f9; border-radius: 10px; padding: 1px 8px;
+    }
+    .exercise-item.active .pair-count { background: #dbeafe; color: #3b82f6; }
+
+    .sidebar-footer { padding: 12px 16px; border-top: 1px solid #e2e8f0; }
+    .import-export { display: flex; gap: 8px; }
+    .import-export button {
+      flex: 1; padding: 8px 6px; font-size: 0.78rem;
+      border: 1px solid #e2e8f0; border-radius: 6px;
+      background: white; color: #475569; cursor: pointer;
+      font-family: inherit; transition: background 0.1s;
+    }
+    .import-export button:hover { background: #f1f5f9; }
+
+    .editor-main { flex: 1; overflow-y: auto; padding: 32px; }
+
+    .empty-state { text-align: center; color: #94a3b8; padding: 80px 40px; }
+    .empty-state p { font-size: 1.1rem; margin-bottom: 6px; }
+    .empty-state small { font-size: 0.88rem; }
+
+    #exercise-editor { max-width: 760px; }
+
+    .editor-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+    .editor-header input {
+      flex: 1; font-size: 1.35rem; font-weight: 700; color: #0f172a;
+      border: none; border-bottom: 2px solid #e2e8f0;
+      padding: 6px 2px; outline: none; background: transparent;
+      transition: border-color 0.15s; font-family: inherit;
+    }
+    .editor-header input:focus { border-color: #3b82f6; }
+    .btn-danger {
+      padding: 8px 16px; border: 1px solid #fca5a5; border-radius: 8px;
+      background: white; color: #dc2626; font-size: 0.82rem; cursor: pointer;
+      font-weight: 500; white-space: nowrap; font-family: inherit; transition: background 0.1s;
+    }
+    .btn-danger:hover { background: #fef2f2; }
+
+    .editor-section-label {
+      font-size: 0.88rem; font-weight: 600; color: #334155;
+      text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px;
+    }
+    .form-group textarea {
+      width: 100%; padding: 12px 14px; border: 2px solid #e2e8f0; border-radius: 10px;
+      font-size: 1rem; resize: vertical; outline: none;
+      font-family: inherit; color: #0f172a; transition: border-color 0.15s;
+    }
+    .form-group textarea:focus { border-color: #3b82f6; }
+
+    .pairs-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .badge { background: #f1f5f9; color: #64748b; border-radius: 12px; padding: 2px 10px; font-size: 0.78rem; font-weight: 500; }
+
+    .pairs-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+    .pair-row {
+      background: white; border: 1.5px solid #e2e8f0; border-radius: 12px;
+      padding: 12px 14px; display: flex; align-items: center; gap: 12px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .pair-row:hover { border-color: #93c5fd; box-shadow: 0 1px 6px rgba(59,130,246,0.08); }
+
+    .pair-preview { flex: 1; display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .pair-item-preview {
+      flex: 1; padding: 8px 12px; background: #f8fafc; border-radius: 8px;
+      text-align: center; min-height: 48px;
+      display: flex; align-items: center; justify-content: center;
+      word-break: break-word; overflow: hidden; min-width: 0;
+    }
+    .pair-item-preview.is-correct { background: #f0fdf4; border: 1.5px solid #86efac; }
+    .pair-vs { color: #cbd5e1; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+
+    .pair-actions { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+    .pair-action-btn {
+      width: 28px; height: 28px; border: 1px solid #e2e8f0; border-radius: 6px;
+      background: white; color: #64748b; font-size: 0.82rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.1s; font-family: inherit;
+    }
+    .pair-action-btn:hover  { background: #f1f5f9; color: #0f172a; }
+    .pair-action-btn:disabled { opacity: 0.35; cursor: default; }
+    .pair-action-btn.edit:hover   { background: #eff6ff; color: #2563eb; border-color: #93c5fd; }
+    .pair-action-btn.delete:hover { background: #fef2f2; color: #dc2626; border-color: #fca5a5; }
+
+    .btn-add-pair {
+      width: 100%; padding: 13px; border: 2px dashed #cbd5e1; border-radius: 12px;
+      background: transparent; color: #64748b; font-size: 0.95rem;
+      cursor: pointer; transition: all 0.15s; font-family: inherit;
+    }
+    .btn-add-pair:hover { border-color: #3b82f6; color: #3b82f6; background: #f8faff; }
+
+    /* ── Modal ──────────────────────────────────────────────────────────────── */
+    #pair-modal {
+      position: fixed; inset: 0; background: rgba(15,23,42,0.5);
+      display: flex; align-items: center; justify-content: center; z-index: 100; padding: 24px;
+    }
+    .modal {
+      background: white; border-radius: 20px; padding: 32px;
+      width: 100%; max-width: 840px; max-height: 92vh; overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+    .modal h3 { font-size: 1.15rem; color: #0f172a; margin-bottom: 20px; }
+
+    .modal-preview {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px;
+      padding: 20px; margin-bottom: 28px;
+    }
+    .preview-box {
+      background: white; border: 2px solid #e2e8f0; border-radius: 12px;
+      min-height: 100px; display: flex; align-items: center; justify-content: center;
+      padding: 16px; text-align: center; word-break: break-word;
+    }
+    .preview-box.correct-side { border-color: #86efac; background: #f0fdf4; }
+
+    .items-edit-grid {
+      display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px;
+      align-items: start; margin-bottom: 28px;
+    }
+    .item-edit-panel h4 {
+      font-size: 0.88rem; font-weight: 600; color: #334155;
+      margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .field-row { margin-bottom: 12px; }
+    .field-row label { display: block; font-size: 0.78rem; color: #64748b; margin-bottom: 4px; font-weight: 500; }
+    .field-row input[type="text"],
+    .field-row select {
+      width: 100%; padding: 8px 10px; border: 1.5px solid #e2e8f0; border-radius: 8px;
+      font-size: 0.9rem; outline: none; font-family: inherit; color: #0f172a; transition: border-color 0.15s;
+    }
+    .field-row input[type="text"]:focus,
+    .field-row select:focus { border-color: #3b82f6; }
+    .field-row input[type="color"] {
+      width: 100%; height: 38px; border: 1.5px solid #e2e8f0;
+      border-radius: 8px; padding: 3px 5px; cursor: pointer;
+    }
+    .correct-selector {
+      display: flex; flex-direction: column; align-items: center; padding-top: 32px; gap: 14px;
+    }
+    .correct-selector .cs-label {
+      font-size: 0.78rem; color: #64748b; font-weight: 600;
+      text-align: center; text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .radio-option {
+      display: flex; align-items: center; gap: 6px; cursor: pointer;
+      font-size: 0.9rem; color: #334155; padding: 8px 14px; border-radius: 8px; transition: background 0.1s;
+    }
+    .radio-option:hover { background: #f1f5f9; }
+    .radio-option input { width: 16px; height: 16px; cursor: pointer; }
+
+    .modal-actions {
+      display: flex; gap: 12px; justify-content: flex-end;
+      border-top: 1px solid #e2e8f0; padding-top: 20px;
+    }
+    .btn-save {
+      padding: 11px 26px; background: #3b82f6; color: white; border: none;
+      border-radius: 8px; font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; transition: background 0.15s; font-family: inherit;
+    }
+    .btn-save:hover { background: #2563eb; }
+    .btn-cancel {
+      padding: 11px 26px; background: #f1f5f9; color: #334155; border: none;
+      border-radius: 8px; font-size: 0.95rem; font-weight: 500;
+      cursor: pointer; transition: background 0.15s; font-family: inherit;
+    }
+    .btn-cancel:hover { background: #e2e8f0; }
+
+    .btn-upload-img {
+      width: 100%; padding: 6px 10px; border: 1.5px dashed #cbd5e1; border-radius: 8px;
+      background: #f8fafc; color: #64748b; font-size: 0.82rem; cursor: pointer;
+      font-family: inherit; transition: all 0.1s;
+    }
+    .btn-upload-img:hover { border-color: #3b82f6; color: #3b82f6; background: #f0f9ff; }
+    .img-thumb-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+    .img-thumb-row img { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; border: 1px solid #e2e8f0; flex-shrink: 0; }
+    .btn-remove-img {
+      padding: 3px 8px; border: 1px solid #fca5a5; border-radius: 5px;
+      background: white; color: #ef4444; font-size: 0.75rem; cursor: pointer;
+      font-family: inherit; transition: background 0.1s;
+    }
+    .btn-remove-img:hover { background: #fef2f2; }
+
+    /* ── Audio upload ───────────────────────────────────────────────────────── */
+    .btn-upload-audio {
+      width: 100%; padding: 6px 10px; border: 1.5px dashed #cbd5e1; border-radius: 8px;
+      background: #f8fafc; color: #64748b; font-size: 0.82rem; cursor: pointer;
+      font-family: inherit; transition: all 0.1s;
+    }
+    .btn-upload-audio:hover { border-color: #3b82f6; color: #3b82f6; background: #f0f9ff; }
+    .audio-loaded-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 6px 10px; }
+    .audio-loaded-row span { font-size: 0.78rem; color: #166534; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .btn-play-audio { padding: 3px 8px; border: 1px solid #86efac; border-radius: 5px; background: white; color: #166534; font-size: 0.75rem; cursor: pointer; font-family: inherit; transition: background 0.1s; flex-shrink: 0; }
+    .btn-play-audio:hover { background: #dcfce7; }
+
+    /* ── Fullscreen button ──────────────────────────────────────────────────── */
+    .btn-fullscreen {
+      position: absolute; top: 16px; right: 16px;
+      width: 34px; height: 34px; border: 1px solid #e2e8f0; border-radius: 8px;
+      background: white; color: #64748b; font-size: 1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; transition: all 0.1s;
+    }
+    .btn-fullscreen:hover { background: #f1f5f9; color: #0f172a; }
+
+    /* ── Fullscreen exercise layout ─────────────────────────────────────────── */
+    body.is-fullscreen #topbar { display: none; }
+    body.is-fullscreen #view-exercise {
+      padding: 0; justify-content: stretch; align-items: stretch;
+    }
+    body.is-fullscreen #view-exercise .screen {
+      max-width: none; border-radius: 0; box-shadow: none;
+      padding: 40px 56px; flex: 1;
+      display: flex; flex-direction: column; height: 100vh;
+    }
+    body.is-fullscreen .progress-section { margin-bottom: 32px; flex-shrink: 0; }
+    body.is-fullscreen .progress-bar { height: 12px; }
+    body.is-fullscreen .pair-container {
+      flex: 1; gap: 40px;
+    }
+    body.is-fullscreen .item-btn {
+      min-height: 0; height: 100%;
+      border-radius: 28px; padding: 40px;
+    }
+    body.is-fullscreen .keyboard-hint { flex-shrink: 0; font-size: 1rem; margin-top: 24px; }
+
+    /* ── Session notes ──────────────────────────────────────────────────────── */
+    .notes-section { margin-top: 24px; }
+    .notes-section label { display: block; font-weight: 600; color: #334155; margin-bottom: 8px; font-size: 0.95rem; }
+    .notes-section textarea {
+      width: 100%; padding: 12px 14px; border: 2px solid #e2e8f0; border-radius: 10px;
+      font-size: 0.95rem; resize: vertical; outline: none; font-family: inherit;
+      color: #0f172a; transition: border-color 0.15s; min-height: 80px;
+    }
+    .notes-section textarea:focus { border-color: #3b82f6; }
+
+    /* ── Results page ───────────────────────────────────────────────────────── */
+    .results-page { max-width: 1100px; margin: 0 auto; padding: 32px; }
+
+    .filters {
+      display: flex; gap: 16px; align-items: flex-end;
+      background: white; border-radius: 14px; padding: 22px 24px;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.06); margin-bottom: 28px; flex-wrap: wrap;
+    }
+    .filter-group { display: flex; flex-direction: column; gap: 6px; min-width: 220px; flex: 1; }
+    .filter-group label { font-size: 0.8rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+    .filter-group select {
+      padding: 10px 14px; border: 2px solid #e2e8f0; border-radius: 9px;
+      font-size: 0.95rem; color: #0f172a; outline: none; font-family: inherit; transition: border-color 0.15s;
+    }
+    .filter-group select:focus { border-color: #3b82f6; }
+    .btn-clear {
+      padding: 10px 18px; border: 1px solid #e2e8f0; border-radius: 9px;
+      background: white; color: #64748b; font-size: 0.88rem; cursor: pointer;
+      font-family: inherit; transition: all 0.1s; white-space: nowrap; align-self: flex-end;
+    }
+    .btn-clear:hover { background: #f1f5f9; }
+
+    .r-empty-state {
+      text-align: center; color: #94a3b8;
+      background: white; border-radius: 14px; padding: 60px 40px;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+    }
+    .r-empty-state p { font-size: 1.1rem; margin-bottom: 6px; }
+    .r-empty-state small { font-size: 0.88rem; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; margin-bottom: 28px; }
+    .stat-card { background: white; border: 1px solid #e2e8f0; border-radius: 14px; padding: 20px 22px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+    .stat-card .label { font-size: 0.75rem; color: #94a3b8; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-card .value { font-size: 1.7rem; font-weight: 700; color: #0f172a; }
+    .stat-card .value.blue   { color: #3b82f6; }
+    .stat-card .value.green  { color: #16a34a; }
+    .stat-card .value.purple { color: #7c3aed; }
+
+    .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+    .chart-card { background: white; border-radius: 14px; padding: 24px; box-shadow: 0 1px 8px rgba(0,0,0,0.06); }
+    .chart-card h3 { font-size: 0.85rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 16px; }
+    .chart-unavailable { color: #94a3b8; font-size: 0.88rem; text-align: center; padding: 40px 20px; }
+
+    .table-card { background: white; border-radius: 14px; padding: 24px; box-shadow: 0 1px 8px rgba(0,0,0,0.06); overflow-x: auto; }
+    .table-card h3 { font-size: 0.85rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 16px; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { text-align: left; font-size: 0.78rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; padding: 0 14px 10px; border-bottom: 1px solid #f1f5f9; }
+    tbody tr:hover { background: #f8fafc; }
+    tbody td { padding: 12px 14px; font-size: 0.92rem; color: #334155; border-bottom: 1px solid #f1f5f9; }
+    tbody tr:last-child td { border-bottom: none; }
+    .score-pct { color: #94a3b8; font-size: 0.82rem; }
+    .good-score { color: #16a34a; font-weight: 700; }
+    .low-score  { color: #dc2626; font-weight: 700; }
+    /* ── Folders ────────────────────────────────────────────────────────────── */
+    .folder-header {
+      padding: 7px 8px 7px 10px; border-radius: 8px; cursor: pointer;
+      display: flex; align-items: center; gap: 5px;
+      color: #334155; font-size: 0.9rem; font-weight: 600;
+      transition: background 0.1s; user-select: none;
+    }
+    .folder-header:hover { background: #f1f5f9; }
+    .folder-toggle { font-size: 0.72rem; color: #94a3b8; display: inline-block; transition: transform 0.15s; flex-shrink: 0; }
+    .folder-toggle.collapsed { transform: rotate(-90deg); }
+    .folder-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; border-radius: 4px; padding: 1px 3px; }
+    .folder-name[contenteditable="true"] { background: #eff6ff; outline: none; box-shadow: 0 0 0 2px #3b82f6; white-space: nowrap; }
+    .folder-del-btn {
+      opacity: 0; width: 18px; height: 18px; border: none; border-radius: 4px;
+      background: transparent; color: #94a3b8; font-size: 0.72rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0; padding: 0; transition: all 0.1s;
+    }
+    .folder-header:hover .folder-del-btn { opacity: 1; }
+    .folder-del-btn:hover { background: #fef2f2; color: #dc2626; }
+    .exercise-item.in-folder { padding-left: 24px; }
+    .no-folder-label { padding: 5px 12px 3px; font-size: 0.72rem; color: #cbd5e1; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+
+    .btn-dup {
+      padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 8px;
+      background: white; color: #475569; font-size: 0.82rem; cursor: pointer;
+      font-weight: 500; white-space: nowrap; font-family: inherit; transition: background 0.1s;
+    }
+    .btn-dup:hover { background: #f8fafc; }
+    .btn-delete-session {
+      padding: 4px 8px; border: 1px solid #fca5a5; border-radius: 5px;
+      background: white; color: #ef4444; font-size: 0.75rem; cursor: pointer;
+      font-family: inherit; transition: background 0.1s;
+    }
+    .btn-delete-session:hover { background: #fef2f2; }
+    tbody td[contenteditable]:hover { background: #f8fafc; }
+    tbody td[contenteditable]:focus { background: #fffbeb; border-bottom: 2px solid #f59e0b; padding-bottom: 10px; }
   </style>
 </head>
 <body>
 
-<!-- Setup Screen -->
-<div id="screen-setup" class="screen">
-  <div class="top-nav">
-    <a href="editor.html">✏️ Éditeur d'exercices</a>
-    <a href="results.html">📊 Suivi des patients</a>
-  </div>
-  <h1>ChooseYourScore</h1>
-  <p class="subtitle">Outil d'évaluation clinique</p>
-
-  <div id="no-exercises-msg" class="alert-box" style="display:none">
-    Aucun exercice disponible. <a href="editor.html">Créer un exercice dans l'éditeur →</a>
-  </div>
-
-  <div id="setup-form">
-    <div class="form-group">
-      <label for="exercise-select">Exercice</label>
-      <select id="exercise-select"></select>
-    </div>
-    <div class="form-group">
-      <label for="patient-name">Nom du patient</label>
-      <input id="patient-name" type="text" placeholder="ex. Marie Dubois" autocomplete="off">
-    </div>
-    <div class="form-group">
-      <label class="checkbox-row">
-        <input type="checkbox" id="shuffle-pairs">
-        <span>Mélanger l'ordre des paires</span>
-      </label>
-    </div>
-    <button class="btn btn-primary" id="btn-start">Commencer l'exercice →</button>
-  </div>
+<!-- ── Topbar ──────────────────────────────────────────────────────────────── -->
+<div id="topbar">
+  <span class="logo">ChooseYourScore</span>
+  <button class="nav-btn active" id="nav-exercise" onclick="showView('setup')">▶ Exercice</button>
+  <button class="nav-btn"        id="nav-editor"   onclick="showView('editor')">✏️ Éditeur</button>
+  <button class="nav-btn"        id="nav-results"  onclick="showView('results')">📊 Résultats</button>
+  <button class="nav-btn"        id="nav-patients" onclick="showView('patients')">👤 Patients</button>
 </div>
 
-<!-- Instruction Screen -->
-<div id="screen-instruction" class="screen" style="display:none">
-  <h2>Consigne</h2>
-  <div class="instruction-box" id="instruction-text"></div>
-  <button class="btn btn-primary" id="btn-ready">Je suis prêt(e) ✓</button>
-</div>
+<!-- ── Setup view ──────────────────────────────────────────────────────────── -->
+<div id="view-setup" class="view centered active">
+  <div class="screen">
+    <h1>ChooseYourScore</h1>
+    <p class="subtitle">Outil d'évaluation clinique</p>
 
-<!-- Exercise Screen -->
-<div id="screen-exercise" class="screen" style="display:none">
-  <div class="progress-section">
-    <div class="progress-bar">
-      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    <div id="no-exercises-msg" class="alert-box" style="display:none">
+      Aucun exercice disponible. Créez-en un dans l'onglet <strong>Éditeur</strong>.
     </div>
-    <div class="progress-label" id="progress-label"></div>
-  </div>
-
-  <!-- Choice pairs -->
-  <div class="pair-container" id="pair-container">
-    <button class="item-btn" id="item-left"></button>
-    <button class="item-btn" id="item-right"></button>
-  </div>
-
-  <!-- Arrow pairs -->
-  <div class="arrow-container" id="arrow-container">
-    <div class="arrow-card" id="arrow-card"></div>
-    <div class="arrow-keys">
-      <div class="arrow-keys-row">
-        <button class="arrow-key-btn" id="akey-up" data-dir="up">↑</button>
+    <div id="setup-form">
+      <div class="form-group">
+        <label for="exercise-select">Exercice</label>
+        <select id="exercise-select"></select>
       </div>
-      <div class="arrow-keys-row">
-        <button class="arrow-key-btn" id="akey-left" data-dir="left">←</button>
-        <button class="arrow-key-btn" id="akey-down" data-dir="down">↓</button>
-        <button class="arrow-key-btn" id="akey-right" data-dir="right">→</button>
+      <div class="form-group">
+        <label for="patient-select-setup">Patient</label>
+        <select id="patient-select-setup"></select>
+      </div>
+      <div class="form-group" id="new-patient-row" style="display:none">
+        <label for="new-patient-name">Nom du nouveau patient</label>
+        <input id="new-patient-name" type="text" placeholder="ex. Marie Dubois" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label class="checkbox-row">
+          <input type="checkbox" id="shuffle-pairs">
+          <span>Mélanger l'ordre des paires</span>
+        </label>
+      </div>
+      <button class="btn btn-primary" id="btn-start">Commencer l'exercice →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Instruction view ────────────────────────────────────────────────────── -->
+<div id="view-instruction" class="view centered">
+  <div class="screen">
+    <h2>Consigne</h2>
+    <div class="instruction-box" id="instruction-text"></div>
+    <button class="btn btn-primary" id="btn-ready">Je suis prêt(e) ✓</button>
+  </div>
+</div>
+
+<!-- ── Exercise view ───────────────────────────────────────────────────────── -->
+<div id="view-exercise" class="view centered">
+  <div class="screen">
+    <button class="btn-fullscreen" id="btn-fullscreen" title="Plein écran">⛶</button>
+    <div class="progress-section">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label"></div>
+    </div>
+    <div class="pair-container">
+      <button class="item-btn" id="item-left"></button>
+      <button class="item-btn" id="item-right"></button>
+    </div>
+    <div class="keyboard-hint">← Flèche gauche &nbsp;|&nbsp; Flèche droite →</div>
+  </div>
+</div>
+
+<!-- ── Session result view ─────────────────────────────────────────────────── -->
+<div id="view-session-result" class="view centered">
+  <div class="screen">
+    <h2>Résultats</h2>
+    <p class="results-meta" id="results-meta"></p>
+    <div class="results-grid">
+      <div class="result-card"><div class="label">Score</div><div class="value good" id="res-score">–</div></div>
+      <div class="result-card"><div class="label">Temps total</div><div class="value" id="res-time">–</div></div>
+      <div class="result-card"><div class="label">Erreurs — item gauche manqué</div><div class="value warn" id="res-errors-left">–</div></div>
+      <div class="result-card"><div class="label">Erreurs — item droit manqué</div><div class="value warn" id="res-errors-right">–</div></div>
+    </div>
+    <div class="notes-section">
+      <label for="session-notes">Notes du clinicien</label>
+      <textarea id="session-notes" placeholder="Observations, comportement, remarques…"></textarea>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-primary"   id="btn-restart">Recommencer</button>
+      <button class="btn btn-secondary" id="btn-see-progress">Voir la progression 📊</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Editor view ─────────────────────────────────────────────────────────── -->
+<div id="view-editor" class="view">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h3>Exercices</h3>
+      <div style="display:flex;gap:4px">
+        <button class="btn-icon" id="btn-new-folder" title="Nouveau dossier" style="background:#6366f1;font-size:0.85rem">📁</button>
+        <button class="btn-icon" id="btn-new-exercise" title="Créer un exercice">+</button>
+      </div>
+    </div>
+    <div class="exercise-list" id="exercise-list"></div>
+    <div class="sidebar-footer">
+      <div class="import-export">
+        <button id="btn-export">⬇ Exporter</button>
+        <button id="btn-import">⬆ Importer</button>
+        <input type="file" id="import-input" accept=".json" style="display:none">
       </div>
     </div>
   </div>
 
-  <div class="keyboard-hint" id="keyboard-hint"></div>
-</div>
-
-<!-- Results Screen -->
-<div id="screen-results" class="screen" style="display:none">
-  <h2>Résultats</h2>
-  <p class="results-meta" id="results-meta"></p>
-  <div class="results-grid">
-    <div class="result-card">
-      <div class="label">Score</div>
-      <div class="value good" id="res-score">–</div>
+  <div class="editor-main">
+    <div id="editor-empty-state" class="empty-state">
+      <p>Aucun exercice sélectionné</p>
+      <small>Cliquez sur + pour créer votre premier exercice</small>
     </div>
-    <div class="result-card">
-      <div class="label">Temps total</div>
-      <div class="value" id="res-time">–</div>
-    </div>
-    <div class="result-card">
-      <div class="label">Erreurs — item gauche / ← manqué</div>
-      <div class="value warn" id="res-errors-left">–</div>
-    </div>
-    <div class="result-card">
-      <div class="label">Erreurs — item droit / → manqué</div>
-      <div class="value warn" id="res-errors-right">–</div>
-    </div>
-    <!-- Arrow-specific (shown only when exercise has arrow pairs) -->
-    <div class="result-card" id="card-avg-reaction" style="display:none">
-      <div class="label">Temps de réaction moyen</div>
-      <div class="value" id="res-avg-reaction">–</div>
-    </div>
-    <div class="result-card" id="card-errors-blue" style="display:none">
-      <div class="label">Erreurs — fond bleu</div>
-      <div class="value warn" id="res-errors-blue">–</div>
-    </div>
-    <div class="result-card" id="card-errors-yellow" style="display:none">
-      <div class="label">Erreurs — fond jaune</div>
-      <div class="value warn" id="res-errors-yellow">–</div>
-    </div>
-    <div class="result-card" id="card-errors-up" style="display:none">
-      <div class="label">Erreurs — ↑ manqué</div>
-      <div class="value warn" id="res-errors-up">–</div>
-    </div>
-    <div class="result-card" id="card-errors-down" style="display:none">
-      <div class="label">Erreurs — ↓ manqué</div>
-      <div class="value warn" id="res-errors-down">–</div>
+    <div id="exercise-editor" style="display:none">
+      <div class="editor-header">
+        <input type="text" id="exercise-name" placeholder="Nom de l'exercice" maxlength="100">
+        <button class="btn-dup" id="btn-duplicate-exercise">Dupliquer</button>
+        <button class="btn-danger" id="btn-delete-exercise">Supprimer</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px">
+        <span style="font-size:0.8rem;font-weight:600;color:#64748b;white-space:nowrap;flex-shrink:0">📁 Dossier</span>
+        <select id="exercise-folder" style="flex:1;padding:7px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.88rem;outline:none;font-family:inherit;color:#0f172a;transition:border-color .15s"></select>
+      </div>
+      <div class="form-group">
+        <label class="editor-section-label" for="exercise-instruction">Consigne affichée au patient</label>
+        <textarea id="exercise-instruction" rows="3" placeholder="ex. Cliquez uniquement sur les animaux"></textarea>
+      </div>
+      <div class="pairs-header">
+        <span class="editor-section-label">Paires <span class="badge" id="pair-count-badge">0</span></span>
+        <button class="btn-dup" id="btn-import-csv-pairs">⬆ Importer CSV</button>
+        <input type="file" id="csv-pairs-input" accept=".csv,.txt" style="display:none">
+      </div>
+      <div class="pairs-list" id="pairs-list"></div>
+      <button class="btn-add-pair" id="btn-add-pair">+ Ajouter une paire</button>
     </div>
   </div>
-  <div class="btn-group">
-    <button class="btn btn-primary" id="btn-restart">Recommencer</button>
-    <a class="btn btn-secondary" href="results.html">Voir la progression 📊</a>
-    <a class="btn btn-secondary" href="index.html">Accueil</a>
+</div>
+
+<!-- ── Results view ────────────────────────────────────────────────────────── -->
+<div id="view-results" class="view">
+  <div class="results-page">
+    <div class="filters">
+      <div class="filter-group">
+        <label for="patient-select">Patient</label>
+        <select id="patient-select"><option value="">— Tous les patients —</option></select>
+      </div>
+      <div class="filter-group">
+        <label for="exercise-filter">Exercice</label>
+        <select id="exercise-filter"><option value="">— Tous les exercices —</option></select>
+      </div>
+      <button class="btn-clear" id="btn-clear-filters">Effacer les filtres</button>
+      <div style="display:flex;gap:8px;align-self:flex-end;margin-left:auto">
+        <button class="btn-clear" id="btn-export-results">⬇ Exporter résultats</button>
+        <button class="btn-clear" id="btn-import-results">⬆ Importer résultats</button>
+        <input type="file" id="import-results-input" accept=".json" style="display:none">
+      </div>
+    </div>
+
+    <div id="r-content" style="display:none">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="label">Sessions</div><div class="value blue"   id="stat-sessions">–</div></div>
+        <div class="stat-card"><div class="label">Score moyen</div><div class="value green"  id="stat-avg-score">–</div></div>
+        <div class="stat-card"><div class="label">Dernière session</div><div class="value"        id="stat-last-score">–</div></div>
+        <div class="stat-card"><div class="label">Temps moyen</div><div class="value purple" id="stat-avg-time">–</div></div>
+        <div class="stat-card"><div class="label">Réaction moy./paire</div><div class="value" id="stat-avg-reaction">–</div></div>
+      </div>
+      <div class="charts-row">
+        <div class="chart-card"><h3>Score (%)</h3><canvas id="chart-score" height="180"></canvas></div>
+        <div class="chart-card"><h3>Temps total (secondes)</h3><canvas id="chart-time" height="180"></canvas></div>
+      </div>
+      <div class="table-card">
+        <h3>Détail des sessions</h3>
+        <table>
+          <thead><tr>
+            <th>Date</th><th>Patient</th><th>Exercice</th><th>Score</th>
+            <th>Temps</th><th>Err. gauche</th><th>Err. droite</th><th>Réaction moy.</th><th>Notes</th><th></th>
+          </tr></thead>
+          <tbody id="sessions-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="r-empty-state" class="r-empty-state">
+      <p>Aucune session enregistrée</p>
+      <small>Les résultats apparaîtront ici après chaque exercice</small>
+    </div>
+  </div>
+</div>
+
+<!-- ── Patients view ───────────────────────────────────────────────────────── -->
+<div id="view-patients" class="view">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h3>Patients</h3>
+      <div style="display:flex;gap:4px">
+        <button class="btn-icon" id="btn-import-patient-csv" title="Importer un patient (CSV)" style="background:#6366f1;font-size:0.85rem">📥</button>
+        <input type="file" id="import-patient-csv-input" accept=".csv,.txt" style="display:none">
+        <button class="btn-icon" id="btn-new-patient" title="Nouveau patient">+</button>
+      </div>
+    </div>
+    <div class="exercise-list" id="patient-list"></div>
+  </div>
+  <div class="editor-main">
+    <div id="patient-empty-state" class="empty-state">
+      <p>Aucun patient sélectionné</p>
+      <small>Cliquez sur + pour créer votre premier patient</small>
+    </div>
+    <div id="patient-detail" style="display:none; max-width:760px;">
+      <div class="editor-header">
+        <input type="text" id="patient-name-input" placeholder="Nom du patient" maxlength="100">
+        <button class="btn-dup" id="btn-export-patient-csv">📊 CSV</button>
+        <button class="btn-dup" id="btn-export-patient-pdf">📄 PDF</button>
+        <button class="btn-danger" id="btn-delete-patient">Supprimer</button>
+      </div>
+      <div class="form-group">
+        <label class="editor-section-label" for="patient-dob">Date de naissance</label>
+        <input type="date" id="patient-dob" style="max-width:240px">
+      </div>
+      <div class="form-group">
+        <label class="editor-section-label" for="patient-notes-field">Notes</label>
+        <textarea id="patient-notes-field" rows="3" placeholder="Informations, antécédents, remarques…"></textarea>
+      </div>
+      <div class="pairs-header" style="margin-top:8px">
+        <span class="editor-section-label">Sessions <span class="badge" id="patient-session-count">0</span></span>
+        <div id="patient-mini-stats" style="display:flex;gap:20px;font-size:0.85rem;color:#64748b;"></div>
+      </div>
+      <div id="patient-sessions-wrap" style="margin-top:12px;overflow-x:auto"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Pair edit modal ─────────────────────────────────────────────────────── -->
+<div id="pair-modal" style="display:none">
+  <div class="modal">
+    <h3>Modifier la paire</h3>
+    <div class="modal-preview">
+      <div class="preview-box" id="preview-left">(vide)</div>
+      <div class="preview-box" id="preview-right">(vide)</div>
+    </div>
+    <div class="items-edit-grid">
+      <div class="item-edit-panel">
+        <h4>Item gauche</h4>
+        <div class="field-row">
+          <label>Image</label>
+          <input type="file" id="left-img-input" accept="image/*" style="display:none">
+          <button type="button" class="btn-upload-img" id="left-img-btn">📷 Choisir une image</button>
+          <div class="img-thumb-row" id="left-img-thumb-row" style="display:none">
+            <img id="left-img-thumb" alt="">
+            <button type="button" class="btn-remove-img" id="left-img-remove">✕ Supprimer</button>
+          </div>
+        </div>
+        <div class="field-row">
+          <label>Audio</label>
+          <input type="file" id="left-audio-input" accept="audio/*" style="display:none">
+          <button type="button" class="btn-upload-audio" id="left-audio-btn">🔊 Choisir un audio</button>
+          <div class="audio-loaded-row" id="left-audio-loaded" style="display:none">
+            <span id="left-audio-name"></span>
+            <button type="button" class="btn-play-audio" id="left-audio-play">▶ Écouter</button>
+            <button type="button" class="btn-remove-img" id="left-audio-remove">✕</button>
+          </div>
+        </div>
+        <div class="field-row"><label>Texte</label><input type="text" id="left-text" placeholder="Texte affiché"></div>
+        <div class="field-row"><label>Couleur</label><input type="color" id="left-color" value="#1a1a1a"></div>
+        <div class="field-row"><label>Taille (px)</label>
+          <select id="left-size">
+            <option value="16">16</option><option value="20">20</option><option value="24">24</option>
+            <option value="28">28</option><option value="32" selected>32</option><option value="40">40</option>
+            <option value="48">48</option><option value="56">56</option><option value="64">64</option><option value="72">72</option>
+          </select></div>
+        <div class="field-row"><label>Police</label>
+          <select id="left-font">
+            <option>Arial</option><option>Times New Roman</option><option>Courier New</option>
+            <option>Georgia</option><option>Verdana</option><option>Comic Sans MS</option><option>Impact</option>
+          </select></div>
+        <div class="field-row"><label>Casse</label>
+          <select id="left-transform">
+            <option value="none">Normale</option><option value="uppercase">MAJUSCULES</option>
+            <option value="lowercase">minuscules</option><option value="capitalize">Capitalisé</option>
+          </select></div>
+      </div>
+
+      <div class="correct-selector">
+        <div class="cs-label">Réponse<br>correcte</div>
+        <label class="radio-option"><input type="radio" name="modal-correct" id="correct-left"  value="left">  ← Gauche</label>
+        <label class="radio-option"><input type="radio" name="modal-correct" id="correct-right" value="right"> Droite →</label>
+      </div>
+
+      <div class="item-edit-panel">
+        <h4>Item droit</h4>
+        <div class="field-row">
+          <label>Image</label>
+          <input type="file" id="right-img-input" accept="image/*" style="display:none">
+          <button type="button" class="btn-upload-img" id="right-img-btn">📷 Choisir une image</button>
+          <div class="img-thumb-row" id="right-img-thumb-row" style="display:none">
+            <img id="right-img-thumb" alt="">
+            <button type="button" class="btn-remove-img" id="right-img-remove">✕ Supprimer</button>
+          </div>
+        </div>
+        <div class="field-row">
+          <label>Audio</label>
+          <input type="file" id="right-audio-input" accept="audio/*" style="display:none">
+          <button type="button" class="btn-upload-audio" id="right-audio-btn">🔊 Choisir un audio</button>
+          <div class="audio-loaded-row" id="right-audio-loaded" style="display:none">
+            <span id="right-audio-name"></span>
+            <button type="button" class="btn-play-audio" id="right-audio-play">▶ Écouter</button>
+            <button type="button" class="btn-remove-img" id="right-audio-remove">✕</button>
+          </div>
+        </div>
+        <div class="field-row"><label>Texte</label><input type="text" id="right-text" placeholder="Texte affiché"></div>
+        <div class="field-row"><label>Couleur</label><input type="color" id="right-color" value="#1a1a1a"></div>
+        <div class="field-row"><label>Taille (px)</label>
+          <select id="right-size">
+            <option value="16">16</option><option value="20">20</option><option value="24">24</option>
+            <option value="28">28</option><option value="32" selected>32</option><option value="40">40</option>
+            <option value="48">48</option><option value="56">56</option><option value="64">64</option><option value="72">72</option>
+          </select></div>
+        <div class="field-row"><label>Police</label>
+          <select id="right-font">
+            <option>Arial</option><option>Times New Roman</option><option>Courier New</option>
+            <option>Georgia</option><option>Verdana</option><option>Comic Sans MS</option><option>Impact</option>
+          </select></div>
+        <div class="field-row"><label>Casse</label>
+          <select id="right-transform">
+            <option value="none">Normale</option><option value="uppercase">MAJUSCULES</option>
+            <option value="lowercase">minuscules</option><option value="capitalize">Capitalisé</option>
+          </select></div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="btn-modal-cancel">Annuler</button>
+      <button class="btn-save"   id="btn-modal-save">Enregistrer</button>
+    </div>
   </div>
 </div>
 
 <script>
-  // ── Constants ─────────────────────────────────────────────────────────────────
-  const OPPOSITE    = { left: 'right', right: 'left', up: 'down', down: 'up' };
-  const ARROW_CHARS = { left: '←', right: '→', up: '↑', down: '↓' };
-
-  function getArrowCorrect(pair) {
-    return pair.bgColor === 'blue' ? pair.direction : OPPOSITE[pair.direction];
-  }
-
   // ── Storage ───────────────────────────────────────────────────────────────────
-  function getExercises() {
-    return JSON.parse(localStorage.getItem('cys_exercises') || '[]');
-  }
-  function getSessions() {
-    return JSON.parse(localStorage.getItem('cys_sessions') || '[]');
-  }
-  function addSession(session) {
-    const sessions = getSessions();
-    sessions.push(session);
-    localStorage.setItem('cys_sessions', JSON.stringify(sessions));
+  let exercises = JSON.parse(localStorage.getItem('cys_exercises') || '[]');
+  let sessions  = JSON.parse(localStorage.getItem('cys_sessions')  || '[]');
+  let patients  = JSON.parse(localStorage.getItem('cys_patients')  || '[]');
+  let folders   = JSON.parse(localStorage.getItem('cys_folders')   || '[]');
+
+  function saveExercises() { localStorage.setItem('cys_exercises', JSON.stringify(exercises)); }
+  function saveSessions()  { localStorage.setItem('cys_sessions',  JSON.stringify(sessions));  }
+  function savePatients()  { localStorage.setItem('cys_patients',  JSON.stringify(patients));  }
+  function saveFolders()   { localStorage.setItem('cys_folders',   JSON.stringify(folders));   }
+
+  function migratePatients() {
+    if (patients.length > 0 || sessions.length === 0) return;
+    const names = [...new Set(sessions.map(s => s.patientName).filter(Boolean))];
+    names.forEach(name => patients.push({ id: newId('pat'), name, birthDate: '', notes: '', createdAt: new Date().toISOString() }));
+    sessions.forEach(s => {
+      if (!s.patientId) { const p = patients.find(p => p.name === s.patientName); if (p) s.patientId = p.id; }
+    });
+    savePatients(); saveSessions();
   }
 
   // ── Utils ─────────────────────────────────────────────────────────────────────
@@ -379,56 +863,55 @@
     el.style.fontSize      = (item.fontSize || 32) + 'px';
     el.style.fontFamily    = item.fontFamily    || 'Arial';
     el.style.textTransform = item.textTransform || 'none';
-    el.textContent         = item.text          || '';
+    if (item.imageUrl) {
+      el.style.backgroundImage    = 'url(' + item.imageUrl + ')';
+      el.style.backgroundSize     = 'cover';
+      el.style.backgroundPosition = 'center';
+      el.innerHTML = item.text ? '<span style="position:relative;text-shadow:0 1px 4px rgba(0,0,0,0.65)">' + escapeHtml(item.text) + '</span>' : '';
+    } else {
+      el.style.backgroundImage = '';
+      el.textContent = item.text || '';
+    }
   }
-
   function formatDuration(ms) {
-    const s = Math.floor(ms / 1000);
-    const m = Math.floor(s / 60);
+    const s = Math.floor(ms / 1000), m = Math.floor(s / 60);
     return m > 0 ? m + ' min ' + (s % 60) + ' s' : s + ' s';
   }
-
-  function newId(prefix) {
-    return prefix + '_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
-  }
-
+  function newId(p) { return p + '_' + Date.now() + '_' + Math.random().toString(36).slice(2,6); }
+  function escapeHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   function shuffleArray(arr) {
     const a = [...arr];
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
+    for (let i = a.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
     return a;
   }
 
-  // ── Screens ───────────────────────────────────────────────────────────────────
-  function showScreen(name) {
-    ['setup', 'instruction', 'exercise', 'results'].forEach(id => {
-      document.getElementById('screen-' + id).style.display = 'none';
-    });
-    const el = document.getElementById('screen-' + name);
-    el.style.display = 'block';
-    el.style.animation = 'none';
-    void el.offsetHeight;
-    el.style.animation = '';
+  // ── Navigation ────────────────────────────────────────────────────────────────
+  const NAV_BUTTONS = { setup: 'nav-exercise', editor: 'nav-editor', results: 'nav-results', patients: 'nav-patients' };
+
+  function showView(name) {
+    document.querySelectorAll('.view').forEach(el => { el.style.display = 'none'; });
+    document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+
+    const view = document.getElementById('view-' + name);
+    if (name === 'editor')        view.style.display = 'flex';
+    else if (name === 'results')  view.style.display = 'block';
+    else                          view.style.display = 'flex';
+
+    document.getElementById('topbar').style.display = name === 'exercise' ? 'none' : '';
+
+    const navId = NAV_BUTTONS[name] || NAV_BUTTONS[name.replace('session-result','setup').replace('instruction','setup')];
+    if (navId) document.getElementById(navId).classList.add('active');
+
+    if (name === 'setup')    initSetup();
+    if (name === 'editor')   initEditor();
+    if (name === 'results')  initResults();
+    if (name === 'patients') initPatientsView();
   }
 
-  // ── State ─────────────────────────────────────────────────────────────────────
-  let exercise          = null;
-  let patientName       = '';
-  let pairs             = [];
-  let pairIndex         = 0;
-  let responses         = [];
-  let exerciseStartTime = 0;
-  let pairStartTime     = 0;
-  let isWaiting         = false;
-
-  // ── Setup screen ──────────────────────────────────────────────────────────────
+  // ── Setup ─────────────────────────────────────────────────────────────────────
   function initSetup() {
-    const exercises = getExercises();
     const select = document.getElementById('exercise-select');
     select.innerHTML = '';
-
     if (exercises.length === 0) {
       document.getElementById('no-exercises-msg').style.display = 'block';
       document.getElementById('setup-form').style.display = 'none';
@@ -436,282 +919,1187 @@
     }
     document.getElementById('no-exercises-msg').style.display = 'none';
     document.getElementById('setup-form').style.display = 'block';
-
     exercises.forEach(ex => {
       const opt = document.createElement('option');
       opt.value = ex.id;
-      opt.textContent = ex.name + ' (' + (ex.pairs || []).length + ' paires)';
+      opt.textContent = ex.name + ' (' + (ex.pairs||[]).length + ' paires)';
       select.appendChild(opt);
     });
+    populateSetupPatientSelect();
   }
 
-  document.getElementById('btn-start').addEventListener('click', () => {
-    const exercises = getExercises();
-    exercise = exercises.find(ex => ex.id === document.getElementById('exercise-select').value);
-    if (!exercise) return;
+  function populateSetupPatientSelect() {
+    const select = document.getElementById('patient-select-setup');
+    const current = select.value;
+    select.innerHTML = '<option value="">— Sélectionner un patient —</option>';
+    [...patients].sort((a,b) => a.name.localeCompare(b.name)).forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.id; opt.textContent = p.name;
+      if (p.id === current) opt.selected = true;
+      select.appendChild(opt);
+    });
+    const newOpt = document.createElement('option');
+    newOpt.value = '__new__'; newOpt.textContent = '+ Nouveau patient…';
+    select.appendChild(newOpt);
+  }
 
-    const nameInput = document.getElementById('patient-name');
-    patientName = nameInput.value.trim();
-    if (!patientName) {
-      nameInput.style.borderColor = '#ef4444';
-      nameInput.focus();
-      return;
-    }
-    nameInput.style.borderColor = '';
-
-    if (!exercise.pairs || exercise.pairs.length === 0) {
-      alert("Cet exercice n'a pas de paires. Ajoutez des paires dans l'éditeur.");
-      return;
-    }
-
-    pairs = document.getElementById('shuffle-pairs').checked
-      ? shuffleArray(exercise.pairs)
-      : [...exercise.pairs];
-
-    document.getElementById('instruction-text').textContent =
-      exercise.instruction || '(Aucune consigne définie)';
-    showScreen('instruction');
+  document.getElementById('patient-select-setup').addEventListener('change', () => {
+    document.getElementById('new-patient-row').style.display =
+      document.getElementById('patient-select-setup').value === '__new__' ? '' : 'none';
   });
 
-  // ── Instruction screen ────────────────────────────────────────────────────────
+  document.getElementById('btn-start').addEventListener('click', () => {
+    currentExercise = exercises.find(ex => ex.id === document.getElementById('exercise-select').value);
+    if (!currentExercise) return;
+
+    const patientSelectEl = document.getElementById('patient-select-setup');
+    const patientVal = patientSelectEl.value;
+    if (patientVal === '__new__') {
+      const nameInput = document.getElementById('new-patient-name');
+      const name = nameInput.value.trim();
+      if (!name) { nameInput.style.borderColor = '#ef4444'; nameInput.focus(); return; }
+      nameInput.style.borderColor = '';
+      const newPatient = { id: newId('pat'), name, birthDate: '', notes: '', createdAt: new Date().toISOString() };
+      patients.push(newPatient); savePatients();
+      currentPatientId = newPatient.id; currentPatient = newPatient.name;
+    } else if (patientVal) {
+      const patient = patients.find(p => p.id === patientVal);
+      if (!patient) { patientSelectEl.style.borderColor = '#ef4444'; return; }
+      currentPatientId = patient.id; currentPatient = patient.name;
+    } else {
+      patientSelectEl.style.borderColor = '#ef4444'; patientSelectEl.focus(); return;
+    }
+    patientSelectEl.style.borderColor = '';
+
+    if (!currentExercise.pairs || currentExercise.pairs.length === 0) {
+      alert("Cet exercice n'a pas de paires. Ajoutez des paires dans l'Éditeur.");
+      return;
+    }
+
+    currentPairs = document.getElementById('shuffle-pairs').checked
+      ? shuffleArray(currentExercise.pairs) : [...currentExercise.pairs];
+
+    document.getElementById('instruction-text').textContent =
+      currentExercise.instruction || '(Aucune consigne définie)';
+    showView('instruction');
+  });
+
+  // ── Exercise ──────────────────────────────────────────────────────────────────
+  let currentExercise = null, currentPatient = '', currentPatientId = null, currentPairs = [];
+  let pairIndex = 0, responses = [], exerciseStartTime = 0, pairStartTime = 0, isWaiting = false;
+  let currentSessionId = null;
+
   document.getElementById('btn-ready').addEventListener('click', () => {
-    pairIndex = 0;
-    responses = [];
-    exerciseStartTime = Date.now();
-    isWaiting = false;
-    showScreen('exercise');
+    pairIndex = 0; responses = [];
+    exerciseStartTime = Date.now(); isWaiting = false;
+    showView('exercise');
     renderPair();
   });
 
-  // ── Exercise screen ───────────────────────────────────────────────────────────
   const btnLeft  = document.getElementById('item-left');
   const btnRight = document.getElementById('item-right');
 
   function renderPair() {
-    const pair = pairs[pairIndex];
+    const pair = currentPairs[pairIndex];
     isWaiting = false;
-
-    document.getElementById('progress-fill').style.width =
-      (pairIndex / pairs.length * 100) + '%';
-    document.getElementById('progress-label').textContent =
-      (pairIndex + 1) + ' / ' + pairs.length;
-
-    if (pair.type === 'arrow') {
-      document.getElementById('pair-container').style.display  = 'none';
-      document.getElementById('arrow-container').style.display = 'flex';
-      document.getElementById('arrow-container').style.flexDirection = 'column';
-      document.getElementById('arrow-container').style.alignItems = 'center';
-
-      const card = document.getElementById('arrow-card');
-      card.textContent = ARROW_CHARS[pair.direction] || '?';
-      card.className = 'arrow-card bg-' + (pair.bgColor || 'blue');
-
-      ['up', 'down', 'left', 'right'].forEach(dir => {
-        const btn = document.getElementById('akey-' + dir);
-        btn.className = 'arrow-key-btn';
-        btn.disabled  = false;
-      });
-
-      document.getElementById('keyboard-hint').textContent =
-        '← ↑ → ↓  Flèches du clavier';
-    } else {
-      document.getElementById('pair-container').style.display  = 'grid';
-      document.getElementById('arrow-container').style.display = 'none';
-
-      btnLeft.className  = 'item-btn';
-      btnRight.className = 'item-btn';
-      btnLeft.disabled   = false;
-      btnRight.disabled  = false;
-      applyItemStyle(btnLeft,  pair.left);
-      applyItemStyle(btnRight, pair.right);
-
-      document.getElementById('keyboard-hint').textContent =
-        '← Flèche gauche \u00a0|\u00a0 Flèche droite →';
-    }
-
+    btnLeft.className = btnRight.className = 'item-btn';
+    btnLeft.disabled  = btnRight.disabled  = false;
+    applyItemStyle(btnLeft,  pair.left);
+    applyItemStyle(btnRight, pair.right);
+    document.getElementById('progress-fill').style.width  = (pairIndex / currentPairs.length * 100) + '%';
+    document.getElementById('progress-label').textContent = (pairIndex+1) + ' / ' + currentPairs.length;
     pairStartTime = Date.now();
+    playPairAudios(pair);
   }
 
-  // ── Choice pair response ──────────────────────────────────────────────────────
+  function playPairAudios(pair) {
+    const urls = [pair.left.audioUrl, pair.right.audioUrl].filter(Boolean);
+    if (urls.length === 0) return;
+    let i = 0;
+    function playNext() {
+      if (i >= urls.length) return;
+      const audio = new Audio(urls[i++]);
+      audio.addEventListener('ended', playNext);
+      audio.play().catch(() => {});
+    }
+    playNext();
+  }
+
   function handleClick(side) {
     if (isWaiting) return;
-    const pair = pairs[pairIndex];
-    if (pair.type === 'arrow') return;
     isWaiting = true;
-    btnLeft.disabled  = true;
-    btnRight.disabled = true;
-
+    btnLeft.disabled = btnRight.disabled = true;
+    const pair = currentPairs[pairIndex];
     const isCorrect = side === pair.correct;
-    responses.push({
-      pairId:        pair.id,
-      type:          'choice',
-      clicked:       side,
-      isCorrect,
-      correctAnswer: pair.correct,
-      timeMs:        Date.now() - pairStartTime,
-    });
-
-    document.getElementById('item-' + side).classList.add(isCorrect ? 'correct' : 'incorrect');
-    if (!isCorrect) {
-      const correctEl = document.getElementById('item-' + pair.correct);
-      if (correctEl) correctEl.classList.add('missed');
-    }
-
-    setTimeout(advance, 700);
+    responses.push({ pairId: pair.id, clicked: side, isCorrect, correctAnswer: pair.correct, timeMs: Date.now()-pairStartTime });
+    document.getElementById('item-'+side).classList.add(isCorrect ? 'correct' : 'incorrect');
+    if (!isCorrect) document.getElementById('item-'+pair.correct)?.classList.add('missed');
+    setTimeout(() => { pairIndex++; if (pairIndex >= currentPairs.length) finishExercise(); else renderPair(); }, 700);
   }
 
   btnLeft.addEventListener('click',  () => handleClick('left'));
   btnRight.addEventListener('click', () => handleClick('right'));
-
-  // ── Arrow pair response ───────────────────────────────────────────────────────
-  function handleArrowResponse(dir) {
-    if (isWaiting) return;
-    const pair = pairs[pairIndex];
-    if (pair.type !== 'arrow') return;
-    isWaiting = true;
-
-    ['up', 'down', 'left', 'right'].forEach(d => {
-      document.getElementById('akey-' + d).disabled = true;
-    });
-
-    const correctDir = getArrowCorrect(pair);
-    const isCorrect  = dir === correctDir;
-
-    responses.push({
-      pairId:        pair.id,
-      type:          'arrow',
-      direction:     pair.direction,
-      bgColor:       pair.bgColor,
-      pressed:       dir,
-      isCorrect,
-      correctAnswer: correctDir,
-      timeMs:        Date.now() - pairStartTime,
-    });
-
-    document.getElementById('akey-' + dir).classList.add(isCorrect ? 'correct' : 'incorrect');
-    if (!isCorrect) {
-      document.getElementById('akey-' + correctDir).classList.add('missed');
-    }
-
-    setTimeout(advance, 700);
-  }
-
-  ['up', 'down', 'left', 'right'].forEach(dir => {
-    document.getElementById('akey-' + dir).addEventListener('click', () => handleArrowResponse(dir));
-  });
-
-  // ── Keyboard ──────────────────────────────────────────────────────────────────
   document.addEventListener('keydown', e => {
-    if (document.getElementById('screen-exercise').style.display === 'none') return;
-    const pair = pairs[pairIndex];
-    if (!pair) return;
-    if (pair.type === 'arrow') {
-      if (e.key === 'ArrowLeft')  handleArrowResponse('left');
-      if (e.key === 'ArrowRight') handleArrowResponse('right');
-      if (e.key === 'ArrowUp')    handleArrowResponse('up');
-      if (e.key === 'ArrowDown')  handleArrowResponse('down');
-    } else {
+    if (document.getElementById('view-exercise').style.display !== 'none') {
       if (e.key === 'ArrowLeft')  handleClick('left');
       if (e.key === 'ArrowRight') handleClick('right');
     }
   });
 
-  // ── Advance ───────────────────────────────────────────────────────────────────
-  function advance() {
-    pairIndex++;
-    if (pairIndex >= pairs.length) finishExercise();
-    else renderPair();
-  }
-
-  // ── Finish ────────────────────────────────────────────────────────────────────
   function finishExercise() {
     const totalTimeMs = Date.now() - exerciseStartTime;
-    let score = 0, errorsLeft = 0, errorsRight = 0, errorsUp = 0, errorsDown = 0;
-    let errorsBlue = 0, errorsYellow = 0;
-    let arrowCount = 0, arrowTimeTotal = 0;
+    let score = 0, errorsLeft = 0, errorsRight = 0;
+    responses.forEach(r => { if (r.isCorrect) score++; else if (r.correctAnswer==='left') errorsLeft++; else errorsRight++; });
 
-    responses.forEach(r => {
-      if (r.isCorrect) {
-        score++;
-      } else {
-        if      (r.correctAnswer === 'left')  errorsLeft++;
-        else if (r.correctAnswer === 'right') errorsRight++;
-        else if (r.correctAnswer === 'up')    errorsUp++;
-        else if (r.correctAnswer === 'down')  errorsDown++;
-
-        if (r.type === 'arrow') {
-          if (r.bgColor === 'blue') errorsBlue++;
-          else                      errorsYellow++;
-        }
-      }
-      if (r.type === 'arrow') {
-        arrowCount++;
-        arrowTimeTotal += r.timeMs;
-      }
-    });
-
-    const hasArrow         = arrowCount > 0;
-    const avgReactionTimeMs = hasArrow ? Math.round(arrowTimeTotal / arrowCount) : null;
-    const hasUpDown         = responses.some(r => r.type === 'arrow' && (r.direction === 'up' || r.direction === 'down'));
-
-    addSession({
-      id:                newId('sess'),
-      exerciseId:        exercise.id,
-      exerciseName:      exercise.name,
-      patientName,
-      date:              new Date().toISOString(),
-      totalTimeMs,
-      totalPairs:        pairs.length,
-      score,
-      errorsLeft,
-      errorsRight,
-      errorsUp,
-      errorsDown,
-      errorsBlue,
-      errorsYellow,
-      avgReactionTimeMs,
-      responses,
-    });
+    const newSession = {
+      id: newId('sess'), exerciseId: currentExercise.id, exerciseName: currentExercise.name,
+      patientName: currentPatient, patientId: currentPatientId, date: new Date().toISOString(),
+      totalTimeMs, totalPairs: currentPairs.length, score, errorsLeft, errorsRight, responses, notes: '',
+    };
+    sessions.push(newSession);
+    currentSessionId = newSession.id;
+    saveSessions();
+    document.getElementById('session-notes').value = '';
 
     document.getElementById('progress-fill').style.width = '100%';
-    document.getElementById('results-meta').textContent =
-      'Patient : ' + patientName + '  ·  ' + exercise.name;
-    document.getElementById('res-score').textContent =
-      score + ' / ' + pairs.length + ' (' + Math.round(score / pairs.length * 100) + '%)';
-    document.getElementById('res-time').textContent = formatDuration(totalTimeMs);
+    document.getElementById('results-meta').textContent  = 'Patient : ' + currentPatient + '  ·  ' + currentExercise.name;
+    document.getElementById('res-score').textContent      = score + ' / ' + currentPairs.length + ' (' + Math.round(score/currentPairs.length*100) + '%)';
+    document.getElementById('res-time').textContent       = formatDuration(totalTimeMs);
     document.getElementById('res-errors-left').textContent  = errorsLeft;
     document.getElementById('res-errors-right').textContent = errorsRight;
-
-    // Arrow-specific cards
-    const show = (id, visible) => {
-      document.getElementById(id).style.display = visible ? 'block' : 'none';
-    };
-    show('card-avg-reaction', hasArrow);
-    show('card-errors-blue',  hasArrow);
-    show('card-errors-yellow',hasArrow);
-    show('card-errors-up',    hasArrow && hasUpDown);
-    show('card-errors-down',  hasArrow && hasUpDown);
-
-    if (hasArrow) {
-      document.getElementById('res-avg-reaction').textContent =
-        (avgReactionTimeMs / 1000).toFixed(2) + ' s';
-      document.getElementById('res-errors-blue').textContent   = errorsBlue;
-      document.getElementById('res-errors-yellow').textContent = errorsYellow;
-      if (hasUpDown) {
-        document.getElementById('res-errors-up').textContent   = errorsUp;
-        document.getElementById('res-errors-down').textContent = errorsDown;
-      }
-    }
-
-    showScreen('results');
+    showView('session-result');
   }
 
-  document.getElementById('btn-restart').addEventListener('click', () => {
-    initSetup();
-    showScreen('setup');
+  document.getElementById('btn-restart').addEventListener('click',      () => showView('setup'));
+  document.getElementById('btn-see-progress').addEventListener('click', () => showView('results'));
+
+  document.getElementById('session-notes').addEventListener('input', () => {
+    const session = sessions.find(s => s.id === currentSessionId); if (!session) return;
+    session.notes = document.getElementById('session-notes').value;
+    saveSessions();
+  });
+
+  document.getElementById('btn-fullscreen').addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  });
+  document.addEventListener('fullscreenchange', () => {
+    const isFullscreen = !!document.fullscreenElement;
+    document.getElementById('btn-fullscreen').textContent = isFullscreen ? '✕' : '⛶';
+    document.getElementById('btn-fullscreen').title       = isFullscreen ? 'Quitter le plein écran' : 'Plein écran';
+    document.body.classList.toggle('is-fullscreen', isFullscreen);
+  });
+
+  // ── Editor ────────────────────────────────────────────────────────────────────
+  let editorSelectedId = null, editingPairId = null, modalImages = { left: null, right: null }, modalAudios = { left: null, right: null };
+  const collapsedFolders = new Set();
+  function getSelectedEx() { return exercises.find(e => e.id === editorSelectedId) || null; }
+
+  function initEditor() {
+    if (editorSelectedId === null && exercises.length > 0) editorSelectedId = exercises[0].id;
+    renderSidebar();
+    renderExerciseEditor();
+  }
+
+  function renderSidebar() {
+    const list = document.getElementById('exercise-list');
+    list.innerHTML = '';
+    if (exercises.length === 0 && folders.length === 0) {
+      list.innerHTML = '<div style="padding:16px;color:#94a3b8;font-size:0.83rem;text-align:center">Aucun exercice</div>';
+      return;
+    }
+    const byFolder = {};
+    exercises.forEach(ex => { const k = ex.folderId || '__none__'; (byFolder[k]||(byFolder[k]=[])).push(ex); });
+
+    folders.forEach(folder => {
+      const exList = byFolder[folder.id] || [];
+      const isCollapsed = collapsedFolders.has(folder.id);
+
+      // Folder header
+      const header = document.createElement('div');
+      header.className = 'folder-header';
+      const toggle = document.createElement('span');
+      toggle.className = 'folder-toggle' + (isCollapsed ? ' collapsed' : '');
+      toggle.textContent = '▾';
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'folder-name';
+      nameSpan.dataset.folderId = folder.id;
+      nameSpan.textContent = folder.name;
+      const countSpan = document.createElement('span');
+      countSpan.className = 'pair-count';
+      countSpan.textContent = exList.length;
+      const delBtn = document.createElement('button');
+      delBtn.className = 'folder-del-btn'; delBtn.title = 'Supprimer le dossier'; delBtn.textContent = '✕';
+      delBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        if (!confirm('Supprimer le dossier "' + folder.name + '" ? Les exercices seront conservés sans dossier.')) return;
+        exercises.forEach(ex => { if (ex.folderId === folder.id) ex.folderId = null; });
+        folders = folders.filter(f => f.id !== folder.id);
+        saveFolders(); saveExercises(); renderSidebar(); renderFolderSelect();
+      });
+      header.append(toggle, nameSpan, countSpan, delBtn);
+      header.addEventListener('click', e => {
+        if (e.target === delBtn || e.target === nameSpan) return;
+        if (collapsedFolders.has(folder.id)) collapsedFolders.delete(folder.id); else collapsedFolders.add(folder.id);
+        renderSidebar();
+      });
+      // Rename on double-click
+      nameSpan.addEventListener('dblclick', e => {
+        e.stopPropagation();
+        nameSpan.contentEditable = 'true'; nameSpan.focus();
+        const range = document.createRange(); range.selectNodeContents(nameSpan);
+        window.getSelection().removeAllRanges(); window.getSelection().addRange(range);
+      });
+      nameSpan.addEventListener('blur', () => {
+        nameSpan.contentEditable = 'false';
+        const newName = nameSpan.textContent.trim() || folder.name;
+        folder.name = newName; nameSpan.textContent = newName;
+        saveFolders(); renderFolderSelect();
+      });
+      nameSpan.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); nameSpan.blur(); }
+        e.stopPropagation();
+      });
+      list.appendChild(header);
+
+      // Exercises in folder
+      if (!isCollapsed) exList.forEach(ex => list.appendChild(makeExerciseItem(ex, true)));
+    });
+
+    // Uncategorized
+    const uncategorized = byFolder['__none__'] || [];
+    if (folders.length > 0 && uncategorized.length > 0) {
+      const label = document.createElement('div');
+      label.className = 'no-folder-label'; label.textContent = 'Sans dossier';
+      list.appendChild(label);
+    }
+    uncategorized.forEach(ex => list.appendChild(makeExerciseItem(ex, folders.length > 0)));
+  }
+
+  function makeExerciseItem(ex, indented) {
+    const div = document.createElement('div');
+    div.className = 'exercise-item' + (ex.id === editorSelectedId ? ' active' : '') + (indented ? ' in-folder' : '');
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = ex.name;
+    nameSpan.style.cssText = 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
+    const countSpan = document.createElement('span');
+    countSpan.className = 'pair-count';
+    countSpan.textContent = (ex.pairs||[]).length;
+    div.append(nameSpan, countSpan);
+    div.addEventListener('click', () => { editorSelectedId = ex.id; renderSidebar(); renderExerciseEditor(); });
+    return div;
+  }
+
+  function renderFolderSelect() {
+    const select = document.getElementById('exercise-folder');
+    if (!select) return;
+    select.innerHTML = '<option value="">— Sans dossier —</option>';
+    folders.forEach(f => {
+      const opt = document.createElement('option');
+      opt.value = f.id; opt.textContent = f.name;
+      select.appendChild(opt);
+    });
+    const ex = getSelectedEx();
+    if (ex) select.value = ex.folderId || '';
+  }
+
+  function renderExerciseEditor() {
+    const ex = getSelectedEx();
+    document.getElementById('editor-empty-state').style.display = ex ? 'none'  : 'block';
+    document.getElementById('exercise-editor').style.display    = ex ? 'block' : 'none';
+    if (!ex) return;
+    document.getElementById('exercise-name').value        = ex.name;
+    document.getElementById('exercise-instruction').value = ex.instruction || '';
+    document.getElementById('pair-count-badge').textContent = (ex.pairs||[]).length;
+    renderFolderSelect();
+    renderPairsList(ex);
+  }
+
+  function renderPairsList(ex) {
+    const list = document.getElementById('pairs-list');
+    list.innerHTML = '';
+    (ex.pairs||[]).forEach((pair, i) => {
+      const row = document.createElement('div');
+      row.className = 'pair-row';
+      const preview = document.createElement('div');
+      preview.className = 'pair-preview';
+      preview.appendChild(buildPreviewEl(pair.left,  pair.correct==='left'));
+      const vs = document.createElement('span'); vs.className = 'pair-vs'; vs.textContent = 'VS';
+      preview.appendChild(vs);
+      preview.appendChild(buildPreviewEl(pair.right, pair.correct==='right'));
+      const actions = document.createElement('div');
+      actions.className = 'pair-actions';
+      const editBtn      = makePairBtn('✏','edit',  'Modifier',   () => openPairModal(pair.id));
+      const duplicateBtn = makePairBtn('⧉','',     'Dupliquer',  () => duplicatePair(pair.id));
+      const upBtn        = makePairBtn('↑','',      'Monter',     () => movePair(pair.id,-1));
+      const downBtn      = makePairBtn('↓','',      'Descendre',  () => movePair(pair.id, 1));
+      const deleteBtn    = makePairBtn('✕','delete','Supprimer',  () => deletePair(pair.id));
+      if (i===0)                   upBtn.disabled   = true;
+      if (i===ex.pairs.length-1)   downBtn.disabled = true;
+      actions.append(editBtn, duplicateBtn, upBtn, downBtn, deleteBtn);
+      row.append(preview, actions);
+      list.appendChild(row);
+    });
+  }
+
+  function buildPreviewEl(item, isCorrect) {
+    const div = document.createElement('div');
+    div.className = 'pair-item-preview' + (isCorrect ? ' is-correct' : '');
+    div.style.color = item.color||'#1a1a1a'; div.style.fontSize = Math.min(item.fontSize||32,22)+'px';
+    div.style.fontFamily = item.fontFamily||'Arial'; div.style.textTransform = item.textTransform||'none';
+    if (item.imageUrl) {
+      div.style.backgroundImage    = 'url(' + item.imageUrl + ')';
+      div.style.backgroundSize     = 'cover';
+      div.style.backgroundPosition = 'center';
+      div.innerHTML = item.text ? '<span style="position:relative;text-shadow:0 1px 4px rgba(0,0,0,0.65)">' + escapeHtml(item.text) + '</span>' : '';
+    } else {
+      div.textContent = item.text||'';
+    }
+    return div;
+  }
+
+  function makePairBtn(icon, cls, title, handler) {
+    const btn = document.createElement('button');
+    btn.className = 'pair-action-btn'+(cls?' '+cls:''); btn.title = title; btn.textContent = icon;
+    btn.addEventListener('click', handler); return btn;
+  }
+
+  document.getElementById('btn-new-folder').addEventListener('click', () => {
+    const folder = { id: newId('fold'), name: 'Nouveau dossier' };
+    folders.push(folder); saveFolders(); renderSidebar(); renderFolderSelect();
+    setTimeout(() => {
+      const nameEl = document.querySelector('.folder-name[data-folder-id="' + folder.id + '"]');
+      if (!nameEl) return;
+      nameEl.contentEditable = 'true'; nameEl.focus();
+      const range = document.createRange(); range.selectNodeContents(nameEl);
+      window.getSelection().removeAllRanges(); window.getSelection().addRange(range);
+    }, 50);
+  });
+
+  document.getElementById('exercise-folder').addEventListener('change', () => {
+    const ex = getSelectedEx(); if (!ex) return;
+    ex.folderId = document.getElementById('exercise-folder').value || null;
+    saveExercises(); renderSidebar();
+  });
+
+  document.getElementById('btn-new-exercise').addEventListener('click', () => {
+    const ex = { id: newId('ex'), name: 'Nouvel exercice', instruction: '', pairs: [], folderId: null };
+    exercises.push(ex); saveExercises();
+    editorSelectedId = ex.id; renderSidebar(); renderExerciseEditor();
+    setTimeout(() => { const i = document.getElementById('exercise-name'); i.focus(); i.select(); }, 50);
+  });
+
+  document.getElementById('exercise-name').addEventListener('input', () => {
+    const ex = getSelectedEx(); if (!ex) return;
+    ex.name = document.getElementById('exercise-name').value;
+    saveExercises(); renderSidebar();
+  });
+
+  document.getElementById('exercise-instruction').addEventListener('input', () => {
+    const ex = getSelectedEx(); if (!ex) return;
+    ex.instruction = document.getElementById('exercise-instruction').value;
+    saveExercises();
+  });
+
+  document.getElementById('btn-duplicate-exercise').addEventListener('click', () => {
+    const ex = getSelectedEx(); if (!ex) return;
+    const copy = JSON.parse(JSON.stringify(ex));
+    copy.id = newId('ex');
+    copy.name = copy.name + ' (copie)';
+    copy.pairs.forEach(p => { p.id = newId('pair'); });
+    exercises.push(copy);
+    editorSelectedId = copy.id;
+    saveExercises(); renderSidebar(); renderExerciseEditor();
+  });
+
+  document.getElementById('btn-import-csv-pairs').addEventListener('click', () => {
+    const ex = getSelectedEx(); if (!ex) return;
+    document.getElementById('csv-pairs-input').click();
+  });
+
+  document.getElementById('csv-pairs-input').addEventListener('change', e => {
+    const ex = getSelectedEx();
+    const file = e.target.files[0]; if (!file || !ex) return;
+    const reader = new FileReader();
+    reader.onload = evt => {
+      const lines = evt.target.result.split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('#'));
+      let added = 0;
+      lines.forEach(line => {
+        const parts = line.split(',');
+        const leftText  = (parts[0] || '').trim();
+        const rightText = (parts[1] || '').trim();
+        if (!leftText && !rightText) return;
+        const correctRaw = (parts[2] || '').trim().toLowerCase();
+        const correct = ['droite','right','d','r','1'].includes(correctRaw) ? 'right' : 'left';
+        ex.pairs.push({ id: newId('pair'),
+          left:  { text: leftText,  color: '#1a1a1a', fontSize: 32, fontFamily: 'Arial', textTransform: 'none', imageUrl: null, audioUrl: null },
+          right: { text: rightText, color: '#1a1a1a', fontSize: 32, fontFamily: 'Arial', textTransform: 'none', imageUrl: null, audioUrl: null },
+          correct });
+        added++;
+      });
+      saveExercises(); renderExerciseEditor();
+      alert(added + ' paire(s) importée(s).');
+    };
+    reader.readAsText(file); e.target.value = '';
+  });
+
+  document.getElementById('btn-delete-exercise').addEventListener('click', () => {
+    const ex = getSelectedEx(); if (!ex) return;
+    if (!confirm('Supprimer l\'exercice "' + ex.name + '" et toutes ses paires ?')) return;
+    exercises = exercises.filter(e => e.id !== editorSelectedId);
+    editorSelectedId = exercises.length > 0 ? exercises[0].id : null;
+    saveExercises(); renderSidebar(); renderExerciseEditor();
+  });
+
+  document.getElementById('btn-add-pair').addEventListener('click', () => {
+    const ex = getSelectedEx(); if (!ex) return;
+    const pair = { id: newId('pair'),
+      left:  { text:'', color:'#1a1a1a', fontSize:32, fontFamily:'Arial', textTransform:'none', imageUrl:null, audioUrl:null },
+      right: { text:'', color:'#1a1a1a', fontSize:32, fontFamily:'Arial', textTransform:'none', imageUrl:null, audioUrl:null },
+      correct: 'left' };
+    ex.pairs.push(pair); saveExercises(); renderExerciseEditor(); openPairModal(pair.id);
+  });
+
+  function duplicatePair(pairId) {
+    const ex = getSelectedEx(); if (!ex) return;
+    const index = ex.pairs.findIndex(p => p.id === pairId); if (index === -1) return;
+    const source = ex.pairs[index];
+    const copy = { id: newId('pair'),
+      left:    { ...source.left },
+      right:   { ...source.right },
+      correct: source.correct };
+    ex.pairs.splice(index + 1, 0, copy);
+    saveExercises(); renderExerciseEditor();
+  }
+
+  function deletePair(pairId) {
+    const ex = getSelectedEx(); if (!ex) return;
+    if (!confirm('Supprimer cette paire ?')) return;
+    ex.pairs = ex.pairs.filter(p => p.id !== pairId); saveExercises(); renderExerciseEditor();
+  }
+
+  function movePair(pairId, dir) {
+    const ex = getSelectedEx(); if (!ex) return;
+    const i = ex.pairs.findIndex(p => p.id === pairId), j = i+dir;
+    if (j<0 || j>=ex.pairs.length) return;
+    [ex.pairs[i], ex.pairs[j]] = [ex.pairs[j], ex.pairs[i]]; saveExercises(); renderExerciseEditor();
+  }
+
+  // ── Pair modal ────────────────────────────────────────────────────────────────
+  function openPairModal(pairId) {
+    const ex = getSelectedEx(); if (!ex) return;
+    const pair = ex.pairs.find(p => p.id === pairId); if (!pair) return;
+    editingPairId = pairId;
+    fillModalSide('left',  pair.left);
+    fillModalSide('right', pair.right);
+    document.getElementById('correct-'+pair.correct).checked = true;
+    refreshModalPreview();
+    document.getElementById('pair-modal').style.display = 'flex';
+  }
+
+  function fillModalSide(s, item) {
+    document.getElementById(s+'-text').value  = item.text  || '';
+    document.getElementById(s+'-color').value = item.color || '#1a1a1a';
+    pickOption(s+'-size',      String(item.fontSize||32));
+    pickOption(s+'-font',      item.fontFamily  ||'Arial');
+    pickOption(s+'-transform', item.textTransform||'none');
+    modalImages[s] = item.imageUrl || null;
+    updateImageThumb(s);
+    modalAudios[s] = item.audioUrl || null;
+    updateAudioUI(s);
+  }
+
+  function updateImageThumb(s) {
+    const thumbRow = document.getElementById(s+'-img-thumb-row');
+    const thumb    = document.getElementById(s+'-img-thumb');
+    if (modalImages[s]) {
+      thumb.src = modalImages[s];
+      thumbRow.style.display = 'flex';
+    } else {
+      thumb.src = '';
+      thumbRow.style.display = 'none';
+    }
+  }
+
+  function updateAudioUI(s) {
+    const row = document.getElementById(s+'-audio-loaded');
+    if (modalAudios[s]) {
+      document.getElementById(s+'-audio-name').textContent = '🎵 Audio chargé';
+      row.style.display = 'flex';
+    } else {
+      row.style.display = 'none';
+    }
+  }
+
+  function pickOption(id, val) {
+    for (const o of document.getElementById(id).options) { if (o.value===val) { o.selected=true; return; } }
+  }
+
+  function readModalSide(s) {
+    return {
+      text:          document.getElementById(s+'-text').value,
+      color:         document.getElementById(s+'-color').value,
+      fontSize:      parseInt(document.getElementById(s+'-size').value, 10),
+      fontFamily:    document.getElementById(s+'-font').value,
+      textTransform: document.getElementById(s+'-transform').value,
+      imageUrl:      modalImages[s] || null,
+      audioUrl:      modalAudios[s] || null,
+    };
+  }
+
+  function refreshModalPreview() {
+    const l = readModalSide('left'), r = readModalSide('right');
+    const c = document.querySelector('input[name="modal-correct"]:checked')?.value || 'left';
+    applyPreviewBox(document.getElementById('preview-left'),  l, c==='left');
+    applyPreviewBox(document.getElementById('preview-right'), r, c==='right');
+  }
+
+  function applyPreviewBox(el, item, isCorrect) {
+    el.style.color=item.color; el.style.fontSize=item.fontSize+'px';
+    el.style.fontFamily=item.fontFamily; el.style.textTransform=item.textTransform;
+    el.className='preview-box'+(isCorrect?' correct-side':'');
+    if (item.imageUrl) {
+      el.style.backgroundImage    = 'url(' + item.imageUrl + ')';
+      el.style.backgroundSize     = 'cover';
+      el.style.backgroundPosition = 'center';
+      el.innerHTML = item.text ? '<span style="position:relative;text-shadow:0 1px 4px rgba(0,0,0,0.65)">' + escapeHtml(item.text) + '</span>' : '';
+    } else {
+      el.style.backgroundImage = '';
+      el.textContent = item.text || '(vide)';
+    }
+  }
+
+  ['left-text','left-color','left-size','left-font','left-transform',
+   'right-text','right-color','right-size','right-font','right-transform',
+   'correct-left','correct-right'].forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('input',  refreshModalPreview);
+    el.addEventListener('change', refreshModalPreview);
+  });
+
+  ['left', 'right'].forEach(s => {
+    document.getElementById(s+'-img-btn').addEventListener('click', () => document.getElementById(s+'-img-input').click());
+    document.getElementById(s+'-img-input').addEventListener('change', e => {
+      const file = e.target.files[0]; if (!file) return;
+      const reader = new FileReader();
+      reader.onload = evt => { modalImages[s] = evt.target.result; updateImageThumb(s); refreshModalPreview(); };
+      reader.readAsDataURL(file); e.target.value = '';
+    });
+    document.getElementById(s+'-img-remove').addEventListener('click', () => { modalImages[s] = null; updateImageThumb(s); refreshModalPreview(); });
+
+    document.getElementById(s+'-audio-btn').addEventListener('click', () => document.getElementById(s+'-audio-input').click());
+    document.getElementById(s+'-audio-input').addEventListener('change', e => {
+      const file = e.target.files[0]; if (!file) return;
+      const reader = new FileReader();
+      reader.onload = evt => { modalAudios[s] = evt.target.result; updateAudioUI(s); };
+      reader.readAsDataURL(file); e.target.value = '';
+    });
+    document.getElementById(s+'-audio-remove').addEventListener('click', () => { modalAudios[s] = null; updateAudioUI(s); });
+    document.getElementById(s+'-audio-play').addEventListener('click', () => {
+      if (!modalAudios[s]) return;
+      new Audio(modalAudios[s]).play().catch(() => {});
+    });
+  });
+
+  document.getElementById('btn-modal-save').addEventListener('click', () => {
+    const ex = getSelectedEx(); if (!ex) return;
+    const pair = ex.pairs.find(p => p.id === editingPairId); if (!pair) return;
+    pair.left    = readModalSide('left');
+    pair.right   = readModalSide('right');
+    pair.correct = document.querySelector('input[name="modal-correct"]:checked')?.value || 'left';
+    saveExercises(); renderExerciseEditor(); closeModal();
+  });
+
+  document.getElementById('btn-modal-cancel').addEventListener('click', () => {
+    const ex = getSelectedEx();
+    if (ex) {
+      const pair = ex.pairs.find(p => p.id === editingPairId);
+      if (pair && !pair.left.text && !pair.right.text && !pair.left.imageUrl && !pair.right.imageUrl) {
+        ex.pairs = ex.pairs.filter(p => p.id !== editingPairId);
+        saveExercises(); renderExerciseEditor();
+      }
+    }
+    closeModal();
+  });
+
+  function closeModal() { document.getElementById('pair-modal').style.display='none'; editingPairId=null; }
+
+  document.getElementById('pair-modal').addEventListener('click', e => { if (e.target===document.getElementById('pair-modal')) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key==='Escape' && document.getElementById('pair-modal').style.display!=='none') closeModal(); });
+
+  // ── Patients view ─────────────────────────────────────────────────────────────
+  let patientSelectedId = null;
+  function getSelectedPatient() { return patients.find(p => p.id === patientSelectedId) || null; }
+
+  function initPatientsView() {
+    if (patientSelectedId === null && patients.length > 0) patientSelectedId = patients[0].id;
+    renderPatientSidebar();
+    renderPatientDetail();
+  }
+
+  function renderPatientSidebar() {
+    const list = document.getElementById('patient-list');
+    list.innerHTML = '';
+    if (patients.length === 0) {
+      list.innerHTML = '<div style="padding:16px;color:#94a3b8;font-size:0.83rem;text-align:center">Aucun patient</div>';
+      return;
+    }
+    [...patients].sort((a,b) => a.name.localeCompare(b.name)).forEach(patient => {
+      const sessionCount = sessions.filter(s => s.patientId === patient.id).length;
+      const div = document.createElement('div');
+      div.className = 'exercise-item' + (patient.id === patientSelectedId ? ' active' : '');
+      const nameSpan = document.createElement('span');
+      nameSpan.textContent = patient.name;
+      nameSpan.style.cssText = 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
+      const countSpan = document.createElement('span');
+      countSpan.className = 'pair-count';
+      countSpan.textContent = sessionCount + ' sess.';
+      div.append(nameSpan, countSpan);
+      div.addEventListener('click', () => { patientSelectedId = patient.id; renderPatientSidebar(); renderPatientDetail(); });
+      list.appendChild(div);
+    });
+  }
+
+  function renderPatientDetail() {
+    const patient = getSelectedPatient();
+    document.getElementById('patient-empty-state').style.display = patient ? 'none'  : 'block';
+    document.getElementById('patient-detail').style.display      = patient ? 'block' : 'none';
+    if (!patient) return;
+    document.getElementById('patient-name-input').value  = patient.name;
+    document.getElementById('patient-dob').value         = patient.birthDate || '';
+    document.getElementById('patient-notes-field').value = patient.notes || '';
+
+    const patientSessions = sessions
+      .filter(s => s.patientId === patient.id)
+      .sort((a,b) => new Date(b.date) - new Date(a.date));
+
+    document.getElementById('patient-session-count').textContent = patientSessions.length;
+
+    const miniStats = document.getElementById('patient-mini-stats');
+    if (patientSessions.length > 0) {
+      const avgPct = patientSessions.reduce((s,r) => s + r.score/r.totalPairs*100, 0) / patientSessions.length;
+      const allReactions = patientSessions.flatMap(s => (s.responses||[]).map(r => r.timeMs));
+      const avgReaction  = allReactions.length > 0 ? Math.round(allReactions.reduce((a,b)=>a+b,0)/allReactions.length) : null;
+      miniStats.innerHTML =
+        '<span>Score moy. : <strong>' + Math.round(avgPct) + '%</strong></span>' +
+        (avgReaction !== null ? '<span>Réaction moy. : <strong>' + avgReaction + ' ms</strong></span>' : '');
+    } else {
+      miniStats.innerHTML = '';
+    }
+    renderPatientSessionsTable(patientSessions);
+  }
+
+  function renderPatientSessionsTable(patientSessions) {
+    const wrap = document.getElementById('patient-sessions-wrap');
+    if (patientSessions.length === 0) {
+      wrap.innerHTML = '<p style="color:#94a3b8;font-size:0.9rem;margin-top:8px">Aucune session enregistrée pour ce patient.</p>';
+      return;
+    }
+    const table = document.createElement('table');
+    table.innerHTML = '<thead><tr><th>Date</th><th>Exercice</th><th>Score</th><th>Temps</th><th>Réaction moy.</th><th>Notes</th><th></th></tr></thead>';
+    const tbody = document.createElement('tbody');
+    patientSessions.forEach(session => {
+      const pct = Math.round(session.score/session.totalPairs*100);
+      const scoreClass = pct>=80?'good-score':pct<50?'low-score':'';
+      const reaction = avgReactionMs(session);
+      const tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>'+new Date(session.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'})+'</td>'+
+        '<td>'+escapeHtml(session.exerciseName)+'</td>'+
+        '<td><span class="'+scoreClass+'">'+session.score+'/'+session.totalPairs+'</span> <span class="score-pct">('+pct+'%)</span></td>'+
+        '<td>'+formatDuration(session.totalTimeMs)+'</td>'+
+        '<td>'+(reaction !== null ? Math.round(reaction)+' ms' : '–')+'</td>'+
+        '<td></td><td></td>';
+      const notesTd = tr.children[5];
+      notesTd.contentEditable = 'true';
+      notesTd.textContent = session.notes || '';
+      notesTd.style.cssText = 'max-width:160px;min-width:80px;outline:none;color:#475569;font-style:italic;cursor:text;';
+      notesTd.addEventListener('blur',    () => { session.notes = notesTd.textContent.trim(); saveSessions(); });
+      notesTd.addEventListener('keydown', e => { if (e.key==='Enter') { e.preventDefault(); notesTd.blur(); } });
+      const delBtn = document.createElement('button');
+      delBtn.className = 'btn-delete-session'; delBtn.textContent = 'Supprimer';
+      delBtn.addEventListener('click', () => {
+        if (!confirm('Supprimer cette session ?')) return;
+        sessions = sessions.filter(s => s.id !== session.id); saveSessions(); renderPatientDetail();
+      });
+      tr.lastElementChild.appendChild(delBtn);
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    wrap.innerHTML = '';
+    wrap.appendChild(table);
+  }
+
+  document.getElementById('btn-new-patient').addEventListener('click', () => {
+    const p = { id: newId('pat'), name: 'Nouveau patient', birthDate: '', notes: '', createdAt: new Date().toISOString() };
+    patients.push(p); savePatients();
+    patientSelectedId = p.id; renderPatientSidebar(); renderPatientDetail();
+    setTimeout(() => { const i = document.getElementById('patient-name-input'); i.focus(); i.select(); }, 50);
+  });
+
+  document.getElementById('patient-name-input').addEventListener('input', () => {
+    const p = getSelectedPatient(); if (!p) return;
+    p.name = document.getElementById('patient-name-input').value;
+    savePatients(); renderPatientSidebar();
+  });
+
+  document.getElementById('patient-dob').addEventListener('change', () => {
+    const p = getSelectedPatient(); if (!p) return;
+    p.birthDate = document.getElementById('patient-dob').value;
+    savePatients();
+  });
+
+  document.getElementById('patient-notes-field').addEventListener('input', () => {
+    const p = getSelectedPatient(); if (!p) return;
+    p.notes = document.getElementById('patient-notes-field').value;
+    savePatients();
+  });
+
+  document.getElementById('btn-export-patient-csv').addEventListener('click', () => {
+    const p = getSelectedPatient(); if (!p) return;
+    exportPatientCSV(p);
+  });
+
+  document.getElementById('btn-export-patient-pdf').addEventListener('click', () => {
+    const p = getSelectedPatient(); if (!p) return;
+    exportPatientPDF(p);
+  });
+
+  function exportPatientCSV(patient) {
+    const patientSessions = sessions
+      .filter(s => s.patientId === patient.id)
+      .sort((a,b) => new Date(a.date) - new Date(b.date));
+    const rows = [];
+    rows.push(['Nom', patient.name]);
+    if (patient.birthDate) rows.push(['Date de naissance', new Date(patient.birthDate).toLocaleDateString('fr-FR')]);
+    if (patient.notes)     rows.push(['Notes', patient.notes]);
+    rows.push([]);
+    rows.push(['Date', 'Exercice', 'Score brut', 'Score %', 'Temps (s)', 'Erreurs gauche', 'Erreurs droite', 'Réaction moy. (ms)', 'Notes']);
+    patientSessions.forEach(s => {
+      const reaction = avgReactionMs(s);
+      rows.push([
+        new Date(s.date).toLocaleDateString('fr-FR') + ' ' + new Date(s.date).toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}),
+        s.exerciseName,
+        s.score + '/' + s.totalPairs,
+        Math.round(s.score / s.totalPairs * 100),
+        Math.round(s.totalTimeMs / 1000),
+        s.errorsLeft,
+        s.errorsRight,
+        reaction !== null ? Math.round(reaction) : '',
+        s.notes || '',
+      ]);
+    });
+    const csv = rows.map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(';')).join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'patient-' + patient.name.replace(/\s+/g, '-') + '-' + new Date().toISOString().slice(0,10) + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function exportPatientPDF(patient) {
+    const patientSessions = sessions
+      .filter(s => s.patientId === patient.id)
+      .sort((a,b) => new Date(a.date) - new Date(b.date));
+    const avgPct = patientSessions.length > 0
+      ? Math.round(patientSessions.reduce((s,r) => s + r.score/r.totalPairs*100, 0) / patientSessions.length) : null;
+    const allReactions = patientSessions.flatMap(s => (s.responses||[]).map(r => r.timeMs));
+    const avgReaction  = allReactions.length > 0 ? Math.round(allReactions.reduce((a,b)=>a+b,0)/allReactions.length) : null;
+    const dobStr = patient.birthDate ? new Date(patient.birthDate + 'T00:00:00').toLocaleDateString('fr-FR') : '–';
+
+    const rowsHtml = patientSessions.map(s => {
+      const pct = Math.round(s.score/s.totalPairs*100);
+      const scoreColor = pct>=80 ? '#16a34a' : pct<50 ? '#dc2626' : '#0f172a';
+      const reaction = avgReactionMs(s);
+      return '<tr>' +
+        '<td>' + new Date(s.date).toLocaleDateString('fr-FR') + '</td>' +
+        '<td>' + escapeHtml(s.exerciseName) + '</td>' +
+        '<td style="color:'+scoreColor+';font-weight:700">' + s.score + '/' + s.totalPairs + ' (' + pct + '%)</td>' +
+        '<td>' + formatDuration(s.totalTimeMs) + '</td>' +
+        '<td>' + (reaction !== null ? Math.round(reaction) + ' ms' : '–') + '</td>' +
+        '<td>' + escapeHtml(s.notes || '') + '</td>' +
+        '</tr>';
+    }).join('');
+
+    const statsHtml = [
+      avgPct      !== null ? '<div class="stat"><div class="stat-label">Score moyen</div><div class="stat-val">' + avgPct + '%</div></div>' : '',
+      avgReaction !== null ? '<div class="stat"><div class="stat-label">Réaction moy.</div><div class="stat-val">' + avgReaction + ' ms</div></div>' : '',
+      '<div class="stat"><div class="stat-label">Sessions</div><div class="stat-val">' + patientSessions.length + '</div></div>',
+    ].join('');
+
+    const html = `<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8">
+<title>Dossier – ${escapeHtml(patient.name)}</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; color: #0f172a; padding: 40px; max-width: 860px; margin: 0 auto; font-size: 14px; }
+  .header { border-bottom: 2px solid #0f172a; padding-bottom: 16px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .header h1 { font-size: 22px; }
+  .header .meta { font-size: 11px; color: #64748b; text-align: right; }
+  .info-row { display: flex; gap: 32px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 18px; margin-bottom: 20px; }
+  .info-item label { font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: .05em; display: block; margin-bottom: 3px; }
+  .info-item span { font-size: 14px; font-weight: 600; }
+  .stats-row { display: flex; gap: 16px; margin-bottom: 20px; }
+  .stat { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px 16px; }
+  .stat-label { font-size: 10px; color: #3b82f6; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 2px; }
+  .stat-val { font-size: 18px; font-weight: 700; color: #1d4ed8; }
+  .section-title { font-size: 11px; font-weight: 700; color: #334155; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 10px; }
+  .notes-box { background: #fefce8; border: 1px solid #fde047; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; white-space: pre-wrap; line-height: 1.5; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; font-size: 10px; color: #94a3b8; text-transform: uppercase; letter-spacing: .04em; padding: 0 10px 8px; border-bottom: 2px solid #e2e8f0; }
+  td { padding: 9px 10px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  .footer { margin-top: 32px; border-top: 1px solid #e2e8f0; padding-top: 10px; font-size: 10px; color: #94a3b8; display: flex; justify-content: space-between; }
+  @media print { body { padding: 20px; } @page { margin: 1.5cm; } }
+</style></head><body>
+<div class="header">
+  <div><h1>${escapeHtml(patient.name)}</h1><div style="font-size:12px;color:#64748b;margin-top:4px">Dossier clinique — ChooseYourScore</div></div>
+  <div class="meta">Exporté le ${new Date().toLocaleDateString('fr-FR')}</div>
+</div>
+<div class="info-row">
+  <div class="info-item"><label>Date de naissance</label><span>${dobStr}</span></div>
+  <div class="info-item"><label>Nombre de sessions</label><span>${patientSessions.length}</span></div>
+</div>
+${patientSessions.length > 0 ? '<div class="stats-row">' + statsHtml + '</div>' : ''}
+${patient.notes ? '<div class="section-title">Notes</div><div class="notes-box">' + escapeHtml(patient.notes) + '</div>' : ''}
+<div class="section-title">Historique des sessions</div>
+${patientSessions.length === 0
+  ? '<p style="color:#94a3b8">Aucune session enregistrée.</p>'
+  : '<table><thead><tr><th>Date</th><th>Exercice</th><th>Score</th><th>Temps</th><th>Réaction</th><th>Notes</th></tr></thead><tbody>' + rowsHtml + '</tbody></table>'}
+<div class="footer"><span>ChooseYourScore</span><span>${escapeHtml(patient.name)}</span></div>
+<script>window.onload = () => { window.print(); }<\/script>
+</body></html>`;
+
+    const win = window.open('', '_blank');
+    if (!win) { alert('Autorisez les popups pour exporter en PDF.'); return; }
+    win.document.write(html);
+    win.document.close();
+  }
+
+  document.getElementById('btn-import-patient-csv').addEventListener('click', () => {
+    document.getElementById('import-patient-csv-input').click();
+  });
+
+  document.getElementById('import-patient-csv-input').addEventListener('change', e => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = evt => {
+      try {
+        let text = evt.target.result;
+        if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1); // retirer BOM
+        const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+
+        function parseRow(line) {
+          const cells = []; let inQuote = false, cell = '';
+          for (let i = 0; i < line.length; i++) {
+            const ch = line[i];
+            if (ch === '"') { if (inQuote && line[i+1]==='"') { cell+='"'; i++; } else inQuote=!inQuote; }
+            else if (ch === ';' && !inQuote) { cells.push(cell); cell=''; }
+            else cell += ch;
+          }
+          cells.push(cell); return cells;
+        }
+
+        // Lire les métadonnées patient dans l'en-tête CSV
+        let csvPatientName = '';
+        for (let i = 0; i < lines.length; i++) {
+          const cells = parseRow(lines[i]);
+          if (cells[0] === 'Nom') { csvPatientName = cells[1] || ''; break; }
+        }
+        if (!csvPatientName) throw new Error('Nom du patient introuvable dans le fichier');
+
+        // Trouver ou créer le patient par correspondance de nom
+        let p = patients.find(pt => pt.name.trim().toLowerCase() === csvPatientName.trim().toLowerCase());
+        if (!p) {
+          p = { id: newId('pat'), name: csvPatientName.trim(), birthDate: '', notes: '', createdAt: new Date().toISOString() };
+          patients.push(p); savePatients();
+        }
+
+        // Trouver la ligne d'en-tête du tableau de sessions
+        let dataStart = -1;
+        for (let i = 0; i < lines.length; i++) {
+          const cells = parseRow(lines[i]);
+          if (cells[0] === 'Date' && cells[1] === 'Exercice') { dataStart = i + 1; break; }
+        }
+        if (dataStart === -1) throw new Error('Format non reconnu — en-tête "Date;Exercice" introuvable');
+
+        function parseFrDate(str) {
+          const [datePart, timePart='00:00'] = str.split(' ');
+          const [d, m, y] = datePart.split('/');
+          const [h, min] = timePart.split(':');
+          return new Date(+y, +m-1, +d, +h, +min).toISOString();
+        }
+
+        let added = 0;
+        for (let i = dataStart; i < lines.length; i++) {
+          const cells = parseRow(lines[i]);
+          if (cells.length < 5) continue;
+          const [dateStr, exerciseName, scoreBrut, , timeS, errLeft='0', errRight='0', , notes=''] = cells;
+          if (!exerciseName || !dateStr) continue;
+          const [scoreNum, totalNum] = scoreBrut.split('/').map(Number);
+          if (isNaN(scoreNum) || isNaN(totalNum) || totalNum === 0) continue;
+          const parsedDate = parseFrDate(dateStr);
+          // Dédoublonnage : même patient + même exercice + même date + même score
+          const duplicate = sessions.some(s =>
+            s.patientId === p.id &&
+            s.exerciseName === exerciseName &&
+            s.score === scoreNum &&
+            s.totalPairs === totalNum &&
+            Math.abs(new Date(s.date) - new Date(parsedDate)) < 60000 // tolérance 1 min
+          );
+          if (duplicate) continue;
+          sessions.push({
+            id: newId('sess'),
+            exerciseId: null,
+            exerciseName,
+            patientName: p.name,
+            patientId: p.id,
+            date: parsedDate,
+            totalTimeMs: (parseFloat(timeS) || 0) * 1000,
+            totalPairs: totalNum,
+            score: scoreNum,
+            errorsLeft: parseInt(errLeft) || 0,
+            errorsRight: parseInt(errRight) || 0,
+            responses: [],
+            notes,
+          });
+          added++;
+        }
+        saveSessions();
+        patientSelectedId = p.id;
+        renderPatientSidebar();
+        renderPatientDetail();
+        alert(added + ' session(s) importée(s) pour ' + p.name + '.');
+      } catch(err) { alert('Erreur import : ' + err.message); }
+    };
+    reader.readAsText(file, 'utf-8'); e.target.value = '';
+  });
+
+  document.getElementById('btn-delete-patient').addEventListener('click', () => {
+    const p = getSelectedPatient(); if (!p) return;
+    if (!confirm('Supprimer le patient "' + p.name + '" ?\nLes sessions associées seront conservées.')) return;
+    patients = patients.filter(pt => pt.id !== patientSelectedId);
+    patientSelectedId = patients.length > 0 ? patients[0].id : null;
+    savePatients(); renderPatientSidebar(); renderPatientDetail();
+  });
+
+  // ── Export / Import ───────────────────────────────────────────────────────────
+  document.getElementById('btn-export').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(exercises, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href=url; a.download='cys-exercices-'+new Date().toISOString().slice(0,10)+'.json'; a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('btn-import').addEventListener('click', () => document.getElementById('import-input').click());
+
+  document.getElementById('import-input').addEventListener('change', e => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = evt => {
+      try {
+        const imported = JSON.parse(evt.target.result);
+        if (!Array.isArray(imported)) throw new Error('Format invalide');
+        if (!confirm('Importer '+imported.length+' exercice(s) et les ajouter aux existants ?')) return;
+        const existing = new Set(exercises.map(ex=>ex.id));
+        let added = 0;
+        imported.forEach(ex => { if (!existing.has(ex.id)) { exercises.push(ex); added++; } });
+        saveExercises(); renderSidebar(); renderExerciseEditor();
+        alert(added+' exercice(s) importé(s).');
+      } catch(err) { alert('Fichier invalide : '+err.message); }
+    };
+    reader.readAsText(file); e.target.value='';
+  });
+
+  // ── Export / Import résultats ─────────────────────────────────────────────────
+  document.getElementById('btn-export-results').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(getFilteredSessions(), null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = Object.assign(document.createElement('a'), {href:url, download:'resultats-cys-'+new Date().toISOString().slice(0,10)+'.json'});
+    a.click(); URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('btn-import-results').addEventListener('click', () => document.getElementById('import-results-input').click());
+
+  document.getElementById('import-results-input').addEventListener('change', e => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = evt => {
+      try {
+        const imported = JSON.parse(evt.target.result);
+        if (!Array.isArray(imported)) throw new Error('Format invalide');
+        if (!confirm('Importer '+imported.length+' session(s) et les ajouter aux existantes ?')) return;
+        const existing = new Set(sessions.map(s=>s.id));
+        let added = 0;
+        imported.forEach(s => { if (!existing.has(s.id)) { sessions.push(s); added++; } });
+        saveSessions(); renderResults();
+        alert(added+' session(s) importée(s).');
+      } catch(err) { alert('Fichier invalide : '+err.message); }
+    };
+    reader.readAsText(file); e.target.value='';
+  });
+
+  // ── Results ───────────────────────────────────────────────────────────────────
+  let rScoreChart = null, rTimeChart = null;
+
+  function initResults() {
+    populatePatientSelect();
+    populateExerciseFilter();
+    renderResults();
+  }
+
+  function populatePatientSelect() {
+    const select = document.getElementById('patient-select'), current = select.value;
+    const patients = [...new Set(sessions.map(s=>s.patientName))].sort();
+    select.innerHTML = '<option value="">— Tous les patients —</option>';
+    patients.forEach(name => {
+      const opt = document.createElement('option');
+      opt.value=name; opt.textContent=name; if(name===current) opt.selected=true; select.appendChild(opt);
+    });
+  }
+
+  function populateExerciseFilter() {
+    const patient = document.getElementById('patient-select').value;
+    const select  = document.getElementById('exercise-filter'), current = select.value;
+    const names = [...new Set(sessions.filter(s=>!patient||s.patientName===patient).map(s=>s.exerciseName))].sort();
+    select.innerHTML = '<option value="">— Tous les exercices —</option>';
+    names.forEach(name => {
+      const opt = document.createElement('option');
+      opt.value=name; opt.textContent=name; if(name===current) opt.selected=true; select.appendChild(opt);
+    });
+  }
+
+  function getFilteredSessions() {
+    const patient  = document.getElementById('patient-select').value;
+    const exercise = document.getElementById('exercise-filter').value;
+    return sessions
+      .filter(s => (!patient||s.patientName===patient) && (!exercise||s.exerciseName===exercise))
+      .sort((a,b) => new Date(a.date)-new Date(b.date));
+  }
+
+  function renderResults() {
+    const filtered = getFilteredSessions();
+    const content    = document.getElementById('r-content');
+    const emptyState = document.getElementById('r-empty-state');
+    if (filtered.length === 0) {
+      content.style.display = 'none'; emptyState.style.display = 'block';
+      emptyState.querySelector('p').textContent = sessions.length===0 ? 'Aucune session enregistrée' : 'Aucune session pour ces filtres';
+      emptyState.querySelector('small').textContent = sessions.length===0 ? 'Les résultats apparaîtront ici après chaque exercice' : 'Essayez de modifier les filtres';
+      return;
+    }
+    content.style.display='block'; emptyState.style.display='none';
+    renderStats(filtered); renderCharts(filtered); renderTable(filtered);
+  }
+
+  function avgReactionMs(session) {
+    if (!session.responses || session.responses.length === 0) return null;
+    return session.responses.reduce((s, r) => s + r.timeMs, 0) / session.responses.length;
+  }
+
+  function renderStats(filtered) {
+    const avgPct  = filtered.reduce((s,r)=>s+r.score/r.totalPairs*100,0)/filtered.length;
+    const avgTime = filtered.reduce((s,r)=>s+r.totalTimeMs,0)/filtered.length;
+    const last    = filtered[filtered.length-1];
+    const allReactions = filtered.flatMap(s => (s.responses||[]).map(r => r.timeMs));
+    const avgReaction  = allReactions.length > 0 ? allReactions.reduce((a,b)=>a+b,0)/allReactions.length : null;
+    document.getElementById('stat-sessions').textContent      = filtered.length;
+    document.getElementById('stat-avg-score').textContent     = Math.round(avgPct)+'%';
+    document.getElementById('stat-last-score').textContent    = last.score+'/'+last.totalPairs+' ('+Math.round(last.score/last.totalPairs*100)+'%)';
+    document.getElementById('stat-avg-time').textContent      = formatDuration(avgTime);
+    document.getElementById('stat-avg-reaction').textContent  = avgReaction !== null ? Math.round(avgReaction)+' ms' : '–';
+  }
+
+  function renderCharts(filtered) {
+    if (typeof Chart === 'undefined') {
+      document.querySelectorAll('.chart-card').forEach(card => {
+        const canvas = card.querySelector('canvas'); canvas.style.display='none';
+        if (!card.querySelector('.chart-unavailable')) {
+          const msg = document.createElement('div'); msg.className='chart-unavailable';
+          msg.textContent="Graphiques indisponibles — placez chart.umd.min.js dans le même dossier.";
+          card.appendChild(msg);
+        }
+      });
+      return;
+    }
+    const labels    = filtered.map(s => new Date(s.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'}));
+    const scoreData = filtered.map(s => Math.round(s.score/s.totalPairs*100));
+    const timeData  = filtered.map(s => Math.round(s.totalTimeMs/1000));
+    const base = {
+      responsive: true, plugins:{legend:{display:false}},
+      scales:{
+        x:{grid:{display:false},ticks:{color:'#94a3b8',font:{size:11}}},
+        y:{grid:{color:'#f1f5f9'},ticks:{color:'#94a3b8',font:{size:11}}},
+      },
+    };
+    if (rScoreChart) rScoreChart.destroy();
+    rScoreChart = new Chart(document.getElementById('chart-score'),{
+      type:'line', data:{labels,datasets:[{data:scoreData,borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,0.08)',borderWidth:2,pointRadius:4,pointBackgroundColor:'#3b82f6',fill:true,tension:0.3}]},
+      options:{...base,scales:{...base.scales,y:{...base.scales.y,min:0,max:100,ticks:{...base.scales.y.ticks,callback:v=>v+'%'}}}},
+    });
+    if (rTimeChart) rTimeChart.destroy();
+    rTimeChart = new Chart(document.getElementById('chart-time'),{
+      type:'line', data:{labels,datasets:[{data:timeData,borderColor:'#7c3aed',backgroundColor:'rgba(124,58,237,0.08)',borderWidth:2,pointRadius:4,pointBackgroundColor:'#7c3aed',fill:true,tension:0.3}]},
+      options:{...base,scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>v+'s'}}}},
+    });
+  }
+
+  function renderTable(filtered) {
+    const tbody = document.getElementById('sessions-tbody'); tbody.innerHTML='';
+    [...filtered].reverse().forEach(session => {
+      const pct = Math.round(session.score/session.totalPairs*100);
+      const scoreClass = pct>=80?'good-score':pct<50?'low-score':'';
+      const tr = document.createElement('tr');
+      const reaction = avgReactionMs(session);
+      tr.innerHTML =
+        '<td>'+new Date(session.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+new Date(session.date).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})+'</td>'+
+        '<td>'+escapeHtml(session.patientName)+'</td>'+
+        '<td>'+escapeHtml(session.exerciseName)+'</td>'+
+        '<td><span class="'+scoreClass+'">'+session.score+'/'+session.totalPairs+'</span> <span class="score-pct">('+pct+'%)</span></td>'+
+        '<td>'+formatDuration(session.totalTimeMs)+'</td>'+
+        '<td>'+session.errorsLeft+'</td>'+
+        '<td>'+session.errorsRight+'</td>'+
+        '<td>'+(reaction !== null ? Math.round(reaction)+' ms' : '–')+'</td>'+
+        '<td></td>'+
+        '<td></td>';
+      const notesTd = tr.children[8];
+      notesTd.contentEditable = 'true';
+      notesTd.textContent = session.notes || '';
+      notesTd.style.cssText = 'max-width:220px;min-width:100px;outline:none;color:#475569;font-style:italic;cursor:text;';
+      notesTd.setAttribute('data-placeholder', 'Ajouter une note…');
+      notesTd.addEventListener('focus', () => { if (!notesTd.textContent) notesTd.style.fontStyle='normal'; });
+      notesTd.addEventListener('blur',  () => {
+        session.notes = notesTd.textContent.trim();
+        saveSessions();
+        notesTd.style.fontStyle = session.notes ? 'italic' : 'italic';
+      });
+      notesTd.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); notesTd.blur(); } });
+      const btn = document.createElement('button');
+      btn.className='btn-delete-session'; btn.textContent='Supprimer';
+      btn.addEventListener('click', () => {
+        if (!confirm('Supprimer cette session ?')) return;
+        sessions = sessions.filter(s=>s.id!==session.id); saveSessions(); renderResults();
+      });
+      tr.lastElementChild.appendChild(btn); tbody.appendChild(tr);
+    });
+  }
+
+  document.getElementById('patient-select').addEventListener('change', () => {
+    document.getElementById('exercise-filter').value=''; populateExerciseFilter(); renderResults();
+  });
+  document.getElementById('exercise-filter').addEventListener('change', renderResults);
+  document.getElementById('btn-clear-filters').addEventListener('click', () => {
+    document.getElementById('patient-select').value=''; document.getElementById('exercise-filter').value='';
+    populateExerciseFilter(); renderResults();
   });
 
   // ── Init ──────────────────────────────────────────────────────────────────────
+  migratePatients();
   initSetup();
 </script>
 </body>

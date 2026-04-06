@@ -1050,9 +1050,14 @@
   }
 
   function getActiveDirections(pair) {
-    const n = pair.numOptions || 4;
-    if (n <= 2) return ['left', 'right'];
-    if (n === 3) return ['left', 'right', 'up'];
+    const n   = pair.numOptions || 4;
+    const dir = pair.direction || 'left';
+    const opp = OPPOSITE[dir];
+    if (n <= 2) return [dir, opp];
+    // 3 options: direction + opposite + first perpendicular
+    const all = ['left','right','up','down'];
+    const perp = all.filter(d => d !== dir && d !== opp);
+    if (n === 3) return [dir, opp, perp[0]];
     return ['left', 'right', 'up', 'down'];
   }
 
@@ -1700,7 +1705,7 @@
     card.style.color      = ac.fg;
     card.className = 'arrow-preview-card';
     const correctDir = rule === 'inverse' ? OPPOSITE[dir] : dir;
-    const activeDirs = numOpt <= 2 ? ['left','right'] : numOpt === 3 ? ['left','right','up'] : ['left','right','up','down'];
+    const activeDirs = getActiveDirections({ direction: dir, numOptions: numOpt });
     const optionsStr = activeDirs.map(d => ARROW_CHARS[d]).join(' ');
     hint.textContent = 'Réponse correcte : ' + (ARROW_CHARS[correctDir] || '') + '  |  Options : ' + optionsStr;
   }

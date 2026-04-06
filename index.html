@@ -780,6 +780,7 @@
       </div>
       <div class="pairs-header">
         <span class="editor-section-label">Paires <span class="badge" id="pair-count-badge">0</span></span>
+        <button class="btn-dup" id="btn-export-csv-pairs">⬇ Exporter CSV</button>
         <button class="btn-dup" id="btn-import-csv-pairs">⬆ Importer CSV</button>
         <input type="file" id="csv-pairs-input" accept=".csv,.txt" style="display:none">
       </div>
@@ -846,8 +847,6 @@
     <div class="sidebar-header">
       <h3>Patients</h3>
       <div style="display:flex;gap:4px">
-        <button class="btn-icon" id="btn-import-patient-csv" title="Importer un patient (CSV)" style="background:#6366f1;font-size:0.85rem">📥</button>
-        <input type="file" id="import-patient-csv-input" accept=".csv,.txt" style="display:none">
         <button class="btn-icon" id="btn-new-patient" title="Nouveau patient">+</button>
       </div>
     </div>
@@ -861,7 +860,9 @@
     <div id="patient-detail" style="display:none; max-width:760px;">
       <div class="editor-header">
         <input type="text" id="patient-name-input" placeholder="Nom du patient" maxlength="100">
-        <button class="btn-dup" id="btn-export-patient-csv">📊 CSV</button>
+        <button class="btn-dup" id="btn-export-patient-json">⬇ JSON</button>
+        <button class="btn-dup" id="btn-import-patient-json">⬆ JSON</button>
+        <input type="file" id="import-patient-json-input" accept=".json" style="display:none">
         <button class="btn-dup" id="btn-export-patient-pdf">📄 PDF</button>
         <button class="btn-danger" id="btn-delete-patient">Supprimer</button>
       </div>
@@ -950,11 +951,7 @@
         </div>
         <div class="field-row">
           <label>Nbre de choix</label>
-          <select id="seq-num-choices">
-            <option value="2">2 choix</option>
-            <option value="3">3 choix</option>
-            <option value="4" selected>4 choix</option>
-          </select>
+          <input type="number" id="seq-num-choices" min="2" step="1" value="4" style="width:100%;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.9rem;outline:none;font-family:inherit;color:#0f172a;transition:border-color .15s">
         </div>
       </div>
       <div style="margin-bottom:16px">
@@ -1808,6 +1805,18 @@
     saveExercises(); renderSidebar(); renderExerciseEditor();
   });
 
+  document.getElementById('btn-export-csv-pairs').addEventListener('click', () => {
+    const ex = getSelectedEx(); if (!ex) return;
+    const choicePairs = (ex.pairs || []).filter(p => p.type !== 'arrow' && p.type !== 'sequence');
+    if (choicePairs.length === 0) { alert('Aucune paire de type "Choix" à exporter.'); return; }
+    const lines = choicePairs.map(p => [p.left?.text || '', p.right?.text || '', p.correct === 'right' ? 'droite' : 'gauche'].join(','));
+    const csv = lines.join('\n');
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = Object.assign(document.createElement('a'), { href: url, download: (ex.name || 'paires').replace(/\s+/g, '-') + '-paires.csv' });
+    a.click(); URL.revokeObjectURL(url);
+  });
+
   document.getElementById('btn-import-csv-pairs').addEventListener('click', () => {
     const ex = getSelectedEx(); if (!ex) return;
     document.getElementById('csv-pairs-input').click();
@@ -1931,7 +1940,7 @@
     document.getElementById('sequence-config').style.display = pairType === 'sequence' ? 'block' : 'none';
     document.getElementById('choice-config').style.display   = pairType === 'choice'   ? 'block' : 'none';
     if (pairType === 'arrow')    { refreshArrowPreview(); }
-    else if (pairType === 'sequence') { refreshSequenceItemInputs(); }
+    else if (pairType === 'sequence') { refreshSequenceItemInputs(); refreshSequenceChoicesRow(); }
     else { refreshModalPreview(); }
   });
   document.getElementById('arrow-direction').addEventListener('change', refreshArrowPreview);
@@ -2210,7 +2219,7 @@
     const numItems = (pair.items || []).length || 4;
     document.getElementById('seq-num-items').value = numItems;
     document.getElementById('seq-duration').value = ((pair.displayDuration || 1000) / 1000);
-    pickOption('seq-num-choices', String((pair.choices || []).length >= 2 ? (pair.choices || []).length : 4));
+    document.getElementById('seq-num-choices').value = (pair.choices || []).length >= 2 ? (pair.choices || []).length : 4;
     refreshSequenceItemInputs();
     const itemInputs = document.getElementById('seq-items-row').querySelectorAll('input');
     (pair.items || []).forEach((v, i) => { if (itemInputs[i]) itemInputs[i].value = v; });
@@ -2233,6 +2242,7 @@
 
   document.getElementById('seq-num-items').addEventListener('input',  () => { refreshSequenceItemInputs(); refreshSequenceChoicesRow(); });
   document.getElementById('seq-num-items').addEventListener('change', () => { refreshSequenceItemInputs(); refreshSequenceChoicesRow(); });
+  document.getElementById('seq-num-choices').addEventListener('input',  refreshSequenceChoicesRow);
   document.getElementById('seq-num-choices').addEventListener('change', refreshSequenceChoicesRow);
   document.getElementById('seq-question-pos').addEventListener('change', refreshSequencePreview);
   document.getElementById('seq-generate-btn').addEventListener('click', autoGenerateSequenceChoices);
@@ -2368,49 +2378,39 @@
     savePatients();
   });
 
-  document.getElementById('btn-export-patient-csv').addEventListener('click', () => {
+  document.getElementById('btn-export-patient-json').addEventListener('click', () => {
     const p = getSelectedPatient(); if (!p) return;
-    exportPatientCSV(p);
+    const patientSessions = sessions.filter(s => s.patientId === p.id);
+    const blob = new Blob([JSON.stringify(patientSessions, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = Object.assign(document.createElement('a'), { href: url, download: 'resultats-' + p.name.replace(/\s+/g, '-') + '-' + new Date().toISOString().slice(0,10) + '.json' });
+    a.click(); URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('btn-import-patient-json').addEventListener('click', () => document.getElementById('import-patient-json-input').click());
+
+  document.getElementById('import-patient-json-input').addEventListener('change', e => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = evt => {
+      try {
+        const imported = JSON.parse(evt.target.result);
+        if (!Array.isArray(imported)) throw new Error('Format invalide');
+        if (!confirm('Importer ' + imported.length + ' session(s) et les ajouter aux existantes ?')) return;
+        const existing = new Set(sessions.map(s => s.id));
+        let added = 0;
+        imported.forEach(s => { if (!existing.has(s.id)) { sessions.push(s); added++; } });
+        saveSessions(); renderPatientDetail();
+        alert(added + ' session(s) importée(s).');
+      } catch(err) { alert('Fichier invalide : ' + err.message); }
+    };
+    reader.readAsText(file); e.target.value = '';
   });
 
   document.getElementById('btn-export-patient-pdf').addEventListener('click', () => {
     const p = getSelectedPatient(); if (!p) return;
     exportPatientPDF(p);
   });
-
-  function exportPatientCSV(patient) {
-    const patientSessions = sessions
-      .filter(s => s.patientId === patient.id)
-      .sort((a,b) => new Date(a.date) - new Date(b.date));
-    const rows = [];
-    rows.push(['Nom', patient.name]);
-    if (patient.birthDate) rows.push(['Date de naissance', new Date(patient.birthDate).toLocaleDateString('fr-FR')]);
-    if (patient.notes)     rows.push(['Notes', patient.notes]);
-    rows.push([]);
-    rows.push(['Date', 'Exercice', 'Score brut', 'Score %', 'Temps (s)', 'Erreurs gauche', 'Erreurs droite', 'Réaction moy. (ms)', 'Notes']);
-    patientSessions.forEach(s => {
-      const reaction = avgReactionMs(s);
-      rows.push([
-        new Date(s.date).toLocaleDateString('fr-FR') + ' ' + new Date(s.date).toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}),
-        s.exerciseName,
-        s.score + '/' + s.totalPairs,
-        Math.round(s.score / s.totalPairs * 100),
-        Math.round(s.totalTimeMs / 1000),
-        s.errorsLeft,
-        s.errorsRight,
-        reaction !== null ? Math.round(reaction) : '',
-        s.notes || '',
-      ]);
-    });
-    const csv = rows.map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(';')).join('\n');
-    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'patient-' + patient.name.replace(/\s+/g, '-') + '-' + new Date().toISOString().slice(0,10) + '.csv';
-    a.click();
-    URL.revokeObjectURL(url);
-  }
 
   function exportPatientPDF(patient) {
     const patientSessions = sessions
@@ -2490,105 +2490,6 @@ ${patientSessions.length === 0
     win.document.write(html);
     win.document.close();
   }
-
-  document.getElementById('btn-import-patient-csv').addEventListener('click', () => {
-    document.getElementById('import-patient-csv-input').click();
-  });
-
-  document.getElementById('import-patient-csv-input').addEventListener('change', e => {
-    const file = e.target.files[0]; if (!file) return;
-    const reader = new FileReader();
-    reader.onload = evt => {
-      try {
-        let text = evt.target.result;
-        if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1); // retirer BOM
-        const lines = text.split('\n').map(l => l.trim()).filter(l => l);
-
-        function parseRow(line) {
-          const cells = []; let inQuote = false, cell = '';
-          for (let i = 0; i < line.length; i++) {
-            const ch = line[i];
-            if (ch === '"') { if (inQuote && line[i+1]==='"') { cell+='"'; i++; } else inQuote=!inQuote; }
-            else if (ch === ';' && !inQuote) { cells.push(cell); cell=''; }
-            else cell += ch;
-          }
-          cells.push(cell); return cells;
-        }
-
-        // Lire les métadonnées patient dans l'en-tête CSV
-        let csvPatientName = '';
-        for (let i = 0; i < lines.length; i++) {
-          const cells = parseRow(lines[i]);
-          if (cells[0] === 'Nom') { csvPatientName = cells[1] || ''; break; }
-        }
-        if (!csvPatientName) throw new Error('Nom du patient introuvable dans le fichier');
-
-        // Trouver ou créer le patient par correspondance de nom
-        let p = patients.find(pt => pt.name.trim().toLowerCase() === csvPatientName.trim().toLowerCase());
-        if (!p) {
-          p = { id: newId('pat'), name: csvPatientName.trim(), birthDate: '', notes: '', createdAt: new Date().toISOString() };
-          patients.push(p); savePatients();
-        }
-
-        // Trouver la ligne d'en-tête du tableau de sessions
-        let dataStart = -1;
-        for (let i = 0; i < lines.length; i++) {
-          const cells = parseRow(lines[i]);
-          if (cells[0] === 'Date' && cells[1] === 'Exercice') { dataStart = i + 1; break; }
-        }
-        if (dataStart === -1) throw new Error('Format non reconnu — en-tête "Date;Exercice" introuvable');
-
-        function parseFrDate(str) {
-          const [datePart, timePart='00:00'] = str.split(' ');
-          const [d, m, y] = datePart.split('/');
-          const [h, min] = timePart.split(':');
-          return new Date(+y, +m-1, +d, +h, +min).toISOString();
-        }
-
-        let added = 0;
-        for (let i = dataStart; i < lines.length; i++) {
-          const cells = parseRow(lines[i]);
-          if (cells.length < 5) continue;
-          const [dateStr, exerciseName, scoreBrut, , timeS, errLeft='0', errRight='0', , notes=''] = cells;
-          if (!exerciseName || !dateStr) continue;
-          const [scoreNum, totalNum] = scoreBrut.split('/').map(Number);
-          if (isNaN(scoreNum) || isNaN(totalNum) || totalNum === 0) continue;
-          const parsedDate = parseFrDate(dateStr);
-          // Dédoublonnage : même patient + même exercice + même date + même score
-          const duplicate = sessions.some(s =>
-            s.patientId === p.id &&
-            s.exerciseName === exerciseName &&
-            s.score === scoreNum &&
-            s.totalPairs === totalNum &&
-            Math.abs(new Date(s.date) - new Date(parsedDate)) < 60000 // tolérance 1 min
-          );
-          if (duplicate) continue;
-          sessions.push({
-            id: newId('sess'),
-            exerciseId: null,
-            exerciseName,
-            patientName: p.name,
-            patientId: p.id,
-            date: parsedDate,
-            totalTimeMs: (parseFloat(timeS) || 0) * 1000,
-            totalPairs: totalNum,
-            score: scoreNum,
-            errorsLeft: parseInt(errLeft) || 0,
-            errorsRight: parseInt(errRight) || 0,
-            responses: [],
-            notes,
-          });
-          added++;
-        }
-        saveSessions();
-        patientSelectedId = p.id;
-        renderPatientSidebar();
-        renderPatientDetail();
-        alert(added + ' session(s) importée(s) pour ' + p.name + '.');
-      } catch(err) { alert('Erreur import : ' + err.message); }
-    };
-    reader.readAsText(file, 'utf-8'); e.target.value = '';
-  });
 
   document.getElementById('btn-delete-patient').addEventListener('click', () => {
     const p = getSelectedPatient(); if (!p) return;

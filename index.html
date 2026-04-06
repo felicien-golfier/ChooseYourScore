@@ -947,7 +947,7 @@
 
     <!-- Sequence config -->
     <div id="sequence-config" style="display:none; margin-bottom:28px">
-      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:16px">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px">
         <div class="field-row">
           <label>Nbre d'items</label>
           <input type="number" id="seq-num-items" min="1" step="1" value="4" style="width:100%;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.9rem;outline:none;font-family:inherit;color:#0f172a;transition:border-color .15s">
@@ -956,31 +956,18 @@
           <label>Durée d'affichage (secondes)</label>
           <input type="number" id="seq-duration" min="0.1" step="0.1" value="1" style="width:100%;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.9rem;outline:none;font-family:inherit;color:#0f172a;transition:border-color .15s">
         </div>
-        <div class="field-row">
-          <label>Nbre de choix</label>
-          <input type="number" id="seq-num-choices" min="2" step="1" value="4" style="width:100%;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.9rem;outline:none;font-family:inherit;color:#0f172a;transition:border-color .15s">
-        </div>
       </div>
       <div style="margin-bottom:16px">
         <div class="field-row" style="margin-bottom:8px"><label>Items à afficher (un par case)</label></div>
         <div id="seq-items-row" style="display:flex; gap:8px; margin-bottom:4px; flex-wrap:wrap"></div>
         <div style="font-size:0.76rem;color:#94a3b8;margin-top:4px">Lettres, chiffres, mots… Un item par case. Mettre 1 item pour afficher un texte entier.</div>
       </div>
-      <div class="field-row" style="margin-bottom:16px">
-        <label>Texte de la question</label>
-        <input type="text" id="seq-question-text" placeholder="ex. Quel mot avez-vous vu ?" style="width:100%;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.9rem;outline:none;font-family:inherit;color:#0f172a;transition:border-color .15s">
-      </div>
-      <div style="margin-bottom:16px">
-        <div style="margin-bottom:8px">
-          <label style="font-size:0.78rem;color:#64748b;font-weight:500">Réponses proposées <span style="color:#16a34a;font-size:0.72rem">(1ère = correcte)</span></label>
-        </div>
-        <div id="seq-choices-row" style="display:flex; gap:8px; flex-wrap:wrap"></div>
-      </div>
-      <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:12px;padding:16px;text-align:center">
-        <div style="font-size:0.78rem;color:#94a3b8;margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em">Aperçu</div>
-        <div id="seq-preview-items" style="display:flex;gap:10px;justify-content:center;margin-bottom:12px;flex-wrap:wrap"></div>
-        <div id="seq-preview-question" style="font-size:1rem;color:#475569;margin-bottom:10px;font-weight:500"></div>
-        <div id="seq-preview-choices" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"></div>
+      <div id="seq-questions-container" style="margin-bottom:12px"></div>
+      <button type="button" id="seq-add-question-btn" style="width:100%;padding:10px;border:2px dashed #cbd5e1;border-radius:10px;background:transparent;color:#64748b;font-size:0.9rem;cursor:pointer;font-family:inherit;transition:all .15s;margin-bottom:16px">+ Ajouter une question</button>
+      <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:12px;padding:16px">
+        <div style="font-size:0.78rem;color:#94a3b8;margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;text-align:center">Aperçu</div>
+        <div id="seq-preview-items" style="display:flex;gap:10px;justify-content:center;margin-bottom:10px;flex-wrap:wrap"></div>
+        <div id="seq-preview-questions" style="display:flex;flex-direction:column;gap:6px"></div>
       </div>
     </div>
 
@@ -1285,6 +1272,7 @@
   const btnRight = document.getElementById('item-right');
 
   let sequenceTimer = null;
+  let currentQuestionIndex = 0;
 
   function renderPair() {
     const pair = currentPairs[pairIndex];
@@ -1359,10 +1347,15 @@
     timerFill.style.transition = 'width ' + (pair.displayDuration || 1000) + 'ms linear';
     timerFill.style.width = '0%';
 
-    sequenceTimer = setTimeout(() => { sequenceTimer = null; startSequenceQuestion(pair); }, pair.displayDuration || 1000);
+    currentQuestionIndex = 0;
+    sequenceTimer = setTimeout(() => { sequenceTimer = null; startSequenceQuestion(pair, 0); }, pair.displayDuration || 1000);
   }
 
-  function startSequenceQuestion(pair) {
+  function startSequenceQuestion(pair, qIdx) {
+    const questions = pair.questions || [{ questionText: pair.questionText || '', choices: pair.choices || [] }];
+    const q = questions[qIdx];
+    const correctAnswer = (q.choices || [])[0] || '';
+
     const displayEl  = document.getElementById('sequence-display');
     const questionEl = document.getElementById('sequence-question');
     const choicesEl  = document.getElementById('sequence-choices');
@@ -1377,17 +1370,16 @@
       showAgainBtn.textContent = visible ? '👁 Revoir' : '🙈 Masquer';
     };
 
-    const correctAnswer = (pair.choices || [])[0] || '';
-    questionEl.textContent = pair.questionText || '';
+    questionEl.textContent = q.questionText || '';
     questionEl.style.display = 'block';
 
-    const shuffledChoices = shuffleArray([...(pair.choices || [])]);
+    const shuffledChoices = shuffleArray([...(q.choices || [])]);
     choicesEl.innerHTML = '';
     shuffledChoices.forEach(choice => {
       const btn = document.createElement('button');
       btn.className = 'sequence-choice-btn';
       btn.textContent = choice;
-      btn.addEventListener('click', () => handleSequenceResponse(choice, correctAnswer, pair));
+      btn.addEventListener('click', () => handleSequenceResponse(choice, correctAnswer, pair, questions, qIdx));
       choicesEl.appendChild(btn);
     });
     choicesEl.style.display = 'flex';
@@ -1395,18 +1387,26 @@
     pairStartTime = Date.now();
   }
 
-  function handleSequenceResponse(chosen, correctAnswer, pair) {
+  function handleSequenceResponse(chosen, correctAnswer, pair, questions, qIdx) {
     if (isWaiting) return;
     isWaiting = true;
     const isCorrect = chosen === correctAnswer;
-    responses.push({ pairId: pair.id, type: 'sequence', items: pair.items, chosen, isCorrect, correctAnswer, timeMs: Date.now() - pairStartTime });
+    responses.push({ pairId: pair.id, type: 'sequence', items: pair.items, questionIndex: qIdx, chosen, isCorrect, correctAnswer, timeMs: Date.now() - pairStartTime });
     const choicesEl = document.getElementById('sequence-choices');
     Array.from(choicesEl.querySelectorAll('.sequence-choice-btn')).forEach(btn => {
       btn.disabled = true;
       if (btn.textContent === chosen)        btn.classList.add(isCorrect ? 'correct' : 'incorrect');
       if (!isCorrect && btn.textContent === correctAnswer) btn.classList.add('missed');
     });
-    setTimeout(() => { pairIndex++; if (pairIndex >= currentPairs.length) finishExercise(); else renderPair(); }, 700);
+    setTimeout(() => {
+      if (qIdx + 1 < questions.length) {
+        isWaiting = false;
+        startSequenceQuestion(pair, qIdx + 1);
+      } else {
+        pairIndex++;
+        if (pairIndex >= currentPairs.length) finishExercise(); else renderPair();
+      }
+    }, 700);
   }
 
   function playPairAudios(pair) {
@@ -1704,9 +1704,9 @@
         chip.textContent = (pair.items || []).join(' ');
         const lbl = document.createElement('span');
         lbl.style.cssText = 'font-size:0.8rem;color:#64748b;margin-left:8px';
-        const pos = pair.questionPosition || 1;
-        const ordinals = ['1er', '2ème', '3ème', '4ème', '5ème'];
-        lbl.textContent = (ordinals[pos-1] || pos+'ème') + ' · ' + (pair.displayDuration || 1000) + ' ms · ' + (pair.choices || []).length + ' choix';
+        const questions = pair.questions || (pair.questionText ? [{ choices: pair.choices || [] }] : []);
+        const totalChoices = questions.reduce((sum, q) => sum + (q.choices || []).length, 0);
+        lbl.textContent = (pair.displayDuration || 1000) + ' ms · ' + questions.length + ' question' + (questions.length > 1 ? 's' : '') + ' · ' + totalChoices + ' choix';
         preview.appendChild(chip);
         preview.appendChild(lbl);
       } else {
@@ -2064,8 +2064,8 @@
       pair.type             = 'sequence';
       pair.items            = seqData.items;
       pair.displayDuration  = seqData.displayDuration;
-      pair.questionText     = seqData.questionText;
-      pair.choices          = seqData.choices;
+      pair.questions        = seqData.questions;
+      delete pair.questionText; delete pair.choices;
       delete pair.left; delete pair.right; delete pair.correct;
       delete pair.direction; delete pair.bgColor; delete pair.rule; delete pair.numOptions;
     } else {
@@ -2120,31 +2120,94 @@
     return Array.from(document.getElementById('seq-items-row').querySelectorAll('input')).map(i => i.value.trim());
   }
 
-  function refreshSequenceChoicesRow() {
-    const numChoices = parseInt(document.getElementById('seq-num-choices').value, 10) || 4;
-    const row = document.getElementById('seq-choices-row');
-    const existing = Array.from(row.querySelectorAll('input')).map(i => i.value);
-    row.innerHTML = '';
-    for (let i = 0; i < numChoices; i++) {
+  // ── Sequence question blocks ──────────────────────────────────────────────────
+  function buildChoicesRow(container, choices) {
+    container.innerHTML = '';
+    choices.forEach((val, i) => {
       const isFirst = i === 0;
       const input = document.createElement('input');
       input.type = 'text';
-      input.style.cssText = 'min-width:60px;max-width:160px;flex:1;padding:8px 10px;border:1.5px solid ' + (isFirst ? '#86efac' : '#e2e8f0') + ';border-radius:8px;font-size:0.95rem;font-family:inherit;font-weight:600;outline:none;background:' + (isFirst ? '#f0fdf4' : 'white') + ';color:#0f172a';
+      input.className = 'seq-q-choice';
+      input.style.cssText = 'min-width:60px;max-width:160px;flex:1;padding:7px 9px;border:1.5px solid ' + (isFirst ? '#86efac' : '#e2e8f0') + ';border-radius:7px;font-size:0.9rem;font-family:inherit;font-weight:600;outline:none;background:' + (isFirst ? '#f0fdf4' : 'white') + ';color:#0f172a';
       input.title = isFirst ? 'Réponse correcte' : '';
-      input.value = existing[i] || '';
+      input.value = val;
       input.addEventListener('input', refreshSequencePreview);
       input.addEventListener('focus', () => { input.style.borderColor = isFirst ? '#22c55e' : '#3b82f6'; });
       input.addEventListener('blur',  () => { input.style.borderColor = isFirst ? '#86efac' : '#e2e8f0'; });
-      row.appendChild(input);
-    }
-    refreshSequencePreview();
+      container.appendChild(input);
+    });
+  }
+
+  function buildSequenceQuestionBlock(q) {
+    const block = document.createElement('div');
+    block.className = 'seq-q-block';
+    block.style.cssText = 'border:1.5px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-bottom:10px;background:#fafafa';
+
+    // Header
+    const header = document.createElement('div');
+    header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:10px';
+    const title = document.createElement('span');
+    title.className = 'seq-q-title';
+    title.style.cssText = 'font-size:0.78rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.04em';
+    const delBtn = document.createElement('button');
+    delBtn.type = 'button'; delBtn.className = 'seq-q-del';
+    delBtn.textContent = '✕ Supprimer';
+    delBtn.style.cssText = 'padding:2px 8px;border:1px solid #fca5a5;border-radius:5px;background:white;color:#ef4444;font-size:0.75rem;cursor:pointer;font-family:inherit';
+    delBtn.addEventListener('click', () => {
+      if (document.getElementById('seq-questions-container').querySelectorAll('.seq-q-block').length > 1) {
+        block.remove(); updateSeqQuestionTitles(); refreshSequencePreview();
+      }
+    });
+    header.append(title, delBtn);
+    block.appendChild(header);
+
+    // Question text
+    const qInput = document.createElement('input');
+    qInput.type = 'text'; qInput.className = 'seq-q-text';
+    qInput.placeholder = 'Texte de la question…';
+    qInput.value = q.questionText || '';
+    qInput.style.cssText = 'width:100%;padding:7px 10px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:0.9rem;outline:none;font-family:inherit;color:#0f172a;margin-bottom:8px;transition:border-color .15s';
+    qInput.addEventListener('input', refreshSequencePreview);
+    block.appendChild(qInput);
+
+    // Nbre de choix + choices row
+    const choicesHeader = document.createElement('div');
+    choicesHeader.style.cssText = 'display:flex;align-items:center;gap:12px;margin-bottom:6px';
+    const choicesLabel = document.createElement('span');
+    choicesLabel.style.cssText = 'font-size:0.78rem;color:#64748b;font-weight:500';
+    choicesLabel.innerHTML = 'Réponses <span style="color:#16a34a;font-size:0.72rem">(1ère = correcte)</span>';
+    const numInput = document.createElement('input');
+    numInput.type = 'number'; numInput.className = 'seq-q-num-choices';
+    numInput.min = 2; numInput.step = 1;
+    numInput.value = (q.choices || []).length >= 2 ? (q.choices || []).length : 2;
+    numInput.style.cssText = 'width:52px;padding:4px 6px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:0.85rem;outline:none;font-family:inherit;color:#0f172a';
+    const choicesRow = document.createElement('div');
+    choicesRow.className = 'seq-q-choices-row';
+    choicesRow.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap';
+    buildChoicesRow(choicesRow, (q.choices && q.choices.length >= 2) ? q.choices : Array(parseInt(numInput.value)).fill(''));
+    numInput.addEventListener('input', () => {
+      const n = Math.max(2, parseInt(numInput.value) || 2);
+      const existing = Array.from(choicesRow.querySelectorAll('.seq-q-choice')).map(i => i.value);
+      while (existing.length < n) existing.push('');
+      buildChoicesRow(choicesRow, existing.slice(0, n));
+      refreshSequencePreview();
+    });
+    choicesHeader.append(choicesLabel, numInput);
+    block.append(choicesHeader, choicesRow);
+    return block;
+  }
+
+  function updateSeqQuestionTitles() {
+    document.getElementById('seq-questions-container').querySelectorAll('.seq-q-block').forEach((block, i) => {
+      block.querySelector('.seq-q-title').textContent = 'Question ' + (i + 1);
+      block.querySelector('.seq-q-del').style.display =
+        document.getElementById('seq-questions-container').querySelectorAll('.seq-q-block').length > 1 ? '' : 'none';
+    });
   }
 
   function refreshSequencePreview() {
     const items = getSequenceItemValues();
     const isSingle = items.length === 1;
-    const choices = Array.from(document.getElementById('seq-choices-row').querySelectorAll('input')).map(i => i.value);
-    const customQuestion = document.getElementById('seq-question-text').value.trim();
     const previewItems = document.getElementById('seq-preview-items');
     previewItems.innerHTML = '';
     items.forEach(item => {
@@ -2155,48 +2218,54 @@
       box.textContent = item || '?';
       previewItems.appendChild(box);
     });
-    document.getElementById('seq-preview-question').textContent = customQuestion;
-    const previewChoices = document.getElementById('seq-preview-choices');
-    previewChoices.innerHTML = '';
-    choices.forEach((c, i) => {
-      const div = document.createElement('div');
-      div.style.cssText = 'padding:6px 12px;border:2px solid ' + (i===0 ? '#86efac' : '#e2e8f0') + ';border-radius:8px;font-size:0.95rem;font-weight:600;background:' + (i===0 ? '#f0fdf4' : 'white') + ';color:#0f172a;word-break:break-word';
-      div.textContent = c || '?';
-      previewChoices.appendChild(div);
+    const previewQs = document.getElementById('seq-preview-questions');
+    previewQs.innerHTML = '';
+    document.getElementById('seq-questions-container').querySelectorAll('.seq-q-block').forEach((block, i) => {
+      const qText = block.querySelector('.seq-q-text').value.trim();
+      const choices = Array.from(block.querySelectorAll('.seq-q-choice')).map(inp => inp.value.trim());
+      const row = document.createElement('div');
+      row.style.cssText = 'font-size:0.82rem;color:#64748b;padding:4px 0;border-top:1px solid #e2e8f0';
+      row.innerHTML = '<span style="font-weight:600;color:#334155">Q' + (i+1) + ':</span> ' +
+        (qText ? '<em>' + escapeHtml(qText) + '</em>' : '<span style="color:#cbd5e1">—</span>') +
+        ' → ' + choices.map((c, ci) => '<span style="padding:1px 6px;border-radius:4px;background:' + (ci===0?'#f0fdf4':'#f8fafc') + ';border:1px solid ' + (ci===0?'#86efac':'#e2e8f0') + '">' + escapeHtml(c||'?') + '</span>').join(' ');
+      previewQs.appendChild(row);
     });
   }
 
   function fillSequenceModal(pair) {
-    const numItems = (pair.items || []).length || 4;
+    const numItems = (pair.items || []).length || 1;
     document.getElementById('seq-num-items').value = numItems;
     document.getElementById('seq-duration').value = ((pair.displayDuration || 1000) / 1000);
-    document.getElementById('seq-num-choices').value = (pair.choices || []).length >= 2 ? (pair.choices || []).length : 4;
     refreshSequenceItemInputs();
     const itemInputs = document.getElementById('seq-items-row').querySelectorAll('input');
     (pair.items || []).forEach((v, i) => { if (itemInputs[i]) itemInputs[i].value = v; });
-    document.getElementById('seq-question-text').value = pair.questionText || '';
-    refreshSequenceChoicesRow();
-    const choiceInputs = document.getElementById('seq-choices-row').querySelectorAll('input');
-    (pair.choices || []).forEach((v, i) => { if (choiceInputs[i]) choiceInputs[i].value = v; });
+    // Normalize old format to questions array
+    const questions = pair.questions || [{questionText: pair.questionText || '', choices: pair.choices || ['', '']}];
+    const container = document.getElementById('seq-questions-container');
+    container.innerHTML = '';
+    questions.forEach(q => container.appendChild(buildSequenceQuestionBlock(q)));
+    updateSeqQuestionTitles();
     refreshSequencePreview();
   }
 
   function readSequenceModal() {
-    const items = getSequenceItemValues();
-    const isSingle = items.length === 1;
+    const questions = Array.from(document.getElementById('seq-questions-container').querySelectorAll('.seq-q-block')).map(block => ({
+      questionText: block.querySelector('.seq-q-text').value.trim(),
+      choices:      Array.from(block.querySelectorAll('.seq-q-choice')).map(i => i.value.trim()),
+    }));
     return {
-      items,
+      items:           getSequenceItemValues(),
       displayDuration: Math.round((parseFloat(document.getElementById('seq-duration').value) || 1) * 1000),
-      questionText:    document.getElementById('seq-question-text').value.trim(),
-      choices:         Array.from(document.getElementById('seq-choices-row').querySelectorAll('input')).map(i => i.value.trim()),
+      questions,
     };
   }
 
-  document.getElementById('seq-num-items').addEventListener('input',  () => { refreshSequenceItemInputs(); refreshSequenceChoicesRow(); });
-  document.getElementById('seq-num-items').addEventListener('change', () => { refreshSequenceItemInputs(); refreshSequenceChoicesRow(); });
-  document.getElementById('seq-num-choices').addEventListener('input',  refreshSequenceChoicesRow);
-  document.getElementById('seq-num-choices').addEventListener('change', refreshSequenceChoicesRow);
-  document.getElementById('seq-question-text').addEventListener('input', refreshSequencePreview);
+  document.getElementById('seq-num-items').addEventListener('input',  () => { refreshSequenceItemInputs(); });
+  document.getElementById('seq-num-items').addEventListener('change', () => { refreshSequenceItemInputs(); });
+  document.getElementById('seq-add-question-btn').addEventListener('click', () => {
+    document.getElementById('seq-questions-container').appendChild(buildSequenceQuestionBlock({questionText:'', choices:['','']}));
+    updateSeqQuestionTitles(); refreshSequencePreview();
+  });
 
   document.getElementById('pair-modal').addEventListener('click', e => { if (e.target===document.getElementById('pair-modal')) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key==='Escape' && document.getElementById('pair-modal').style.display!=='none') closeModal(); });

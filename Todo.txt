@@ -1,0 +1,2 @@
+- Utiliser le meme code pour exporter et importer les patients que pour les resultats puisque ca touche a la meme base de donnee. Il suffit juste d'exporter avec le filtre du nom du patient. 
+- Il y a un moyen d'importer un CSV de pairs, mais pas de moyen de les exporter. Il faudrait un petit bouton pour les telecharger en csv.

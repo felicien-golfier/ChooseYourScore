@@ -865,7 +865,7 @@
 
     <!-- Arrow config -->
     <div id="arrow-config" style="display:none; margin-bottom:28px">
-      <div id="arrow-fields-grid" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:16px">
+      <div id="arrow-fields-grid" style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:16px; margin-bottom:16px">
         <div class="field-row">
           <label>Direction</label>
           <select id="arrow-direction">
@@ -884,6 +884,14 @@
           <select id="arrow-rule">
             <option value="same">↔ Même sens</option>
             <option value="inverse">↔ Sens inverse</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <label>Nbre d'options</label>
+          <select id="arrow-num-options">
+            <option value="2">2 (← →)</option>
+            <option value="3">3 (← → ↑)</option>
+            <option value="4" selected>4 (← → ↑ ↓)</option>
           </select>
         </div>
       </div>
@@ -1039,6 +1047,13 @@
   function getArrowCorrect(pair) {
     const rule = pair.rule || (pair.bgColor === 'yellow' ? 'inverse' : 'same');
     return rule === 'inverse' ? OPPOSITE[pair.direction] : pair.direction;
+  }
+
+  function getActiveDirections(pair) {
+    const n = pair.numOptions || 4;
+    if (n <= 2) return ['left', 'right'];
+    if (n === 3) return ['left', 'right', 'up'];
+    return ['left', 'right', 'up', 'down'];
   }
 
   // ── Utils ─────────────────────────────────────────────────────────────────────
@@ -1197,12 +1212,16 @@
       card.className   = 'arrow-card';
       const ac = resolveArrowColor(pair.bgColor || 'blue');
       card.style.background = ac.bg; card.style.color = ac.fg;
+      const active = getActiveDirections(pair);
       ['up','down','left','right'].forEach(d => {
         const btn = document.getElementById('akey-' + d);
+        const visible = active.includes(d);
+        btn.style.visibility = visible ? '' : 'hidden';
         btn.className = 'arrow-key-btn';
-        btn.disabled  = false;
+        btn.disabled  = !visible;
       });
-      document.getElementById('keyboard-hint').textContent = '← ↑ → ↓  Flèches du clavier';
+      const hintChars = active.map(d => ARROW_CHARS[d]).join('  ');
+      document.getElementById('keyboard-hint').textContent = hintChars + '  Flèches du clavier';
     } else {
       document.getElementById('pair-container').style.display  = 'grid';
       document.getElementById('arrow-container').style.display = 'none';
@@ -1246,6 +1265,7 @@
     if (isWaiting) return;
     const pair = currentPairs[pairIndex];
     if (pair.type !== 'arrow') return;
+    if (!getActiveDirections(pair).includes(dir)) return;
     isWaiting = true;
     ['up','down','left','right'].forEach(d => document.getElementById('akey-'+d).disabled = true);
     const correctDir = getArrowCorrect(pair);
@@ -1498,7 +1518,8 @@
         const lbl = document.createElement('span');
         lbl.style.cssText = 'font-size:0.8rem;color:#64748b;margin-left:8px';
         const rule = pair.rule || (pair.bgColor === 'yellow' ? 'inverse' : 'same');
-        lbl.textContent = rule === 'inverse' ? 'sens inverse' : 'même sens';
+        const nOpts = pair.numOptions || 4;
+        lbl.textContent = (rule === 'inverse' ? 'sens inverse' : 'même sens') + ' · ' + nOpts + ' options';
         preview.appendChild(chip);
         preview.appendChild(lbl);
       } else {
@@ -1667,18 +1688,21 @@
 
   // ── Pair modal ────────────────────────────────────────────────────────────────
   function refreshArrowPreview() {
-    const dir  = document.getElementById('arrow-direction').value;
-    const bgHex = document.getElementById('arrow-color').value;
-    const rule  = document.getElementById('arrow-rule').value;
+    const dir    = document.getElementById('arrow-direction').value;
+    const bgHex  = document.getElementById('arrow-color').value;
+    const rule   = document.getElementById('arrow-rule').value;
+    const numOpt = parseInt(document.getElementById('arrow-num-options').value, 10) || 4;
     const card = document.getElementById('arrow-preview-card');
     const hint = document.getElementById('arrow-preview-hint');
     const ac   = resolveArrowColor(bgHex);
-    card.textContent   = ARROW_CHARS[dir] || '?';
+    card.textContent      = ARROW_CHARS[dir] || '?';
     card.style.background = ac.bg;
     card.style.color      = ac.fg;
     card.className = 'arrow-preview-card';
     const correctDir = rule === 'inverse' ? OPPOSITE[dir] : dir;
-    hint.textContent = 'Réponse correcte : ' + (ARROW_CHARS[correctDir] || '');
+    const activeDirs = numOpt <= 2 ? ['left','right'] : numOpt === 3 ? ['left','right','up'] : ['left','right','up','down'];
+    const optionsStr = activeDirs.map(d => ARROW_CHARS[d]).join(' ');
+    hint.textContent = 'Réponse correcte : ' + (ARROW_CHARS[correctDir] || '') + '  |  Options : ' + optionsStr;
   }
 
   function openPairModal(pairId) {
@@ -1697,6 +1721,7 @@
       // Backward compat: old pairs encoded rule in bgColor
       const rule = pair.rule || (pair.bgColor === 'yellow' ? 'inverse' : 'same');
       document.getElementById('arrow-rule').value = rule;
+      document.getElementById('arrow-num-options').value = String(pair.numOptions || 4);
       refreshArrowPreview();
     } else {
       fillModalSide('left',  pair.left  || {});
@@ -1716,6 +1741,7 @@
   document.getElementById('arrow-direction').addEventListener('change', refreshArrowPreview);
   document.getElementById('arrow-color').addEventListener('input', refreshArrowPreview);
   document.getElementById('arrow-rule').addEventListener('change', refreshArrowPreview);
+  document.getElementById('arrow-num-options').addEventListener('change', refreshArrowPreview);
 
   function fillModalSide(s, item) {
     document.getElementById(s+'-text').value  = item.text  || '';
@@ -1828,8 +1854,9 @@
     if (pairType === 'arrow') {
       pair.type      = 'arrow';
       pair.direction = document.getElementById('arrow-direction').value;
-      pair.bgColor   = document.getElementById('arrow-color').value;
-      pair.rule      = document.getElementById('arrow-rule').value;
+      pair.bgColor    = document.getElementById('arrow-color').value;
+      pair.rule       = document.getElementById('arrow-rule').value;
+      pair.numOptions = parseInt(document.getElementById('arrow-num-options').value, 10) || 4;
       delete pair.left; delete pair.right; delete pair.correct;
     } else {
       pair.type    = 'choice';

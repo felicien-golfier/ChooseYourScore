@@ -290,6 +290,15 @@
       cursor: pointer; transition: background 0.15s; font-family: inherit;
     }
     .btn-cancel:hover { background: #e2e8f0; }
+
+    /* Arrow pair preview in modal */
+    .arrow-preview-card {
+      width: 100%; min-height: 160px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 96px; line-height: 1; user-select: none;
+    }
+    .arrow-preview-card.bg-blue   { background: #3b82f6; color: white; }
+    .arrow-preview-card.bg-yellow { background: #fbbf24; color: #1a1a1a; }
   </style>
 </head>
 <body>
@@ -358,7 +367,44 @@
       <div class="preview-box" id="preview-right">(vide)</div>
     </div>
 
-    <div class="items-edit-grid">
+    <!-- Type selector -->
+    <div class="field-row" style="margin-bottom:20px">
+      <label>Type de paire</label>
+      <select id="pair-type">
+        <option value="choice">Choix — item gauche / droite</option>
+        <option value="arrow">Flèche directionnelle</option>
+      </select>
+    </div>
+
+    <!-- Arrow config (hidden when type=choice) -->
+    <div id="arrow-config" style="display:none; margin-bottom:28px">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:20px">
+        <div class="field-row">
+          <label>Direction de la flèche</label>
+          <select id="arrow-direction">
+            <option value="left">← Gauche</option>
+            <option value="right">→ Droite</option>
+            <option value="up">↑ Haut</option>
+            <option value="down">↓ Bas</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <label>Fond de la carte</label>
+          <select id="arrow-bg">
+            <option value="blue">Bleu (→ même sens)</option>
+            <option value="yellow">Jaune (→ sens inverse)</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-preview">
+        <div style="grid-column:1/-1; text-align:center">
+          <div class="arrow-preview-card bg-blue" id="arrow-preview-card">←</div>
+          <div style="margin-top:10px; font-size:0.88rem; color:#64748b" id="arrow-preview-hint"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="items-edit-grid" id="items-edit-grid">
       <!-- Left item -->
       <div class="item-edit-panel">
         <h4>Item gauche</h4>
@@ -469,7 +515,20 @@
 </div>
 
 <script>
-  const STORAGE_KEY = 'cys_exercises';
+  const STORAGE_KEY    = 'cys_exercises';
+  const ARROW_CHARS_ED = { left: '←', right: '→', up: '↑', down: '↓' };
+  const OPPOSITE_ED    = { left: 'right', right: 'left', up: 'down', down: 'up' };
+
+  function refreshArrowPreview() {
+    const dir  = document.getElementById('arrow-direction').value;
+    const bg   = document.getElementById('arrow-bg').value;
+    const card = document.getElementById('arrow-preview-card');
+    const hint = document.getElementById('arrow-preview-hint');
+    card.textContent = ARROW_CHARS_ED[dir] || '?';
+    card.className   = 'arrow-preview-card bg-' + bg;
+    const correctDir = bg === 'blue' ? dir : OPPOSITE_ED[dir];
+    hint.textContent = 'Réponse correcte : ' + (ARROW_CHARS_ED[correctDir] || '');
+  }
 
   function getExercises() {
     return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
@@ -561,14 +620,26 @@
       const previewDiv = document.createElement('div');
       previewDiv.className = 'pair-preview';
 
-      previewDiv.appendChild(buildPreviewEl(pair.left, pair.correct === 'left'));
-
-      const vs = document.createElement('span');
-      vs.className = 'pair-vs';
-      vs.textContent = 'VS';
-      previewDiv.appendChild(vs);
-
-      previewDiv.appendChild(buildPreviewEl(pair.right, pair.correct === 'right'));
+      if (pair.type === 'arrow') {
+        const chip = document.createElement('div');
+        chip.className = 'pair-item-preview';
+        chip.style.background = pair.bgColor === 'yellow' ? '#fef9c3' : '#dbeafe';
+        chip.style.border = '1.5px solid ' + (pair.bgColor === 'yellow' ? '#fde047' : '#93c5fd');
+        chip.style.fontSize = '24px';
+        chip.textContent = ARROW_CHARS_ED[pair.direction] || '←';
+        const lbl = document.createElement('span');
+        lbl.style.cssText = 'font-size:0.8rem;color:#64748b;margin-left:8px';
+        lbl.textContent = pair.bgColor === 'yellow' ? 'fond jaune' : 'fond bleu';
+        previewDiv.appendChild(chip);
+        previewDiv.appendChild(lbl);
+      } else {
+        previewDiv.appendChild(buildPreviewEl(pair.left, pair.correct === 'left'));
+        const vs = document.createElement('span');
+        vs.className = 'pair-vs';
+        vs.textContent = 'VS';
+        previewDiv.appendChild(vs);
+        previewDiv.appendChild(buildPreviewEl(pair.right, pair.correct === 'right'));
+      }
 
       // Actions
       const actions = document.createElement('div');
@@ -705,13 +776,35 @@
     if (!pair) return;
     editingPairId = pairId;
 
-    fillModalSide('left',  pair.left);
-    fillModalSide('right', pair.right);
-    document.getElementById('correct-' + pair.correct).checked = true;
+    const isArrow = pair.type === 'arrow';
+    document.getElementById('pair-type').value = isArrow ? 'arrow' : 'choice';
+    document.getElementById('arrow-config').style.display    = isArrow ? 'block' : 'none';
+    document.getElementById('items-edit-grid').style.display = isArrow ? 'none'  : 'grid';
 
-    refreshPreview();
+    if (isArrow) {
+      selectOption('arrow-direction', pair.direction || 'left');
+      selectOption('arrow-bg',        pair.bgColor   || 'blue');
+      refreshArrowPreview();
+    } else {
+      fillModalSide('left',  pair.left  || {});
+      fillModalSide('right', pair.right || {});
+      document.getElementById('correct-' + (pair.correct || 'left')).checked = true;
+      refreshPreview();
+    }
+
     document.getElementById('pair-modal').style.display = 'flex';
   }
+
+  document.getElementById('pair-type').addEventListener('change', () => {
+    const isArrow = document.getElementById('pair-type').value === 'arrow';
+    document.getElementById('arrow-config').style.display    = isArrow ? 'block' : 'none';
+    document.getElementById('items-edit-grid').style.display = isArrow ? 'none'  : 'grid';
+    if (isArrow) refreshArrowPreview();
+    else         refreshPreview();
+  });
+
+  document.getElementById('arrow-direction').addEventListener('change', refreshArrowPreview);
+  document.getElementById('arrow-bg').addEventListener('change', refreshArrowPreview);
 
   function fillModalSide(side, item) {
     document.getElementById(side + '-text').value = item.text || '';
@@ -771,9 +864,19 @@
     const pair = ex.pairs.find(p => p.id === editingPairId);
     if (!pair) return;
 
-    pair.left    = readModalSide('left');
-    pair.right   = readModalSide('right');
-    pair.correct = document.querySelector('input[name="modal-correct"]:checked')?.value || 'left';
+    const pairType = document.getElementById('pair-type').value;
+    if (pairType === 'arrow') {
+      pair.type      = 'arrow';
+      pair.direction = document.getElementById('arrow-direction').value;
+      pair.bgColor   = document.getElementById('arrow-bg').value;
+      delete pair.left; delete pair.right; delete pair.correct;
+    } else {
+      pair.type    = 'choice';
+      pair.left    = readModalSide('left');
+      pair.right   = readModalSide('right');
+      pair.correct = document.querySelector('input[name="modal-correct"]:checked')?.value || 'left';
+      delete pair.direction; delete pair.bgColor;
+    }
 
     saveExercises(exercises);
     renderEditor();
@@ -785,7 +888,8 @@
     const ex = getSelected();
     if (ex) {
       const pair = ex.pairs.find(p => p.id === editingPairId);
-      if (pair && !pair.left.text && !pair.right.text) {
+      const isEmpty = pair.type === 'arrow' ? !pair.direction : (!pair.left?.text && !pair.right?.text);
+      if (pair && isEmpty) {
         ex.pairs = ex.pairs.filter(p => p.id !== editingPairId);
         saveExercises(exercises);
         renderEditor();

@@ -213,6 +213,7 @@
             <th>Temps</th>
             <th>Err. gauche</th>
             <th>Err. droite</th>
+            <th>Réact. moy.</th>
             <th></th>
           </tr>
         </thead>
@@ -459,6 +460,9 @@
         '<td>' + formatDuration(session.totalTimeMs) + '</td>' +
         '<td>' + session.errorsLeft + '</td>' +
         '<td>' + session.errorsRight + '</td>' +
+        '<td>' + (session.avgReactionTimeMs != null
+          ? (session.avgReactionTimeMs / 1000).toFixed(2) + ' s'
+          : '–') + '</td>' +
         '<td></td>';
 
       // Delete button in last cell

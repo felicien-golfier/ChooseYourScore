@@ -95,6 +95,7 @@
     .progress-fill { height: 100%; background: #3b82f6; border-radius: 4px; transition: width 0.35s ease; }
     .progress-label { text-align: right; font-size: 0.85rem; color: #94a3b8; font-weight: 500; }
 
+    /* Choice pairs */
     .pair-container {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -121,9 +122,45 @@
       box-shadow: 0 4px 12px rgba(59,130,246,0.15);
     }
     .item-btn:disabled { cursor: default; }
-    .item-btn.correct  { border-color: #22c55e; background: #f0fdf4; }
+    .item-btn.correct   { border-color: #22c55e; background: #f0fdf4; }
     .item-btn.incorrect { border-color: #ef4444; background: #fef2f2; }
-    .item-btn.missed   { border-color: #22c55e; background: #f0fdf4; opacity: 0.6; }
+    .item-btn.missed    { border-color: #22c55e; background: #f0fdf4; opacity: 0.6; }
+
+    /* Arrow pairs */
+    .arrow-container { display: none; }
+
+    .arrow-card {
+      width: 100%;
+      min-height: 260px;
+      border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 120px;
+      line-height: 1;
+      user-select: none;
+    }
+    .arrow-card.bg-blue   { background: #3b82f6; color: white; }
+    .arrow-card.bg-yellow { background: #fbbf24; color: #1a1a1a; }
+
+    .arrow-keys {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 8px; margin-top: 24px;
+    }
+    .arrow-keys-row { display: flex; gap: 8px; }
+
+    .arrow-key-btn {
+      width: 64px; height: 64px;
+      border: 2px solid #e2e8f0; border-radius: 12px;
+      background: white; font-size: 1.8rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s; font-family: inherit;
+    }
+    .arrow-key-btn:hover:not(:disabled) {
+      border-color: #3b82f6; background: #eff6ff;
+    }
+    .arrow-key-btn:disabled { cursor: default; }
+    .arrow-key-btn.correct   { border-color: #22c55e; background: #f0fdf4; }
+    .arrow-key-btn.incorrect { border-color: #ef4444; background: #fef2f2; }
+    .arrow-key-btn.missed    { border-color: #22c55e; background: #f0fdf4; opacity: 0.6; }
 
     .keyboard-hint {
       text-align: center; font-size: 0.8rem;
@@ -203,11 +240,29 @@
     </div>
     <div class="progress-label" id="progress-label"></div>
   </div>
-  <div class="pair-container">
+
+  <!-- Choice pairs -->
+  <div class="pair-container" id="pair-container">
     <button class="item-btn" id="item-left"></button>
     <button class="item-btn" id="item-right"></button>
   </div>
-  <div class="keyboard-hint">← Flèche gauche &nbsp;|&nbsp; Flèche droite →</div>
+
+  <!-- Arrow pairs -->
+  <div class="arrow-container" id="arrow-container">
+    <div class="arrow-card" id="arrow-card"></div>
+    <div class="arrow-keys">
+      <div class="arrow-keys-row">
+        <button class="arrow-key-btn" id="akey-up" data-dir="up">↑</button>
+      </div>
+      <div class="arrow-keys-row">
+        <button class="arrow-key-btn" id="akey-left" data-dir="left">←</button>
+        <button class="arrow-key-btn" id="akey-down" data-dir="down">↓</button>
+        <button class="arrow-key-btn" id="akey-right" data-dir="right">→</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="keyboard-hint" id="keyboard-hint"></div>
 </div>
 
 <!-- Results Screen -->
@@ -224,12 +279,33 @@
       <div class="value" id="res-time">–</div>
     </div>
     <div class="result-card">
-      <div class="label">Erreurs — item gauche manqué</div>
+      <div class="label">Erreurs — item gauche / ← manqué</div>
       <div class="value warn" id="res-errors-left">–</div>
     </div>
     <div class="result-card">
-      <div class="label">Erreurs — item droit manqué</div>
+      <div class="label">Erreurs — item droit / → manqué</div>
       <div class="value warn" id="res-errors-right">–</div>
+    </div>
+    <!-- Arrow-specific (shown only when exercise has arrow pairs) -->
+    <div class="result-card" id="card-avg-reaction" style="display:none">
+      <div class="label">Temps de réaction moyen</div>
+      <div class="value" id="res-avg-reaction">–</div>
+    </div>
+    <div class="result-card" id="card-errors-blue" style="display:none">
+      <div class="label">Erreurs — fond bleu</div>
+      <div class="value warn" id="res-errors-blue">–</div>
+    </div>
+    <div class="result-card" id="card-errors-yellow" style="display:none">
+      <div class="label">Erreurs — fond jaune</div>
+      <div class="value warn" id="res-errors-yellow">–</div>
+    </div>
+    <div class="result-card" id="card-errors-up" style="display:none">
+      <div class="label">Erreurs — ↑ manqué</div>
+      <div class="value warn" id="res-errors-up">–</div>
+    </div>
+    <div class="result-card" id="card-errors-down" style="display:none">
+      <div class="label">Erreurs — ↓ manqué</div>
+      <div class="value warn" id="res-errors-down">–</div>
     </div>
   </div>
   <div class="btn-group">
@@ -240,7 +316,15 @@
 </div>
 
 <script>
-  // ── Storage ──────────────────────────────────────────────────────────────────
+  // ── Constants ─────────────────────────────────────────────────────────────────
+  const OPPOSITE    = { left: 'right', right: 'left', up: 'down', down: 'up' };
+  const ARROW_CHARS = { left: '←', right: '→', up: '↑', down: '↓' };
+
+  function getArrowCorrect(pair) {
+    return pair.bgColor === 'blue' ? pair.direction : OPPOSITE[pair.direction];
+  }
+
+  // ── Storage ───────────────────────────────────────────────────────────────────
   function getExercises() {
     return JSON.parse(localStorage.getItem('cys_exercises') || '[]');
   }
@@ -255,11 +339,11 @@
 
   // ── Utils ─────────────────────────────────────────────────────────────────────
   function applyItemStyle(el, item) {
-    el.style.color = item.color || '#1a1a1a';
-    el.style.fontSize = (item.fontSize || 32) + 'px';
-    el.style.fontFamily = item.fontFamily || 'Arial';
+    el.style.color         = item.color         || '#1a1a1a';
+    el.style.fontSize      = (item.fontSize || 32) + 'px';
+    el.style.fontFamily    = item.fontFamily    || 'Arial';
     el.style.textTransform = item.textTransform || 'none';
-    el.textContent = item.text || '';
+    el.textContent         = item.text          || '';
   }
 
   function formatDuration(ms) {
@@ -289,16 +373,16 @@
     const el = document.getElementById('screen-' + name);
     el.style.display = 'block';
     el.style.animation = 'none';
-    void el.offsetHeight; // force reflow to restart animation
+    void el.offsetHeight;
     el.style.animation = '';
   }
 
   // ── State ─────────────────────────────────────────────────────────────────────
-  let exercise    = null;
-  let patientName = '';
-  let pairs       = [];
-  let pairIndex   = 0;
-  let responses   = [];
+  let exercise          = null;
+  let patientName       = '';
+  let pairs             = [];
+  let pairIndex         = 0;
+  let responses         = [];
   let exerciseStartTime = 0;
   let pairStartTime     = 0;
   let isWaiting         = false;
@@ -370,30 +454,61 @@
   function renderPair() {
     const pair = pairs[pairIndex];
     isWaiting = false;
-    btnLeft.className  = 'item-btn';
-    btnRight.className = 'item-btn';
-    btnLeft.disabled   = false;
-    btnRight.disabled  = false;
-    applyItemStyle(btnLeft,  pair.left);
-    applyItemStyle(btnRight, pair.right);
 
     document.getElementById('progress-fill').style.width =
       (pairIndex / pairs.length * 100) + '%';
     document.getElementById('progress-label').textContent =
       (pairIndex + 1) + ' / ' + pairs.length;
+
+    if (pair.type === 'arrow') {
+      document.getElementById('pair-container').style.display  = 'none';
+      document.getElementById('arrow-container').style.display = 'flex';
+      document.getElementById('arrow-container').style.flexDirection = 'column';
+      document.getElementById('arrow-container').style.alignItems = 'center';
+
+      const card = document.getElementById('arrow-card');
+      card.textContent = ARROW_CHARS[pair.direction] || '?';
+      card.className = 'arrow-card bg-' + (pair.bgColor || 'blue');
+
+      ['up', 'down', 'left', 'right'].forEach(dir => {
+        const btn = document.getElementById('akey-' + dir);
+        btn.className = 'arrow-key-btn';
+        btn.disabled  = false;
+      });
+
+      document.getElementById('keyboard-hint').textContent =
+        '← ↑ → ↓  Flèches du clavier';
+    } else {
+      document.getElementById('pair-container').style.display  = 'grid';
+      document.getElementById('arrow-container').style.display = 'none';
+
+      btnLeft.className  = 'item-btn';
+      btnRight.className = 'item-btn';
+      btnLeft.disabled   = false;
+      btnRight.disabled  = false;
+      applyItemStyle(btnLeft,  pair.left);
+      applyItemStyle(btnRight, pair.right);
+
+      document.getElementById('keyboard-hint').textContent =
+        '← Flèche gauche \u00a0|\u00a0 Flèche droite →';
+    }
+
     pairStartTime = Date.now();
   }
 
+  // ── Choice pair response ──────────────────────────────────────────────────────
   function handleClick(side) {
     if (isWaiting) return;
+    const pair = pairs[pairIndex];
+    if (pair.type === 'arrow') return;
     isWaiting = true;
     btnLeft.disabled  = true;
     btnRight.disabled = true;
 
-    const pair      = pairs[pairIndex];
     const isCorrect = side === pair.correct;
     responses.push({
       pairId:        pair.id,
+      type:          'choice',
       clicked:       side,
       isCorrect,
       correctAnswer: pair.correct,
@@ -406,49 +521,119 @@
       if (correctEl) correctEl.classList.add('missed');
     }
 
-    setTimeout(() => {
-      pairIndex++;
-      if (pairIndex >= pairs.length) finishExercise();
-      else renderPair();
-    }, 700);
+    setTimeout(advance, 700);
   }
 
   btnLeft.addEventListener('click',  () => handleClick('left'));
   btnRight.addEventListener('click', () => handleClick('right'));
 
+  // ── Arrow pair response ───────────────────────────────────────────────────────
+  function handleArrowResponse(dir) {
+    if (isWaiting) return;
+    const pair = pairs[pairIndex];
+    if (pair.type !== 'arrow') return;
+    isWaiting = true;
+
+    ['up', 'down', 'left', 'right'].forEach(d => {
+      document.getElementById('akey-' + d).disabled = true;
+    });
+
+    const correctDir = getArrowCorrect(pair);
+    const isCorrect  = dir === correctDir;
+
+    responses.push({
+      pairId:        pair.id,
+      type:          'arrow',
+      direction:     pair.direction,
+      bgColor:       pair.bgColor,
+      pressed:       dir,
+      isCorrect,
+      correctAnswer: correctDir,
+      timeMs:        Date.now() - pairStartTime,
+    });
+
+    document.getElementById('akey-' + dir).classList.add(isCorrect ? 'correct' : 'incorrect');
+    if (!isCorrect) {
+      document.getElementById('akey-' + correctDir).classList.add('missed');
+    }
+
+    setTimeout(advance, 700);
+  }
+
+  ['up', 'down', 'left', 'right'].forEach(dir => {
+    document.getElementById('akey-' + dir).addEventListener('click', () => handleArrowResponse(dir));
+  });
+
+  // ── Keyboard ──────────────────────────────────────────────────────────────────
   document.addEventListener('keydown', e => {
-    if (document.getElementById('screen-exercise').style.display !== 'none') {
+    if (document.getElementById('screen-exercise').style.display === 'none') return;
+    const pair = pairs[pairIndex];
+    if (!pair) return;
+    if (pair.type === 'arrow') {
+      if (e.key === 'ArrowLeft')  handleArrowResponse('left');
+      if (e.key === 'ArrowRight') handleArrowResponse('right');
+      if (e.key === 'ArrowUp')    handleArrowResponse('up');
+      if (e.key === 'ArrowDown')  handleArrowResponse('down');
+    } else {
       if (e.key === 'ArrowLeft')  handleClick('left');
       if (e.key === 'ArrowRight') handleClick('right');
     }
   });
 
+  // ── Advance ───────────────────────────────────────────────────────────────────
+  function advance() {
+    pairIndex++;
+    if (pairIndex >= pairs.length) finishExercise();
+    else renderPair();
+  }
+
   // ── Finish ────────────────────────────────────────────────────────────────────
   function finishExercise() {
     const totalTimeMs = Date.now() - exerciseStartTime;
-    let score = 0, errorsLeft = 0, errorsRight = 0;
+    let score = 0, errorsLeft = 0, errorsRight = 0, errorsUp = 0, errorsDown = 0;
+    let errorsBlue = 0, errorsYellow = 0;
+    let arrowCount = 0, arrowTimeTotal = 0;
 
     responses.forEach(r => {
       if (r.isCorrect) {
         score++;
-      } else if (r.correctAnswer === 'left') {
-        errorsLeft++;   // correct was on the left — patient missed it
       } else {
-        errorsRight++;  // correct was on the right — patient missed it
+        if      (r.correctAnswer === 'left')  errorsLeft++;
+        else if (r.correctAnswer === 'right') errorsRight++;
+        else if (r.correctAnswer === 'up')    errorsUp++;
+        else if (r.correctAnswer === 'down')  errorsDown++;
+
+        if (r.type === 'arrow') {
+          if (r.bgColor === 'blue') errorsBlue++;
+          else                      errorsYellow++;
+        }
+      }
+      if (r.type === 'arrow') {
+        arrowCount++;
+        arrowTimeTotal += r.timeMs;
       }
     });
 
+    const hasArrow         = arrowCount > 0;
+    const avgReactionTimeMs = hasArrow ? Math.round(arrowTimeTotal / arrowCount) : null;
+    const hasUpDown         = responses.some(r => r.type === 'arrow' && (r.direction === 'up' || r.direction === 'down'));
+
     addSession({
-      id:           newId('sess'),
-      exerciseId:   exercise.id,
-      exerciseName: exercise.name,
+      id:                newId('sess'),
+      exerciseId:        exercise.id,
+      exerciseName:      exercise.name,
       patientName,
-      date:         new Date().toISOString(),
+      date:              new Date().toISOString(),
       totalTimeMs,
-      totalPairs:   pairs.length,
+      totalPairs:        pairs.length,
       score,
       errorsLeft,
       errorsRight,
+      errorsUp,
+      errorsDown,
+      errorsBlue,
+      errorsYellow,
+      avgReactionTimeMs,
       responses,
     });
 
@@ -460,6 +645,28 @@
     document.getElementById('res-time').textContent = formatDuration(totalTimeMs);
     document.getElementById('res-errors-left').textContent  = errorsLeft;
     document.getElementById('res-errors-right').textContent = errorsRight;
+
+    // Arrow-specific cards
+    const show = (id, visible) => {
+      document.getElementById(id).style.display = visible ? 'block' : 'none';
+    };
+    show('card-avg-reaction', hasArrow);
+    show('card-errors-blue',  hasArrow);
+    show('card-errors-yellow',hasArrow);
+    show('card-errors-up',    hasArrow && hasUpDown);
+    show('card-errors-down',  hasArrow && hasUpDown);
+
+    if (hasArrow) {
+      document.getElementById('res-avg-reaction').textContent =
+        (avgReactionTimeMs / 1000).toFixed(2) + ' s';
+      document.getElementById('res-errors-blue').textContent   = errorsBlue;
+      document.getElementById('res-errors-yellow').textContent = errorsYellow;
+      if (hasUpDown) {
+        document.getElementById('res-errors-up').textContent   = errorsUp;
+        document.getElementById('res-errors-down').textContent = errorsDown;
+      }
+    }
+
     showScreen('results');
   }
 

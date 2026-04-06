@@ -495,6 +495,98 @@
     .btn-delete-session:hover { background: #fef2f2; }
     tbody td[contenteditable]:hover { background: #f8fafc; }
     tbody td[contenteditable]:focus { background: #fffbeb; border-bottom: 2px solid #f59e0b; padding-bottom: 10px; }
+
+    /* ── Arrow exercise ─────────────────────────────────────────────────────────── */
+    .arrow-container { display: none; flex-direction: column; align-items: center; }
+    .arrow-card {
+      width: 100%; min-height: 260px; border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 120px; line-height: 1; user-select: none;
+    }
+    .arrow-card.bg-blue   { background: #3b82f6; color: white; }
+    .arrow-card.bg-yellow { background: #fbbf24; color: #1a1a1a; }
+    .arrow-keys { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 24px; }
+    .arrow-keys-row { display: flex; gap: 8px; }
+    .arrow-key-btn {
+      width: 64px; height: 64px; border: 2px solid #e2e8f0; border-radius: 12px;
+      background: white; font-size: 1.8rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s; font-family: inherit;
+    }
+    .arrow-key-btn:hover:not(:disabled) { border-color: #3b82f6; background: #eff6ff; }
+    .arrow-key-btn:disabled { cursor: default; }
+    .arrow-key-btn.correct   { border-color: #22c55e; background: #f0fdf4; }
+    .arrow-key-btn.incorrect { border-color: #ef4444; background: #fef2f2; }
+    .arrow-key-btn.missed    { border-color: #22c55e; background: #f0fdf4; opacity: 0.6; }
+
+    body.is-fullscreen .arrow-container { flex: 1; width: 100%; justify-content: center; }
+    body.is-fullscreen .arrow-card { min-height: 0; flex: 1; max-height: 60vh; font-size: 180px; }
+
+    /* Arrow modal preview */
+    .arrow-preview-card {
+      width: 100%; min-height: 140px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 80px; line-height: 1; user-select: none;
+    }
+    .arrow-preview-card.bg-blue   { background: #3b82f6; color: white; }
+    .arrow-preview-card.bg-yellow { background: #fbbf24; color: #1a1a1a; }
+
+    /* ── Mobile ─────────────────────────────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      #topbar { padding: 0 10px; gap: 2px; height: auto; flex-wrap: wrap; padding: 6px 10px; }
+      #topbar .logo { font-size: 0.9rem; margin-right: 4px; }
+      .nav-btn { padding: 5px 9px; font-size: 0.78rem; }
+
+      .view.centered { padding: 16px 8px; }
+      .screen { padding: 24px 16px; border-radius: 14px; }
+      h1 { font-size: 1.5rem; }
+      h2 { font-size: 1.3rem; margin-bottom: 16px; }
+      .subtitle { margin-bottom: 24px; }
+
+      .pair-container { grid-template-columns: 1fr; gap: 14px; }
+      .item-btn { min-height: 110px; padding: 16px; }
+
+      .arrow-card { min-height: 180px; font-size: 80px; }
+      .arrow-key-btn { width: 72px; height: 72px; font-size: 2.2rem; }
+
+      .results-grid { grid-template-columns: 1fr; gap: 12px; }
+      .result-card { padding: 16px 18px; }
+      .result-card .value { font-size: 1.6rem; }
+
+      .btn-group { flex-direction: column; }
+      .btn-group .btn { justify-content: center; }
+      .btn { padding: 14px 20px; }
+
+      .instruction-box { padding: 20px; font-size: 1.1rem; }
+
+      /* Editor / Patients: sidebar en haut */
+      #view-editor.active,
+      #view-patients.active { flex-direction: column; overflow: auto; }
+      .sidebar { width: 100%; max-height: 200px; border-right: none; border-bottom: 1px solid #e2e8f0; }
+      .exercise-list { max-height: 130px; }
+      .editor-main { overflow-y: visible; padding: 16px; }
+
+      /* Modal: bottom sheet */
+      #pair-modal { padding: 0; align-items: flex-end; }
+      .modal { border-radius: 20px 20px 0 0; max-height: 95vh; padding: 24px 16px 32px; }
+      .items-edit-grid { grid-template-columns: 1fr; }
+      .correct-selector { flex-direction: row; padding: 12px 0; justify-content: center; gap: 24px; }
+      .modal-preview { grid-template-columns: 1fr; }
+      .modal-actions { flex-direction: column-reverse; }
+      .btn-save, .btn-cancel { width: 100%; text-align: center; }
+
+      /* Results page */
+      .results-page { padding: 16px 12px; }
+      .filters { flex-direction: column; gap: 12px; }
+      .filter-group { min-width: auto; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .charts-row { grid-template-columns: 1fr; gap: 14px; }
+      .table-card { padding: 16px 12px; }
+      table { min-width: 560px; }
+    }
+    @media (max-width: 400px) {
+      .stats-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -558,11 +650,24 @@
       <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
       <div class="progress-label" id="progress-label"></div>
     </div>
-    <div class="pair-container">
+    <div class="pair-container" id="pair-container">
       <button class="item-btn" id="item-left"></button>
       <button class="item-btn" id="item-right"></button>
     </div>
-    <div class="keyboard-hint">← Flèche gauche &nbsp;|&nbsp; Flèche droite →</div>
+    <div class="arrow-container" id="arrow-container">
+      <div class="arrow-card" id="arrow-card"></div>
+      <div class="arrow-keys">
+        <div class="arrow-keys-row">
+          <button class="arrow-key-btn" id="akey-up">↑</button>
+        </div>
+        <div class="arrow-keys-row">
+          <button class="arrow-key-btn" id="akey-left">←</button>
+          <button class="arrow-key-btn" id="akey-down">↓</button>
+          <button class="arrow-key-btn" id="akey-right">→</button>
+        </div>
+      </div>
+    </div>
+    <div class="keyboard-hint" id="keyboard-hint">← Flèche gauche &nbsp;|&nbsp; Flèche droite →</div>
   </div>
 </div>
 
@@ -574,8 +679,13 @@
     <div class="results-grid">
       <div class="result-card"><div class="label">Score</div><div class="value good" id="res-score">–</div></div>
       <div class="result-card"><div class="label">Temps total</div><div class="value" id="res-time">–</div></div>
-      <div class="result-card"><div class="label">Erreurs — item gauche manqué</div><div class="value warn" id="res-errors-left">–</div></div>
-      <div class="result-card"><div class="label">Erreurs — item droit manqué</div><div class="value warn" id="res-errors-right">–</div></div>
+      <div class="result-card"><div class="label">Erreurs — item gauche / ← manqué</div><div class="value warn" id="res-errors-left">–</div></div>
+      <div class="result-card"><div class="label">Erreurs — item droit / → manqué</div><div class="value warn" id="res-errors-right">–</div></div>
+      <div class="result-card" id="card-avg-reaction" style="display:none"><div class="label">Temps de réaction moyen</div><div class="value" id="res-avg-reaction">–</div></div>
+      <div class="result-card" id="card-errors-blue"   style="display:none"><div class="label">Erreurs — fond bleu</div><div class="value warn" id="res-errors-blue">–</div></div>
+      <div class="result-card" id="card-errors-yellow" style="display:none"><div class="label">Erreurs — fond jaune</div><div class="value warn" id="res-errors-yellow">–</div></div>
+      <div class="result-card" id="card-errors-up"   style="display:none"><div class="label">Erreurs — ↑ manqué</div><div class="value warn" id="res-errors-up">–</div></div>
+      <div class="result-card" id="card-errors-down" style="display:none"><div class="label">Erreurs — ↓ manqué</div><div class="value warn" id="res-errors-down">–</div></div>
     </div>
     <div class="notes-section">
       <label for="session-notes">Notes du clinicien</label>
@@ -735,6 +845,46 @@
 <div id="pair-modal" style="display:none">
   <div class="modal">
     <h3>Modifier la paire</h3>
+
+    <!-- Type selector -->
+    <div class="field-row" style="margin-bottom:20px">
+      <label>Type de paire</label>
+      <select id="pair-type">
+        <option value="choice">Choix — item gauche / droite</option>
+        <option value="arrow">Flèche directionnelle</option>
+      </select>
+    </div>
+
+    <!-- Arrow config -->
+    <div id="arrow-config" style="display:none; margin-bottom:28px">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:16px">
+        <div class="field-row">
+          <label>Direction de la flèche</label>
+          <select id="arrow-direction">
+            <option value="left">← Gauche</option>
+            <option value="right">→ Droite</option>
+            <option value="up">↑ Haut</option>
+            <option value="down">↓ Bas</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <label>Fond de la carte</label>
+          <select id="arrow-bg">
+            <option value="blue">Bleu → même sens</option>
+            <option value="yellow">Jaune → sens inverse</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-preview" style="grid-template-columns:1fr">
+        <div style="text-align:center">
+          <div class="arrow-preview-card bg-blue" id="arrow-preview-card">←</div>
+          <div style="margin-top:8px;font-size:0.85rem;color:#64748b" id="arrow-preview-hint"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Choice config -->
+    <div id="choice-config">
     <div class="modal-preview">
       <div class="preview-box" id="preview-left">(vide)</div>
       <div class="preview-box" id="preview-right">(vide)</div>
@@ -828,6 +978,7 @@
           </select></div>
       </div>
     </div>
+    </div><!-- end #choice-config -->
     <div class="modal-actions">
       <button class="btn-cancel" id="btn-modal-cancel">Annuler</button>
       <button class="btn-save"   id="btn-modal-save">Enregistrer</button>
@@ -856,6 +1007,11 @@
     });
     savePatients(); saveSessions();
   }
+
+  // ── Arrow constants ───────────────────────────────────────────────────────────
+  const ARROW_CHARS = { left: '←', right: '→', up: '↑', down: '↓' };
+  const OPPOSITE    = { left: 'right', right: 'left', up: 'down', down: 'up' };
+  function getArrowCorrect(pair) { return pair.bgColor === 'blue' ? pair.direction : OPPOSITE[pair.direction]; }
 
   // ── Utils ─────────────────────────────────────────────────────────────────────
   function applyItemStyle(el, item) {
@@ -1002,14 +1158,32 @@
   function renderPair() {
     const pair = currentPairs[pairIndex];
     isWaiting = false;
-    btnLeft.className = btnRight.className = 'item-btn';
-    btnLeft.disabled  = btnRight.disabled  = false;
-    applyItemStyle(btnLeft,  pair.left);
-    applyItemStyle(btnRight, pair.right);
     document.getElementById('progress-fill').style.width  = (pairIndex / currentPairs.length * 100) + '%';
     document.getElementById('progress-label').textContent = (pairIndex+1) + ' / ' + currentPairs.length;
+
+    if (pair.type === 'arrow') {
+      document.getElementById('pair-container').style.display  = 'none';
+      document.getElementById('arrow-container').style.display = 'flex';
+      const card = document.getElementById('arrow-card');
+      card.textContent = ARROW_CHARS[pair.direction] || '?';
+      card.className   = 'arrow-card bg-' + (pair.bgColor || 'blue');
+      ['up','down','left','right'].forEach(d => {
+        const btn = document.getElementById('akey-' + d);
+        btn.className = 'arrow-key-btn';
+        btn.disabled  = false;
+      });
+      document.getElementById('keyboard-hint').textContent = '← ↑ → ↓  Flèches du clavier';
+    } else {
+      document.getElementById('pair-container').style.display  = 'grid';
+      document.getElementById('arrow-container').style.display = 'none';
+      btnLeft.className = btnRight.className = 'item-btn';
+      btnLeft.disabled  = btnRight.disabled  = false;
+      applyItemStyle(btnLeft,  pair.left);
+      applyItemStyle(btnRight, pair.right);
+      document.getElementById('keyboard-hint').innerHTML = '← Flèche gauche &nbsp;|&nbsp; Flèche droite →';
+      playPairAudios(pair);
+    }
     pairStartTime = Date.now();
-    playPairAudios(pair);
   }
 
   function playPairAudios(pair) {
@@ -1027,34 +1201,76 @@
 
   function handleClick(side) {
     if (isWaiting) return;
+    const pair = currentPairs[pairIndex];
+    if (pair.type === 'arrow') return;
     isWaiting = true;
     btnLeft.disabled = btnRight.disabled = true;
-    const pair = currentPairs[pairIndex];
     const isCorrect = side === pair.correct;
-    responses.push({ pairId: pair.id, clicked: side, isCorrect, correctAnswer: pair.correct, timeMs: Date.now()-pairStartTime });
+    responses.push({ pairId: pair.id, type: 'choice', clicked: side, isCorrect, correctAnswer: pair.correct, timeMs: Date.now()-pairStartTime });
     document.getElementById('item-'+side).classList.add(isCorrect ? 'correct' : 'incorrect');
     if (!isCorrect) document.getElementById('item-'+pair.correct)?.classList.add('missed');
     setTimeout(() => { pairIndex++; if (pairIndex >= currentPairs.length) finishExercise(); else renderPair(); }, 700);
   }
 
+  function handleArrowResponse(dir) {
+    if (isWaiting) return;
+    const pair = currentPairs[pairIndex];
+    if (pair.type !== 'arrow') return;
+    isWaiting = true;
+    ['up','down','left','right'].forEach(d => document.getElementById('akey-'+d).disabled = true);
+    const correctDir = getArrowCorrect(pair);
+    const isCorrect  = dir === correctDir;
+    responses.push({ pairId: pair.id, type: 'arrow', direction: pair.direction, bgColor: pair.bgColor, pressed: dir, isCorrect, correctAnswer: correctDir, timeMs: Date.now()-pairStartTime });
+    document.getElementById('akey-'+dir).classList.add(isCorrect ? 'correct' : 'incorrect');
+    if (!isCorrect) document.getElementById('akey-'+correctDir).classList.add('missed');
+    setTimeout(() => { pairIndex++; if (pairIndex >= currentPairs.length) finishExercise(); else renderPair(); }, 700);
+  }
+
   btnLeft.addEventListener('click',  () => handleClick('left'));
   btnRight.addEventListener('click', () => handleClick('right'));
+  ['up','down','left','right'].forEach(d => document.getElementById('akey-'+d).addEventListener('click', () => handleArrowResponse(d)));
+
   document.addEventListener('keydown', e => {
     if (document.getElementById('view-exercise').style.display !== 'none') {
-      if (e.key === 'ArrowLeft')  handleClick('left');
-      if (e.key === 'ArrowRight') handleClick('right');
+      const pair = currentPairs[pairIndex];
+      if (pair && pair.type === 'arrow') {
+        if (e.key === 'ArrowLeft')  handleArrowResponse('left');
+        if (e.key === 'ArrowRight') handleArrowResponse('right');
+        if (e.key === 'ArrowUp')    handleArrowResponse('up');
+        if (e.key === 'ArrowDown')  handleArrowResponse('down');
+      } else {
+        if (e.key === 'ArrowLeft')  handleClick('left');
+        if (e.key === 'ArrowRight') handleClick('right');
+      }
     }
   });
 
   function finishExercise() {
     const totalTimeMs = Date.now() - exerciseStartTime;
-    let score = 0, errorsLeft = 0, errorsRight = 0;
-    responses.forEach(r => { if (r.isCorrect) score++; else if (r.correctAnswer==='left') errorsLeft++; else errorsRight++; });
+    let score = 0, errorsLeft = 0, errorsRight = 0, errorsUp = 0, errorsDown = 0;
+    let errorsBlue = 0, errorsYellow = 0, arrowCount = 0, arrowTimeTotal = 0;
+
+    responses.forEach(r => {
+      if (r.isCorrect) { score++; }
+      else {
+        if      (r.correctAnswer === 'left')  errorsLeft++;
+        else if (r.correctAnswer === 'right') errorsRight++;
+        else if (r.correctAnswer === 'up')    errorsUp++;
+        else if (r.correctAnswer === 'down')  errorsDown++;
+        if (r.type === 'arrow') { if (r.bgColor === 'blue') errorsBlue++; else errorsYellow++; }
+      }
+      if (r.type === 'arrow') { arrowCount++; arrowTimeTotal += r.timeMs; }
+    });
+
+    const hasArrow = arrowCount > 0;
+    const avgArrowReaction = hasArrow ? Math.round(arrowTimeTotal / arrowCount) : null;
+    const hasUpDown = responses.some(r => r.type === 'arrow' && (r.direction === 'up' || r.direction === 'down'));
 
     const newSession = {
       id: newId('sess'), exerciseId: currentExercise.id, exerciseName: currentExercise.name,
       patientName: currentPatient, patientId: currentPatientId, date: new Date().toISOString(),
-      totalTimeMs, totalPairs: currentPairs.length, score, errorsLeft, errorsRight, responses, notes: '',
+      totalTimeMs, totalPairs: currentPairs.length, score, errorsLeft, errorsRight,
+      errorsUp, errorsDown, errorsBlue, errorsYellow, responses, notes: '',
     };
     sessions.push(newSession);
     currentSessionId = newSession.id;
@@ -1067,6 +1283,22 @@
     document.getElementById('res-time').textContent       = formatDuration(totalTimeMs);
     document.getElementById('res-errors-left').textContent  = errorsLeft;
     document.getElementById('res-errors-right').textContent = errorsRight;
+
+    const showCard = (id, v) => document.getElementById(id).style.display = v ? 'block' : 'none';
+    showCard('card-avg-reaction', hasArrow);
+    showCard('card-errors-blue',  hasArrow);
+    showCard('card-errors-yellow',hasArrow);
+    showCard('card-errors-up',    hasArrow && hasUpDown);
+    showCard('card-errors-down',  hasArrow && hasUpDown);
+    if (hasArrow) {
+      document.getElementById('res-avg-reaction').textContent  = (avgArrowReaction / 1000).toFixed(2) + ' s';
+      document.getElementById('res-errors-blue').textContent   = errorsBlue;
+      document.getElementById('res-errors-yellow').textContent = errorsYellow;
+      if (hasUpDown) {
+        document.getElementById('res-errors-up').textContent   = errorsUp;
+        document.getElementById('res-errors-down').textContent = errorsDown;
+      }
+    }
     showView('session-result');
   }
 
@@ -1226,10 +1458,24 @@
       row.className = 'pair-row';
       const preview = document.createElement('div');
       preview.className = 'pair-preview';
-      preview.appendChild(buildPreviewEl(pair.left,  pair.correct==='left'));
-      const vs = document.createElement('span'); vs.className = 'pair-vs'; vs.textContent = 'VS';
-      preview.appendChild(vs);
-      preview.appendChild(buildPreviewEl(pair.right, pair.correct==='right'));
+
+      if (pair.type === 'arrow') {
+        const chip = document.createElement('div');
+        chip.className = 'pair-item-preview';
+        chip.style.cssText = 'background:' + (pair.bgColor === 'yellow' ? '#fef9c3' : '#dbeafe') +
+          ';border:1.5px solid ' + (pair.bgColor === 'yellow' ? '#fde047' : '#93c5fd') + ';font-size:24px';
+        chip.textContent = ARROW_CHARS[pair.direction] || '←';
+        const lbl = document.createElement('span');
+        lbl.style.cssText = 'font-size:0.8rem;color:#64748b;margin-left:8px';
+        lbl.textContent = pair.bgColor === 'yellow' ? 'fond jaune' : 'fond bleu';
+        preview.appendChild(chip);
+        preview.appendChild(lbl);
+      } else {
+        preview.appendChild(buildPreviewEl(pair.left,  pair.correct==='left'));
+        const vs = document.createElement('span'); vs.className = 'pair-vs'; vs.textContent = 'VS';
+        preview.appendChild(vs);
+        preview.appendChild(buildPreviewEl(pair.right, pair.correct==='right'));
+      }
       const actions = document.createElement('div');
       actions.className = 'pair-actions';
       const editBtn      = makePairBtn('✏','edit',  'Modifier',   () => openPairModal(pair.id));
@@ -1389,16 +1635,46 @@
   }
 
   // ── Pair modal ────────────────────────────────────────────────────────────────
+  function refreshArrowPreview() {
+    const dir  = document.getElementById('arrow-direction').value;
+    const bg   = document.getElementById('arrow-bg').value;
+    const card = document.getElementById('arrow-preview-card');
+    const hint = document.getElementById('arrow-preview-hint');
+    card.textContent = ARROW_CHARS[dir] || '?';
+    card.className   = 'arrow-preview-card bg-' + bg;
+    const correctDir = bg === 'blue' ? dir : OPPOSITE[dir];
+    hint.textContent = 'Réponse correcte : ' + (ARROW_CHARS[correctDir] || '');
+  }
+
   function openPairModal(pairId) {
     const ex = getSelectedEx(); if (!ex) return;
     const pair = ex.pairs.find(p => p.id === pairId); if (!pair) return;
     editingPairId = pairId;
-    fillModalSide('left',  pair.left);
-    fillModalSide('right', pair.right);
-    document.getElementById('correct-'+pair.correct).checked = true;
-    refreshModalPreview();
+    const isArrow = pair.type === 'arrow';
+    document.getElementById('pair-type').value = isArrow ? 'arrow' : 'choice';
+    document.getElementById('arrow-config').style.display  = isArrow ? 'block' : 'none';
+    document.getElementById('choice-config').style.display = isArrow ? 'none'  : 'block';
+    if (isArrow) {
+      document.getElementById('arrow-direction').value = pair.direction || 'left';
+      document.getElementById('arrow-bg').value        = pair.bgColor   || 'blue';
+      refreshArrowPreview();
+    } else {
+      fillModalSide('left',  pair.left  || {});
+      fillModalSide('right', pair.right || {});
+      document.getElementById('correct-' + (pair.correct || 'left')).checked = true;
+      refreshModalPreview();
+    }
     document.getElementById('pair-modal').style.display = 'flex';
   }
+
+  document.getElementById('pair-type').addEventListener('change', () => {
+    const isArrow = document.getElementById('pair-type').value === 'arrow';
+    document.getElementById('arrow-config').style.display  = isArrow ? 'block' : 'none';
+    document.getElementById('choice-config').style.display = isArrow ? 'none'  : 'block';
+    if (isArrow) refreshArrowPreview(); else refreshModalPreview();
+  });
+  document.getElementById('arrow-direction').addEventListener('change', refreshArrowPreview);
+  document.getElementById('arrow-bg').addEventListener('change', refreshArrowPreview);
 
   function fillModalSide(s, item) {
     document.getElementById(s+'-text').value  = item.text  || '';
@@ -1507,9 +1783,19 @@
   document.getElementById('btn-modal-save').addEventListener('click', () => {
     const ex = getSelectedEx(); if (!ex) return;
     const pair = ex.pairs.find(p => p.id === editingPairId); if (!pair) return;
-    pair.left    = readModalSide('left');
-    pair.right   = readModalSide('right');
-    pair.correct = document.querySelector('input[name="modal-correct"]:checked')?.value || 'left';
+    const pairType = document.getElementById('pair-type').value;
+    if (pairType === 'arrow') {
+      pair.type      = 'arrow';
+      pair.direction = document.getElementById('arrow-direction').value;
+      pair.bgColor   = document.getElementById('arrow-bg').value;
+      delete pair.left; delete pair.right; delete pair.correct;
+    } else {
+      pair.type    = 'choice';
+      pair.left    = readModalSide('left');
+      pair.right   = readModalSide('right');
+      pair.correct = document.querySelector('input[name="modal-correct"]:checked')?.value || 'left';
+      delete pair.direction; delete pair.bgColor;
+    }
     saveExercises(); renderExerciseEditor(); closeModal();
   });
 
@@ -1517,10 +1803,10 @@
     const ex = getSelectedEx();
     if (ex) {
       const pair = ex.pairs.find(p => p.id === editingPairId);
-      if (pair && !pair.left.text && !pair.right.text && !pair.left.imageUrl && !pair.right.imageUrl) {
-        ex.pairs = ex.pairs.filter(p => p.id !== editingPairId);
-        saveExercises(); renderExerciseEditor();
-      }
+      const isEmpty = pair && (pair.type === 'arrow'
+        ? !pair.direction
+        : (!pair.left?.text && !pair.right?.text && !pair.left?.imageUrl && !pair.right?.imageUrl));
+      if (isEmpty) { ex.pairs = ex.pairs.filter(p => p.id !== editingPairId); saveExercises(); renderExerciseEditor(); }
     }
     closeModal();
   });

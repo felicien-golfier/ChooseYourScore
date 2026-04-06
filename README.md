@@ -1,5 +1,7 @@
  # ChooseYourScore
 
+    **Live app:** https://felicien-golfier.github.io/ChooseYourScore/
+
     A clinical exercise tool for speech therapists and neuropsychologists.
 
     ## What it does

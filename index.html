@@ -534,11 +534,16 @@
     }
     .sequence-question { font-size: 1.4rem; font-weight: 600; color: #0f172a; text-align: center; }
     .sequence-choices { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .sequence-text-display {
+      width: 100%; padding: 28px 36px; border: 2.5px solid #e2e8f0; border-radius: 16px;
+      background: white; font-size: 1.5rem; line-height: 1.6; color: #0f172a; text-align: center;
+    }
     .sequence-choice-btn {
-      min-width: 80px; padding: 18px 24px; border: 3px solid #e2e8f0; border-radius: 14px;
-      background: white; font-size: 1.8rem; font-weight: 700; cursor: pointer;
+      min-width: 80px; max-width: 300px; padding: 14px 22px; border: 3px solid #e2e8f0; border-radius: 14px;
+      background: white; font-size: 1.4rem; font-weight: 700; cursor: pointer;
       font-family: 'Courier New', monospace; transition: all 0.15s;
       display: flex; align-items: center; justify-content: center;
+      word-break: break-word; text-align: center; line-height: 1.3;
     }
     .sequence-choice-btn:hover:not(:disabled) { border-color: #3b82f6; background: #eff6ff; transform: translateY(-2px); }
     .sequence-choice-btn:disabled { cursor: default; }
@@ -547,7 +552,8 @@
     .sequence-choice-btn.missed    { border-color: #22c55e; background: #f0fdf4; opacity: 0.6; }
     body.is-fullscreen .sequence-container { flex: 1; width: 100%; justify-content: center; }
     body.is-fullscreen .sequence-item-box { width: 110px; height: 110px; font-size: 3.5rem; }
-    body.is-fullscreen .sequence-choice-btn { min-width: 100px; padding: 24px 32px; font-size: 2.4rem; }
+    body.is-fullscreen .sequence-text-display { font-size: 2rem; padding: 36px 48px; }
+    body.is-fullscreen .sequence-choice-btn { min-width: 120px; max-width: 360px; padding: 20px 28px; font-size: 1.8rem; }
 
     /* Arrow modal preview */
     .arrow-preview-card {
@@ -943,7 +949,7 @@
       <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:16px">
         <div class="field-row">
           <label>Nbre d'items</label>
-          <input type="number" id="seq-num-items" min="2" step="1" value="4" style="width:100%;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.9rem;outline:none;font-family:inherit;color:#0f172a;transition:border-color .15s">
+          <input type="number" id="seq-num-items" min="1" step="1" value="4" style="width:100%;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.9rem;outline:none;font-family:inherit;color:#0f172a;transition:border-color .15s">
         </div>
         <div class="field-row">
           <label>Durée d'affichage (secondes)</label>
@@ -957,11 +963,17 @@
       <div style="margin-bottom:16px">
         <div class="field-row" style="margin-bottom:8px"><label>Items à afficher (un par case)</label></div>
         <div id="seq-items-row" style="display:flex; gap:8px; margin-bottom:4px; flex-wrap:wrap"></div>
-        <div style="font-size:0.76rem;color:#94a3b8;margin-top:4px">Lettres, chiffres ou symboles clavier</div>
+        <div style="font-size:0.76rem;color:#94a3b8;margin-top:4px">Lettres, chiffres, mots… Un item par case. Mettre 1 item pour afficher un texte entier.</div>
       </div>
-      <div class="field-row" style="margin-bottom:16px">
-        <label>Position de la question</label>
-        <select id="seq-question-pos"></select>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px">
+        <div class="field-row" id="seq-question-pos-row">
+          <label>Position de la question</label>
+          <select id="seq-question-pos"></select>
+        </div>
+        <div class="field-row">
+          <label>Texte de la question <span style="font-size:0.72rem;color:#94a3b8">(vide = auto)</span></label>
+          <input type="text" id="seq-question-text" placeholder="ex. Quel mot avez-vous vu ?" style="width:100%;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.9rem;outline:none;font-family:inherit;color:#0f172a;transition:border-color .15s">
+        </div>
       </div>
       <div style="margin-bottom:16px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
@@ -1334,11 +1346,12 @@
     const timerFill  = document.getElementById('sequence-timer-fill');
 
     displayEl.innerHTML = '';
+    const isSingle = (pair.items || []).length === 1;
     (pair.items || []).forEach(item => {
-      const box = document.createElement('div');
-      box.className = 'sequence-item-box';
-      box.textContent = item;
-      displayEl.appendChild(box);
+      const el = document.createElement('div');
+      el.className = isSingle ? 'sequence-text-display' : 'sequence-item-box';
+      el.textContent = item;
+      displayEl.appendChild(el);
     });
     displayEl.style.display  = 'flex';
     questionEl.style.display = 'none';
@@ -1364,7 +1377,8 @@
     const posIdx = (pair.questionPosition || 1) - 1;
     const correctAnswer = (pair.choices || [])[0] || '';
     const itemForType = (pair.items || [])[posIdx] || correctAnswer;
-    questionEl.textContent = buildSequenceQuestion(posIdx, getCharCategory(itemForType));
+    const autoQuestion = buildSequenceQuestion(posIdx, getCharCategory(itemForType));
+    questionEl.textContent = pair.questionText || autoQuestion;
     questionEl.style.display = 'block';
 
     const shuffledChoices = shuffleArray([...(pair.choices || [])]);
@@ -1384,7 +1398,6 @@
   function buildSequenceQuestion(posIdx, category) {
     const ordinalsMasc = ['1er', '2ème', '3ème', '4ème', '5ème'];
     const ordinalsFem  = ['1ère', '2ème', '3ème', '4ème', '5ème'];
-    const ord = posIdx < 5 ? posIdx : posIdx;
     if (category === 'letter') {
       return 'Quelle était la ' + (ordinalsFem[posIdx] || (posIdx+1)+'ème') + ' lettre ?';
     } else if (category === 'digit') {
@@ -2070,6 +2083,7 @@
       pair.items            = seqData.items;
       pair.displayDuration  = seqData.displayDuration;
       pair.questionPosition = seqData.questionPosition;
+      pair.questionText     = seqData.questionText;
       pair.choices          = seqData.choices;
       delete pair.left; delete pair.right; delete pair.correct;
       delete pair.direction; delete pair.bgColor; delete pair.rule; delete pair.numOptions;
@@ -2101,20 +2115,25 @@
 
   // ── Sequence modal helpers ────────────────────────────────────────────────────
   function refreshSequenceItemInputs() {
-    const numItems = parseInt(document.getElementById('seq-num-items').value, 10) || 4;
+    const numItems = Math.max(1, parseInt(document.getElementById('seq-num-items').value, 10) || 1);
     const row = document.getElementById('seq-items-row');
     const existing = Array.from(row.querySelectorAll('input')).map(i => i.value);
     row.innerHTML = '';
+    const isSingle = numItems === 1;
     for (let i = 0; i < numItems; i++) {
       const input = document.createElement('input');
-      input.type = 'text'; input.maxLength = 2;
-      input.style.cssText = 'width:52px;padding:8px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:1.5rem;text-align:center;font-family:Courier New,monospace;font-weight:700;outline:none;color:#0f172a';
+      input.type = 'text';
+      input.style.cssText = isSingle
+        ? 'flex:1;min-width:200px;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:1rem;font-family:inherit;outline:none;color:#0f172a'
+        : 'width:80px;padding:8px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:1rem;text-align:center;font-family:Courier New,monospace;font-weight:700;outline:none;color:#0f172a';
       input.value = existing[i] || '';
       input.addEventListener('input', () => { refreshSequenceQuestionPos(); refreshSequencePreview(); });
       input.addEventListener('focus', () => { input.style.borderColor = '#3b82f6'; });
       input.addEventListener('blur',  () => { input.style.borderColor = '#e2e8f0'; });
       row.appendChild(input);
     }
+    // Hide position selector when only 1 item (position is always 1)
+    document.getElementById('seq-question-pos-row').style.display = isSingle ? 'none' : '';
     refreshSequenceQuestionPos();
     refreshSequencePreview();
   }
@@ -2146,8 +2165,8 @@
     for (let i = 0; i < numChoices; i++) {
       const isFirst = i === 0;
       const input = document.createElement('input');
-      input.type = 'text'; input.maxLength = 2;
-      input.style.cssText = 'width:52px;padding:8px;border:1.5px solid ' + (isFirst ? '#86efac' : '#e2e8f0') + ';border-radius:8px;font-size:1.5rem;text-align:center;font-family:Courier New,monospace;font-weight:700;outline:none;background:' + (isFirst ? '#f0fdf4' : 'white') + ';color:#0f172a';
+      input.type = 'text';
+      input.style.cssText = 'min-width:60px;max-width:160px;flex:1;padding:8px 10px;border:1.5px solid ' + (isFirst ? '#86efac' : '#e2e8f0') + ';border-radius:8px;font-size:0.95rem;font-family:inherit;font-weight:600;outline:none;background:' + (isFirst ? '#f0fdf4' : 'white') + ';color:#0f172a';
       input.title = isFirst ? 'Réponse correcte' : '';
       input.value = existing[i] || '';
       input.addEventListener('input', refreshSequencePreview);
@@ -2190,26 +2209,30 @@
 
   function refreshSequencePreview() {
     const items = getSequenceItemValues();
-    const posIdx = parseInt(document.getElementById('seq-question-pos').value, 10) - 1;
+    const isSingle = items.length === 1;
+    const posIdx = isSingle ? 0 : (parseInt(document.getElementById('seq-question-pos').value, 10) - 1);
     const choices = Array.from(document.getElementById('seq-choices-row').querySelectorAll('input')).map(i => i.value);
+    const customQuestion = document.getElementById('seq-question-text').value.trim();
     const previewItems = document.getElementById('seq-preview-items');
     previewItems.innerHTML = '';
     items.forEach((item, i) => {
       const box = document.createElement('div');
-      box.style.cssText = 'width:40px;height:40px;border:2px solid ' + (i===posIdx ? '#3b82f6' : '#e2e8f0') + ';border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:700;font-family:Courier New,monospace;background:' + (i===posIdx ? '#eff6ff' : 'white') + ';color:#0f172a';
+      if (isSingle) {
+        box.style.cssText = 'padding:8px 16px;border:2px solid #3b82f6;border-radius:8px;font-size:1rem;background:#eff6ff;color:#0f172a;max-width:280px;word-break:break-word';
+      } else {
+        box.style.cssText = 'min-width:32px;padding:6px 10px;border:2px solid ' + (i===posIdx ? '#3b82f6' : '#e2e8f0') + ';border-radius:8px;font-size:1rem;font-weight:700;font-family:Courier New,monospace;background:' + (i===posIdx ? '#eff6ff' : 'white') + ';color:#0f172a;text-align:center';
+      }
       box.textContent = item || '?';
       previewItems.appendChild(box);
     });
-    const ordinals = ['1er', '2ème', '3ème', '4ème', '5ème'];
     const correctItem = items[posIdx] || '';
-    const category = getCharCategory(correctItem);
-    document.getElementById('seq-preview-question').textContent =
-      posIdx >= 0 && posIdx < items.length ? buildSequenceQuestion(posIdx, category) : '';
+    const autoQuestion = buildSequenceQuestion(posIdx, getCharCategory(correctItem));
+    document.getElementById('seq-preview-question').textContent = customQuestion || (posIdx >= 0 && posIdx < items.length ? autoQuestion : '');
     const previewChoices = document.getElementById('seq-preview-choices');
     previewChoices.innerHTML = '';
     choices.forEach((c, i) => {
       const div = document.createElement('div');
-      div.style.cssText = 'padding:6px 12px;border:2px solid ' + (i===0 ? '#86efac' : '#e2e8f0') + ';border-radius:8px;font-size:1rem;font-weight:700;font-family:Courier New,monospace;background:' + (i===0 ? '#f0fdf4' : 'white') + ';color:#0f172a';
+      div.style.cssText = 'padding:6px 12px;border:2px solid ' + (i===0 ? '#86efac' : '#e2e8f0') + ';border-radius:8px;font-size:0.95rem;font-weight:600;background:' + (i===0 ? '#f0fdf4' : 'white') + ';color:#0f172a;word-break:break-word';
       div.textContent = c || '?';
       previewChoices.appendChild(div);
     });
@@ -2224,7 +2247,8 @@
     const itemInputs = document.getElementById('seq-items-row').querySelectorAll('input');
     (pair.items || []).forEach((v, i) => { if (itemInputs[i]) itemInputs[i].value = v; });
     refreshSequenceQuestionPos();
-    document.getElementById('seq-question-pos').value = String(pair.questionPosition || 1);
+    if ((pair.items || []).length > 1) document.getElementById('seq-question-pos').value = String(pair.questionPosition || 1);
+    document.getElementById('seq-question-text').value = pair.questionText || '';
     refreshSequenceChoicesRow();
     const choiceInputs = document.getElementById('seq-choices-row').querySelectorAll('input');
     (pair.choices || []).forEach((v, i) => { if (choiceInputs[i]) choiceInputs[i].value = v; });
@@ -2232,10 +2256,13 @@
   }
 
   function readSequenceModal() {
+    const items = getSequenceItemValues();
+    const isSingle = items.length === 1;
     return {
-      items:            getSequenceItemValues(),
+      items,
       displayDuration:  Math.round((parseFloat(document.getElementById('seq-duration').value) || 1) * 1000),
-      questionPosition: parseInt(document.getElementById('seq-question-pos').value, 10) || 1,
+      questionPosition: isSingle ? 1 : (parseInt(document.getElementById('seq-question-pos').value, 10) || 1),
+      questionText:     document.getElementById('seq-question-text').value.trim(),
       choices:          Array.from(document.getElementById('seq-choices-row').querySelectorAll('input')).map(i => i.value.trim()),
     };
   }
@@ -2245,6 +2272,7 @@
   document.getElementById('seq-num-choices').addEventListener('input',  refreshSequenceChoicesRow);
   document.getElementById('seq-num-choices').addEventListener('change', refreshSequenceChoicesRow);
   document.getElementById('seq-question-pos').addEventListener('change', refreshSequencePreview);
+  document.getElementById('seq-question-text').addEventListener('input', refreshSequencePreview);
   document.getElementById('seq-generate-btn').addEventListener('click', autoGenerateSequenceChoices);
 
   document.getElementById('pair-modal').addEventListener('click', e => { if (e.target===document.getElementById('pair-modal')) closeModal(); });

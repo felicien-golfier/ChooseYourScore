@@ -189,6 +189,42 @@
     .result-card .value { font-size: 2rem; font-weight: 700; color: #0f172a; }
     .result-card .value.good { color: #16a34a; }
     .result-card .value.warn { color: #dc2626; }
+
+    /* ── Mobile ────────────────────────────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      body { padding: 12px 8px; }
+
+      .screen { padding: 24px 16px; border-radius: 14px; }
+
+      h1 { font-size: 1.5rem; }
+      h2 { font-size: 1.3rem; margin-bottom: 16px; }
+      .subtitle { margin-bottom: 24px; }
+
+      .top-nav { flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+
+      /* Choice pairs: stack vertically */
+      .pair-container { grid-template-columns: 1fr; gap: 14px; }
+      .item-btn { min-height: 110px; padding: 16px; font-size: inherit; }
+
+      /* Arrow card */
+      .arrow-card { min-height: 200px; font-size: 80px; }
+
+      /* Arrow keys: bigger touch targets */
+      .arrow-key-btn { width: 72px; height: 72px; font-size: 2.2rem; }
+
+      /* Results */
+      .results-grid { grid-template-columns: 1fr; gap: 12px; }
+      .result-card { padding: 16px 18px; }
+      .result-card .value { font-size: 1.6rem; }
+
+      /* Buttons */
+      .btn-group { flex-direction: column; }
+      .btn-group .btn { justify-content: center; }
+      .btn { padding: 14px 20px; }
+
+      /* Instruction */
+      .instruction-box { padding: 20px; font-size: 1.1rem; }
+    }
   </style>
 </head>
 <body>

@@ -133,6 +133,31 @@
       font-family: inherit; transition: background 0.1s;
     }
     .btn-delete-session:hover { background: #fef2f2; }
+
+    /* ── Mobile ────────────────────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .topbar { padding: 12px 16px; flex-wrap: wrap; gap: 8px; }
+      .topbar nav { margin-left: 0; }
+
+      .page { padding: 16px 12px; }
+
+      .filters { flex-direction: column; gap: 12px; }
+      .filter-group { min-width: auto; }
+
+      /* Stats: 2 columns */
+      .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+
+      /* Charts: single column */
+      .charts-row { grid-template-columns: 1fr; gap: 14px; }
+
+      /* Table: scrollable, compact */
+      .table-card { padding: 16px 12px; }
+      table { min-width: 560px; }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>

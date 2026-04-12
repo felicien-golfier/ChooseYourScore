@@ -569,6 +569,9 @@
 
     /* ── Mobile ─────────────────────────────────────────────────────────────────── */
     @media (max-width: 640px) {
+      /* Let the page scroll naturally — no viewport clip on mobile */
+      body { overflow: auto; height: auto; min-height: 100vh; }
+
       #topbar { padding: 0 10px; gap: 2px; height: auto; flex-wrap: wrap; padding: 6px 10px; }
       #topbar .logo { font-size: 0.9rem; margin-right: 4px; }
       .nav-btn { padding: 5px 9px; font-size: 0.78rem; }
@@ -600,7 +603,6 @@
       #view-patients.active { flex-direction: column; overflow: auto; }
       .sidebar { width: 100%; max-height: 200px; border-right: none; border-bottom: 1px solid #e2e8f0; }
       .exercise-list { max-height: 130px; }
-      /* editor-main must NOT be flex:1 on mobile — let it grow to content height so the view scrolls */
       .editor-main { flex: 0 0 auto; overflow-y: visible; padding: 16px; }
       .editor-header { flex-wrap: wrap; gap: 10px; }
       .editor-header h3 { min-width: 0; flex: 1 1 100%; }
@@ -2363,36 +2365,30 @@
     choiceSection.className = 'seq-q-choice-section';
 
     const choicesHeader = document.createElement('div');
-    choicesHeader.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:6px';
+    choicesHeader.style.cssText = 'display:flex;align-items:center;gap:12px;margin-bottom:6px';
     const choicesLabel = document.createElement('span');
-    choicesLabel.style.cssText = 'font-size:0.78rem;color:#64748b;font-weight:500;flex:1';
+    choicesLabel.style.cssText = 'font-size:0.78rem;color:#64748b;font-weight:500';
     choicesLabel.innerHTML = 'Réponses <span style="color:#16a34a;font-size:0.72rem">(● = correcte)</span>';
-    const btnAddChoice = document.createElement('button');
-    btnAddChoice.type = 'button'; btnAddChoice.textContent = '+ Réponse';
-    btnAddChoice.style.cssText = 'padding:2px 8px;border:1.5px solid #cbd5e1;border-radius:6px;background:white;color:#475569;font-size:0.75rem;cursor:pointer;font-family:inherit';
-    const btnRemoveChoice = document.createElement('button');
-    btnRemoveChoice.type = 'button'; btnRemoveChoice.textContent = '− Réponse';
-    btnRemoveChoice.style.cssText = 'padding:2px 8px;border:1.5px solid #fca5a5;border-radius:6px;background:white;color:#ef4444;font-size:0.75rem;cursor:pointer;font-family:inherit';
+    const numInput = document.createElement('input');
+    numInput.type = 'number'; numInput.className = 'seq-q-num-choices';
+    numInput.min = 1; numInput.step = 1;
+    numInput.value = (q.choices || []).length >= 1 ? (q.choices || []).length : 2;
+    numInput.style.cssText = 'width:52px;padding:4px 6px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:0.85rem;outline:none;font-family:inherit;color:#0f172a';
     const choicesRow = document.createElement('div');
     choicesRow.className = 'seq-q-choices-row';
     choicesRow.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;align-items:center';
-    const initialChoices  = (q.choices && q.choices.length >= 2) ? q.choices : ['', ''];
+    const initialChoices  = (q.choices && q.choices.length >= 1) ? q.choices : ['', ''];
     const initialCorrects = q.correctIndices && q.correctIndices.length ? q.correctIndices : [0];
     buildChoicesRow(choicesRow, initialChoices, initialCorrects);
-    btnAddChoice.addEventListener('click', () => {
+    numInput.addEventListener('input', () => {
+      const n = Math.max(1, parseInt(numInput.value) || 1);
       const existing = Array.from(choicesRow.querySelectorAll('.seq-q-choice')).map(i => i.value);
       const existingCorrects = getCorrectIndicesFromBlock(block);
-      buildChoicesRow(choicesRow, [...existing, ''], existingCorrects);
+      while (existing.length < n) existing.push('');
+      buildChoicesRow(choicesRow, existing.slice(0, n), existingCorrects.length ? existingCorrects : [0]);
       refreshSequencePreview();
     });
-    btnRemoveChoice.addEventListener('click', () => {
-      const existing = Array.from(choicesRow.querySelectorAll('.seq-q-choice')).map(i => i.value);
-      if (existing.length <= 2) return;
-      const existingCorrects = getCorrectIndicesFromBlock(block).filter(i => i < existing.length - 1);
-      buildChoicesRow(choicesRow, existing.slice(0, -1), existingCorrects.length ? existingCorrects : [0]);
-      refreshSequencePreview();
-    });
-    choicesHeader.append(choicesLabel, btnAddChoice, btnRemoveChoice);
+    choicesHeader.append(choicesLabel, numInput);
 
     // Sq-code picker
     const picker = document.createElement('div');

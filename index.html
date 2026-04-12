@@ -1430,13 +1430,14 @@
       choicesEl.style.display = 'flex';
       const shuffledChoices = shuffleArray([...(q.choices || [])]);
       choicesEl.innerHTML = '';
+      const foundAnswers = new Set(); // tracks correct answers already clicked
       shuffledChoices.forEach(choice => {
         const btn = document.createElement('button');
         btn.className = 'sequence-choice-btn';
         btn.dataset.value = choice;
         if (hasSqCodes(choice)) { btn.appendChild(renderSqChoice(choice)); }
         else { btn.textContent = choice; }
-        btn.addEventListener('click', () => handleSequenceResponse(choice, correctAnswers, pair, questions, qIdx, isRetry));
+        btn.addEventListener('click', () => handleSequenceResponse(choice, correctAnswers, foundAnswers, pair, questions, qIdx, isRetry));
         choicesEl.appendChild(btn);
       });
     }
@@ -1445,30 +1446,44 @@
     pairStartTime = Date.now();
   }
 
-  function handleSequenceResponse(chosen, correctAnswers, pair, questions, qIdx, isRetry) {
+  function handleSequenceResponse(chosen, correctAnswers, foundAnswers, pair, questions, qIdx, isRetry) {
     if (isWaiting) return;
-    isWaiting = true;
-    const isCorrect = correctAnswers.includes(chosen);
-    const correctAnswer = correctAnswers[0] || '';
-    responses.push({ pairId: pair.id, type: 'sequence', items: pair.items, questionIndex: qIdx, chosen, isCorrect, correctAnswer, correctAnswers, isRetry: !!isRetry, timeMs: Date.now() - pairStartTime });
     const choicesEl = document.getElementById('sequence-choices');
-    Array.from(choicesEl.querySelectorAll('.sequence-choice-btn')).forEach(btn => {
-      btn.disabled = true;
-      if (btn.dataset.value === chosen) btn.classList.add(isCorrect ? 'correct' : 'incorrect');
-      if (!isCorrect && correctAnswers.includes(btn.dataset.value)) btn.classList.add('missed');
-    });
-    const delay = isCorrect ? 700 : 1200;
-    setTimeout(() => {
-      if (!isCorrect && !isRetry) {
-        // First wrong attempt → retry the same question
-        startSequenceQuestion(pair, qIdx, true);
-      } else if (qIdx + 1 < questions.length) {
-        startSequenceQuestion(pair, qIdx + 1, false);
-      } else {
-        pairIndex++;
-        if (pairIndex >= currentPairs.length) finishExercise(); else renderPair();
-      }
-    }, delay);
+    const clickedBtn = Array.from(choicesEl.querySelectorAll('.sequence-choice-btn'))
+      .find(b => b.dataset.value === chosen);
+    const isCorrect = correctAnswers.includes(chosen);
+    responses.push({ pairId: pair.id, type: 'sequence', items: pair.items, questionIndex: qIdx, chosen, isCorrect, correctAnswer: correctAnswers[0] || '', correctAnswers, isRetry: !!isRetry, timeMs: Date.now() - pairStartTime });
+
+    if (isCorrect) {
+      foundAnswers.add(chosen);
+      if (clickedBtn) { clickedBtn.classList.add('correct'); clickedBtn.disabled = true; }
+      if (foundAnswers.size < correctAnswers.length) return; // wait for remaining correct answers
+      // All correct answers found → advance
+      isWaiting = true;
+      Array.from(choicesEl.querySelectorAll('.sequence-choice-btn')).forEach(b => { b.disabled = true; });
+      setTimeout(() => advance(pair, questions, qIdx, isRetry), 700);
+    } else {
+      // Wrong answer → disable all, show missed, handle retry
+      isWaiting = true;
+      Array.from(choicesEl.querySelectorAll('.sequence-choice-btn')).forEach(b => {
+        b.disabled = true;
+        if (b.dataset.value === chosen) b.classList.add('incorrect');
+        else if (correctAnswers.includes(b.dataset.value) && !foundAnswers.has(b.dataset.value)) b.classList.add('missed');
+      });
+      setTimeout(() => {
+        if (!isRetry) startSequenceQuestion(pair, qIdx, true);
+        else advance(pair, questions, qIdx, isRetry);
+      }, 1200);
+    }
+  }
+
+  function advance(pair, questions, qIdx, isRetry) {
+    if (qIdx + 1 < questions.length) {
+      startSequenceQuestion(pair, qIdx + 1, false);
+    } else {
+      pairIndex++;
+      if (pairIndex >= currentPairs.length) finishExercise(); else renderPair();
+    }
   }
 
   function handleSequenceWrite(typed, correctAnswers, pair, questions, qIdx, isRetry) {
@@ -1490,14 +1505,8 @@
     setTimeout(() => {
       writeInput.disabled = false;
       document.getElementById('seq-write-validate').disabled = false;
-      if (!isCorrect && !isRetry) {
-        startSequenceQuestion(pair, qIdx, true);
-      } else if (qIdx + 1 < questions.length) {
-        startSequenceQuestion(pair, qIdx + 1, false);
-      } else {
-        pairIndex++;
-        if (pairIndex >= currentPairs.length) finishExercise(); else renderPair();
-      }
+      if (!isCorrect && !isRetry) startSequenceQuestion(pair, qIdx, true);
+      else advance(pair, questions, qIdx, isRetry);
     }, delay);
   }
 

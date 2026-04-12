@@ -1392,8 +1392,9 @@
     const choicesEl  = document.getElementById('sequence-choices');
     const writeZone  = document.getElementById('seq-write-zone');
 
-    // On retry: re-show the items automatically
-    if (isRetry) {
+    // On retry: re-show the items only if the question is configured to do so
+    const showOnRetry = isRetry && (q.showOnRetry !== false);
+    if (showOnRetry) {
       displayEl.style.display = 'flex';
     } else {
       displayEl.style.display = 'none';
@@ -1401,7 +1402,7 @@
 
     const showAgainBtn = document.getElementById('seq-show-again-btn');
     showAgainBtn.style.display = '';
-    showAgainBtn.textContent = isRetry ? '🙈 Masquer' : '👁 Revoir';
+    showAgainBtn.textContent = showOnRetry ? '🙈 Masquer' : '👁 Revoir';
     showAgainBtn.onclick = () => {
       const visible = displayEl.style.display !== 'none';
       displayEl.style.display = visible ? 'none' : 'flex';
@@ -1416,10 +1417,13 @@
       writeZone.style.display = 'flex';
       const writeInput    = document.getElementById('seq-write-input');
       const writeFeedback = document.getElementById('seq-write-feedback');
-      writeInput.value = '';
-      writeFeedback.style.display = 'none';
-      writeFeedback.textContent = '';
+      // Always fully reset the write zone (especially important on retry)
+      writeInput.value            = '';
+      writeInput.disabled         = false;
       writeInput.style.borderColor = '#e2e8f0';
+      writeFeedback.style.display  = 'none';
+      writeFeedback.innerHTML      = '';
+      document.getElementById('seq-write-validate').disabled = false;
       setTimeout(() => writeInput.focus(), 50);
 
       const validate = () => handleSequenceWrite(writeInput.value.trim(), correctAnswers, pair, questions, qIdx, isRetry);
@@ -2364,7 +2368,14 @@
         block.remove(); updateSeqQuestionTitles(); refreshSequencePreview();
       }
     });
-    header.append(title, typeSelect, delBtn);
+    // "Show items on retry" checkbox
+    const retryLabel = document.createElement('label');
+    retryLabel.style.cssText = 'display:flex;align-items:center;gap:4px;font-size:0.75rem;color:#64748b;cursor:pointer;white-space:nowrap';
+    const retryChk = document.createElement('input');
+    retryChk.type = 'checkbox'; retryChk.className = 'seq-q-show-on-retry';
+    retryChk.checked = q.showOnRetry !== false; // default true
+    retryLabel.append(retryChk, document.createTextNode('Réafficher au 2ᵉ essai'));
+    header.append(title, typeSelect, retryLabel, delBtn);
     block.appendChild(header);
 
     // Question text
@@ -2537,7 +2548,8 @@
   function readSequenceModal() {
     const questions = Array.from(document.getElementById('seq-questions-container').querySelectorAll('.seq-q-block')).map(block => {
       const type = block.querySelector('.seq-q-type').value;
-      const base = { questionText: block.querySelector('.seq-q-text').value.trim(), type };
+      const showOnRetry = block.querySelector('.seq-q-show-on-retry')?.checked ?? true;
+      const base = { questionText: block.querySelector('.seq-q-text').value.trim(), type, showOnRetry };
       if (type === 'write') {
         const raw = (block.querySelector('.seq-q-write-answer')?.value || '').trim();
         base.writeAnswers = raw ? raw.split('|').map(s => s.trim()).filter(Boolean) : [];

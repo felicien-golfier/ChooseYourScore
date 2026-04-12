@@ -2363,30 +2363,36 @@
     choiceSection.className = 'seq-q-choice-section';
 
     const choicesHeader = document.createElement('div');
-    choicesHeader.style.cssText = 'display:flex;align-items:center;gap:12px;margin-bottom:6px';
+    choicesHeader.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:6px';
     const choicesLabel = document.createElement('span');
-    choicesLabel.style.cssText = 'font-size:0.78rem;color:#64748b;font-weight:500';
+    choicesLabel.style.cssText = 'font-size:0.78rem;color:#64748b;font-weight:500;flex:1';
     choicesLabel.innerHTML = 'Réponses <span style="color:#16a34a;font-size:0.72rem">(● = correcte)</span>';
-    const numInput = document.createElement('input');
-    numInput.type = 'number'; numInput.className = 'seq-q-num-choices';
-    numInput.min = 2; numInput.step = 1;
-    numInput.value = (q.choices || []).length >= 2 ? (q.choices || []).length : 2;
-    numInput.style.cssText = 'width:52px;padding:4px 6px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:0.85rem;outline:none;font-family:inherit;color:#0f172a';
+    const btnAddChoice = document.createElement('button');
+    btnAddChoice.type = 'button'; btnAddChoice.textContent = '+ Réponse';
+    btnAddChoice.style.cssText = 'padding:2px 8px;border:1.5px solid #cbd5e1;border-radius:6px;background:white;color:#475569;font-size:0.75rem;cursor:pointer;font-family:inherit';
+    const btnRemoveChoice = document.createElement('button');
+    btnRemoveChoice.type = 'button'; btnRemoveChoice.textContent = '− Réponse';
+    btnRemoveChoice.style.cssText = 'padding:2px 8px;border:1.5px solid #fca5a5;border-radius:6px;background:white;color:#ef4444;font-size:0.75rem;cursor:pointer;font-family:inherit';
     const choicesRow = document.createElement('div');
     choicesRow.className = 'seq-q-choices-row';
     choicesRow.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;align-items:center';
-    const initialChoices  = (q.choices && q.choices.length >= 2) ? q.choices : Array(parseInt(numInput.value)).fill('');
+    const initialChoices  = (q.choices && q.choices.length >= 2) ? q.choices : ['', ''];
     const initialCorrects = q.correctIndices && q.correctIndices.length ? q.correctIndices : [0];
     buildChoicesRow(choicesRow, initialChoices, initialCorrects);
-    numInput.addEventListener('input', () => {
-      const n = Math.max(2, parseInt(numInput.value) || 2);
+    btnAddChoice.addEventListener('click', () => {
       const existing = Array.from(choicesRow.querySelectorAll('.seq-q-choice')).map(i => i.value);
       const existingCorrects = getCorrectIndicesFromBlock(block);
-      while (existing.length < n) existing.push('');
-      buildChoicesRow(choicesRow, existing.slice(0, n), existingCorrects);
+      buildChoicesRow(choicesRow, [...existing, ''], existingCorrects);
       refreshSequencePreview();
     });
-    choicesHeader.append(choicesLabel, numInput);
+    btnRemoveChoice.addEventListener('click', () => {
+      const existing = Array.from(choicesRow.querySelectorAll('.seq-q-choice')).map(i => i.value);
+      if (existing.length <= 2) return;
+      const existingCorrects = getCorrectIndicesFromBlock(block).filter(i => i < existing.length - 1);
+      buildChoicesRow(choicesRow, existing.slice(0, -1), existingCorrects.length ? existingCorrects : [0]);
+      refreshSequencePreview();
+    });
+    choicesHeader.append(choicesLabel, btnAddChoice, btnRemoveChoice);
 
     // Sq-code picker
     const picker = document.createElement('div');

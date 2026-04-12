@@ -1468,7 +1468,8 @@
       Array.from(choicesEl.querySelectorAll('.sequence-choice-btn')).forEach(b => {
         b.disabled = true;
         if (b.dataset.value === chosen) b.classList.add('incorrect');
-        else if (correctAnswers.includes(b.dataset.value) && !foundAnswers.has(b.dataset.value)) b.classList.add('missed');
+        // Only reveal correct answers on the final (retry) attempt, not the first wrong attempt
+        else if (isRetry && correctAnswers.includes(b.dataset.value) && !foundAnswers.has(b.dataset.value)) b.classList.add('missed');
       });
       setTimeout(() => {
         if (!isRetry) startSequenceQuestion(pair, qIdx, true);

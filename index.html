@@ -719,6 +719,12 @@
       <div class="sequence-display" id="sequence-display"></div>
       <div class="sequence-question" id="sequence-question" style="display:none"></div>
       <div class="sequence-choices" id="sequence-choices" style="display:none"></div>
+      <div id="seq-write-zone" style="display:none;flex-direction:column;align-items:center;gap:10px;width:100%;max-width:400px">
+        <input type="text" id="seq-write-input" placeholder="Écris ta réponse…" autocomplete="off" autocorrect="off" spellcheck="false"
+          style="width:100%;padding:14px 16px;border:2px solid #e2e8f0;border-radius:12px;font-size:1.2rem;font-family:inherit;outline:none;text-align:center;transition:border-color .2s">
+        <button id="seq-write-validate" style="padding:12px 32px;background:#3b82f6;color:white;border:none;border-radius:10px;font-size:1rem;font-family:inherit;cursor:pointer;font-weight:600;transition:background .15s">Valider</button>
+        <div id="seq-write-feedback" style="display:none;font-size:0.95rem;color:#dc2626;background:#fef2f2;border:1.5px solid #fca5a5;border-radius:8px;padding:8px 16px;text-align:center"></div>
+      </div>
       <button id="seq-show-again-btn" style="display:none;padding:6px 14px;border:1.5px solid #cbd5e1;border-radius:8px;background:white;color:#64748b;font-size:0.82rem;cursor:pointer;font-family:inherit;transition:all 0.15s" title="Afficher à nouveau les items">👁 Revoir</button>
     </div>
     <div class="keyboard-hint" id="keyboard-hint">← Flèche gauche &nbsp;|&nbsp; Flèche droite →</div>
@@ -733,8 +739,8 @@
     <div class="results-grid">
       <div class="result-card"><div class="label">Score</div><div class="value good" id="res-score">–</div></div>
       <div class="result-card"><div class="label">Temps total</div><div class="value" id="res-time">–</div></div>
-      <div class="result-card"><div class="label">Erreurs — item gauche / ← manqué</div><div class="value warn" id="res-errors-left">–</div></div>
-      <div class="result-card"><div class="label">Erreurs — item droit / → manqué</div><div class="value warn" id="res-errors-right">–</div></div>
+      <div class="result-card" id="card-errors-left"  style="display:none"><div class="label">Erreurs — item gauche</div><div class="value warn" id="res-errors-left">–</div></div>
+      <div class="result-card" id="card-errors-right" style="display:none"><div class="label">Erreurs — item droit</div><div class="value warn" id="res-errors-right">–</div></div>
       <div class="result-card" id="card-avg-reaction" style="display:none"><div class="label">Temps de réaction moyen</div><div class="value" id="res-avg-reaction">–</div></div>
       <div class="result-card" id="card-errors-blue"   style="display:none"><div class="label">Erreurs — fond bleu</div><div class="value warn" id="res-errors-blue">–</div></div>
       <div class="result-card" id="card-errors-yellow" style="display:none"><div class="label">Erreurs — fond jaune</div><div class="value warn" id="res-errors-yellow">–</div></div>
@@ -1357,19 +1363,28 @@
     sequenceTimer = setTimeout(() => { sequenceTimer = null; startSequenceQuestion(pair, 0); }, pair.displayDuration || 1000);
   }
 
-  function startSequenceQuestion(pair, qIdx) {
+  function startSequenceQuestion(pair, qIdx, isRetry) {
     const questions = pair.questions || [{ questionText: pair.questionText || '', choices: pair.choices || [] }];
     const q = questions[qIdx];
-    const correctAnswer = (q.choices || [])[0] || '';
+    // Support multiple correct answers: correctIndices array, default [0]
+    const correctIndices = q.correctIndices && q.correctIndices.length ? q.correctIndices : [0];
+    const correctAnswers = correctIndices.map(i => (q.choices || [])[i]).filter(Boolean);
 
     const displayEl  = document.getElementById('sequence-display');
     const questionEl = document.getElementById('sequence-question');
     const choicesEl  = document.getElementById('sequence-choices');
+    const writeZone  = document.getElementById('seq-write-zone');
 
-    displayEl.style.display = 'none';
+    // On retry: re-show the items automatically
+    if (isRetry) {
+      displayEl.style.display = 'flex';
+    } else {
+      displayEl.style.display = 'none';
+    }
+
     const showAgainBtn = document.getElementById('seq-show-again-btn');
     showAgainBtn.style.display = '';
-    showAgainBtn.textContent = '👁 Revoir';
+    showAgainBtn.textContent = isRetry ? '🙈 Masquer' : '👁 Revoir';
     showAgainBtn.onclick = () => {
       const visible = displayEl.style.display !== 'none';
       displayEl.style.display = visible ? 'none' : 'flex';
@@ -1379,45 +1394,94 @@
     questionEl.textContent = q.questionText || '';
     questionEl.style.display = 'block';
 
-    const shuffledChoices = shuffleArray([...(q.choices || [])]);
-    choicesEl.innerHTML = '';
-    shuffledChoices.forEach(choice => {
-      const btn = document.createElement('button');
-      btn.className = 'sequence-choice-btn';
-      btn.dataset.value = choice;
-      if (hasSqCodes(choice)) {
-        btn.appendChild(renderSqChoice(choice));
-      } else {
-        btn.textContent = choice;
-      }
-      btn.addEventListener('click', () => handleSequenceResponse(choice, correctAnswer, pair, questions, qIdx));
-      choicesEl.appendChild(btn);
-    });
-    choicesEl.style.display = 'flex';
+    if (q.type === 'write') {
+      choicesEl.style.display = 'none';
+      writeZone.style.display = 'flex';
+      const writeInput    = document.getElementById('seq-write-input');
+      const writeFeedback = document.getElementById('seq-write-feedback');
+      writeInput.value = '';
+      writeFeedback.style.display = 'none';
+      writeFeedback.textContent = '';
+      writeInput.style.borderColor = '#e2e8f0';
+      setTimeout(() => writeInput.focus(), 50);
 
+      const validate = () => handleSequenceWrite(writeInput.value.trim(), correctAnswers, pair, questions, qIdx, isRetry);
+      document.getElementById('seq-write-validate').onclick = validate;
+      writeInput.onkeydown = e => { if (e.key === 'Enter') validate(); };
+    } else {
+      writeZone.style.display = 'none';
+      choicesEl.style.display = 'flex';
+      const shuffledChoices = shuffleArray([...(q.choices || [])]);
+      choicesEl.innerHTML = '';
+      shuffledChoices.forEach(choice => {
+        const btn = document.createElement('button');
+        btn.className = 'sequence-choice-btn';
+        btn.dataset.value = choice;
+        if (hasSqCodes(choice)) { btn.appendChild(renderSqChoice(choice)); }
+        else { btn.textContent = choice; }
+        btn.addEventListener('click', () => handleSequenceResponse(choice, correctAnswers, pair, questions, qIdx, isRetry));
+        choicesEl.appendChild(btn);
+      });
+    }
+
+    isWaiting = false;
     pairStartTime = Date.now();
   }
 
-  function handleSequenceResponse(chosen, correctAnswer, pair, questions, qIdx) {
+  function handleSequenceResponse(chosen, correctAnswers, pair, questions, qIdx, isRetry) {
     if (isWaiting) return;
     isWaiting = true;
-    const isCorrect = chosen === correctAnswer;
-    responses.push({ pairId: pair.id, type: 'sequence', items: pair.items, questionIndex: qIdx, chosen, isCorrect, correctAnswer, timeMs: Date.now() - pairStartTime });
+    const isCorrect = correctAnswers.includes(chosen);
+    const correctAnswer = correctAnswers[0] || '';
+    responses.push({ pairId: pair.id, type: 'sequence', items: pair.items, questionIndex: qIdx, chosen, isCorrect, correctAnswer, correctAnswers, isRetry: !!isRetry, timeMs: Date.now() - pairStartTime });
     const choicesEl = document.getElementById('sequence-choices');
     Array.from(choicesEl.querySelectorAll('.sequence-choice-btn')).forEach(btn => {
       btn.disabled = true;
-      if (btn.dataset.value === chosen)                    btn.classList.add(isCorrect ? 'correct' : 'incorrect');
-      if (!isCorrect && btn.dataset.value === correctAnswer) btn.classList.add('missed');
+      if (btn.dataset.value === chosen) btn.classList.add(isCorrect ? 'correct' : 'incorrect');
+      if (!isCorrect && correctAnswers.includes(btn.dataset.value)) btn.classList.add('missed');
     });
+    const delay = isCorrect ? 700 : 1200;
     setTimeout(() => {
-      if (qIdx + 1 < questions.length) {
-        isWaiting = false;
-        startSequenceQuestion(pair, qIdx + 1);
+      if (!isCorrect && !isRetry) {
+        // First wrong attempt → retry the same question
+        startSequenceQuestion(pair, qIdx, true);
+      } else if (qIdx + 1 < questions.length) {
+        startSequenceQuestion(pair, qIdx + 1, false);
       } else {
         pairIndex++;
         if (pairIndex >= currentPairs.length) finishExercise(); else renderPair();
       }
-    }, 700);
+    }, delay);
+  }
+
+  function handleSequenceWrite(typed, correctAnswers, pair, questions, qIdx, isRetry) {
+    if (isWaiting) return;
+    isWaiting = true;
+    const isCorrect = correctAnswers.some(a => a.trim().toLowerCase() === typed.toLowerCase());
+    const correctAnswer = correctAnswers[0] || '';
+    responses.push({ pairId: pair.id, type: 'sequence', items: pair.items, questionIndex: qIdx, chosen: typed, isCorrect, correctAnswer, correctAnswers, isRetry: !!isRetry, timeMs: Date.now() - pairStartTime });
+    const writeInput    = document.getElementById('seq-write-input');
+    const writeFeedback = document.getElementById('seq-write-feedback');
+    writeInput.disabled = true;
+    document.getElementById('seq-write-validate').disabled = true;
+    writeInput.style.borderColor = isCorrect ? '#22c55e' : '#ef4444';
+    if (!isCorrect) {
+      writeFeedback.style.display = 'block';
+      writeFeedback.innerHTML = 'Réponse correcte : <strong>' + escapeHtml(correctAnswers.join(' / ')) + '</strong>';
+    }
+    const delay = isCorrect ? 700 : 1800;
+    setTimeout(() => {
+      writeInput.disabled = false;
+      document.getElementById('seq-write-validate').disabled = false;
+      if (!isCorrect && !isRetry) {
+        startSequenceQuestion(pair, qIdx, true);
+      } else if (qIdx + 1 < questions.length) {
+        startSequenceQuestion(pair, qIdx + 1, false);
+      } else {
+        pairIndex++;
+        if (pairIndex >= currentPairs.length) finishExercise(); else renderPair();
+      }
+    }, delay);
   }
 
   function playPairAudios(pair) {
@@ -1486,7 +1550,12 @@
     let score = 0, errorsLeft = 0, errorsRight = 0, errorsUp = 0, errorsDown = 0;
     let errorsBlue = 0, errorsYellow = 0, arrowCount = 0, arrowTimeTotal = 0;
 
+    // totalQuestions = 1 per non-sequence pair + 1 per question in sequence pairs
+    const totalQuestions = currentPairs.reduce((sum, p) =>
+      p.type === 'sequence' ? sum + (p.questions || [{questionText:'',choices:[]}]).length : sum + 1, 0);
+
     responses.forEach(r => {
+      if (r.isRetry) return; // only count first attempts
       if (r.isCorrect) { score++; }
       else {
         if      (r.correctAnswer === 'left')  errorsLeft++;
@@ -1498,14 +1567,15 @@
       if (r.type === 'arrow') { arrowCount++; arrowTimeTotal += r.timeMs; }
     });
 
-    const hasArrow = arrowCount > 0;
+    const hasArrow  = arrowCount > 0;
+    const hasChoice = responses.some(r => r.type === 'choice');
     const avgArrowReaction = hasArrow ? Math.round(arrowTimeTotal / arrowCount) : null;
     const hasUpDown = responses.some(r => r.type === 'arrow' && (r.direction === 'up' || r.direction === 'down'));
 
     const newSession = {
       id: newId('sess'), exerciseId: currentExercise.id, exerciseName: currentExercise.name,
       patientName: currentPatient, patientId: currentPatientId, date: new Date().toISOString(),
-      totalTimeMs, totalPairs: currentPairs.length, score, errorsLeft, errorsRight,
+      totalTimeMs, totalPairs: totalQuestions, score, errorsLeft, errorsRight,
       errorsUp, errorsDown, errorsBlue, errorsYellow, responses, notes: '',
     };
     sessions.push(newSession);
@@ -1515,17 +1585,21 @@
 
     document.getElementById('progress-fill').style.width = '100%';
     document.getElementById('results-meta').textContent  = 'Patient : ' + currentPatient + '  ·  ' + currentExercise.name;
-    document.getElementById('res-score').textContent      = score + ' / ' + currentPairs.length + ' (' + Math.round(score/currentPairs.length*100) + '%)';
-    document.getElementById('res-time').textContent       = formatDuration(totalTimeMs);
-    document.getElementById('res-errors-left').textContent  = errorsLeft;
-    document.getElementById('res-errors-right').textContent = errorsRight;
+    document.getElementById('res-score').textContent = score + ' / ' + totalQuestions + ' (' + Math.round(score/totalQuestions*100) + '%)';
+    document.getElementById('res-time').textContent  = formatDuration(totalTimeMs);
 
     const showCard = (id, v) => document.getElementById(id).style.display = v ? 'block' : 'none';
+    showCard('card-errors-left',  hasChoice);
+    showCard('card-errors-right', hasChoice);
     showCard('card-avg-reaction', hasArrow);
     showCard('card-errors-blue',  hasArrow);
     showCard('card-errors-yellow',hasArrow);
     showCard('card-errors-up',    hasArrow && hasUpDown);
     showCard('card-errors-down',  hasArrow && hasUpDown);
+    if (hasChoice) {
+      document.getElementById('res-errors-left').textContent  = errorsLeft;
+      document.getElementById('res-errors-right').textContent = errorsRight;
+    }
     if (hasArrow) {
       document.getElementById('res-avg-reaction').textContent  = (avgArrowReaction / 1000).toFixed(2) + ' s';
       document.getElementById('res-errors-blue').textContent   = errorsBlue;
@@ -2187,21 +2261,51 @@
   }
 
   // ── Sequence question blocks ──────────────────────────────────────────────────
-  function buildChoicesRow(container, choices) {
+  function buildChoicesRow(container, choices, correctIndices) {
     container.innerHTML = '';
+    const corrects = new Set(correctIndices && correctIndices.length ? correctIndices : [0]);
     choices.forEach((val, i) => {
-      const isFirst = i === 0;
+      const isCorrect = corrects.has(i);
+      const wrapper = document.createElement('div');
+      wrapper.style.cssText = 'display:flex;align-items:center;gap:4px;position:relative';
+      // Correct toggle button
+      const toggle = document.createElement('button');
+      toggle.type = 'button';
+      toggle.className = 'seq-correct-toggle';
+      toggle.dataset.correct = isCorrect ? '1' : '0';
+      toggle.title = isCorrect ? 'Réponse correcte (cliquer pour désactiver)' : 'Marquer comme correcte';
+      toggle.style.cssText = applyToggleStyle(isCorrect);
+      toggle.textContent = '✓';
       const input = document.createElement('input');
       input.type = 'text';
       input.className = 'seq-q-choice';
-      input.style.cssText = 'min-width:60px;max-width:160px;flex:1;padding:7px 9px;border:1.5px solid ' + (isFirst ? '#86efac' : '#e2e8f0') + ';border-radius:7px;font-size:0.9rem;font-family:inherit;font-weight:600;outline:none;background:' + (isFirst ? '#f0fdf4' : 'white') + ';color:#0f172a';
-      input.title = isFirst ? 'Réponse correcte' : '';
+      input.style.cssText = 'min-width:60px;max-width:160px;flex:1;padding:7px 9px;border:1.5px solid ' + (isCorrect ? '#86efac' : '#e2e8f0') + ';border-radius:7px;font-size:0.9rem;font-family:inherit;font-weight:600;outline:none;background:' + (isCorrect ? '#f0fdf4' : 'white') + ';color:#0f172a';
       input.value = val;
       input.addEventListener('input', refreshSequencePreview);
-      input.addEventListener('focus', () => { input.style.borderColor = isFirst ? '#22c55e' : '#3b82f6'; });
-      input.addEventListener('blur',  () => { input.style.borderColor = isFirst ? '#86efac' : '#e2e8f0'; });
-      container.appendChild(input);
+      input.addEventListener('focus', () => { input.style.borderColor = toggle.dataset.correct === '1' ? '#22c55e' : '#3b82f6'; });
+      input.addEventListener('blur',  () => { input.style.borderColor = toggle.dataset.correct === '1' ? '#86efac' : '#e2e8f0'; });
+      toggle.addEventListener('click', () => {
+        const nowCorrect = toggle.dataset.correct !== '1';
+        toggle.dataset.correct = nowCorrect ? '1' : '0';
+        toggle.style.cssText = applyToggleStyle(nowCorrect);
+        toggle.title = nowCorrect ? 'Réponse correcte (cliquer pour désactiver)' : 'Marquer comme correcte';
+        input.style.borderColor = nowCorrect ? '#86efac' : '#e2e8f0';
+        input.style.background  = nowCorrect ? '#f0fdf4' : 'white';
+        refreshSequencePreview();
+      });
+      wrapper.append(toggle, input);
+      container.appendChild(wrapper);
     });
+  }
+
+  function applyToggleStyle(isCorrect) {
+    return 'width:22px;height:22px;border-radius:50%;border:2px solid ' + (isCorrect ? '#22c55e' : '#cbd5e1') + ';background:' + (isCorrect ? '#22c55e' : 'white') + ';color:' + (isCorrect ? 'white' : '#cbd5e1') + ';font-size:0.75rem;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s';
+  }
+
+  function getCorrectIndicesFromBlock(block) {
+    return Array.from(block.querySelectorAll('.seq-correct-toggle'))
+      .map((t, i) => t.dataset.correct === '1' ? i : -1)
+      .filter(i => i >= 0);
   }
 
   function buildSequenceQuestionBlock(q) {
@@ -2209,12 +2313,21 @@
     block.className = 'seq-q-block';
     block.style.cssText = 'border:1.5px solid #e2e8f0;border-radius:10px;padding:12px 14px;margin-bottom:10px;background:#fafafa';
 
-    // Header
+    // Header: title + type toggle + delete
     const header = document.createElement('div');
-    header.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:10px';
+    header.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap';
     const title = document.createElement('span');
     title.className = 'seq-q-title';
-    title.style.cssText = 'font-size:0.78rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.04em';
+    title.style.cssText = 'font-size:0.78rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.04em;flex:1';
+    // Question type selector
+    const typeSelect = document.createElement('select');
+    typeSelect.className = 'seq-q-type';
+    typeSelect.style.cssText = 'padding:3px 8px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:0.8rem;font-family:inherit;outline:none;color:#0f172a;background:white;cursor:pointer';
+    [['choice','Choix multiples'],['write','Saisie libre']].forEach(([v,l]) => {
+      const opt = document.createElement('option'); opt.value = v; opt.textContent = l;
+      if ((q.type || 'choice') === v) opt.selected = true;
+      typeSelect.appendChild(opt);
+    });
     const delBtn = document.createElement('button');
     delBtn.type = 'button'; delBtn.className = 'seq-q-del';
     delBtn.textContent = '✕ Supprimer';
@@ -2224,7 +2337,7 @@
         block.remove(); updateSeqQuestionTitles(); refreshSequencePreview();
       }
     });
-    header.append(title, delBtn);
+    header.append(title, typeSelect, delBtn);
     block.appendChild(header);
 
     // Question text
@@ -2236,12 +2349,15 @@
     qInput.addEventListener('input', refreshSequencePreview);
     block.appendChild(qInput);
 
-    // Nbre de choix + choices row
+    // ── Choice section ─────��──────────────────────────────────────────────────
+    const choiceSection = document.createElement('div');
+    choiceSection.className = 'seq-q-choice-section';
+
     const choicesHeader = document.createElement('div');
     choicesHeader.style.cssText = 'display:flex;align-items:center;gap:12px;margin-bottom:6px';
     const choicesLabel = document.createElement('span');
     choicesLabel.style.cssText = 'font-size:0.78rem;color:#64748b;font-weight:500';
-    choicesLabel.innerHTML = 'Réponses <span style="color:#16a34a;font-size:0.72rem">(1ère = correcte)</span>';
+    choicesLabel.innerHTML = 'Réponses <span style="color:#16a34a;font-size:0.72rem">(● = correcte)</span>';
     const numInput = document.createElement('input');
     numInput.type = 'number'; numInput.className = 'seq-q-num-choices';
     numInput.min = 2; numInput.step = 1;
@@ -2249,13 +2365,16 @@
     numInput.style.cssText = 'width:52px;padding:4px 6px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:0.85rem;outline:none;font-family:inherit;color:#0f172a';
     const choicesRow = document.createElement('div');
     choicesRow.className = 'seq-q-choices-row';
-    choicesRow.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap';
-    buildChoicesRow(choicesRow, (q.choices && q.choices.length >= 2) ? q.choices : Array(parseInt(numInput.value)).fill(''));
+    choicesRow.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;align-items:center';
+    const initialChoices  = (q.choices && q.choices.length >= 2) ? q.choices : Array(parseInt(numInput.value)).fill('');
+    const initialCorrects = q.correctIndices && q.correctIndices.length ? q.correctIndices : [0];
+    buildChoicesRow(choicesRow, initialChoices, initialCorrects);
     numInput.addEventListener('input', () => {
       const n = Math.max(2, parseInt(numInput.value) || 2);
       const existing = Array.from(choicesRow.querySelectorAll('.seq-q-choice')).map(i => i.value);
+      const existingCorrects = getCorrectIndicesFromBlock(block);
       while (existing.length < n) existing.push('');
-      buildChoicesRow(choicesRow, existing.slice(0, n));
+      buildChoicesRow(choicesRow, existing.slice(0, n), existingCorrects);
       refreshSequencePreview();
     });
     choicesHeader.append(choicesLabel, numInput);
@@ -2269,8 +2388,7 @@
     picker.appendChild(pickerLabel);
     SQ_CODES.forEach(code => {
       const sqBtn = document.createElement('button');
-      sqBtn.type = 'button';
-      sqBtn.title = code;
+      sqBtn.type = 'button'; sqBtn.title = code;
       sqBtn.style.cssText = 'padding:3px 6px;border:1.5px solid #e2e8f0;border-radius:6px;background:white;cursor:pointer;display:inline-flex;align-items:center;justify-content:center';
       sqBtn.innerHTML = sqCodeSvg(code, 14);
       sqBtn.addEventListener('mousedown', e => e.preventDefault());
@@ -2284,7 +2402,6 @@
       });
       picker.appendChild(sqBtn);
     });
-
     const bsBtn = document.createElement('button');
     bsBtn.type = 'button'; bsBtn.textContent = '⌫'; bsBtn.title = 'Supprimer le dernier symbole';
     bsBtn.style.cssText = 'padding:3px 8px;border:1.5px solid #fca5a5;border-radius:6px;background:white;color:#ef4444;cursor:pointer;font-size:0.85rem';
@@ -2296,8 +2413,31 @@
       if (target) { target.value = target.value.replace(/\[sq:[a-z]+\]$/, ''); target.dispatchEvent(new Event('input')); }
     });
     picker.appendChild(bsBtn);
+    choiceSection.append(choicesHeader, choicesRow, picker);
 
-    block.append(choicesHeader, choicesRow, picker);
+    // ── Write section ─────────────────────────────────────────────────────────
+    const writeSection = document.createElement('div');
+    writeSection.className = 'seq-q-write-section';
+    const writeLabel = document.createElement('div');
+    writeLabel.style.cssText = 'font-size:0.78rem;color:#64748b;font-weight:500;margin-bottom:6px';
+    writeLabel.textContent = 'Réponse(s) correcte(s) — séparées par | si plusieurs';
+    const writeInput = document.createElement('input');
+    writeInput.type = 'text'; writeInput.className = 'seq-q-write-answer';
+    writeInput.placeholder = 'ex : cheval  ou  cheval|horse';
+    writeInput.value = (q.writeAnswers || []).join('|') || (q.choices && q.choices[0] ? q.choices[0] : '');
+    writeInput.style.cssText = 'width:100%;padding:7px 10px;border:1.5px solid #86efac;border-radius:7px;font-size:0.9rem;outline:none;font-family:inherit;color:#0f172a;background:#f0fdf4;transition:border-color .15s';
+    writeInput.addEventListener('input', refreshSequencePreview);
+    writeSection.append(writeLabel, writeInput);
+
+    // Show/hide sections based on type
+    const applyType = (type) => {
+      choiceSection.style.display = type === 'choice' ? 'block' : 'none';
+      writeSection.style.display  = type === 'write'  ? 'block' : 'none';
+    };
+    applyType(q.type || 'choice');
+    typeSelect.addEventListener('change', () => { applyType(typeSelect.value); refreshSequencePreview(); });
+
+    block.append(choiceSection, writeSection);
     return block;
   }
 
@@ -2325,18 +2465,28 @@
     const previewQs = document.getElementById('seq-preview-questions');
     previewQs.innerHTML = '';
     document.getElementById('seq-questions-container').querySelectorAll('.seq-q-block').forEach((block, i) => {
-      const qText = block.querySelector('.seq-q-text').value.trim();
-      const choices = Array.from(block.querySelectorAll('.seq-q-choice')).map(inp => inp.value.trim());
+      const qText   = block.querySelector('.seq-q-text').value.trim();
+      const qType   = block.querySelector('.seq-q-type').value;
       const row = document.createElement('div');
       row.style.cssText = 'font-size:0.82rem;color:#64748b;padding:4px 0;border-top:1px solid #e2e8f0';
-      row.innerHTML = '<span style="font-weight:600;color:#334155">Q' + (i+1) + ':</span> ' +
-        (qText ? '<em>' + escapeHtml(qText) + '</em>' : '<span style="color:#cbd5e1">—</span>') +
-        ' → ' + choices.map((c, ci) => {
+      let choicesHtml;
+      if (qType === 'write') {
+        const ans = (block.querySelector('.seq-q-write-answer')?.value || '').trim();
+        choicesHtml = '<span style="padding:1px 8px;border-radius:4px;background:#f0fdf4;border:1px solid #86efac;font-style:italic">✏ ' + escapeHtml(ans || '?') + '</span>';
+      } else {
+        const choices = Array.from(block.querySelectorAll('.seq-q-choice')).map(inp => inp.value.trim());
+        const corrects = new Set(getCorrectIndicesFromBlock(block));
+        choicesHtml = choices.map((c, ci) => {
+          const isCorr = corrects.has(ci);
           const inner = hasSqCodes(c)
             ? '<span style="display:inline-flex;gap:2px;align-items:center">' + parseSqCodes(c).map(code => sqCodeSvg(code, 8)).join('') + '</span>'
             : escapeHtml(c || '?');
-          return '<span style="padding:1px 6px;border-radius:4px;display:inline-flex;align-items:center;background:' + (ci===0?'#f0fdf4':'#f8fafc') + ';border:1px solid ' + (ci===0?'#86efac':'#e2e8f0') + '">' + inner + '</span>';
+          return '<span style="padding:1px 6px;border-radius:4px;display:inline-flex;align-items:center;background:' + (isCorr?'#f0fdf4':'#f8fafc') + ';border:1px solid ' + (isCorr?'#86efac':'#e2e8f0') + '">' + inner + '</span>';
         }).join(' ');
+      }
+      row.innerHTML = '<span style="font-weight:600;color:#334155">Q' + (i+1) + ':</span> ' +
+        (qText ? '<em>' + escapeHtml(qText) + '</em>' : '<span style="color:#cbd5e1">—</span>') +
+        ' → ' + choicesHtml;
       previewQs.appendChild(row);
     });
   }
@@ -2358,10 +2508,20 @@
   }
 
   function readSequenceModal() {
-    const questions = Array.from(document.getElementById('seq-questions-container').querySelectorAll('.seq-q-block')).map(block => ({
-      questionText: block.querySelector('.seq-q-text').value.trim(),
-      choices:      Array.from(block.querySelectorAll('.seq-q-choice')).map(i => i.value.trim()),
-    }));
+    const questions = Array.from(document.getElementById('seq-questions-container').querySelectorAll('.seq-q-block')).map(block => {
+      const type = block.querySelector('.seq-q-type').value;
+      const base = { questionText: block.querySelector('.seq-q-text').value.trim(), type };
+      if (type === 'write') {
+        const raw = (block.querySelector('.seq-q-write-answer')?.value || '').trim();
+        base.writeAnswers = raw ? raw.split('|').map(s => s.trim()).filter(Boolean) : [];
+        base.choices = base.writeAnswers; // keep choices for backward compat display
+        base.correctIndices = [0];
+      } else {
+        base.choices = Array.from(block.querySelectorAll('.seq-q-choice')).map(i => i.value.trim());
+        base.correctIndices = getCorrectIndicesFromBlock(block);
+      }
+      return base;
+    });
     return {
       items:           getSequenceItemValues(),
       displayDuration: Math.round((parseFloat(document.getElementById('seq-duration').value) || 1) * 1000),
@@ -2802,8 +2962,8 @@ ${patientSessions.length === 0
         '<td>'+escapeHtml(session.exerciseName)+'</td>'+
         '<td><span class="'+scoreClass+'">'+session.score+'/'+session.totalPairs+'</span> <span class="score-pct">('+pct+'%)</span></td>'+
         '<td>'+formatDuration(session.totalTimeMs)+'</td>'+
-        '<td>'+session.errorsLeft+'</td>'+
-        '<td>'+session.errorsRight+'</td>'+
+        '<td>'+(session.errorsLeft != null ? session.errorsLeft : '–')+'</td>'+
+        '<td>'+(session.errorsRight != null ? session.errorsRight : '–')+'</td>'+
         '<td>'+(reaction !== null ? Math.round(reaction)+' ms' : '–')+'</td>'+
         '<td></td>'+
         '<td></td>';

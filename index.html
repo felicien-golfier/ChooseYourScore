@@ -1368,6 +1368,14 @@
     questionEl.style.display = 'none';
     choicesEl.style.display  = 'none';
     document.getElementById('seq-show-again-btn').style.display = 'none';
+    // Also reset the write zone so the previous pair's input doesn't linger
+    const wz = document.getElementById('seq-write-zone');
+    wz.style.display = 'none';
+    const wi = document.getElementById('seq-write-input');
+    wi.value = ''; wi.disabled = false; wi.style.borderColor = '#e2e8f0';
+    const wf = document.getElementById('seq-write-feedback');
+    wf.style.display = 'none'; wf.innerHTML = '';
+    document.getElementById('seq-write-validate').disabled = false;
 
     // Animate timer bar from 100% to 0%
     timerFill.style.transition = 'none';

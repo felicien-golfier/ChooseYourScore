@@ -1271,7 +1271,8 @@
     const choicesEl  = document.getElementById('sequence-choices');
     const writeZone  = document.getElementById('seq-write-zone');
 
-    const shouldShowItems = q.type === 'choice' || (isRetry && q.showOnRetry !== false);
+    const hasOverrides = (q.itemOverrides || []).length > 0;
+    const shouldShowItems = q.type === 'choice' || hasOverrides || (isRetry && q.showOnRetry !== false);
     if (shouldShowItems) {
       const overrides = q.itemOverrides || [];
       if (overrides.length > 0) {

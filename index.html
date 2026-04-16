@@ -1289,7 +1289,7 @@
         displayEl.appendChild(el);
       });
     }
-    const shouldShowItems = q.type === 'choice' || (isRetry && q.showOnRetry !== false);
+    const shouldShowItems = isRetry && q.showOnRetry !== false;
     displayEl.style.display = shouldShowItems ? 'flex' : 'none';
 
     const showAgainBtn = document.getElementById('seq-show-again-btn');

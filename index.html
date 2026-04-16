@@ -1524,6 +1524,23 @@
     // On retry: re-show the items only if the question is configured to do so
     const showOnRetry = isRetry && (q.showOnRetry !== false);
     if (showOnRetry) {
+      // Apply item overrides if any (e.g. replace "pivoine" with "jacinthe" for this question's retry)
+      const overrides = q.itemOverrides || [];
+      if (overrides.length > 0) {
+        const baseItems = pair.items || [];
+        const overriddenItems = baseItems.map((item, i) => {
+          const ov = overrides.find(o => o.index === i);
+          return ov ? ov.value : item;
+        });
+        displayEl.innerHTML = '';
+        const isSingle = overriddenItems.length === 1;
+        overriddenItems.forEach(item => {
+          const el = document.createElement('div');
+          el.className = isSingle ? 'sequence-text-display' : 'sequence-item-box';
+          el.textContent = item;
+          displayEl.appendChild(el);
+        });
+      }
       displayEl.style.display = 'flex';
     } else {
       displayEl.style.display = 'none';
@@ -2569,6 +2586,41 @@
       .filter(i => i >= 0);
   }
 
+  function getSeqItemLabels() {
+    const row = document.getElementById('seq-items-row');
+    if (!row) return [];
+    return Array.from(row.querySelectorAll('input')).map(i => i.value || '');
+  }
+
+  function buildOverrideRow(idx, val, labels) {
+    const row = document.createElement('div');
+    row.className = 'seq-q-override-row';
+    row.style.cssText = 'display:flex;align-items:center;gap:6px;margin-bottom:4px';
+    const sel = document.createElement('select');
+    sel.className = 'seq-q-override-idx';
+    sel.style.cssText = 'padding:4px 6px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:0.82rem;font-family:inherit;color:#0f172a;background:white;flex:none;max-width:120px';
+    labels.forEach((label, i) => {
+      const opt = document.createElement('option');
+      opt.value = String(i);
+      opt.textContent = 'Item ' + (i + 1) + (label ? ' (' + label + ')' : '');
+      if (i === idx) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    const arrow = document.createElement('span');
+    arrow.textContent = '→'; arrow.style.cssText = 'color:#94a3b8;flex:none';
+    const input = document.createElement('input');
+    input.type = 'text'; input.className = 'seq-q-override-val';
+    input.value = val || ''; input.placeholder = 'Nouvelle valeur…';
+    input.style.cssText = 'flex:1;padding:4px 8px;border:1.5px solid #fde68a;border-radius:6px;font-size:0.85rem;font-family:inherit;color:#0f172a;background:#fffbeb;outline:none';
+    input.addEventListener('input', refreshSequencePreview);
+    const delBtn = document.createElement('button');
+    delBtn.type = 'button'; delBtn.textContent = '✕';
+    delBtn.style.cssText = 'padding:2px 6px;border:1px solid #fca5a5;border-radius:5px;background:white;color:#ef4444;font-size:0.75rem;cursor:pointer;font-family:inherit;flex:none';
+    delBtn.addEventListener('click', () => { row.remove(); refreshSequencePreview(); });
+    row.append(sel, arrow, input, delBtn);
+    return row;
+  }
+
   function buildSequenceQuestionBlock(q) {
     const block = document.createElement('div');
     block.className = 'seq-q-block';
@@ -2706,6 +2758,29 @@
     typeSelect.addEventListener('change', () => { applyType(typeSelect.value); refreshSequencePreview(); });
 
     block.append(choiceSection, writeSection);
+
+    // ── Item overrides section ───────────────────────────────────────────────
+    const ovSection = document.createElement('div');
+    ovSection.style.cssText = 'margin-top:10px;padding-top:8px;border-top:1px dashed #e2e8f0';
+    const ovHeader = document.createElement('div');
+    ovHeader.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:4px';
+    const ovLabel = document.createElement('span');
+    ovLabel.style.cssText = 'font-size:0.78rem;color:#64748b;font-weight:500;flex:1';
+    ovLabel.textContent = 'Modifier des items au 2ᵉ essai';
+    const addOvBtn = document.createElement('button');
+    addOvBtn.type = 'button'; addOvBtn.textContent = '+ Modifier un item';
+    addOvBtn.style.cssText = 'padding:2px 8px;border:1.5px solid #fde68a;border-radius:6px;background:#fffbeb;color:#92400e;font-size:0.75rem;cursor:pointer;font-family:inherit';
+    addOvBtn.addEventListener('click', () => {
+      ovRows.appendChild(buildOverrideRow(0, '', getSeqItemLabels()));
+      refreshSequencePreview();
+    });
+    ovHeader.append(ovLabel, addOvBtn);
+    const ovRows = document.createElement('div');
+    const labels = getSeqItemLabels();
+    (q.itemOverrides || []).forEach(ov => ovRows.appendChild(buildOverrideRow(ov.index, ov.value, labels)));
+    ovSection.append(ovHeader, ovRows);
+    block.appendChild(ovSection);
+
     return block;
   }
 
@@ -2789,6 +2864,10 @@
         base.choices = Array.from(block.querySelectorAll('.seq-q-choice')).map(i => i.value.trim());
         base.correctIndices = getCorrectIndicesFromBlock(block);
       }
+      base.itemOverrides = Array.from(block.querySelectorAll('.seq-q-override-row')).map(row => ({
+        index: parseInt(row.querySelector('.seq-q-override-idx').value, 10),
+        value: row.querySelector('.seq-q-override-val').value.trim(),
+      })).filter(o => o.value !== '');
       return base;
     });
     return {

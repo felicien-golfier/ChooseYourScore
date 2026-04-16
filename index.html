@@ -339,6 +339,18 @@
     }
     .btn-cancel:hover { background: #e2e8f0; }
 
+    /* Item type selector tabs */
+    .item-type-tabs {
+      display: flex; gap: 4px; margin-bottom: 14px; flex-wrap: wrap;
+    }
+    .item-type-btn {
+      padding: 5px 11px; border-radius: 7px; border: 1.5px solid #e2e8f0;
+      background: white; cursor: pointer; font-size: 0.8rem; color: #64748b;
+      font-family: inherit; transition: all .15s;
+    }
+    .item-type-btn.active { background: #0f172a; color: white; border-color: #0f172a; }
+    .item-type-btn:hover:not(.active) { background: #f8fafc; border-color: #cbd5e1; }
+
     .btn-upload-img {
       width: 100%; padding: 6px 10px; border: 1.5px dashed #cbd5e1; border-radius: 8px;
       background: #f8fafc; color: #64748b; font-size: 0.82rem; cursor: pointer;
@@ -1007,45 +1019,87 @@
       <div class="preview-box" id="preview-right">(vide)</div>
     </div>
     <div class="items-edit-grid">
-      <div class="item-edit-panel">
+      <div class="item-edit-panel" id="left-panel">
         <h4>Item gauche</h4>
-        <div class="field-row">
-          <label>Image</label>
-          <input type="file" id="left-img-input" accept="image/*" style="display:none">
-          <button type="button" class="btn-upload-img" id="left-img-btn">📷 Choisir une image</button>
-          <div class="img-thumb-row" id="left-img-thumb-row" style="display:none">
-            <img id="left-img-thumb" alt="">
-            <button type="button" class="btn-remove-img" id="left-img-remove">✕ Supprimer</button>
-          </div>
+        <div class="item-type-tabs" id="left-type-tabs">
+          <button class="item-type-btn active" data-type="text"  data-side="left">Texte</button>
+          <button class="item-type-btn"        data-type="image" data-side="left">Image</button>
+          <button class="item-type-btn"        data-type="audio" data-side="left">Audio</button>
+          <button class="item-type-btn"        data-type="arrow" data-side="left">Flèche</button>
+          <button class="item-type-btn"        data-type="color" data-side="left">Couleur</button>
         </div>
-        <div class="field-row">
-          <label>Audio</label>
-          <input type="file" id="left-audio-input" accept="audio/*" style="display:none">
-          <button type="button" class="btn-upload-audio" id="left-audio-btn">🔊 Choisir un audio</button>
-          <div class="audio-loaded-row" id="left-audio-loaded" style="display:none">
-            <span id="left-audio-name"></span>
-            <button type="button" class="btn-play-audio" id="left-audio-play">▶ Écouter</button>
-            <button type="button" class="btn-remove-img" id="left-audio-remove">✕</button>
-          </div>
+        <!-- section : texte -->
+        <div id="left-sect-text">
+          <div class="field-row"><label>Texte</label><input type="text" id="left-text" placeholder="Texte affiché"></div>
+          <div class="field-row"><label>Couleur</label><input type="color" id="left-color" value="#1a1a1a"></div>
+          <div class="field-row"><label>Taille (px)</label>
+            <select id="left-size">
+              <option value="16">16</option><option value="20">20</option><option value="24">24</option>
+              <option value="28">28</option><option value="32" selected>32</option><option value="40">40</option>
+              <option value="48">48</option><option value="56">56</option><option value="64">64</option><option value="72">72</option>
+            </select></div>
+          <div class="field-row"><label>Police</label>
+            <select id="left-font">
+              <option>Arial</option><option>Times New Roman</option><option>Courier New</option>
+              <option>Georgia</option><option>Verdana</option><option>Comic Sans MS</option><option>Impact</option>
+            </select></div>
+          <div class="field-row"><label>Casse</label>
+            <select id="left-transform">
+              <option value="none">Normale</option><option value="uppercase">MAJUSCULES</option>
+              <option value="lowercase">minuscules</option><option value="capitalize">Capitalisé</option>
+            </select></div>
         </div>
-        <div class="field-row"><label>Texte</label><input type="text" id="left-text" placeholder="Texte affiché"></div>
-        <div class="field-row"><label>Couleur</label><input type="color" id="left-color" value="#1a1a1a"></div>
-        <div class="field-row"><label>Taille (px)</label>
-          <select id="left-size">
-            <option value="16">16</option><option value="20">20</option><option value="24">24</option>
-            <option value="28">28</option><option value="32" selected>32</option><option value="40">40</option>
-            <option value="48">48</option><option value="56">56</option><option value="64">64</option><option value="72">72</option>
-          </select></div>
-        <div class="field-row"><label>Police</label>
-          <select id="left-font">
-            <option>Arial</option><option>Times New Roman</option><option>Courier New</option>
-            <option>Georgia</option><option>Verdana</option><option>Comic Sans MS</option><option>Impact</option>
-          </select></div>
-        <div class="field-row"><label>Casse</label>
-          <select id="left-transform">
-            <option value="none">Normale</option><option value="uppercase">MAJUSCULES</option>
-            <option value="lowercase">minuscules</option><option value="capitalize">Capitalisé</option>
-          </select></div>
+        <!-- section : image -->
+        <div id="left-sect-image" style="display:none">
+          <div class="field-row">
+            <label>Image</label>
+            <input type="file" id="left-img-input" accept="image/*" style="display:none">
+            <button type="button" class="btn-upload-img" id="left-img-btn">📷 Choisir une image</button>
+            <div class="img-thumb-row" id="left-img-thumb-row" style="display:none">
+              <img id="left-img-thumb" alt="">
+              <button type="button" class="btn-remove-img" id="left-img-remove">✕ Supprimer</button>
+            </div>
+          </div>
+          <div class="field-row"><label>Texte superposé (optionnel)</label><input type="text" id="left-img-text" placeholder="Légende…"></div>
+          <div class="field-row"><label>Couleur du texte</label><input type="color" id="left-img-textcolor" value="#ffffff"></div>
+        </div>
+        <!-- section : audio -->
+        <div id="left-sect-audio" style="display:none">
+          <div class="field-row">
+            <label>Audio</label>
+            <input type="file" id="left-audio-input" accept="audio/*" style="display:none">
+            <button type="button" class="btn-upload-audio" id="left-audio-btn">🔊 Choisir un audio</button>
+            <div class="audio-loaded-row" id="left-audio-loaded" style="display:none">
+              <span id="left-audio-name"></span>
+              <button type="button" class="btn-play-audio" id="left-audio-play">▶ Écouter</button>
+              <button type="button" class="btn-remove-img" id="left-audio-remove">✕</button>
+            </div>
+          </div>
+          <div class="field-row"><label>Étiquette (optionnel)</label><input type="text" id="left-audio-label" placeholder="Nom affiché…"></div>
+        </div>
+        <!-- section : flèche -->
+        <div id="left-sect-arrow" style="display:none">
+          <div class="field-row"><label>Direction</label>
+            <select id="left-arrow-dir">
+              <option value="left">← Gauche</option><option value="right">→ Droite</option>
+              <option value="up">↑ Haut</option><option value="down">↓ Bas</option>
+            </select></div>
+          <div class="field-row"><label>Couleur de fond</label>
+            <input type="color" id="left-arrow-bg" value="#3b82f6" style="width:100%;height:38px;padding:2px;border:1.5px solid #d1d5db;border-radius:8px;cursor:pointer"></div>
+        </div>
+        <!-- section : couleur -->
+        <div id="left-sect-color" style="display:none">
+          <div class="field-row"><label>Couleur de fond</label>
+            <input type="color" id="left-color-bg" value="#3b82f6" style="width:100%;height:38px;padding:2px;border:1.5px solid #d1d5db;border-radius:8px;cursor:pointer"></div>
+          <div class="field-row"><label>Texte (optionnel)</label><input type="text" id="left-color-text" placeholder="Texte affiché…"></div>
+          <div class="field-row"><label>Couleur du texte</label><input type="color" id="left-color-textcolor" value="#ffffff"></div>
+          <div class="field-row"><label>Taille (px)</label>
+            <select id="left-color-size">
+              <option value="16">16</option><option value="20">20</option><option value="24">24</option>
+              <option value="28">28</option><option value="32" selected>32</option><option value="40">40</option>
+              <option value="48">48</option><option value="56">56</option><option value="64">64</option><option value="72">72</option>
+            </select></div>
+        </div>
       </div>
 
       <div class="correct-selector">
@@ -1054,45 +1108,87 @@
         <label class="radio-option"><input type="radio" name="modal-correct" id="correct-right" value="right"> Droite →</label>
       </div>
 
-      <div class="item-edit-panel">
+      <div class="item-edit-panel" id="right-panel">
         <h4>Item droit</h4>
-        <div class="field-row">
-          <label>Image</label>
-          <input type="file" id="right-img-input" accept="image/*" style="display:none">
-          <button type="button" class="btn-upload-img" id="right-img-btn">📷 Choisir une image</button>
-          <div class="img-thumb-row" id="right-img-thumb-row" style="display:none">
-            <img id="right-img-thumb" alt="">
-            <button type="button" class="btn-remove-img" id="right-img-remove">✕ Supprimer</button>
-          </div>
+        <div class="item-type-tabs" id="right-type-tabs">
+          <button class="item-type-btn active" data-type="text"  data-side="right">Texte</button>
+          <button class="item-type-btn"        data-type="image" data-side="right">Image</button>
+          <button class="item-type-btn"        data-type="audio" data-side="right">Audio</button>
+          <button class="item-type-btn"        data-type="arrow" data-side="right">Flèche</button>
+          <button class="item-type-btn"        data-type="color" data-side="right">Couleur</button>
         </div>
-        <div class="field-row">
-          <label>Audio</label>
-          <input type="file" id="right-audio-input" accept="audio/*" style="display:none">
-          <button type="button" class="btn-upload-audio" id="right-audio-btn">🔊 Choisir un audio</button>
-          <div class="audio-loaded-row" id="right-audio-loaded" style="display:none">
-            <span id="right-audio-name"></span>
-            <button type="button" class="btn-play-audio" id="right-audio-play">▶ Écouter</button>
-            <button type="button" class="btn-remove-img" id="right-audio-remove">✕</button>
-          </div>
+        <!-- section : texte -->
+        <div id="right-sect-text">
+          <div class="field-row"><label>Texte</label><input type="text" id="right-text" placeholder="Texte affiché"></div>
+          <div class="field-row"><label>Couleur</label><input type="color" id="right-color" value="#1a1a1a"></div>
+          <div class="field-row"><label>Taille (px)</label>
+            <select id="right-size">
+              <option value="16">16</option><option value="20">20</option><option value="24">24</option>
+              <option value="28">28</option><option value="32" selected>32</option><option value="40">40</option>
+              <option value="48">48</option><option value="56">56</option><option value="64">64</option><option value="72">72</option>
+            </select></div>
+          <div class="field-row"><label>Police</label>
+            <select id="right-font">
+              <option>Arial</option><option>Times New Roman</option><option>Courier New</option>
+              <option>Georgia</option><option>Verdana</option><option>Comic Sans MS</option><option>Impact</option>
+            </select></div>
+          <div class="field-row"><label>Casse</label>
+            <select id="right-transform">
+              <option value="none">Normale</option><option value="uppercase">MAJUSCULES</option>
+              <option value="lowercase">minuscules</option><option value="capitalize">Capitalisé</option>
+            </select></div>
         </div>
-        <div class="field-row"><label>Texte</label><input type="text" id="right-text" placeholder="Texte affiché"></div>
-        <div class="field-row"><label>Couleur</label><input type="color" id="right-color" value="#1a1a1a"></div>
-        <div class="field-row"><label>Taille (px)</label>
-          <select id="right-size">
-            <option value="16">16</option><option value="20">20</option><option value="24">24</option>
-            <option value="28">28</option><option value="32" selected>32</option><option value="40">40</option>
-            <option value="48">48</option><option value="56">56</option><option value="64">64</option><option value="72">72</option>
-          </select></div>
-        <div class="field-row"><label>Police</label>
-          <select id="right-font">
-            <option>Arial</option><option>Times New Roman</option><option>Courier New</option>
-            <option>Georgia</option><option>Verdana</option><option>Comic Sans MS</option><option>Impact</option>
-          </select></div>
-        <div class="field-row"><label>Casse</label>
-          <select id="right-transform">
-            <option value="none">Normale</option><option value="uppercase">MAJUSCULES</option>
-            <option value="lowercase">minuscules</option><option value="capitalize">Capitalisé</option>
-          </select></div>
+        <!-- section : image -->
+        <div id="right-sect-image" style="display:none">
+          <div class="field-row">
+            <label>Image</label>
+            <input type="file" id="right-img-input" accept="image/*" style="display:none">
+            <button type="button" class="btn-upload-img" id="right-img-btn">📷 Choisir une image</button>
+            <div class="img-thumb-row" id="right-img-thumb-row" style="display:none">
+              <img id="right-img-thumb" alt="">
+              <button type="button" class="btn-remove-img" id="right-img-remove">✕ Supprimer</button>
+            </div>
+          </div>
+          <div class="field-row"><label>Texte superposé (optionnel)</label><input type="text" id="right-img-text" placeholder="Légende…"></div>
+          <div class="field-row"><label>Couleur du texte</label><input type="color" id="right-img-textcolor" value="#ffffff"></div>
+        </div>
+        <!-- section : audio -->
+        <div id="right-sect-audio" style="display:none">
+          <div class="field-row">
+            <label>Audio</label>
+            <input type="file" id="right-audio-input" accept="audio/*" style="display:none">
+            <button type="button" class="btn-upload-audio" id="right-audio-btn">🔊 Choisir un audio</button>
+            <div class="audio-loaded-row" id="right-audio-loaded" style="display:none">
+              <span id="right-audio-name"></span>
+              <button type="button" class="btn-play-audio" id="right-audio-play">▶ Écouter</button>
+              <button type="button" class="btn-remove-img" id="right-audio-remove">✕</button>
+            </div>
+          </div>
+          <div class="field-row"><label>Étiquette (optionnel)</label><input type="text" id="right-audio-label" placeholder="Nom affiché…"></div>
+        </div>
+        <!-- section : flèche -->
+        <div id="right-sect-arrow" style="display:none">
+          <div class="field-row"><label>Direction</label>
+            <select id="right-arrow-dir">
+              <option value="left">← Gauche</option><option value="right">→ Droite</option>
+              <option value="up">↑ Haut</option><option value="down">↓ Bas</option>
+            </select></div>
+          <div class="field-row"><label>Couleur de fond</label>
+            <input type="color" id="right-arrow-bg" value="#3b82f6" style="width:100%;height:38px;padding:2px;border:1.5px solid #d1d5db;border-radius:8px;cursor:pointer"></div>
+        </div>
+        <!-- section : couleur -->
+        <div id="right-sect-color" style="display:none">
+          <div class="field-row"><label>Couleur de fond</label>
+            <input type="color" id="right-color-bg" value="#3b82f6" style="width:100%;height:38px;padding:2px;border:1.5px solid #d1d5db;border-radius:8px;cursor:pointer"></div>
+          <div class="field-row"><label>Texte (optionnel)</label><input type="text" id="right-color-text" placeholder="Texte affiché…"></div>
+          <div class="field-row"><label>Couleur du texte</label><input type="color" id="right-color-textcolor" value="#ffffff"></div>
+          <div class="field-row"><label>Taille (px)</label>
+            <select id="right-color-size">
+              <option value="16">16</option><option value="20">20</option><option value="24">24</option>
+              <option value="28">28</option><option value="32" selected>32</option><option value="40">40</option>
+              <option value="48">48</option><option value="56">56</option><option value="64">64</option><option value="72">72</option>
+            </select></div>
+        </div>
       </div>
     </div>
     </div><!-- end #choice-config -->
@@ -1159,7 +1255,32 @@
   }
 
   // ── Utils ─────────────────────────────────────────────────────────────────────
+  function getItemType(item) {
+    if (!item) return 'text';
+    if (item.type) return item.type;
+    if (item.imageUrl) return 'image';
+    if (item.audioUrl) return 'audio';
+    return 'text';
+  }
+
   function applyItemStyle(el, item) {
+    const itype = getItemType(item);
+    if (itype === 'arrow') {
+      const ac = resolveArrowColor(item.bgColor || '#3b82f6');
+      el.style.background = ac.bg; el.style.color = ac.fg;
+      el.style.backgroundImage = ''; el.style.fontSize = '72px';
+      el.style.fontFamily = 'inherit'; el.style.textTransform = 'none';
+      el.textContent = ARROW_CHARS[item.arrowDirection || 'left'] || '←';
+      return;
+    }
+    if (itype === 'color') {
+      const ac = resolveArrowColor(item.bgColor || '#3b82f6');
+      el.style.background = ac.bg; el.style.color = item.color || ac.fg;
+      el.style.backgroundImage = ''; el.style.textTransform = item.textTransform || 'none';
+      el.style.fontSize = (item.fontSize || 32) + 'px'; el.style.fontFamily = item.fontFamily || 'Arial';
+      el.textContent = item.text || '';
+      return;
+    }
     el.style.color         = item.color         || '#1a1a1a';
     el.style.fontSize      = (item.fontSize || 32) + 'px';
     el.style.fontFamily    = item.fontFamily    || 'Arial';
@@ -1171,7 +1292,7 @@
       el.innerHTML = item.text ? '<span style="position:relative;text-shadow:0 1px 4px rgba(0,0,0,0.65)">' + escapeHtml(item.text) + '</span>' : '';
     } else {
       el.style.backgroundImage = '';
-      el.textContent = item.text || '';
+      el.textContent = item.text || (itype === 'audio' ? '♪' : '');
     }
   }
   function formatDuration(ms) {
@@ -1864,6 +1985,20 @@
   function buildPreviewEl(item, isCorrect) {
     const div = document.createElement('div');
     div.className = 'pair-item-preview' + (isCorrect ? ' is-correct' : '');
+    const itype = getItemType(item);
+    if (itype === 'arrow') {
+      const ac = resolveArrowColor(item.bgColor || '#3b82f6');
+      div.style.cssText = 'background:'+ac.bg+';color:'+ac.fg+';font-size:24px';
+      div.textContent = ARROW_CHARS[item.arrowDirection || 'left'] || '←';
+      return div;
+    }
+    if (itype === 'color') {
+      const ac = resolveArrowColor(item.bgColor || '#3b82f6');
+      div.style.background = ac.bg; div.style.color = item.color || ac.fg;
+      div.style.fontSize = Math.min(item.fontSize||32,22)+'px';
+      div.textContent = item.text || '';
+      return div;
+    }
     div.style.color = item.color||'#1a1a1a'; div.style.fontSize = Math.min(item.fontSize||32,22)+'px';
     div.style.fontFamily = item.fontFamily||'Arial'; div.style.textTransform = item.textTransform||'none';
     if (item.imageUrl) {
@@ -1872,7 +2007,7 @@
       div.style.backgroundPosition = 'center';
       div.innerHTML = item.text ? '<span style="position:relative;text-shadow:0 1px 4px rgba(0,0,0,0.65)">' + escapeHtml(item.text) + '</span>' : '';
     } else {
-      div.textContent = item.text||'';
+      div.textContent = item.text || (itype === 'audio' ? '♪' : '');
     }
     return div;
   }
@@ -2075,15 +2210,33 @@
   document.getElementById('arrow-num-options').addEventListener('change', refreshArrowPreview);
 
   function fillModalSide(s, item) {
-    document.getElementById(s+'-text').value  = item.text  || '';
-    document.getElementById(s+'-color').value = item.color || '#1a1a1a';
-    pickOption(s+'-size',      String(item.fontSize||32));
-    pickOption(s+'-font',      item.fontFamily  ||'Arial');
-    pickOption(s+'-transform', item.textTransform||'none');
-    modalImages[s] = item.imageUrl || null;
-    updateImageThumb(s);
-    modalAudios[s] = item.audioUrl || null;
-    updateAudioUI(s);
+    const type = getItemType(item);
+    setItemSect(s, type);
+    if (type === 'image') {
+      modalImages[s] = item.imageUrl || null; updateImageThumb(s);
+      document.getElementById(s+'-img-text').value = item.text || '';
+      document.getElementById(s+'-img-textcolor').value = item.color || '#ffffff';
+    } else if (type === 'audio') {
+      modalAudios[s] = item.audioUrl || null; updateAudioUI(s);
+      document.getElementById(s+'-audio-label').value = item.text || '';
+    } else if (type === 'arrow') {
+      document.getElementById(s+'-arrow-dir').value = item.arrowDirection || 'left';
+      document.getElementById(s+'-arrow-bg').value  = item.bgColor || '#3b82f6';
+    } else if (type === 'color') {
+      document.getElementById(s+'-color-bg').value       = item.bgColor || '#3b82f6';
+      document.getElementById(s+'-color-text').value     = item.text || '';
+      document.getElementById(s+'-color-textcolor').value = item.color || '#ffffff';
+      pickOption(s+'-color-size', String(item.fontSize||32));
+    } else {
+      // text (default)
+      document.getElementById(s+'-text').value  = item.text  || '';
+      document.getElementById(s+'-color').value = item.color || '#1a1a1a';
+      pickOption(s+'-size',      String(item.fontSize||32));
+      pickOption(s+'-font',      item.fontFamily  ||'Arial');
+      pickOption(s+'-transform', item.textTransform||'none');
+      modalImages[s] = null; updateImageThumb(s);
+      modalAudios[s] = null; updateAudioUI(s);
+    }
   }
 
   function updateImageThumb(s) {
@@ -2112,16 +2265,46 @@
     for (const o of document.getElementById(id).options) { if (o.value===val) { o.selected=true; return; } }
   }
 
+  function setItemSect(s, type) {
+    ['text','image','audio','arrow','color'].forEach(t => {
+      const el = document.getElementById(s+'-sect-'+t);
+      if (el) el.style.display = t === type ? 'block' : 'none';
+    });
+    document.querySelectorAll('#'+s+'-type-tabs .item-type-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.type === type));
+  }
+
   function readModalSide(s) {
-    return {
+    const type = document.querySelector('#'+s+'-type-tabs .item-type-btn.active')?.dataset.type || 'text';
+    if (type === 'image') {
+      return { type, imageUrl: modalImages[s]||null,
+        text: document.getElementById(s+'-img-text').value||'',
+        color: document.getElementById(s+'-img-textcolor').value,
+        audioUrl: null };
+    }
+    if (type === 'audio') {
+      return { type, audioUrl: modalAudios[s]||null,
+        text: document.getElementById(s+'-audio-label').value||'',
+        imageUrl: null };
+    }
+    if (type === 'arrow') {
+      return { type, arrowDirection: document.getElementById(s+'-arrow-dir').value,
+        bgColor: document.getElementById(s+'-arrow-bg').value };
+    }
+    if (type === 'color') {
+      return { type, bgColor: document.getElementById(s+'-color-bg').value,
+        text: document.getElementById(s+'-color-text').value||'',
+        color: document.getElementById(s+'-color-textcolor').value,
+        fontSize: parseInt(document.getElementById(s+'-color-size').value,10)||32 };
+    }
+    // default: text
+    return { type: 'text',
       text:          document.getElementById(s+'-text').value,
       color:         document.getElementById(s+'-color').value,
       fontSize:      parseInt(document.getElementById(s+'-size').value, 10),
       fontFamily:    document.getElementById(s+'-font').value,
       textTransform: document.getElementById(s+'-transform').value,
-      imageUrl:      modalImages[s] || null,
-      audioUrl:      modalAudios[s] || null,
-    };
+      imageUrl: null, audioUrl: null };
   }
 
   function refreshModalPreview() {
@@ -2132,9 +2315,27 @@
   }
 
   function applyPreviewBox(el, item, isCorrect) {
-    el.style.color=item.color; el.style.fontSize=item.fontSize+'px';
-    el.style.fontFamily=item.fontFamily; el.style.textTransform=item.textTransform;
-    el.className='preview-box'+(isCorrect?' correct-side':'');
+    el.className = 'preview-box' + (isCorrect ? ' correct-side' : '');
+    const itype = getItemType(item);
+    if (itype === 'arrow') {
+      const ac = resolveArrowColor(item.bgColor || '#3b82f6');
+      el.style.background = ac.bg; el.style.color = ac.fg;
+      el.style.backgroundImage = ''; el.style.fontSize = '72px';
+      el.style.fontFamily = 'inherit'; el.style.textTransform = 'none';
+      el.textContent = ARROW_CHARS[item.arrowDirection || 'left'] || '←';
+      return;
+    }
+    if (itype === 'color') {
+      const ac = resolveArrowColor(item.bgColor || '#3b82f6');
+      el.style.background = ac.bg; el.style.color = item.color || ac.fg;
+      el.style.backgroundImage = ''; el.style.fontSize = (item.fontSize||32)+'px';
+      el.style.fontFamily = item.fontFamily||'Arial'; el.style.textTransform = item.textTransform||'none';
+      el.textContent = item.text || '';
+      return;
+    }
+    el.style.background = '';
+    el.style.color=item.color||'#1a1a1a'; el.style.fontSize=(item.fontSize||32)+'px';
+    el.style.fontFamily=item.fontFamily||'Arial'; el.style.textTransform=item.textTransform||'none';
     if (item.imageUrl) {
       el.style.backgroundImage    = 'url(' + item.imageUrl + ')';
       el.style.backgroundSize     = 'cover';
@@ -2142,7 +2343,7 @@
       el.innerHTML = item.text ? '<span style="position:relative;text-shadow:0 1px 4px rgba(0,0,0,0.65)">' + escapeHtml(item.text) + '</span>' : '';
     } else {
       el.style.backgroundImage = '';
-      el.textContent = item.text || '(vide)';
+      el.textContent = item.text || (itype === 'audio' ? '♪' : '(vide)');
     }
   }
 
@@ -2155,6 +2356,22 @@
   });
 
   ['left', 'right'].forEach(s => {
+    // Type tab click listeners
+    document.querySelectorAll('#'+s+'-type-tabs .item-type-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        setItemSect(s, btn.dataset.type);
+        refreshModalPreview();
+      });
+    });
+
+    // New type-specific field change listeners
+    [s+'-arrow-dir', s+'-arrow-bg', s+'-color-bg', s+'-color-text',
+     s+'-color-textcolor', s+'-color-size', s+'-img-text', s+'-img-textcolor',
+     s+'-audio-label'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.addEventListener('input', refreshModalPreview); el.addEventListener('change', refreshModalPreview); }
+    });
+
     document.getElementById(s+'-img-btn').addEventListener('click', () => document.getElementById(s+'-img-input').click());
     document.getElementById(s+'-img-input').addEventListener('change', e => {
       const file = e.target.files[0]; if (!file) return;
@@ -2217,7 +2434,12 @@
       const isEmpty = pair && (
         pair.type === 'arrow'    ? !pair.direction :
         pair.type === 'sequence' ? (!pair.items || pair.items.every(i => !i)) :
-        (!pair.left?.text && !pair.right?.text && !pair.left?.imageUrl && !pair.right?.imageUrl));
+        (() => {
+          const lt = getItemType(pair.left||{}), rt = getItemType(pair.right||{});
+          const le = lt==='arrow'?!pair.left?.arrowDirection : lt==='color'?false : !pair.left?.text&&!pair.left?.imageUrl&&!pair.left?.audioUrl;
+          const re = rt==='arrow'?!pair.right?.arrowDirection : rt==='color'?false : !pair.right?.text&&!pair.right?.imageUrl&&!pair.right?.audioUrl;
+          return le && re;
+        })());
       if (isEmpty) { ex.pairs = ex.pairs.filter(p => p.id !== editingPairId); saveExercises(); renderExerciseEditor(); }
     }
     closeModal();

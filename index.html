@@ -1073,6 +1073,9 @@
   }
   function newId(p) { return p + '_' + Date.now() + '_' + Math.random().toString(36).slice(2,6); }
   function escapeHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function getPairQuestions(pair) {
+    return pair.questions || [{questionText: pair.questionText || '', choices: pair.choices || []}];
+  }
   function shuffleArray(arr) {
     const a = [...arr];
     for (let i = a.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
@@ -1258,7 +1261,7 @@
 
   function startSequenceQuestion(pair, qIdx, isRetry) {
     currentQuestionIndex = qIdx;
-    const questions = pair.questions || [{ questionText: pair.questionText || '', choices: pair.choices || [] }];
+    const questions = getPairQuestions(pair);
     const q = questions[qIdx];
     const correctIndices = q.correctIndices && q.correctIndices.length ? q.correctIndices : [0];
     const correctAnswers = correctIndices.map(i => (q.choices || [])[i]).filter(Boolean);
@@ -1268,10 +1271,8 @@
     const choicesEl  = document.getElementById('sequence-choices');
     const writeZone  = document.getElementById('seq-write-zone');
 
-    // choice questions: always keep items visible; direction: always hide; others: hide unless retry+showOnRetry
-    const keepVisible = q.type === 'choice';
-    const showOnRetry = isRetry && (q.showOnRetry !== false);
-    if (keepVisible || showOnRetry) {
+    const shouldShowItems = q.type === 'choice' || (isRetry && q.showOnRetry !== false);
+    if (shouldShowItems) {
       const overrides = q.itemOverrides || [];
       if (overrides.length > 0) {
         const baseItems = pair.items || [];
@@ -1812,10 +1813,7 @@
       }
       return items.map(v => v.includes(',') ? '"' + v.replace(/"/g, '""') + '"' : v).join(',');
     });
-    const blob = new Blob(['\uFEFF' + lines.join('\n')], {type:'text/csv;charset=utf-8'});
-    const url = URL.createObjectURL(blob);
-    const a = Object.assign(document.createElement('a'), {href:url, download:(ex.name||'paires').replace(/\s+/g,'-')+'-paires.csv'});
-    a.click(); URL.revokeObjectURL(url);
+    downloadBlob('\uFEFF' + lines.join('\n'), (ex.name||'paires').replace(/\s+/g,'-')+'-paires.csv', 'text/csv;charset=utf-8');
   });
 
   document.getElementById('btn-import-csv-pairs').addEventListener('click', () => {
@@ -1962,8 +1960,8 @@
 
   function updateSimAudioUI() {
     const row = document.getElementById('sim-audio-loaded');
-    if (simModalAudio) { document.getElementById('sim-audio-name').textContent = '🎵 Audio chargé'; row.style.display = 'flex'; }
-    else { row.style.display = 'none'; }
+    row.style.display = simModalAudio ? 'flex' : 'none';
+    if (simModalAudio) document.getElementById('sim-audio-name').textContent = '🎵 Audio chargé';
   }
 
   function fillItemModal(item) {
@@ -2030,12 +2028,10 @@
     editingItemIdx = -1;
   }
 
-  // Listeners for sim-type-tabs
   document.querySelectorAll('#sim-type-tabs .item-type-btn').forEach(btn => {
     btn.addEventListener('click', () => { setSimSect(btn.dataset.type); refreshSimPreview(); });
   });
 
-  // Sim field change → refresh preview
   ['sim-text','sim-color','sim-size','sim-font','sim-transform',
    'sim-img-text','sim-img-textcolor','sim-arrow-dir','sim-arrow-bg',
    'sim-color-bg','sim-color-text','sim-color-textcolor','sim-color-size',
@@ -2106,8 +2102,6 @@
 
   function isSqCode(str) { return SQ_CODES.includes(str); }
 
-  // Returns SVG string for one sq code. zoneSize = side length of one zone square.
-  // Consecutive filled zones are merged into one rectangle (no visible split).
   function sqCodeSvg(code, zoneSize) {
     const z = zoneSize || 22;
     const pad = Math.max(1.5, z * 0.08);
@@ -2131,7 +2125,6 @@
     return '<svg class="sq-zone-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + z + ' ' + (z * 3) + '" width="' + z + '" height="' + (z * 3) + '">' + rects + '</svg>';
   }
 
-  // Parse all sq codes contained in a choice string, in order.
   function parseSqCodes(str) {
     const out = [], regex = /\[sq:[a-z]+\]/g;
     let m;
@@ -2140,8 +2133,11 @@
   }
 
   function hasSqCodes(str) { return parseSqCodes(str).length > 0; }
+  function getFocusedOrLastChoice(block) {
+    const inputs = Array.from(block.querySelectorAll('.seq-q-choice'));
+    return inputs.find(i => i === document.activeElement) || inputs[inputs.length - 1] || null;
+  }
 
-  // Returns a div with flex row of SVG symbols for a choice string with sq codes.
   function renderSqChoice(str) {
     const wrapper = document.createElement('div');
     wrapper.className = 'sq-profile';
@@ -2307,7 +2303,7 @@
     const numInput = document.createElement('input');
     numInput.type = 'number'; numInput.className = 'seq-q-num-choices';
     numInput.min = 1; numInput.step = 1;
-    numInput.value = (q.choices || []).length >= 1 ? (q.choices || []).length : 2;
+    numInput.value = (q.choices || []).length || 2;
     numInput.style.cssText = 'width:52px;padding:4px 6px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:0.85rem;outline:none;font-family:inherit;color:#0f172a';
     const choicesRow = document.createElement('div');
     choicesRow.className = 'seq-q-choices-row';
@@ -2341,9 +2337,7 @@
       sqBtn.addEventListener('mouseenter', () => { sqBtn.style.borderColor = '#3b82f6'; sqBtn.style.background = '#eff6ff'; });
       sqBtn.addEventListener('mouseleave', () => { sqBtn.style.borderColor = '#e2e8f0'; sqBtn.style.background = 'white'; });
       sqBtn.addEventListener('click', () => {
-        const inputs = Array.from(block.querySelectorAll('.seq-q-choice'));
-        const focused = inputs.find(i => i === document.activeElement);
-        const target = focused || inputs[inputs.length - 1];
+        const target = getFocusedOrLastChoice(block);
         if (target) { target.value += code; target.dispatchEvent(new Event('input')); }
       });
       picker.appendChild(sqBtn);
@@ -2353,9 +2347,7 @@
     bsBtn.style.cssText = 'padding:3px 8px;border:1.5px solid #fca5a5;border-radius:6px;background:white;color:#ef4444;cursor:pointer;font-size:0.85rem';
     bsBtn.addEventListener('mousedown', e => e.preventDefault());
     bsBtn.addEventListener('click', () => {
-      const inputs = Array.from(block.querySelectorAll('.seq-q-choice'));
-      const focused = inputs.find(i => i === document.activeElement);
-      const target = focused || inputs[inputs.length - 1];
+      const target = getFocusedOrLastChoice(block);
       if (target) { target.value = target.value.replace(/\[sq:[a-z]+\]$/, ''); target.dispatchEvent(new Event('input')); }
     });
     picker.appendChild(bsBtn);
@@ -2506,8 +2498,7 @@
     const dur = pair.displayDuration != null ? pair.displayDuration : 1000;
     document.getElementById('seq-duration').value = (dur / 1000);
     refreshSequenceItemInputs();
-    // Normalize old format to questions array
-    const questions = pair.questions || [{questionText: pair.questionText || '', choices: pair.choices || ['', '']}];
+    const questions = getPairQuestions(pair);
     const container = document.getElementById('seq-questions-container');
     container.innerHTML = '';
     questions.forEach(q => container.appendChild(buildSequenceQuestionBlock(q)));
@@ -2792,11 +2783,7 @@ ${patientSessions.length === 0
 
   // ── Export / Import ───────────────────────────────────────────────────────────
   document.getElementById('btn-export').addEventListener('click', () => {
-    const blob = new Blob([JSON.stringify(exercises, null, 2)], {type:'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href=url; a.download='cys-exercices-'+new Date().toISOString().slice(0,10)+'.json'; a.click();
-    URL.revokeObjectURL(url);
+    downloadBlob(JSON.stringify(exercises, null, 2), 'cys-exercices-'+new Date().toISOString().slice(0,10)+'.json');
   });
 
   document.getElementById('btn-import').addEventListener('click', () => document.getElementById('import-input').click());
@@ -2819,12 +2806,15 @@ ${patientSessions.length === 0
     reader.readAsText(file); e.target.value='';
   });
 
-  // ── Helpers partagés export/import sessions ──────────────────────────────────
+  // ── Helpers partagés export/import ───────────────────────────────────────────
+  function downloadBlob(data, filename, mime) {
+    const url = URL.createObjectURL(new Blob([data], {type: mime || 'application/json'}));
+    Object.assign(document.createElement('a'), {href:url, download:filename}).click();
+    URL.revokeObjectURL(url);
+  }
+
   function exportSessionsJson(data, filename) {
-    const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = Object.assign(document.createElement('a'), {href:url, download:filename});
-    a.click(); URL.revokeObjectURL(url);
+    downloadBlob(JSON.stringify(data, null, 2), filename);
   }
 
   function importSessionsJson(onDone) {

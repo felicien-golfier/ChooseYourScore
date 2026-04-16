@@ -741,7 +741,6 @@
       <div style="display:flex;gap:8px;align-self:flex-end;margin-left:auto">
         <button class="btn-clear" id="btn-export-results">⬇ Exporter résultats</button>
         <button class="btn-clear" id="btn-import-results">⬆ Importer résultats</button>
-        <input type="file" id="import-results-input" accept=".json" style="display:none">
       </div>
     </div>
 
@@ -797,7 +796,6 @@
         <input type="text" id="patient-name-input" placeholder="Nom du patient" maxlength="100">
         <button class="btn-dup" id="btn-export-patient-json">⬇ JSON</button>
         <button class="btn-dup" id="btn-import-patient-json">⬆ JSON</button>
-        <input type="file" id="import-patient-json-input" accept=".json" style="display:none">
         <button class="btn-dup" id="btn-export-patient-pdf">📄 PDF</button>
         <button class="btn-danger" id="btn-delete-patient">Supprimer</button>
       </div>
@@ -1797,13 +1795,26 @@
 
   document.getElementById('btn-export-csv-pairs').addEventListener('click', () => {
     const ex = getSelectedEx(); if (!ex) return;
-    const choicePairs = (ex.pairs || []).filter(p => p.type !== 'arrow' && p.type !== 'sequence');
-    if (choicePairs.length === 0) { alert('Aucune paire de type "Choix" à exporter.'); return; }
-    const lines = choicePairs.map(p => [p.left?.text || '', p.right?.text || '', p.correct === 'right' ? 'droite' : 'gauche'].join(','));
-    const csv = lines.join('\n');
-    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+    const pairs = (ex.pairs || []).filter(p => p.type === 'sequence');
+    if (pairs.length === 0) { alert('Aucune paire à exporter.'); return; }
+    const itemText = item => {
+      if (!item || typeof item === 'string') return item || '';
+      if (item.type === 'arrow') return ARROW_CHARS[item.arrowDirection||'left'] || '';
+      return item.text || '';
+    };
+    const lines = pairs.map(p => {
+      const items = (p.items || []).map(itemText);
+      const q = (p.questions || [])[0];
+      // For 2-item choice pairs, append correct column for round-trip compat
+      if (items.length === 2 && q && q.type === 'choice') {
+        const correctIdx = (q.correctIndices || [0])[0];
+        items.push(correctIdx === 1 ? 'droite' : 'gauche');
+      }
+      return items.map(v => v.includes(',') ? '"' + v.replace(/"/g, '""') + '"' : v).join(',');
+    });
+    const blob = new Blob(['\uFEFF' + lines.join('\n')], {type:'text/csv;charset=utf-8'});
     const url = URL.createObjectURL(blob);
-    const a = Object.assign(document.createElement('a'), { href: url, download: (ex.name || 'paires').replace(/\s+/g, '-') + '-paires.csv' });
+    const a = Object.assign(document.createElement('a'), {href:url, download:(ex.name||'paires').replace(/\s+/g,'-')+'-paires.csv'});
     a.click(); URL.revokeObjectURL(url);
   });
 
@@ -1820,16 +1831,28 @@
       const lines = evt.target.result.split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('#'));
       let added = 0;
       lines.forEach(line => {
-        const parts = line.split(',');
-        const leftText  = (parts[0] || '').trim();
-        const rightText = (parts[1] || '').trim();
-        if (!leftText && !rightText) return;
-        const correctRaw = (parts[2] || '').trim().toLowerCase();
-        const correct = ['droite','right','d','r','1'].includes(correctRaw) ? 'right' : 'left';
-        ex.pairs.push({ id: newId('pair'),
-          left:  { text: leftText,  color: '#1a1a1a', fontSize: 32, fontFamily: 'Arial', textTransform: 'none', imageUrl: null, audioUrl: null },
-          right: { text: rightText, color: '#1a1a1a', fontSize: 32, fontFamily: 'Arial', textTransform: 'none', imageUrl: null, audioUrl: null },
-          correct });
+        // Simple CSV split (no quoted-field parser needed for basic text)
+        const parts = line.split(',').map(p => p.trim());
+        if (parts.every(p => !p)) return;
+        const last = parts[parts.length - 1].toLowerCase();
+        const isCorrectMarker = ['gauche','droite','left','right','g','d','l','r','0','1'].includes(last);
+        const itemTexts = isCorrectMarker ? parts.slice(0, -1) : parts;
+        if (itemTexts.every(t => !t)) return;
+        const makeItem = text => ({type:'text', text, color:'#1a1a1a', fontSize:32, fontFamily:'Arial', textTransform:'none', imageUrl:null, audioUrl:null});
+        const items = itemTexts.map(makeItem);
+        let questions;
+        if (isCorrectMarker && items.length === 2) {
+          const correctIdx = ['droite','right','d','r','1'].includes(last) ? 1 : 0;
+          questions = [{questionText:'', type:'choice',
+            choices: itemTexts, correctIndices:[correctIdx],
+            showOnRetry:true, allowRetry:true, itemOverrides:[]}];
+        } else {
+          questions = [{questionText:'', type:'choice',
+            choices: itemTexts, correctIndices:[0],
+            showOnRetry:true, allowRetry:true, itemOverrides:[]}];
+        }
+        ex.pairs.push({id:newId('pair'), type:'sequence', items,
+          displayDuration: isCorrectMarker && items.length === 2 ? 0 : 1000, questions});
         added++;
       });
       saveExercises(); renderExerciseEditor();
@@ -2665,31 +2688,14 @@
 
   document.getElementById('btn-export-patient-json').addEventListener('click', () => {
     const p = getSelectedPatient(); if (!p) return;
-    const patientSessions = sessions.filter(s => s.patientId === p.id);
-    const blob = new Blob([JSON.stringify(patientSessions, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = Object.assign(document.createElement('a'), { href: url, download: 'resultats-' + p.name.replace(/\s+/g, '-') + '-' + new Date().toISOString().slice(0,10) + '.json' });
-    a.click(); URL.revokeObjectURL(url);
+    exportSessionsJson(
+      sessions.filter(s => s.patientId === p.id),
+      'resultats-' + p.name.replace(/\s+/g, '-') + '-' + new Date().toISOString().slice(0,10) + '.json'
+    );
   });
 
-  document.getElementById('btn-import-patient-json').addEventListener('click', () => document.getElementById('import-patient-json-input').click());
-
-  document.getElementById('import-patient-json-input').addEventListener('change', e => {
-    const file = e.target.files[0]; if (!file) return;
-    const reader = new FileReader();
-    reader.onload = evt => {
-      try {
-        const imported = JSON.parse(evt.target.result);
-        if (!Array.isArray(imported)) throw new Error('Format invalide');
-        if (!confirm('Importer ' + imported.length + ' session(s) et les ajouter aux existantes ?')) return;
-        const existing = new Set(sessions.map(s => s.id));
-        let added = 0;
-        imported.forEach(s => { if (!existing.has(s.id)) { sessions.push(s); added++; } });
-        saveSessions(); renderPatientDetail();
-        alert(added + ' session(s) importée(s).');
-      } catch(err) { alert('Fichier invalide : ' + err.message); }
-    };
-    reader.readAsText(file); e.target.value = '';
+  document.getElementById('btn-import-patient-json').addEventListener('click', () => {
+    importSessionsJson(added => { alert(added + ' session(s) importée(s).'); renderPatientDetail(); });
   });
 
   document.getElementById('btn-export-patient-pdf').addEventListener('click', () => {
@@ -2813,32 +2819,43 @@ ${patientSessions.length === 0
     reader.readAsText(file); e.target.value='';
   });
 
+  // ── Helpers partagés export/import sessions ──────────────────────────────────
+  function exportSessionsJson(data, filename) {
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = Object.assign(document.createElement('a'), {href:url, download:filename});
+    a.click(); URL.revokeObjectURL(url);
+  }
+
+  function importSessionsJson(onDone) {
+    const input = Object.assign(document.createElement('input'), {type:'file', accept:'.json'});
+    input.addEventListener('change', e => {
+      const file = e.target.files[0]; if (!file) return;
+      const reader = new FileReader();
+      reader.onload = evt => {
+        try {
+          const imported = JSON.parse(evt.target.result);
+          if (!Array.isArray(imported)) throw new Error('Format invalide');
+          if (!confirm('Importer ' + imported.length + ' session(s) et les ajouter aux existantes ?')) return;
+          const existing = new Set(sessions.map(s => s.id));
+          let added = 0;
+          imported.forEach(s => { if (!existing.has(s.id)) { sessions.push(s); added++; } });
+          saveSessions();
+          onDone(added);
+        } catch(err) { alert('Fichier invalide : ' + err.message); }
+      };
+      reader.readAsText(file);
+    });
+    input.click();
+  }
+
   // ── Export / Import résultats ─────────────────────────────────────────────────
   document.getElementById('btn-export-results').addEventListener('click', () => {
-    const blob = new Blob([JSON.stringify(getFilteredSessions(), null, 2)], {type:'application/json'});
-    const url = URL.createObjectURL(blob);
-    const a = Object.assign(document.createElement('a'), {href:url, download:'resultats-cys-'+new Date().toISOString().slice(0,10)+'.json'});
-    a.click(); URL.revokeObjectURL(url);
+    exportSessionsJson(getFilteredSessions(), 'resultats-cys-' + new Date().toISOString().slice(0,10) + '.json');
   });
 
-  document.getElementById('btn-import-results').addEventListener('click', () => document.getElementById('import-results-input').click());
-
-  document.getElementById('import-results-input').addEventListener('change', e => {
-    const file = e.target.files[0]; if (!file) return;
-    const reader = new FileReader();
-    reader.onload = evt => {
-      try {
-        const imported = JSON.parse(evt.target.result);
-        if (!Array.isArray(imported)) throw new Error('Format invalide');
-        if (!confirm('Importer '+imported.length+' session(s) et les ajouter aux existantes ?')) return;
-        const existing = new Set(sessions.map(s=>s.id));
-        let added = 0;
-        imported.forEach(s => { if (!existing.has(s.id)) { sessions.push(s); added++; } });
-        saveSessions(); renderResults();
-        alert(added+' session(s) importée(s).');
-      } catch(err) { alert('Fichier invalide : '+err.message); }
-    };
-    reader.readAsText(file); e.target.value='';
+  document.getElementById('btn-import-results').addEventListener('click', () => {
+    importSessionsJson(added => { alert(added + ' session(s) importée(s).'); renderResults(); });
   });
 
   // ── Results ───────────────────────────────────────────────────────────────────

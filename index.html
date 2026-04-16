@@ -1271,37 +1271,33 @@
     const choicesEl  = document.getElementById('sequence-choices');
     const writeZone  = document.getElementById('seq-write-zone');
 
-    const hasOverrides = (q.itemOverrides || []).length > 0;
-    const shouldShowItems = q.type === 'choice' || hasOverrides || (isRetry && q.showOnRetry !== false);
-    if (shouldShowItems) {
-      const overrides = q.itemOverrides || [];
-      if (overrides.length > 0) {
-        const baseItems = pair.items || [];
-        const overriddenItems = baseItems.map((item, i) => {
-          const ov = overrides.find(o => o.index === i);
-          if (!ov) return item;
-          return typeof item === 'object' ? {...item, text: ov.value} : {type:'text', text:ov.value};
-        });
-        displayEl.innerHTML = '';
-        const isSingle = overriddenItems.length === 1;
-        overriddenItems.forEach(item => {
-          const el = document.createElement('div');
-          el.className = isSingle ? 'sequence-text-display' : 'sequence-item-box';
-          applyItemStyle(el, typeof item === 'string' ? {type:'text',text:item} : item);
-          displayEl.appendChild(el);
-        });
-      }
-      displayEl.style.display = 'flex';
-    } else {
-      displayEl.style.display = 'none';
+    // Always apply overrides to the DOM so the button "Revoir" reveals updated items
+    const overrides = q.itemOverrides || [];
+    if (overrides.length > 0) {
+      const baseItems = pair.items || [];
+      const overriddenItems = baseItems.map((item, i) => {
+        const ov = overrides.find(o => o.index === i);
+        if (!ov) return item;
+        return typeof item === 'object' ? {...item, text: ov.value} : {type:'text', text:ov.value};
+      });
+      displayEl.innerHTML = '';
+      const isSingle = overriddenItems.length === 1;
+      overriddenItems.forEach(item => {
+        const el = document.createElement('div');
+        el.className = isSingle ? 'sequence-text-display' : 'sequence-item-box';
+        applyItemStyle(el, typeof item === 'string' ? {type:'text',text:item} : item);
+        displayEl.appendChild(el);
+      });
     }
+    const shouldShowItems = q.type === 'choice' || (isRetry && q.showOnRetry !== false);
+    displayEl.style.display = shouldShowItems ? 'flex' : 'none';
 
     const showAgainBtn = document.getElementById('seq-show-again-btn');
     if (q.type === 'direction') {
       showAgainBtn.style.display = 'none';
     } else {
       showAgainBtn.style.display = '';
-      showAgainBtn.textContent = (keepVisible || showOnRetry) ? '🙈 Masquer' : '👁 Revoir';
+      showAgainBtn.textContent = shouldShowItems ? '🙈 Masquer' : '👁 Revoir';
       showAgainBtn.onclick = () => {
         const visible = displayEl.style.display !== 'none';
         displayEl.style.display = visible ? 'none' : 'flex';

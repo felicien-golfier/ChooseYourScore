@@ -119,23 +119,6 @@
     .progress-fill { height: 100%; background: #3b82f6; border-radius: 4px; transition: width 0.35s ease; }
     .progress-label { text-align: right; font-size: 0.85rem; color: #94a3b8; font-weight: 500; }
 
-    .pair-container { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-
-    .item-btn {
-      min-height: 200px; border: 3px solid #e2e8f0; border-radius: 18px;
-      background: white; cursor: pointer; transition: all 0.15s;
-      display: flex; align-items: center; justify-content: center;
-      padding: 28px; text-align: center; line-height: 1.3; word-break: break-word;
-      font-family: inherit;
-    }
-    .item-btn:hover:not(:disabled) {
-      border-color: #3b82f6; background: #eff6ff;
-      transform: translateY(-2px); box-shadow: 0 4px 12px rgba(59,130,246,0.15);
-    }
-    .item-btn:disabled { cursor: default; }
-    .item-btn.correct   { border-color: #22c55e; background: #f0fdf4; }
-    .item-btn.incorrect { border-color: #ef4444; background: #fef2f2; }
-    .item-btn.missed    { border-color: #22c55e; background: #f0fdf4; opacity: 0.6; }
     .keyboard-hint { text-align: center; font-size: 0.8rem; color: #94a3b8; margin-top: 20px; }
 
     /* ── Session result ─────────────────────────────────────────────────────── */
@@ -275,26 +258,6 @@
     }
     .modal h3 { font-size: 1.15rem; color: #0f172a; margin-bottom: 20px; }
 
-    .modal-preview {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
-      background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px;
-      padding: 20px; margin-bottom: 28px;
-    }
-    .preview-box {
-      background: white; border: 2px solid #e2e8f0; border-radius: 12px;
-      min-height: 100px; display: flex; align-items: center; justify-content: center;
-      padding: 16px; text-align: center; word-break: break-word;
-    }
-    .preview-box.correct-side { border-color: #86efac; background: #f0fdf4; }
-
-    .items-edit-grid {
-      display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px;
-      align-items: start; margin-bottom: 28px;
-    }
-    .item-edit-panel h4 {
-      font-size: 0.88rem; font-weight: 600; color: #334155;
-      margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.04em;
-    }
     .field-row { margin-bottom: 12px; }
     .field-row label { display: block; font-size: 0.78rem; color: #64748b; margin-bottom: 4px; font-weight: 500; }
     .field-row input[type="text"],
@@ -308,19 +271,6 @@
       width: 100%; height: 38px; border: 1.5px solid #e2e8f0;
       border-radius: 8px; padding: 3px 5px; cursor: pointer;
     }
-    .correct-selector {
-      display: flex; flex-direction: column; align-items: center; padding-top: 32px; gap: 14px;
-    }
-    .correct-selector .cs-label {
-      font-size: 0.78rem; color: #64748b; font-weight: 600;
-      text-align: center; text-transform: uppercase; letter-spacing: 0.04em;
-    }
-    .radio-option {
-      display: flex; align-items: center; gap: 6px; cursor: pointer;
-      font-size: 0.9rem; color: #334155; padding: 8px 14px; border-radius: 8px; transition: background 0.1s;
-    }
-    .radio-option:hover { background: #f1f5f9; }
-    .radio-option input { width: 16px; height: 16px; cursor: pointer; }
 
     .modal-actions {
       display: flex; gap: 12px; justify-content: flex-end;
@@ -399,13 +349,6 @@
     }
     body.is-fullscreen .progress-section { margin-bottom: 32px; flex-shrink: 0; }
     body.is-fullscreen .progress-bar { height: 12px; }
-    body.is-fullscreen .pair-container {
-      flex: 1; gap: 40px;
-    }
-    body.is-fullscreen .item-btn {
-      min-height: 0; height: 100%;
-      border-radius: 28px; padding: 40px;
-    }
     body.is-fullscreen .keyboard-hint { flex-shrink: 0; font-size: 1rem; margin-top: 24px; }
 
     /* ── Session notes ──────────────────────────────────────────────────────── */
@@ -508,32 +451,6 @@
     tbody td[contenteditable]:hover { background: #f8fafc; }
     tbody td[contenteditable]:focus { background: #fffbeb; border-bottom: 2px solid #f59e0b; padding-bottom: 10px; }
 
-    /* ── Arrow exercise ─────────────────────────────────────────────────────────── */
-    .arrow-container { display: none; flex-direction: column; align-items: center; }
-    .arrow-card {
-      width: 100%; min-height: 260px; border-radius: 18px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 120px; line-height: 1; user-select: none;
-    }
-    .arrow-card.bg-blue   { background: #3b82f6; color: white; }
-    .arrow-card.bg-yellow { background: #fbbf24; color: #1a1a1a; }
-    .arrow-keys { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 24px; }
-    .arrow-keys-row { display: flex; gap: 8px; }
-    .arrow-key-btn {
-      width: 64px; height: 64px; border: 2px solid #e2e8f0; border-radius: 12px;
-      background: white; font-size: 1.8rem; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: all 0.15s; font-family: inherit;
-    }
-    .arrow-key-btn:hover:not(:disabled) { border-color: #3b82f6; background: #eff6ff; }
-    .arrow-key-btn:disabled { cursor: default; }
-    .arrow-key-btn.correct   { border-color: #22c55e; background: #f0fdf4; }
-    .arrow-key-btn.incorrect { border-color: #ef4444; background: #fef2f2; }
-    .arrow-key-btn.missed    { border-color: #22c55e; background: #f0fdf4; opacity: 0.6; }
-
-    body.is-fullscreen .arrow-container { flex: 1; width: 100%; justify-content: center; }
-    body.is-fullscreen .arrow-card { min-height: 0; flex: 1; max-height: 60vh; font-size: 180px; }
-
     /* ── Sequence exercise ──────────────────────────────────────────────────────── */
     .sequence-container { display: none; flex-direction: column; align-items: center; gap: 28px; width: 100%; }
     .sequence-timer-bar { width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
@@ -543,8 +460,7 @@
       min-width: 64px; height: 80px; padding: 0 16px;
       border: 2.5px solid #e2e8f0; border-radius: 16px;
       background: white; display: flex; align-items: center; justify-content: center;
-      font-size: 2.5rem; font-weight: 700; color: #0f172a; font-family: 'Courier New', monospace;
-      white-space: nowrap;
+      overflow: hidden;
     }
     .sequence-question { font-size: 1.4rem; font-weight: 600; color: #0f172a; text-align: center; }
     .sequence-choices { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
@@ -572,14 +488,19 @@
     body.is-fullscreen .sequence-choice-btn { min-width: 120px; max-width: 360px; padding: 20px 28px; font-size: 1.8rem; }
     body.is-fullscreen .sequence-choice-btn .sq-profile .sq-zone-svg { width: 34px; height: 102px; }
 
-    /* Arrow modal preview */
-    .arrow-preview-card {
-      width: 100%; min-height: 140px; border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 80px; line-height: 1; user-select: none;
+    /* ── Seq item cards (editor) ───────────────────────────────────────────────── */
+    .seq-item-card {
+      position: relative; min-width: 72px; height: 88px;
+      border: 2px solid #e2e8f0; border-radius: 14px;
+      background: white; display: flex; align-items: center; justify-content: center;
+      overflow: hidden; cursor: default;
     }
-    .arrow-preview-card.bg-blue   { background: #3b82f6; color: white; }
-    .arrow-preview-card.bg-yellow { background: #fbbf24; color: #1a1a1a; }
+    .seq-item-edit-btn {
+      position: absolute; bottom: 4px; right: 4px; padding: 2px 5px;
+      font-size: 0.7rem; border-radius: 5px; border: 1px solid #e2e8f0;
+      background: rgba(255,255,255,.85); cursor: pointer; backdrop-filter: blur(2px);
+    }
+    .seq-item-preview { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:1.8rem; overflow:hidden; }
 
     /* ── Mobile ─────────────────────────────────────────────────────────────────── */
     @media (max-width: 640px) {
@@ -596,11 +517,6 @@
       h2 { font-size: 1.3rem; margin-bottom: 16px; }
       .subtitle { margin-bottom: 24px; }
 
-      .pair-container { grid-template-columns: 1fr; gap: 14px; }
-      .item-btn { min-height: 110px; padding: 16px; }
-
-      .arrow-card { min-height: 180px; font-size: 80px; }
-      .arrow-key-btn { width: 72px; height: 72px; font-size: 2.2rem; }
       .sequence-display { gap: 8px; }
       .sequence-item-box { font-size: 1.6rem; height: 60px; min-width: 48px; padding: 0 10px; border-radius: 10px; }
       .sequence-text-display { padding: 18px 20px; font-size: 1.2rem; }
@@ -636,15 +552,9 @@
       .pair-actions { justify-content: flex-end; flex-wrap: wrap; gap: 6px; border-top: 1px solid #f1f5f9; padding-top: 8px; }
       .pair-action-btn { width: 38px; height: 38px; font-size: 1rem; }
 
-      /* Arrow fields: stack on mobile */
-      #arrow-fields-grid { grid-template-columns: 1fr !important; }
-
       /* Modal: bottom sheet */
       #pair-modal { padding: 0; align-items: flex-end; }
       .modal { border-radius: 20px 20px 0 0; max-height: 95vh; padding: 24px 16px 32px; }
-      .items-edit-grid { grid-template-columns: 1fr; }
-      .correct-selector { flex-direction: row; padding: 12px 0; justify-content: center; gap: 24px; }
-      .modal-preview { grid-template-columns: 1fr; }
       .modal-actions { flex-direction: column-reverse; }
       .btn-save, .btn-cancel { width: 100%; text-align: center; }
 
@@ -726,23 +636,6 @@
       <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
       <div class="progress-label" id="progress-label"></div>
     </div>
-    <div class="pair-container" id="pair-container">
-      <button class="item-btn" id="item-left"></button>
-      <button class="item-btn" id="item-right"></button>
-    </div>
-    <div class="arrow-container" id="arrow-container">
-      <div class="arrow-card" id="arrow-card"></div>
-      <div class="arrow-keys">
-        <div class="arrow-keys-row">
-          <button class="arrow-key-btn" id="akey-up">↑</button>
-        </div>
-        <div class="arrow-keys-row">
-          <button class="arrow-key-btn" id="akey-left">←</button>
-          <button class="arrow-key-btn" id="akey-down">↓</button>
-          <button class="arrow-key-btn" id="akey-right">→</button>
-        </div>
-      </div>
-    </div>
     <div class="sequence-container" id="sequence-container">
       <div class="sequence-timer-bar"><div class="sequence-timer-fill" id="sequence-timer-fill" style="width:100%"></div></div>
       <div class="sequence-display" id="sequence-display"></div>
@@ -768,13 +661,7 @@
     <div class="results-grid">
       <div class="result-card"><div class="label">Score</div><div class="value good" id="res-score">–</div></div>
       <div class="result-card"><div class="label">Temps total</div><div class="value" id="res-time">–</div></div>
-      <div class="result-card" id="card-errors-left"  style="display:none"><div class="label">Erreurs — item gauche</div><div class="value warn" id="res-errors-left">–</div></div>
-      <div class="result-card" id="card-errors-right" style="display:none"><div class="label">Erreurs — item droit</div><div class="value warn" id="res-errors-right">–</div></div>
       <div class="result-card" id="card-avg-reaction" style="display:none"><div class="label">Temps de réaction moyen</div><div class="value" id="res-avg-reaction">–</div></div>
-      <div class="result-card" id="card-errors-blue"   style="display:none"><div class="label">Erreurs — fond bleu</div><div class="value warn" id="res-errors-blue">–</div></div>
-      <div class="result-card" id="card-errors-yellow" style="display:none"><div class="label">Erreurs — fond jaune</div><div class="value warn" id="res-errors-yellow">–</div></div>
-      <div class="result-card" id="card-errors-up"   style="display:none"><div class="label">Erreurs — ↑ manqué</div><div class="value warn" id="res-errors-up">–</div></div>
-      <div class="result-card" id="card-errors-down" style="display:none"><div class="label">Erreurs — ↓ manqué</div><div class="value warn" id="res-errors-down">–</div></div>
     </div>
     <div class="notes-section">
       <label for="session-notes">Notes du clinicien</label>
@@ -936,58 +823,8 @@
   <div class="modal">
     <h3>Modifier la paire</h3>
 
-    <!-- Type selector -->
-    <div class="field-row" style="margin-bottom:20px">
-      <label>Type de paire</label>
-      <select id="pair-type">
-        <option value="choice">Choix — item gauche / droite</option>
-        <option value="arrow">Flèche directionnelle</option>
-        <option value="sequence">Séquence mémorisation</option>
-      </select>
-    </div>
-
-    <!-- Arrow config -->
-    <div id="arrow-config" style="display:none; margin-bottom:28px">
-      <div id="arrow-fields-grid" style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:16px; margin-bottom:16px">
-        <div class="field-row">
-          <label>Direction</label>
-          <select id="arrow-direction">
-            <option value="left">← Gauche</option>
-            <option value="right">→ Droite</option>
-            <option value="up">↑ Haut</option>
-            <option value="down">↓ Bas</option>
-          </select>
-        </div>
-        <div class="field-row">
-          <label>Couleur du fond</label>
-          <input type="color" id="arrow-color" value="#3b82f6" style="width:100%;height:38px;padding:2px;border:1.5px solid #d1d5db;border-radius:8px;cursor:pointer">
-        </div>
-        <div class="field-row">
-          <label>Règle</label>
-          <select id="arrow-rule">
-            <option value="same">↔ Même sens</option>
-            <option value="inverse">↔ Sens inverse</option>
-          </select>
-        </div>
-        <div class="field-row">
-          <label>Nbre d'options</label>
-          <select id="arrow-num-options">
-            <option value="2">2 (← →)</option>
-            <option value="3">3 (← → ↑)</option>
-            <option value="4" selected>4 (← → ↑ ↓)</option>
-          </select>
-        </div>
-      </div>
-      <div class="modal-preview" style="grid-template-columns:1fr">
-        <div style="text-align:center">
-          <div class="arrow-preview-card" id="arrow-preview-card" style="background:#3b82f6;color:white">←</div>
-          <div style="margin-top:8px;font-size:0.85rem;color:#64748b" id="arrow-preview-hint"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Sequence config -->
-    <div id="sequence-config" style="display:none; margin-bottom:28px">
+    <!-- Sequence config (always shown) -->
+    <div id="sequence-config" style="margin-bottom:28px">
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px">
         <div class="field-row">
           <label>Nbre d'items</label>
@@ -1012,189 +849,104 @@
       </div>
     </div>
 
-    <!-- Choice config -->
-    <div id="choice-config">
-    <div class="modal-preview">
-      <div class="preview-box" id="preview-left">(vide)</div>
-      <div class="preview-box" id="preview-right">(vide)</div>
-    </div>
-    <div class="items-edit-grid">
-      <div class="item-edit-panel" id="left-panel">
-        <h4>Item gauche</h4>
-        <div class="item-type-tabs" id="left-type-tabs">
-          <button class="item-type-btn active" data-type="text"  data-side="left">Texte</button>
-          <button class="item-type-btn"        data-type="image" data-side="left">Image</button>
-          <button class="item-type-btn"        data-type="audio" data-side="left">Audio</button>
-          <button class="item-type-btn"        data-type="arrow" data-side="left">Flèche</button>
-          <button class="item-type-btn"        data-type="color" data-side="left">Couleur</button>
-        </div>
-        <!-- section : texte -->
-        <div id="left-sect-text">
-          <div class="field-row"><label>Texte</label><input type="text" id="left-text" placeholder="Texte affiché"></div>
-          <div class="field-row"><label>Couleur</label><input type="color" id="left-color" value="#1a1a1a"></div>
-          <div class="field-row"><label>Taille (px)</label>
-            <select id="left-size">
-              <option value="16">16</option><option value="20">20</option><option value="24">24</option>
-              <option value="28">28</option><option value="32" selected>32</option><option value="40">40</option>
-              <option value="48">48</option><option value="56">56</option><option value="64">64</option><option value="72">72</option>
-            </select></div>
-          <div class="field-row"><label>Police</label>
-            <select id="left-font">
-              <option>Arial</option><option>Times New Roman</option><option>Courier New</option>
-              <option>Georgia</option><option>Verdana</option><option>Comic Sans MS</option><option>Impact</option>
-            </select></div>
-          <div class="field-row"><label>Casse</label>
-            <select id="left-transform">
-              <option value="none">Normale</option><option value="uppercase">MAJUSCULES</option>
-              <option value="lowercase">minuscules</option><option value="capitalize">Capitalisé</option>
-            </select></div>
-        </div>
-        <!-- section : image -->
-        <div id="left-sect-image" style="display:none">
-          <div class="field-row">
-            <label>Image</label>
-            <input type="file" id="left-img-input" accept="image/*" style="display:none">
-            <button type="button" class="btn-upload-img" id="left-img-btn">📷 Choisir une image</button>
-            <div class="img-thumb-row" id="left-img-thumb-row" style="display:none">
-              <img id="left-img-thumb" alt="">
-              <button type="button" class="btn-remove-img" id="left-img-remove">✕ Supprimer</button>
-            </div>
-          </div>
-          <div class="field-row"><label>Texte superposé (optionnel)</label><input type="text" id="left-img-text" placeholder="Légende…"></div>
-          <div class="field-row"><label>Couleur du texte</label><input type="color" id="left-img-textcolor" value="#ffffff"></div>
-        </div>
-        <!-- section : audio -->
-        <div id="left-sect-audio" style="display:none">
-          <div class="field-row">
-            <label>Audio</label>
-            <input type="file" id="left-audio-input" accept="audio/*" style="display:none">
-            <button type="button" class="btn-upload-audio" id="left-audio-btn">🔊 Choisir un audio</button>
-            <div class="audio-loaded-row" id="left-audio-loaded" style="display:none">
-              <span id="left-audio-name"></span>
-              <button type="button" class="btn-play-audio" id="left-audio-play">▶ Écouter</button>
-              <button type="button" class="btn-remove-img" id="left-audio-remove">✕</button>
-            </div>
-          </div>
-          <div class="field-row"><label>Étiquette (optionnel)</label><input type="text" id="left-audio-label" placeholder="Nom affiché…"></div>
-        </div>
-        <!-- section : flèche -->
-        <div id="left-sect-arrow" style="display:none">
-          <div class="field-row"><label>Direction</label>
-            <select id="left-arrow-dir">
-              <option value="left">← Gauche</option><option value="right">→ Droite</option>
-              <option value="up">↑ Haut</option><option value="down">↓ Bas</option>
-            </select></div>
-          <div class="field-row"><label>Couleur de fond</label>
-            <input type="color" id="left-arrow-bg" value="#3b82f6" style="width:100%;height:38px;padding:2px;border:1.5px solid #d1d5db;border-radius:8px;cursor:pointer"></div>
-        </div>
-        <!-- section : couleur -->
-        <div id="left-sect-color" style="display:none">
-          <div class="field-row"><label>Couleur de fond</label>
-            <input type="color" id="left-color-bg" value="#3b82f6" style="width:100%;height:38px;padding:2px;border:1.5px solid #d1d5db;border-radius:8px;cursor:pointer"></div>
-          <div class="field-row"><label>Texte (optionnel)</label><input type="text" id="left-color-text" placeholder="Texte affiché…"></div>
-          <div class="field-row"><label>Couleur du texte</label><input type="color" id="left-color-textcolor" value="#ffffff"></div>
-          <div class="field-row"><label>Taille (px)</label>
-            <select id="left-color-size">
-              <option value="16">16</option><option value="20">20</option><option value="24">24</option>
-              <option value="28">28</option><option value="32" selected>32</option><option value="40">40</option>
-              <option value="48">48</option><option value="56">56</option><option value="64">64</option><option value="72">72</option>
-            </select></div>
-        </div>
-      </div>
-
-      <div class="correct-selector">
-        <div class="cs-label">Réponse<br>correcte</div>
-        <label class="radio-option"><input type="radio" name="modal-correct" id="correct-left"  value="left">  ← Gauche</label>
-        <label class="radio-option"><input type="radio" name="modal-correct" id="correct-right" value="right"> Droite →</label>
-      </div>
-
-      <div class="item-edit-panel" id="right-panel">
-        <h4>Item droit</h4>
-        <div class="item-type-tabs" id="right-type-tabs">
-          <button class="item-type-btn active" data-type="text"  data-side="right">Texte</button>
-          <button class="item-type-btn"        data-type="image" data-side="right">Image</button>
-          <button class="item-type-btn"        data-type="audio" data-side="right">Audio</button>
-          <button class="item-type-btn"        data-type="arrow" data-side="right">Flèche</button>
-          <button class="item-type-btn"        data-type="color" data-side="right">Couleur</button>
-        </div>
-        <!-- section : texte -->
-        <div id="right-sect-text">
-          <div class="field-row"><label>Texte</label><input type="text" id="right-text" placeholder="Texte affiché"></div>
-          <div class="field-row"><label>Couleur</label><input type="color" id="right-color" value="#1a1a1a"></div>
-          <div class="field-row"><label>Taille (px)</label>
-            <select id="right-size">
-              <option value="16">16</option><option value="20">20</option><option value="24">24</option>
-              <option value="28">28</option><option value="32" selected>32</option><option value="40">40</option>
-              <option value="48">48</option><option value="56">56</option><option value="64">64</option><option value="72">72</option>
-            </select></div>
-          <div class="field-row"><label>Police</label>
-            <select id="right-font">
-              <option>Arial</option><option>Times New Roman</option><option>Courier New</option>
-              <option>Georgia</option><option>Verdana</option><option>Comic Sans MS</option><option>Impact</option>
-            </select></div>
-          <div class="field-row"><label>Casse</label>
-            <select id="right-transform">
-              <option value="none">Normale</option><option value="uppercase">MAJUSCULES</option>
-              <option value="lowercase">minuscules</option><option value="capitalize">Capitalisé</option>
-            </select></div>
-        </div>
-        <!-- section : image -->
-        <div id="right-sect-image" style="display:none">
-          <div class="field-row">
-            <label>Image</label>
-            <input type="file" id="right-img-input" accept="image/*" style="display:none">
-            <button type="button" class="btn-upload-img" id="right-img-btn">📷 Choisir une image</button>
-            <div class="img-thumb-row" id="right-img-thumb-row" style="display:none">
-              <img id="right-img-thumb" alt="">
-              <button type="button" class="btn-remove-img" id="right-img-remove">✕ Supprimer</button>
-            </div>
-          </div>
-          <div class="field-row"><label>Texte superposé (optionnel)</label><input type="text" id="right-img-text" placeholder="Légende…"></div>
-          <div class="field-row"><label>Couleur du texte</label><input type="color" id="right-img-textcolor" value="#ffffff"></div>
-        </div>
-        <!-- section : audio -->
-        <div id="right-sect-audio" style="display:none">
-          <div class="field-row">
-            <label>Audio</label>
-            <input type="file" id="right-audio-input" accept="audio/*" style="display:none">
-            <button type="button" class="btn-upload-audio" id="right-audio-btn">🔊 Choisir un audio</button>
-            <div class="audio-loaded-row" id="right-audio-loaded" style="display:none">
-              <span id="right-audio-name"></span>
-              <button type="button" class="btn-play-audio" id="right-audio-play">▶ Écouter</button>
-              <button type="button" class="btn-remove-img" id="right-audio-remove">✕</button>
-            </div>
-          </div>
-          <div class="field-row"><label>Étiquette (optionnel)</label><input type="text" id="right-audio-label" placeholder="Nom affiché…"></div>
-        </div>
-        <!-- section : flèche -->
-        <div id="right-sect-arrow" style="display:none">
-          <div class="field-row"><label>Direction</label>
-            <select id="right-arrow-dir">
-              <option value="left">← Gauche</option><option value="right">→ Droite</option>
-              <option value="up">↑ Haut</option><option value="down">↓ Bas</option>
-            </select></div>
-          <div class="field-row"><label>Couleur de fond</label>
-            <input type="color" id="right-arrow-bg" value="#3b82f6" style="width:100%;height:38px;padding:2px;border:1.5px solid #d1d5db;border-radius:8px;cursor:pointer"></div>
-        </div>
-        <!-- section : couleur -->
-        <div id="right-sect-color" style="display:none">
-          <div class="field-row"><label>Couleur de fond</label>
-            <input type="color" id="right-color-bg" value="#3b82f6" style="width:100%;height:38px;padding:2px;border:1.5px solid #d1d5db;border-radius:8px;cursor:pointer"></div>
-          <div class="field-row"><label>Texte (optionnel)</label><input type="text" id="right-color-text" placeholder="Texte affiché…"></div>
-          <div class="field-row"><label>Couleur du texte</label><input type="color" id="right-color-textcolor" value="#ffffff"></div>
-          <div class="field-row"><label>Taille (px)</label>
-            <select id="right-color-size">
-              <option value="16">16</option><option value="20">20</option><option value="24">24</option>
-              <option value="28">28</option><option value="32" selected>32</option><option value="40">40</option>
-              <option value="48">48</option><option value="56">56</option><option value="64">64</option><option value="72">72</option>
-            </select></div>
-        </div>
-      </div>
-    </div>
-    </div><!-- end #choice-config -->
     <div class="modal-actions">
       <button class="btn-cancel" id="btn-modal-cancel">Annuler</button>
       <button class="btn-save"   id="btn-modal-save">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Seq item edit modal ──────────────────────────────────────────────────── -->
+<div id="seq-item-modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.5); align-items:center; justify-content:center; z-index:200; padding:24px">
+  <div class="modal" style="max-width:520px">
+    <h3>Modifier l'item</h3>
+    <div class="item-type-tabs" id="sim-type-tabs">
+      <button class="item-type-btn active" data-type="text">Texte</button>
+      <button class="item-type-btn" data-type="image">Image</button>
+      <button class="item-type-btn" data-type="audio">Audio</button>
+      <button class="item-type-btn" data-type="arrow">Flèche</button>
+      <button class="item-type-btn" data-type="color">Couleur</button>
+    </div>
+    <!-- section : texte -->
+    <div id="sim-sect-text">
+      <div class="field-row"><label>Texte</label><input type="text" id="sim-text" placeholder="Texte affiché"></div>
+      <div class="field-row"><label>Couleur</label><input type="color" id="sim-color" value="#1a1a1a"></div>
+      <div class="field-row"><label>Taille (px)</label>
+        <select id="sim-size">
+          <option value="16">16</option><option value="20">20</option><option value="24">24</option>
+          <option value="28">28</option><option value="32" selected>32</option><option value="40">40</option>
+          <option value="48">48</option><option value="56">56</option><option value="64">64</option><option value="72">72</option>
+        </select></div>
+      <div class="field-row"><label>Police</label>
+        <select id="sim-font">
+          <option>Arial</option><option>Times New Roman</option><option>Courier New</option>
+          <option>Georgia</option><option>Verdana</option><option>Comic Sans MS</option><option>Impact</option>
+        </select></div>
+      <div class="field-row"><label>Casse</label>
+        <select id="sim-transform">
+          <option value="none">Normale</option><option value="uppercase">MAJUSCULES</option>
+          <option value="lowercase">minuscules</option><option value="capitalize">Capitalisé</option>
+        </select></div>
+    </div>
+    <!-- section : image -->
+    <div id="sim-sect-image" style="display:none">
+      <div class="field-row">
+        <label>Image</label>
+        <input type="file" id="sim-img-input" accept="image/*" style="display:none">
+        <button type="button" class="btn-upload-img" id="sim-img-btn">📷 Choisir une image</button>
+        <div class="img-thumb-row" id="sim-img-thumb-row" style="display:none">
+          <img id="sim-img-thumb" alt="">
+          <button type="button" class="btn-remove-img" id="sim-img-remove">✕ Supprimer</button>
+        </div>
+      </div>
+      <div class="field-row"><label>Texte superposé (optionnel)</label><input type="text" id="sim-img-text" placeholder="Légende…"></div>
+      <div class="field-row"><label>Couleur du texte</label><input type="color" id="sim-img-textcolor" value="#ffffff"></div>
+    </div>
+    <!-- section : audio -->
+    <div id="sim-sect-audio" style="display:none">
+      <div class="field-row">
+        <label>Audio</label>
+        <input type="file" id="sim-audio-input" accept="audio/*" style="display:none">
+        <button type="button" class="btn-upload-audio" id="sim-audio-btn">🔊 Choisir un audio</button>
+        <div class="audio-loaded-row" id="sim-audio-loaded" style="display:none">
+          <span id="sim-audio-name"></span>
+          <button type="button" class="btn-play-audio" id="sim-audio-play">▶ Écouter</button>
+          <button type="button" class="btn-remove-img" id="sim-audio-remove">✕</button>
+        </div>
+      </div>
+      <div class="field-row"><label>Étiquette (optionnel)</label><input type="text" id="sim-audio-label" placeholder="Nom affiché…"></div>
+    </div>
+    <!-- section : flèche -->
+    <div id="sim-sect-arrow" style="display:none">
+      <div class="field-row"><label>Direction</label>
+        <select id="sim-arrow-dir">
+          <option value="left">← Gauche</option><option value="right">→ Droite</option>
+          <option value="up">↑ Haut</option><option value="down">↓ Bas</option>
+        </select></div>
+      <div class="field-row"><label>Couleur de fond</label>
+        <input type="color" id="sim-arrow-bg" value="#3b82f6" style="width:100%;height:38px;padding:2px;border:1.5px solid #d1d5db;border-radius:8px;cursor:pointer"></div>
+    </div>
+    <!-- section : couleur -->
+    <div id="sim-sect-color" style="display:none">
+      <div class="field-row"><label>Couleur de fond</label>
+        <input type="color" id="sim-color-bg" value="#3b82f6" style="width:100%;height:38px;padding:2px;border:1.5px solid #d1d5db;border-radius:8px;cursor:pointer"></div>
+      <div class="field-row"><label>Texte (optionnel)</label><input type="text" id="sim-color-text" placeholder="Texte affiché…"></div>
+      <div class="field-row"><label>Couleur du texte</label><input type="color" id="sim-color-textcolor" value="#ffffff"></div>
+      <div class="field-row"><label>Taille (px)</label>
+        <select id="sim-color-size">
+          <option value="16">16</option><option value="20">20</option><option value="24">24</option>
+          <option value="28">28</option><option value="32" selected>32</option><option value="40">40</option>
+          <option value="48">48</option><option value="56">56</option><option value="64">64</option><option value="72">72</option>
+        </select></div>
+    </div>
+    <!-- preview -->
+    <div style="margin:16px 0;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:12px;padding:12px;text-align:center">
+      <div style="font-size:0.78rem;color:#94a3b8;margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.04em">Aperçu</div>
+      <div id="sim-preview-box" style="width:100px;height:100px;margin:0 auto;border:2px solid #e2e8f0;border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:white;font-size:2rem"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="sim-cancel">Annuler</button>
+      <button class="btn-save" id="sim-save">Enregistrer</button>
     </div>
   </div>
 </div>
@@ -1235,23 +987,45 @@
     return { bg: '#3b82f6', fg: 'white' };
   }
 
-  // Backward compat: old pairs used bgColor ('blue'/'yellow') to encode the rule.
-  // New pairs have an explicit `rule` field ('same'|'inverse').
-  function getArrowCorrect(pair) {
-    const rule = pair.rule || (pair.bgColor === 'yellow' ? 'inverse' : 'same');
-    return rule === 'inverse' ? OPPOSITE[pair.direction] : pair.direction;
-  }
-
-  function getActiveDirections(pair) {
-    const n   = pair.numOptions || 4;
-    const dir = pair.direction || 'left';
-    const opp = OPPOSITE[dir];
-    if (n <= 2) return [dir, opp];
-    // 3 options: direction + opposite + first perpendicular
-    const all = ['left','right','up','down'];
-    const perp = all.filter(d => d !== dir && d !== opp);
-    if (n === 3) return [dir, opp, perp[0]];
-    return ['left', 'right', 'up', 'down'];
+  function migrateAllPairs() {
+    let changed = false;
+    exercises.forEach(ex => {
+      (ex.pairs || []).forEach((pair, idx) => {
+        if (pair.type === 'choice') {
+          const left  = pair.left  || {};
+          const right = pair.right || {};
+          const itemL = typeof left  === 'string' ? {type:'text', text:left}  : left;
+          const itemR = typeof right === 'string' ? {type:'text', text:right} : right;
+          ex.pairs[idx] = {
+            id: pair.id, type: 'sequence', items: [itemL, itemR], displayDuration: 0,
+            questions: [{ questionText: '', type: 'choice',
+              choices: [itemL.text||'Item 1', itemR.text||'Item 2'],
+              correctIndices: [pair.correct === 'right' ? 1 : 0],
+              showOnRetry: true, itemOverrides: [] }]
+          };
+          changed = true;
+        } else if (pair.type === 'arrow') {
+          const bgHex = resolveArrowColor(pair.bgColor || 'blue').bg;
+          const rule  = pair.rule || (pair.bgColor === 'yellow' ? 'inverse' : 'same');
+          ex.pairs[idx] = {
+            id: pair.id, type: 'sequence',
+            items: [{ type: 'arrow', arrowDirection: pair.direction || 'left', bgColor: bgHex }],
+            displayDuration: 1000,
+            questions: [{ questionText: '', type: 'direction', rule,
+              numOptions: pair.numOptions || 4, showOnRetry: false }]
+          };
+          changed = true;
+        } else if (pair.type === 'sequence') {
+          let ic = false;
+          pair.items = (pair.items || []).map(item => {
+            if (typeof item === 'string') { ic = true; return {type:'text', text:item}; }
+            return item;
+          });
+          if (ic) changed = true;
+        }
+      });
+    });
+    if (changed) saveExercises();
   }
 
   // ── Utils ─────────────────────────────────────────────────────────────────────
@@ -1418,9 +1192,6 @@
     renderPair();
   });
 
-  const btnLeft  = document.getElementById('item-left');
-  const btnRight = document.getElementById('item-right');
-
   let sequenceTimer = null;
   let currentQuestionIndex = 0;
 
@@ -1430,45 +1201,9 @@
     isWaiting = false;
     document.getElementById('progress-fill').style.width  = (pairIndex / currentPairs.length * 100) + '%';
     document.getElementById('progress-label').textContent = (pairIndex+1) + ' / ' + currentPairs.length;
-
-    if (pair.type === 'arrow') {
-      document.getElementById('pair-container').style.display    = 'none';
-      document.getElementById('arrow-container').style.display   = 'flex';
-      document.getElementById('sequence-container').style.display = 'none';
-      const card = document.getElementById('arrow-card');
-      card.textContent = ARROW_CHARS[pair.direction] || '?';
-      card.className   = 'arrow-card';
-      const ac = resolveArrowColor(pair.bgColor || 'blue');
-      card.style.background = ac.bg; card.style.color = ac.fg;
-      const active = getActiveDirections(pair);
-      ['up','down','left','right'].forEach(d => {
-        const btn = document.getElementById('akey-' + d);
-        const visible = active.includes(d);
-        btn.style.visibility = visible ? '' : 'hidden';
-        btn.className = 'arrow-key-btn';
-        btn.disabled  = !visible;
-      });
-      const hintChars = active.map(d => ARROW_CHARS[d]).join('  ');
-      document.getElementById('keyboard-hint').textContent = hintChars + '  Flèches du clavier';
-    } else if (pair.type === 'sequence') {
-      document.getElementById('pair-container').style.display    = 'none';
-      document.getElementById('arrow-container').style.display   = 'none';
-      document.getElementById('sequence-container').style.display = 'flex';
-      document.getElementById('keyboard-hint').textContent = '';
-      startSequenceDisplay(pair);
-      return; // pairStartTime is set in startSequenceQuestion
-    } else {
-      document.getElementById('pair-container').style.display    = 'grid';
-      document.getElementById('arrow-container').style.display   = 'none';
-      document.getElementById('sequence-container').style.display = 'none';
-      btnLeft.className = btnRight.className = 'item-btn';
-      btnLeft.disabled  = btnRight.disabled  = false;
-      applyItemStyle(btnLeft,  pair.left);
-      applyItemStyle(btnRight, pair.right);
-      document.getElementById('keyboard-hint').innerHTML = '← Flèche gauche &nbsp;|&nbsp; Flèche droite →';
-      playPairAudios(pair);
-    }
-    pairStartTime = Date.now();
+    document.getElementById('sequence-container').style.display = 'flex';
+    document.getElementById('keyboard-hint').textContent = '';
+    startSequenceDisplay(pair);
   }
 
   function startSequenceDisplay(pair) {
@@ -1476,20 +1211,23 @@
     const questionEl = document.getElementById('sequence-question');
     const choicesEl  = document.getElementById('sequence-choices');
     const timerFill  = document.getElementById('sequence-timer-fill');
+    const dur = pair.displayDuration != null ? pair.displayDuration : 1000;
 
     displayEl.innerHTML = '';
     const isSingle = (pair.items || []).length === 1;
+    const audioUrls = [];
     (pair.items || []).forEach(item => {
+      const itemObj = typeof item === 'string' ? {type:'text', text:item} : item;
       const el = document.createElement('div');
       el.className = isSingle ? 'sequence-text-display' : 'sequence-item-box';
-      el.textContent = item;
+      applyItemStyle(el, itemObj);
       displayEl.appendChild(el);
+      if (itemObj.audioUrl) audioUrls.push(itemObj.audioUrl);
     });
     displayEl.style.display  = 'flex';
     questionEl.style.display = 'none';
     choicesEl.style.display  = 'none';
     document.getElementById('seq-show-again-btn').style.display = 'none';
-    // Also reset the write zone so the previous pair's input doesn't linger
     const wz = document.getElementById('seq-write-zone');
     wz.style.display = 'none';
     const wi = document.getElementById('seq-write-input');
@@ -1498,21 +1236,32 @@
     wf.style.display = 'none'; wf.innerHTML = '';
     document.getElementById('seq-write-validate').disabled = false;
 
-    // Animate timer bar from 100% to 0%
-    timerFill.style.transition = 'none';
-    timerFill.style.width = '100%';
-    timerFill.getBoundingClientRect(); // force reflow
-    timerFill.style.transition = 'width ' + (pair.displayDuration || 1000) + 'ms linear';
-    timerFill.style.width = '0%';
+    if (dur > 0) {
+      timerFill.style.transition = 'none';
+      timerFill.style.width = '100%';
+      timerFill.getBoundingClientRect();
+      timerFill.style.transition = 'width ' + dur + 'ms linear';
+      timerFill.style.width = '0%';
+    } else {
+      timerFill.style.transition = 'none';
+      timerFill.style.width = '0%';
+    }
+
+    // Play audio items sequentially
+    if (audioUrls.length > 0) {
+      let i = 0;
+      function playNext() { if (i >= audioUrls.length) return; const a = new Audio(audioUrls[i++]); a.addEventListener('ended', playNext); a.play().catch(() => {}); }
+      playNext();
+    }
 
     currentQuestionIndex = 0;
-    sequenceTimer = setTimeout(() => { sequenceTimer = null; startSequenceQuestion(pair, 0); }, pair.displayDuration || 1000);
+    sequenceTimer = setTimeout(() => { sequenceTimer = null; startSequenceQuestion(pair, 0); }, dur || 50);
   }
 
   function startSequenceQuestion(pair, qIdx, isRetry) {
+    currentQuestionIndex = qIdx;
     const questions = pair.questions || [{ questionText: pair.questionText || '', choices: pair.choices || [] }];
     const q = questions[qIdx];
-    // Support multiple correct answers: correctIndices array, default [0]
     const correctIndices = q.correctIndices && q.correctIndices.length ? q.correctIndices : [0];
     const correctAnswers = correctIndices.map(i => (q.choices || [])[i]).filter(Boolean);
 
@@ -1521,32 +1270,57 @@
     const choicesEl  = document.getElementById('sequence-choices');
     const writeZone  = document.getElementById('seq-write-zone');
 
-    // On retry: re-show the items only if the question is configured to do so
+    // choice questions: always keep items visible; direction: always hide; others: hide unless retry+showOnRetry
+    const keepVisible = q.type === 'choice';
     const showOnRetry = isRetry && (q.showOnRetry !== false);
-    if (showOnRetry) {
+    if (keepVisible || showOnRetry) {
+      const overrides = q.itemOverrides || [];
+      if (overrides.length > 0) {
+        const baseItems = pair.items || [];
+        const overriddenItems = baseItems.map((item, i) => {
+          const ov = overrides.find(o => o.index === i);
+          if (!ov) return item;
+          return typeof item === 'object' ? {...item, text: ov.value} : {type:'text', text:ov.value};
+        });
+        displayEl.innerHTML = '';
+        const isSingle = overriddenItems.length === 1;
+        overriddenItems.forEach(item => {
+          const el = document.createElement('div');
+          el.className = isSingle ? 'sequence-text-display' : 'sequence-item-box';
+          applyItemStyle(el, typeof item === 'string' ? {type:'text',text:item} : item);
+          displayEl.appendChild(el);
+        });
+      }
       displayEl.style.display = 'flex';
     } else {
       displayEl.style.display = 'none';
     }
 
     const showAgainBtn = document.getElementById('seq-show-again-btn');
-    showAgainBtn.style.display = '';
-    showAgainBtn.textContent = showOnRetry ? '🙈 Masquer' : '👁 Revoir';
-    showAgainBtn.onclick = () => {
-      const visible = displayEl.style.display !== 'none';
-      displayEl.style.display = visible ? 'none' : 'flex';
-      showAgainBtn.textContent = visible ? '👁 Revoir' : '🙈 Masquer';
-    };
+    if (q.type === 'direction') {
+      showAgainBtn.style.display = 'none';
+    } else {
+      showAgainBtn.style.display = '';
+      showAgainBtn.textContent = (keepVisible || showOnRetry) ? '🙈 Masquer' : '👁 Revoir';
+      showAgainBtn.onclick = () => {
+        const visible = displayEl.style.display !== 'none';
+        displayEl.style.display = visible ? 'none' : 'flex';
+        showAgainBtn.textContent = visible ? '👁 Revoir' : '🙈 Masquer';
+      };
+    }
 
     questionEl.textContent = q.questionText || '';
-    questionEl.style.display = 'block';
+    questionEl.style.display = q.questionText ? 'block' : 'none';
 
-    if (q.type === 'write') {
+    if (q.type === 'direction') {
+      writeZone.style.display = 'none';
+      showDirectionButtons(pair, q, questions, qIdx, isRetry);
+      return;
+    } else if (q.type === 'write') {
       choicesEl.style.display = 'none';
       writeZone.style.display = 'flex';
       const writeInput    = document.getElementById('seq-write-input');
       const writeFeedback = document.getElementById('seq-write-feedback');
-      // Always fully reset the write zone (especially important on retry)
       writeInput.value            = '';
       writeInput.disabled         = false;
       writeInput.style.borderColor = '#e2e8f0';
@@ -1563,7 +1337,7 @@
       choicesEl.style.display = 'flex';
       const shuffledChoices = shuffleArray([...(q.choices || [])]);
       choicesEl.innerHTML = '';
-      const foundAnswers = new Set(); // tracks correct answers already clicked
+      const foundAnswers = new Set();
       shuffledChoices.forEach(choice => {
         const btn = document.createElement('button');
         btn.className = 'sequence-choice-btn';
@@ -1605,7 +1379,7 @@
         else if (isRetry && correctAnswers.includes(b.dataset.value) && !foundAnswers.has(b.dataset.value)) b.classList.add('missed');
       });
       setTimeout(() => {
-        if (!isRetry) startSequenceQuestion(pair, qIdx, true);
+        if (!isRetry && q.allowRetry !== false) startSequenceQuestion(pair, qIdx, true);
         else advance(pair, questions, qIdx, isRetry);
       }, 1200);
     }
@@ -1623,9 +1397,10 @@
   function handleSequenceWrite(typed, correctAnswers, pair, questions, qIdx, isRetry) {
     if (isWaiting) return;
     isWaiting = true;
+    const q = questions[qIdx];
     const isCorrect = correctAnswers.some(a => a.trim().toLowerCase() === typed.toLowerCase());
     const correctAnswer = correctAnswers[0] || '';
-    responses.push({ pairId: pair.id, type: 'sequence', items: pair.items, questionIndex: qIdx, chosen: typed, isCorrect, correctAnswer, correctAnswers, isRetry: !!isRetry, timeMs: Date.now() - pairStartTime });
+    responses.push({ pairId: pair.id, type: 'sequence', questionIndex: qIdx, chosen: typed, isCorrect, correctAnswer, correctAnswers, isRetry: !!isRetry, timeMs: Date.now() - pairStartTime });
     const writeInput    = document.getElementById('seq-write-input');
     const writeFeedback = document.getElementById('seq-write-feedback');
     writeInput.disabled = true;
@@ -1639,104 +1414,113 @@
     setTimeout(() => {
       writeInput.disabled = false;
       document.getElementById('seq-write-validate').disabled = false;
-      if (!isCorrect && !isRetry) startSequenceQuestion(pair, qIdx, true);
+      if (!isCorrect && !isRetry && q.allowRetry !== false) startSequenceQuestion(pair, qIdx, true);
       else advance(pair, questions, qIdx, isRetry);
     }, delay);
   }
 
-  function playPairAudios(pair) {
-    const urls = [pair.left.audioUrl, pair.right.audioUrl].filter(Boolean);
-    if (urls.length === 0) return;
-    let i = 0;
-    function playNext() {
-      if (i >= urls.length) return;
-      const audio = new Audio(urls[i++]);
-      audio.addEventListener('ended', playNext);
-      audio.play().catch(() => {});
-    }
-    playNext();
+  function getDirectionsForOpts(dir, numOpts) {
+    const opp = OPPOSITE[dir];
+    if (numOpts <= 2) return [dir, opp];
+    const all = ['left','right','up','down'];
+    const perp = all.filter(d => d !== dir && d !== opp);
+    if (numOpts === 3) return [dir, opp, perp[0]];
+    return ['left', 'right', 'up', 'down'];
   }
 
-  function handleClick(side) {
+  function showDirectionButtons(pair, q, questions, qIdx, isRetry) {
+    const arrowItem = (pair.items||[]).find(i=>i.type==='arrow') || (pair.items||[])[0];
+    const dir = arrowItem?.arrowDirection || 'left';
+    const rule = q.rule || 'same';
+    const numOpts = q.numOptions || 4;
+    const activeDirs = getDirectionsForOpts(dir, numOpts);
+    const correctDir = rule === 'inverse' ? OPPOSITE[dir] : dir;
+
+    const choicesEl = document.getElementById('sequence-choices');
+    choicesEl.innerHTML = '';
+    choicesEl.style.display = 'flex';
+
+    const keyLayout = document.createElement('div');
+    keyLayout.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:8px';
+    const upRow  = document.createElement('div'); upRow.style.cssText  = 'display:flex;gap:8px;justify-content:center';
+    const midRow = document.createElement('div'); midRow.style.cssText = 'display:flex;gap:8px;justify-content:center';
+
+    ['up','left','down','right'].forEach(d => {
+      const btn = document.createElement('button');
+      btn.style.cssText = 'width:64px;height:64px;border:2px solid #e2e8f0;border-radius:12px;background:white;font-size:1.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;font-family:inherit';
+      btn.textContent = ARROW_CHARS[d];
+      btn.dataset.dir = d;
+      const visible = activeDirs.includes(d);
+      btn.style.visibility = visible ? '' : 'hidden';
+      btn.disabled = !visible;
+      if (visible) btn.addEventListener('click', () => handleDirectionResponse(d, correctDir, activeDirs, pair, questions, qIdx, isRetry));
+      if (d === 'up') upRow.appendChild(btn); else midRow.appendChild(btn);
+    });
+
+    keyLayout.append(upRow, midRow);
+    choicesEl.appendChild(keyLayout);
+
+    const hintChars = activeDirs.map(d => ARROW_CHARS[d]).join('  ');
+    document.getElementById('keyboard-hint').textContent = hintChars + '  Flèches du clavier';
+
+    isWaiting = false;
+    pairStartTime = Date.now();
+  }
+
+  function handleDirectionResponse(pressed, correctDir, activeDirs, pair, questions, qIdx, isRetry) {
     if (isWaiting) return;
-    const pair = currentPairs[pairIndex];
-    if (pair.type === 'arrow' || pair.type === 'sequence') return;
+    if (!activeDirs.includes(pressed)) return;
+    const q = questions[qIdx];
+    const isCorrect = pressed === correctDir;
+    responses.push({ pairId: pair.id, type: 'direction', questionIndex: qIdx, pressed, isCorrect, correctAnswer: correctDir, isRetry: !!isRetry, timeMs: Date.now() - pairStartTime });
     isWaiting = true;
-    btnLeft.disabled = btnRight.disabled = true;
-    const isCorrect = side === pair.correct;
-    responses.push({ pairId: pair.id, type: 'choice', clicked: side, isCorrect, correctAnswer: pair.correct, timeMs: Date.now()-pairStartTime });
-    document.getElementById('item-'+side).classList.add(isCorrect ? 'correct' : 'incorrect');
-    if (!isCorrect) document.getElementById('item-'+pair.correct)?.classList.add('missed');
-    setTimeout(() => { pairIndex++; if (pairIndex >= currentPairs.length) finishExercise(); else renderPair(); }, 700);
+    const choicesEl = document.getElementById('sequence-choices');
+    Array.from(choicesEl.querySelectorAll('[data-dir]')).forEach(btn => {
+      btn.disabled = true;
+      if (btn.dataset.dir === pressed) { btn.style.borderColor = isCorrect ? '#22c55e' : '#ef4444'; btn.style.background = isCorrect ? '#f0fdf4' : '#fef2f2'; }
+      else if (!isCorrect && btn.dataset.dir === correctDir) { btn.style.borderColor = '#22c55e'; btn.style.background = '#f0fdf4'; btn.style.opacity = '0.6'; }
+    });
+    setTimeout(() => {
+      if (!isCorrect && !isRetry && q.allowRetry !== false) startSequenceQuestion(pair, qIdx, true);
+      else advance(pair, questions, qIdx, isRetry);
+    }, 700);
   }
-
-  function handleArrowResponse(dir) {
-    if (isWaiting) return;
-    const pair = currentPairs[pairIndex];
-    if (pair.type !== 'arrow') return;
-    if (!getActiveDirections(pair).includes(dir)) return;
-    isWaiting = true;
-    ['up','down','left','right'].forEach(d => document.getElementById('akey-'+d).disabled = true);
-    const correctDir = getArrowCorrect(pair);
-    const isCorrect  = dir === correctDir;
-    responses.push({ pairId: pair.id, type: 'arrow', direction: pair.direction, bgColor: pair.bgColor, pressed: dir, isCorrect, correctAnswer: correctDir, timeMs: Date.now()-pairStartTime });
-    document.getElementById('akey-'+dir).classList.add(isCorrect ? 'correct' : 'incorrect');
-    if (!isCorrect) document.getElementById('akey-'+correctDir).classList.add('missed');
-    setTimeout(() => { pairIndex++; if (pairIndex >= currentPairs.length) finishExercise(); else renderPair(); }, 700);
-  }
-
-  btnLeft.addEventListener('click',  () => handleClick('left'));
-  btnRight.addEventListener('click', () => handleClick('right'));
-  ['up','down','left','right'].forEach(d => document.getElementById('akey-'+d).addEventListener('click', () => handleArrowResponse(d)));
 
   document.addEventListener('keydown', e => {
     if (document.getElementById('view-exercise').style.display !== 'none') {
       const pair = currentPairs[pairIndex];
       if (!pair) return;
-      if (pair.type === 'arrow') {
-        if (e.key === 'ArrowLeft')  handleArrowResponse('left');
-        if (e.key === 'ArrowRight') handleArrowResponse('right');
-        if (e.key === 'ArrowUp')    handleArrowResponse('up');
-        if (e.key === 'ArrowDown')  handleArrowResponse('down');
-      } else if (pair.type !== 'sequence') {
-        if (e.key === 'ArrowLeft')  handleClick('left');
-        if (e.key === 'ArrowRight') handleClick('right');
+      const q = (pair.questions || [])[currentQuestionIndex];
+      if (q && q.type === 'direction') {
+        const map = { ArrowLeft:'left', ArrowRight:'right', ArrowUp:'up', ArrowDown:'down' };
+        const dir = map[e.key];
+        if (dir) {
+          const btn = document.querySelector('#sequence-choices [data-dir="'+dir+'"]:not(:disabled)');
+          if (btn && !isWaiting) btn.click();
+        }
       }
     }
   });
 
   function finishExercise() {
     const totalTimeMs = Date.now() - exerciseStartTime;
-    let score = 0, errorsLeft = 0, errorsRight = 0, errorsUp = 0, errorsDown = 0;
-    let errorsBlue = 0, errorsYellow = 0, arrowCount = 0, arrowTimeTotal = 0;
+    let score = 0, totalReactionMs = 0, reactionCount = 0;
 
-    // totalQuestions = 1 per non-sequence pair + 1 per question in sequence pairs
     const totalQuestions = currentPairs.reduce((sum, p) =>
-      p.type === 'sequence' ? sum + (p.questions || [{questionText:'',choices:[]}]).length : sum + 1, 0);
+      sum + (p.questions || [{}]).length, 0);
 
     responses.forEach(r => {
-      if (r.isRetry) return; // only count first attempts
-      if (r.isCorrect) { score++; }
-      else {
-        if      (r.correctAnswer === 'left')  errorsLeft++;
-        else if (r.correctAnswer === 'right') errorsRight++;
-        else if (r.correctAnswer === 'up')    errorsUp++;
-        else if (r.correctAnswer === 'down')  errorsDown++;
-        if (r.type === 'arrow') { if (r.bgColor === 'blue') errorsBlue++; else errorsYellow++; }
-      }
-      if (r.type === 'arrow') { arrowCount++; arrowTimeTotal += r.timeMs; }
+      if (r.isRetry) return;
+      if (r.isCorrect) score++;
+      totalReactionMs += r.timeMs; reactionCount++;
     });
 
-    const hasArrow  = arrowCount > 0;
-    const hasChoice = responses.some(r => r.type === 'choice');
-    const avgArrowReaction = hasArrow ? Math.round(arrowTimeTotal / arrowCount) : null;
-    const hasUpDown = responses.some(r => r.type === 'arrow' && (r.direction === 'up' || r.direction === 'down'));
+    const avgReactionMs = reactionCount > 0 ? Math.round(totalReactionMs / reactionCount) : null;
 
     const newSession = {
       id: newId('sess'), exerciseId: currentExercise.id, exerciseName: currentExercise.name,
       patientName: currentPatient, patientId: currentPatientId, date: new Date().toISOString(),
-      totalTimeMs, totalPairs: totalQuestions, score, errorsLeft, errorsRight,
-      errorsUp, errorsDown, errorsBlue, errorsYellow, responses, notes: '',
+      totalTimeMs, totalPairs: totalQuestions, score, responses, notes: '',
     };
     sessions.push(newSession);
     currentSessionId = newSession.id;
@@ -1747,28 +1531,8 @@
     document.getElementById('results-meta').textContent  = 'Patient : ' + currentPatient + '  ·  ' + currentExercise.name;
     document.getElementById('res-score').textContent = score + ' / ' + totalQuestions + ' (' + Math.round(score/totalQuestions*100) + '%)';
     document.getElementById('res-time').textContent  = formatDuration(totalTimeMs);
-
-    const showCard = (id, v) => document.getElementById(id).style.display = v ? 'block' : 'none';
-    showCard('card-errors-left',  hasChoice);
-    showCard('card-errors-right', hasChoice);
-    showCard('card-avg-reaction', hasArrow);
-    showCard('card-errors-blue',  hasArrow);
-    showCard('card-errors-yellow',hasArrow);
-    showCard('card-errors-up',    hasArrow && hasUpDown);
-    showCard('card-errors-down',  hasArrow && hasUpDown);
-    if (hasChoice) {
-      document.getElementById('res-errors-left').textContent  = errorsLeft;
-      document.getElementById('res-errors-right').textContent = errorsRight;
-    }
-    if (hasArrow) {
-      document.getElementById('res-avg-reaction').textContent  = (avgArrowReaction / 1000).toFixed(2) + ' s';
-      document.getElementById('res-errors-blue').textContent   = errorsBlue;
-      document.getElementById('res-errors-yellow').textContent = errorsYellow;
-      if (hasUpDown) {
-        document.getElementById('res-errors-up').textContent   = errorsUp;
-        document.getElementById('res-errors-down').textContent = errorsDown;
-      }
-    }
+    document.getElementById('card-avg-reaction').style.display = avgReactionMs !== null ? 'block' : 'none';
+    if (avgReactionMs !== null) document.getElementById('res-avg-reaction').textContent = (avgReactionMs / 1000).toFixed(2) + ' s';
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
     showView('session-result');
   }
@@ -1803,7 +1567,11 @@
   });
 
   // ── Editor ────────────────────────────────────────────────────────────────────
-  let editorSelectedId = null, editingPairId = null, modalImages = { left: null, right: null }, modalAudios = { left: null, right: null };
+  let editorSelectedId = null, editingPairId = null;
+  let seqItems = [];                // array of typed item objects for current seq modal
+  let simModalImage = null;         // base64 image for seq-item-modal
+  let simModalAudio = null;         // base64 audio for seq-item-modal
+  let editingItemIdx = -1;          // which seqItems index is being edited
   const collapsedFolders = new Set();
   function getSelectedEx() { return exercises.find(e => e.id === editorSelectedId) || null; }
 
@@ -1936,37 +1704,27 @@
       const preview = document.createElement('div');
       preview.className = 'pair-preview';
 
-      if (pair.type === 'arrow') {
-        const ac = resolveArrowColor(pair.bgColor || 'blue');
+      // All pairs are sequences — show item chips + question summary
+      const items = pair.items || [];
+      items.slice(0, 4).forEach(item => {
         const chip = document.createElement('div');
         chip.className = 'pair-item-preview';
-        chip.style.cssText = 'background:' + ac.bg + ';color:' + ac.fg + ';border:1.5px solid ' + ac.bg + ';font-size:24px';
-        chip.textContent = ARROW_CHARS[pair.direction] || '←';
-        const lbl = document.createElement('span');
-        lbl.style.cssText = 'font-size:0.8rem;color:#64748b;margin-left:8px';
-        const rule = pair.rule || (pair.bgColor === 'yellow' ? 'inverse' : 'same');
-        const nOpts = pair.numOptions || 4;
-        lbl.textContent = (rule === 'inverse' ? 'sens inverse' : 'même sens') + ' · ' + nOpts + ' options';
+        chip.style.cssText = 'width:38px;height:38px;overflow:hidden;flex:none;display:flex;align-items:center;justify-content:center;font-size:18px';
+        applyItemStyle(chip, typeof item === 'string' ? {type:'text',text:item} : item);
         preview.appendChild(chip);
-        preview.appendChild(lbl);
-      } else if (pair.type === 'sequence') {
-        const chip = document.createElement('div');
-        chip.className = 'pair-item-preview';
-        chip.style.cssText = 'font-family:Courier New,monospace;font-size:1.1rem;letter-spacing:3px;background:#f0f9ff;border:1.5px solid #bae6fd;font-weight:700;flex:none;padding:8px 14px';
-        chip.textContent = (pair.items || []).join(' ');
-        const lbl = document.createElement('span');
-        lbl.style.cssText = 'font-size:0.8rem;color:#64748b;margin-left:8px';
-        const questions = pair.questions || (pair.questionText ? [{ choices: pair.choices || [] }] : []);
-        const totalChoices = questions.reduce((sum, q) => sum + (q.choices || []).length, 0);
-        lbl.textContent = (pair.displayDuration || 1000) + ' ms · ' + questions.length + ' question' + (questions.length > 1 ? 's' : '') + ' · ' + totalChoices + ' choix';
-        preview.appendChild(chip);
-        preview.appendChild(lbl);
-      } else {
-        preview.appendChild(buildPreviewEl(pair.left,  pair.correct==='left'));
-        const vs = document.createElement('span'); vs.className = 'pair-vs'; vs.textContent = 'VS';
-        preview.appendChild(vs);
-        preview.appendChild(buildPreviewEl(pair.right, pair.correct==='right'));
+      });
+      if (items.length > 4) {
+        const more = document.createElement('span');
+        more.style.cssText = 'font-size:0.75rem;color:#94a3b8;flex:none';
+        more.textContent = '+' + (items.length - 4);
+        preview.appendChild(more);
       }
+      const lbl = document.createElement('span');
+      lbl.style.cssText = 'font-size:0.8rem;color:#64748b;margin-left:8px';
+      const questions = pair.questions || [];
+      const dur = pair.displayDuration != null ? pair.displayDuration : 1000;
+      lbl.textContent = dur + ' ms · ' + questions.length + ' question' + (questions.length !== 1 ? 's' : '');
+      preview.appendChild(lbl);
       const actions = document.createElement('div');
       actions.className = 'pair-actions';
       const editBtn      = makePairBtn('✏','edit',  'Modifier',   () => openPairModal(pair.id));
@@ -1982,35 +1740,6 @@
     });
   }
 
-  function buildPreviewEl(item, isCorrect) {
-    const div = document.createElement('div');
-    div.className = 'pair-item-preview' + (isCorrect ? ' is-correct' : '');
-    const itype = getItemType(item);
-    if (itype === 'arrow') {
-      const ac = resolveArrowColor(item.bgColor || '#3b82f6');
-      div.style.cssText = 'background:'+ac.bg+';color:'+ac.fg+';font-size:24px';
-      div.textContent = ARROW_CHARS[item.arrowDirection || 'left'] || '←';
-      return div;
-    }
-    if (itype === 'color') {
-      const ac = resolveArrowColor(item.bgColor || '#3b82f6');
-      div.style.background = ac.bg; div.style.color = item.color || ac.fg;
-      div.style.fontSize = Math.min(item.fontSize||32,22)+'px';
-      div.textContent = item.text || '';
-      return div;
-    }
-    div.style.color = item.color||'#1a1a1a'; div.style.fontSize = Math.min(item.fontSize||32,22)+'px';
-    div.style.fontFamily = item.fontFamily||'Arial'; div.style.textTransform = item.textTransform||'none';
-    if (item.imageUrl) {
-      div.style.backgroundImage    = 'url(' + item.imageUrl + ')';
-      div.style.backgroundSize     = 'cover';
-      div.style.backgroundPosition = 'center';
-      div.innerHTML = item.text ? '<span style="position:relative;text-shadow:0 1px 4px rgba(0,0,0,0.65)">' + escapeHtml(item.text) + '</span>' : '';
-    } else {
-      div.textContent = item.text || (itype === 'audio' ? '♪' : '');
-    }
-    return div;
-  }
 
   function makePairBtn(icon, cls, title, handler) {
     const btn = document.createElement('button');
@@ -2119,10 +1848,10 @@
 
   document.getElementById('btn-add-pair').addEventListener('click', () => {
     const ex = getSelectedEx(); if (!ex) return;
-    const pair = { id: newId('pair'),
-      left:  { text:'', color:'#1a1a1a', fontSize:32, fontFamily:'Arial', textTransform:'none', imageUrl:null, audioUrl:null },
-      right: { text:'', color:'#1a1a1a', fontSize:32, fontFamily:'Arial', textTransform:'none', imageUrl:null, audioUrl:null },
-      correct: 'left' };
+    const pair = { id: newId('pair'), type: 'sequence',
+      items: [{type:'text',text:'',color:'#1a1a1a',fontSize:32,fontFamily:'Arial',textTransform:'none',imageUrl:null,audioUrl:null}],
+      displayDuration: 1000,
+      questions: [{questionText:'',type:'choice',choices:['',''],correctIndices:[0],showOnRetry:true,allowRetry:true,itemOverrides:[]}] };
     ex.pairs.push(pair); saveExercises(); renderExerciseEditor(); openPairModal(pair.id);
   });
 
@@ -2149,281 +1878,29 @@
   }
 
   // ── Pair modal ────────────────────────────────────────────────────────────────
-  function refreshArrowPreview() {
-    const dir    = document.getElementById('arrow-direction').value;
-    const bgHex  = document.getElementById('arrow-color').value;
-    const rule   = document.getElementById('arrow-rule').value;
-    const numOpt = parseInt(document.getElementById('arrow-num-options').value, 10) || 4;
-    const card = document.getElementById('arrow-preview-card');
-    const hint = document.getElementById('arrow-preview-hint');
-    const ac   = resolveArrowColor(bgHex);
-    card.textContent      = ARROW_CHARS[dir] || '?';
-    card.style.background = ac.bg;
-    card.style.color      = ac.fg;
-    card.className = 'arrow-preview-card';
-    const correctDir = rule === 'inverse' ? OPPOSITE[dir] : dir;
-    const activeDirs = getActiveDirections({ direction: dir, numOptions: numOpt });
-    const optionsStr = activeDirs.map(d => ARROW_CHARS[d]).join(' ');
-    hint.textContent = 'Réponse correcte : ' + (ARROW_CHARS[correctDir] || '') + '  |  Options : ' + optionsStr;
-  }
-
   function openPairModal(pairId) {
     const ex = getSelectedEx(); if (!ex) return;
     const pair = ex.pairs.find(p => p.id === pairId); if (!pair) return;
     editingPairId = pairId;
-    const pairType = pair.type || 'choice';
-    document.getElementById('pair-type').value = pairType;
-    document.getElementById('arrow-config').style.display    = pairType === 'arrow'    ? 'block' : 'none';
-    document.getElementById('sequence-config').style.display = pairType === 'sequence' ? 'block' : 'none';
-    document.getElementById('choice-config').style.display   = pairType === 'choice'   ? 'block' : 'none';
-    if (pairType === 'arrow') {
-      document.getElementById('arrow-direction').value = pair.direction || 'left';
-      const legacyHex = pair.bgColor === 'blue' ? '#3b82f6' : pair.bgColor === 'yellow' ? '#fbbf24' : (pair.bgColor || '#3b82f6');
-      document.getElementById('arrow-color').value = legacyHex;
-      const rule = pair.rule || (pair.bgColor === 'yellow' ? 'inverse' : 'same');
-      document.getElementById('arrow-rule').value = rule;
-      document.getElementById('arrow-num-options').value = String(pair.numOptions || 4);
-      refreshArrowPreview();
-    } else if (pairType === 'sequence') {
-      fillSequenceModal(pair);
-    } else {
-      fillModalSide('left',  pair.left  || {});
-      fillModalSide('right', pair.right || {});
-      document.getElementById('correct-' + (pair.correct || 'left')).checked = true;
-      refreshModalPreview();
-    }
+    fillSequenceModal(pair);
     document.getElementById('pair-modal').style.display = 'flex';
-  }
-
-  document.getElementById('pair-type').addEventListener('change', () => {
-    const pairType = document.getElementById('pair-type').value;
-    document.getElementById('arrow-config').style.display    = pairType === 'arrow'    ? 'block' : 'none';
-    document.getElementById('sequence-config').style.display = pairType === 'sequence' ? 'block' : 'none';
-    document.getElementById('choice-config').style.display   = pairType === 'choice'   ? 'block' : 'none';
-    if (pairType === 'arrow')    { refreshArrowPreview(); }
-    else if (pairType === 'sequence') { refreshSequenceItemInputs(); refreshSequenceChoicesRow(); }
-    else { refreshModalPreview(); }
-  });
-  document.getElementById('arrow-direction').addEventListener('change', refreshArrowPreview);
-  document.getElementById('arrow-color').addEventListener('input', refreshArrowPreview);
-  document.getElementById('arrow-rule').addEventListener('change', refreshArrowPreview);
-  document.getElementById('arrow-num-options').addEventListener('change', refreshArrowPreview);
-
-  function fillModalSide(s, item) {
-    const type = getItemType(item);
-    setItemSect(s, type);
-    if (type === 'image') {
-      modalImages[s] = item.imageUrl || null; updateImageThumb(s);
-      document.getElementById(s+'-img-text').value = item.text || '';
-      document.getElementById(s+'-img-textcolor').value = item.color || '#ffffff';
-    } else if (type === 'audio') {
-      modalAudios[s] = item.audioUrl || null; updateAudioUI(s);
-      document.getElementById(s+'-audio-label').value = item.text || '';
-    } else if (type === 'arrow') {
-      document.getElementById(s+'-arrow-dir').value = item.arrowDirection || 'left';
-      document.getElementById(s+'-arrow-bg').value  = item.bgColor || '#3b82f6';
-    } else if (type === 'color') {
-      document.getElementById(s+'-color-bg').value       = item.bgColor || '#3b82f6';
-      document.getElementById(s+'-color-text').value     = item.text || '';
-      document.getElementById(s+'-color-textcolor').value = item.color || '#ffffff';
-      pickOption(s+'-color-size', String(item.fontSize||32));
-    } else {
-      // text (default)
-      document.getElementById(s+'-text').value  = item.text  || '';
-      document.getElementById(s+'-color').value = item.color || '#1a1a1a';
-      pickOption(s+'-size',      String(item.fontSize||32));
-      pickOption(s+'-font',      item.fontFamily  ||'Arial');
-      pickOption(s+'-transform', item.textTransform||'none');
-      modalImages[s] = null; updateImageThumb(s);
-      modalAudios[s] = null; updateAudioUI(s);
-    }
-  }
-
-  function updateImageThumb(s) {
-    const thumbRow = document.getElementById(s+'-img-thumb-row');
-    const thumb    = document.getElementById(s+'-img-thumb');
-    if (modalImages[s]) {
-      thumb.src = modalImages[s];
-      thumbRow.style.display = 'flex';
-    } else {
-      thumb.src = '';
-      thumbRow.style.display = 'none';
-    }
-  }
-
-  function updateAudioUI(s) {
-    const row = document.getElementById(s+'-audio-loaded');
-    if (modalAudios[s]) {
-      document.getElementById(s+'-audio-name').textContent = '🎵 Audio chargé';
-      row.style.display = 'flex';
-    } else {
-      row.style.display = 'none';
-    }
   }
 
   function pickOption(id, val) {
     for (const o of document.getElementById(id).options) { if (o.value===val) { o.selected=true; return; } }
   }
 
-  function setItemSect(s, type) {
-    ['text','image','audio','arrow','color'].forEach(t => {
-      const el = document.getElementById(s+'-sect-'+t);
-      if (el) el.style.display = t === type ? 'block' : 'none';
-    });
-    document.querySelectorAll('#'+s+'-type-tabs .item-type-btn').forEach(b =>
-      b.classList.toggle('active', b.dataset.type === type));
-  }
-
-  function readModalSide(s) {
-    const type = document.querySelector('#'+s+'-type-tabs .item-type-btn.active')?.dataset.type || 'text';
-    if (type === 'image') {
-      return { type, imageUrl: modalImages[s]||null,
-        text: document.getElementById(s+'-img-text').value||'',
-        color: document.getElementById(s+'-img-textcolor').value,
-        audioUrl: null };
-    }
-    if (type === 'audio') {
-      return { type, audioUrl: modalAudios[s]||null,
-        text: document.getElementById(s+'-audio-label').value||'',
-        imageUrl: null };
-    }
-    if (type === 'arrow') {
-      return { type, arrowDirection: document.getElementById(s+'-arrow-dir').value,
-        bgColor: document.getElementById(s+'-arrow-bg').value };
-    }
-    if (type === 'color') {
-      return { type, bgColor: document.getElementById(s+'-color-bg').value,
-        text: document.getElementById(s+'-color-text').value||'',
-        color: document.getElementById(s+'-color-textcolor').value,
-        fontSize: parseInt(document.getElementById(s+'-color-size').value,10)||32 };
-    }
-    // default: text
-    return { type: 'text',
-      text:          document.getElementById(s+'-text').value,
-      color:         document.getElementById(s+'-color').value,
-      fontSize:      parseInt(document.getElementById(s+'-size').value, 10),
-      fontFamily:    document.getElementById(s+'-font').value,
-      textTransform: document.getElementById(s+'-transform').value,
-      imageUrl: null, audioUrl: null };
-  }
-
-  function refreshModalPreview() {
-    const l = readModalSide('left'), r = readModalSide('right');
-    const c = document.querySelector('input[name="modal-correct"]:checked')?.value || 'left';
-    applyPreviewBox(document.getElementById('preview-left'),  l, c==='left');
-    applyPreviewBox(document.getElementById('preview-right'), r, c==='right');
-  }
-
-  function applyPreviewBox(el, item, isCorrect) {
-    el.className = 'preview-box' + (isCorrect ? ' correct-side' : '');
-    const itype = getItemType(item);
-    if (itype === 'arrow') {
-      const ac = resolveArrowColor(item.bgColor || '#3b82f6');
-      el.style.background = ac.bg; el.style.color = ac.fg;
-      el.style.backgroundImage = ''; el.style.fontSize = '72px';
-      el.style.fontFamily = 'inherit'; el.style.textTransform = 'none';
-      el.textContent = ARROW_CHARS[item.arrowDirection || 'left'] || '←';
-      return;
-    }
-    if (itype === 'color') {
-      const ac = resolveArrowColor(item.bgColor || '#3b82f6');
-      el.style.background = ac.bg; el.style.color = item.color || ac.fg;
-      el.style.backgroundImage = ''; el.style.fontSize = (item.fontSize||32)+'px';
-      el.style.fontFamily = item.fontFamily||'Arial'; el.style.textTransform = item.textTransform||'none';
-      el.textContent = item.text || '';
-      return;
-    }
-    el.style.background = '';
-    el.style.color=item.color||'#1a1a1a'; el.style.fontSize=(item.fontSize||32)+'px';
-    el.style.fontFamily=item.fontFamily||'Arial'; el.style.textTransform=item.textTransform||'none';
-    if (item.imageUrl) {
-      el.style.backgroundImage    = 'url(' + item.imageUrl + ')';
-      el.style.backgroundSize     = 'cover';
-      el.style.backgroundPosition = 'center';
-      el.innerHTML = item.text ? '<span style="position:relative;text-shadow:0 1px 4px rgba(0,0,0,0.65)">' + escapeHtml(item.text) + '</span>' : '';
-    } else {
-      el.style.backgroundImage = '';
-      el.textContent = item.text || (itype === 'audio' ? '♪' : '(vide)');
-    }
-  }
-
-  ['left-text','left-color','left-size','left-font','left-transform',
-   'right-text','right-color','right-size','right-font','right-transform',
-   'correct-left','correct-right'].forEach(id => {
-    const el = document.getElementById(id);
-    el.addEventListener('input',  refreshModalPreview);
-    el.addEventListener('change', refreshModalPreview);
-  });
-
-  ['left', 'right'].forEach(s => {
-    // Type tab click listeners
-    document.querySelectorAll('#'+s+'-type-tabs .item-type-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        setItemSect(s, btn.dataset.type);
-        refreshModalPreview();
-      });
-    });
-
-    // New type-specific field change listeners
-    [s+'-arrow-dir', s+'-arrow-bg', s+'-color-bg', s+'-color-text',
-     s+'-color-textcolor', s+'-color-size', s+'-img-text', s+'-img-textcolor',
-     s+'-audio-label'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) { el.addEventListener('input', refreshModalPreview); el.addEventListener('change', refreshModalPreview); }
-    });
-
-    document.getElementById(s+'-img-btn').addEventListener('click', () => document.getElementById(s+'-img-input').click());
-    document.getElementById(s+'-img-input').addEventListener('change', e => {
-      const file = e.target.files[0]; if (!file) return;
-      const reader = new FileReader();
-      reader.onload = evt => { modalImages[s] = evt.target.result; updateImageThumb(s); refreshModalPreview(); };
-      reader.readAsDataURL(file); e.target.value = '';
-    });
-    document.getElementById(s+'-img-remove').addEventListener('click', () => { modalImages[s] = null; updateImageThumb(s); refreshModalPreview(); });
-
-    document.getElementById(s+'-audio-btn').addEventListener('click', () => document.getElementById(s+'-audio-input').click());
-    document.getElementById(s+'-audio-input').addEventListener('change', e => {
-      const file = e.target.files[0]; if (!file) return;
-      const reader = new FileReader();
-      reader.onload = evt => { modalAudios[s] = evt.target.result; updateAudioUI(s); };
-      reader.readAsDataURL(file); e.target.value = '';
-    });
-    document.getElementById(s+'-audio-remove').addEventListener('click', () => { modalAudios[s] = null; updateAudioUI(s); });
-    document.getElementById(s+'-audio-play').addEventListener('click', () => {
-      if (!modalAudios[s]) return;
-      new Audio(modalAudios[s]).play().catch(() => {});
-    });
-  });
-
   document.getElementById('btn-modal-save').addEventListener('click', () => {
     const ex = getSelectedEx(); if (!ex) return;
     const pair = ex.pairs.find(p => p.id === editingPairId); if (!pair) return;
-    const pairType = document.getElementById('pair-type').value;
-    if (pairType === 'arrow') {
-      pair.type      = 'arrow';
-      pair.direction = document.getElementById('arrow-direction').value;
-      pair.bgColor    = document.getElementById('arrow-color').value;
-      pair.rule       = document.getElementById('arrow-rule').value;
-      pair.numOptions = parseInt(document.getElementById('arrow-num-options').value, 10) || 4;
-      delete pair.left; delete pair.right; delete pair.correct;
-      delete pair.items; delete pair.displayDuration; delete pair.questionPosition; delete pair.choices;
-    } else if (pairType === 'sequence') {
-      const seqData = readSequenceModal();
-      pair.type             = 'sequence';
-      pair.items            = seqData.items;
-      pair.displayDuration  = seqData.displayDuration;
-      pair.questions        = seqData.questions;
-      delete pair.questionText; delete pair.choices;
-      delete pair.left; delete pair.right; delete pair.correct;
-      delete pair.direction; delete pair.bgColor; delete pair.rule; delete pair.numOptions;
-    } else {
-      pair.type    = 'choice';
-      pair.left    = readModalSide('left');
-      pair.right   = readModalSide('right');
-      pair.correct = document.querySelector('input[name="modal-correct"]:checked')?.value || 'left';
-      delete pair.direction; delete pair.bgColor;
-      delete pair.items; delete pair.displayDuration; delete pair.questionPosition; delete pair.choices;
-    }
+    const seqData = readSequenceModal();
+    pair.type            = 'sequence';
+    pair.items           = seqData.items;
+    pair.displayDuration = seqData.displayDuration;
+    pair.questions       = seqData.questions;
+    delete pair.questionText; delete pair.choices;
+    delete pair.left; delete pair.right; delete pair.correct;
+    delete pair.direction; delete pair.bgColor; delete pair.rule; delete pair.numOptions;
     saveExercises(); renderExerciseEditor(); closeModal();
   });
 
@@ -2431,15 +1908,7 @@
     const ex = getSelectedEx();
     if (ex) {
       const pair = ex.pairs.find(p => p.id === editingPairId);
-      const isEmpty = pair && (
-        pair.type === 'arrow'    ? !pair.direction :
-        pair.type === 'sequence' ? (!pair.items || pair.items.every(i => !i)) :
-        (() => {
-          const lt = getItemType(pair.left||{}), rt = getItemType(pair.right||{});
-          const le = lt==='arrow'?!pair.left?.arrowDirection : lt==='color'?false : !pair.left?.text&&!pair.left?.imageUrl&&!pair.left?.audioUrl;
-          const re = rt==='arrow'?!pair.right?.arrowDirection : rt==='color'?false : !pair.right?.text&&!pair.right?.imageUrl&&!pair.right?.audioUrl;
-          return le && re;
-        })());
+      const isEmpty = pair && (!pair.items || pair.items.every(i => !i || (!i.text && !i.imageUrl && !i.audioUrl && i.type === 'text')));
       if (isEmpty) { ex.pairs = ex.pairs.filter(p => p.id !== editingPairId); saveExercises(); renderExerciseEditor(); }
     }
     closeModal();
@@ -2447,31 +1916,167 @@
 
   function closeModal() { document.getElementById('pair-modal').style.display='none'; editingPairId=null; }
 
+  // ── Seq-item modal ────────────────────────────────────────────────────────────
+  function setSimSect(type) {
+    ['text','image','audio','arrow','color'].forEach(t => {
+      const el = document.getElementById('sim-sect-'+t);
+      if (el) el.style.display = t === type ? 'block' : 'none';
+    });
+    document.querySelectorAll('#sim-type-tabs .item-type-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.type === type));
+  }
+
+  function refreshSimPreview() {
+    applyItemStyle(document.getElementById('sim-preview-box'), readItemModal());
+  }
+
+  function updateSimImageThumb() {
+    const row = document.getElementById('sim-img-thumb-row');
+    const thumb = document.getElementById('sim-img-thumb');
+    if (simModalImage) { thumb.src = simModalImage; row.style.display = 'flex'; }
+    else { thumb.src = ''; row.style.display = 'none'; }
+  }
+
+  function updateSimAudioUI() {
+    const row = document.getElementById('sim-audio-loaded');
+    if (simModalAudio) { document.getElementById('sim-audio-name').textContent = '🎵 Audio chargé'; row.style.display = 'flex'; }
+    else { row.style.display = 'none'; }
+  }
+
+  function fillItemModal(item) {
+    const type = (item && item.type) || 'text';
+    setSimSect(type);
+    simModalImage = null; simModalAudio = null;
+    if (type === 'image') {
+      simModalImage = item.imageUrl || null; updateSimImageThumb();
+      document.getElementById('sim-img-text').value = item.text || '';
+      document.getElementById('sim-img-textcolor').value = item.color || '#ffffff';
+    } else if (type === 'audio') {
+      simModalAudio = item.audioUrl || null; updateSimAudioUI();
+      document.getElementById('sim-audio-label').value = item.text || '';
+    } else if (type === 'arrow') {
+      document.getElementById('sim-arrow-dir').value = item.arrowDirection || 'left';
+      document.getElementById('sim-arrow-bg').value  = item.bgColor || '#3b82f6';
+    } else if (type === 'color') {
+      document.getElementById('sim-color-bg').value        = item.bgColor || '#3b82f6';
+      document.getElementById('sim-color-text').value      = item.text || '';
+      document.getElementById('sim-color-textcolor').value = item.color || '#ffffff';
+      pickOption('sim-color-size', String(item.fontSize || 32));
+    } else {
+      document.getElementById('sim-text').value  = item.text  || '';
+      document.getElementById('sim-color').value = item.color || '#1a1a1a';
+      pickOption('sim-size',      String(item.fontSize  || 32));
+      pickOption('sim-font',      item.fontFamily   || 'Arial');
+      pickOption('sim-transform', item.textTransform || 'none');
+    }
+    refreshSimPreview();
+  }
+
+  function readItemModal() {
+    const type = document.querySelector('#sim-type-tabs .item-type-btn.active')?.dataset.type || 'text';
+    if (type === 'image') return { type, imageUrl: simModalImage||null,
+      text: document.getElementById('sim-img-text').value||'',
+      color: document.getElementById('sim-img-textcolor').value, audioUrl: null };
+    if (type === 'audio') return { type, audioUrl: simModalAudio||null,
+      text: document.getElementById('sim-audio-label').value||'', imageUrl: null };
+    if (type === 'arrow') return { type,
+      arrowDirection: document.getElementById('sim-arrow-dir').value,
+      bgColor: document.getElementById('sim-arrow-bg').value };
+    if (type === 'color') return { type,
+      bgColor: document.getElementById('sim-color-bg').value,
+      text: document.getElementById('sim-color-text').value||'',
+      color: document.getElementById('sim-color-textcolor').value,
+      fontSize: parseInt(document.getElementById('sim-color-size').value, 10)||32 };
+    return { type: 'text',
+      text:          document.getElementById('sim-text').value,
+      color:         document.getElementById('sim-color').value,
+      fontSize:      parseInt(document.getElementById('sim-size').value, 10)||32,
+      fontFamily:    document.getElementById('sim-font').value,
+      textTransform: document.getElementById('sim-transform').value,
+      imageUrl: null, audioUrl: null };
+  }
+
+  function openSeqItemModal(idx) {
+    editingItemIdx = idx;
+    fillItemModal(seqItems[idx] || {type:'text',text:''});
+    document.getElementById('seq-item-modal').style.display = 'flex';
+  }
+
+  function closeSeqItemModal() {
+    document.getElementById('seq-item-modal').style.display = 'none';
+    editingItemIdx = -1;
+  }
+
+  // Listeners for sim-type-tabs
+  document.querySelectorAll('#sim-type-tabs .item-type-btn').forEach(btn => {
+    btn.addEventListener('click', () => { setSimSect(btn.dataset.type); refreshSimPreview(); });
+  });
+
+  // Sim field change → refresh preview
+  ['sim-text','sim-color','sim-size','sim-font','sim-transform',
+   'sim-img-text','sim-img-textcolor','sim-arrow-dir','sim-arrow-bg',
+   'sim-color-bg','sim-color-text','sim-color-textcolor','sim-color-size',
+   'sim-audio-label'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.addEventListener('input', refreshSimPreview); el.addEventListener('change', refreshSimPreview); }
+  });
+
+  document.getElementById('sim-img-btn').addEventListener('click', () => document.getElementById('sim-img-input').click());
+  document.getElementById('sim-img-input').addEventListener('change', e => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = evt => { simModalImage = evt.target.result; updateSimImageThumb(); refreshSimPreview(); };
+    reader.readAsDataURL(file); e.target.value = '';
+  });
+  document.getElementById('sim-img-remove').addEventListener('click', () => { simModalImage = null; updateSimImageThumb(); refreshSimPreview(); });
+
+  document.getElementById('sim-audio-btn').addEventListener('click', () => document.getElementById('sim-audio-input').click());
+  document.getElementById('sim-audio-input').addEventListener('change', e => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = evt => { simModalAudio = evt.target.result; updateSimAudioUI(); refreshSimPreview(); };
+    reader.readAsDataURL(file); e.target.value = '';
+  });
+  document.getElementById('sim-audio-remove').addEventListener('click', () => { simModalAudio = null; updateSimAudioUI(); refreshSimPreview(); });
+  document.getElementById('sim-audio-play').addEventListener('click', () => {
+    if (simModalAudio) new Audio(simModalAudio).play().catch(() => {});
+  });
+
+  document.getElementById('sim-save').addEventListener('click', () => {
+    if (editingItemIdx < 0) return;
+    seqItems[editingItemIdx] = readItemModal();
+    closeSeqItemModal();
+    refreshSequenceItemInputs();
+  });
+  document.getElementById('sim-cancel').addEventListener('click', closeSeqItemModal);
+  document.getElementById('seq-item-modal').addEventListener('click', e => {
+    if (e.target === document.getElementById('seq-item-modal')) closeSeqItemModal();
+  });
+
   // ── Sequence modal helpers ────────────────────────────────────────────────────
   function refreshSequenceItemInputs() {
     const numItems = Math.max(1, parseInt(document.getElementById('seq-num-items').value, 10) || 1);
+    // Resize seqItems array: pad with blank text items, or trim from end
+    while (seqItems.length < numItems) seqItems.push({type:'text',text:'',color:'#1a1a1a',fontSize:32,fontFamily:'Arial',textTransform:'none',imageUrl:null,audioUrl:null});
+    seqItems = seqItems.slice(0, numItems);
     const row = document.getElementById('seq-items-row');
-    const existing = Array.from(row.querySelectorAll('input')).map(i => i.value);
     row.innerHTML = '';
-    const isSingle = numItems === 1;
-    for (let i = 0; i < numItems; i++) {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.style.cssText = isSingle
-        ? 'flex:1;min-width:200px;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:1rem;font-family:inherit;outline:none;color:#0f172a'
-        : 'width:80px;padding:8px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:1rem;text-align:center;font-family:Courier New,monospace;font-weight:700;outline:none;color:#0f172a';
-      input.value = existing[i] || '';
-      input.addEventListener('input', refreshSequencePreview);
-      input.addEventListener('focus', () => { input.style.borderColor = '#3b82f6'; });
-      input.addEventListener('blur',  () => { input.style.borderColor = '#e2e8f0'; });
-      row.appendChild(input);
-    }
+    seqItems.forEach((item, i) => {
+      const card = document.createElement('div');
+      card.className = 'seq-item-card';
+      const preview = document.createElement('div');
+      preview.className = 'seq-item-preview';
+      applyItemStyle(preview, item);
+      const editBtn = document.createElement('button');
+      editBtn.type = 'button'; editBtn.className = 'seq-item-edit-btn'; editBtn.title = 'Éditer'; editBtn.textContent = '✏';
+      editBtn.addEventListener('click', () => openSeqItemModal(i));
+      card.append(preview, editBtn);
+      row.appendChild(card);
+    });
     refreshSequencePreview();
   }
 
-  function getSequenceItemValues() {
-    return Array.from(document.getElementById('seq-items-row').querySelectorAll('input')).map(i => i.value.trim());
-  }
+  function getSequenceItemValues() { return seqItems; }  // returns typed item objects
 
   // ── Sq-code helpers ──────────────────────────────────────────────────────────
   const SQ_CODES = ['[sq:m]', '[sq:um]', '[sq:ml]', '[sq:uml]'];
@@ -2569,6 +2174,46 @@
       .filter(i => i >= 0);
   }
 
+  function getSeqItemLabels() {
+    return seqItems.map(item => {
+      if (!item) return '';
+      if (item.type === 'arrow') return ARROW_CHARS[item.arrowDirection||'left'] || '←';
+      if (item.type === 'image') return '🖼';
+      if (item.type === 'audio') return '🔊';
+      if (item.type === 'color') return item.text || '■';
+      return item.text || '';
+    });
+  }
+
+  function buildOverrideRow(idx, val, labels) {
+    const row = document.createElement('div');
+    row.className = 'seq-q-override-row';
+    row.style.cssText = 'display:flex;align-items:center;gap:6px;margin-bottom:4px';
+    const sel = document.createElement('select');
+    sel.className = 'seq-q-override-idx';
+    sel.style.cssText = 'padding:4px 6px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:0.82rem;font-family:inherit;color:#0f172a;background:white;flex:none;max-width:120px';
+    labels.forEach((label, i) => {
+      const opt = document.createElement('option');
+      opt.value = String(i);
+      opt.textContent = 'Item ' + (i + 1) + (label ? ' (' + label + ')' : '');
+      if (i === idx) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    const arrow = document.createElement('span');
+    arrow.textContent = '→'; arrow.style.cssText = 'color:#94a3b8;flex:none';
+    const input = document.createElement('input');
+    input.type = 'text'; input.className = 'seq-q-override-val';
+    input.value = val || ''; input.placeholder = 'Nouvelle valeur…';
+    input.style.cssText = 'flex:1;padding:4px 8px;border:1.5px solid #fde68a;border-radius:6px;font-size:0.85rem;font-family:inherit;color:#0f172a;background:#fffbeb;outline:none';
+    input.addEventListener('input', refreshSequencePreview);
+    const delBtn = document.createElement('button');
+    delBtn.type = 'button'; delBtn.textContent = '✕';
+    delBtn.style.cssText = 'padding:2px 6px;border:1px solid #fca5a5;border-radius:5px;background:white;color:#ef4444;font-size:0.75rem;cursor:pointer;font-family:inherit;flex:none';
+    delBtn.addEventListener('click', () => { row.remove(); refreshSequencePreview(); });
+    row.append(sel, arrow, input, delBtn);
+    return row;
+  }
+
   function buildSequenceQuestionBlock(q) {
     const block = document.createElement('div');
     block.className = 'seq-q-block';
@@ -2584,7 +2229,7 @@
     const typeSelect = document.createElement('select');
     typeSelect.className = 'seq-q-type';
     typeSelect.style.cssText = 'padding:3px 8px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:0.8rem;font-family:inherit;outline:none;color:#0f172a;background:white;cursor:pointer';
-    [['choice','Choix multiples'],['write','Saisie libre']].forEach(([v,l]) => {
+    [['choice','Choix multiples'],['write','Saisie libre'],['direction','Direction (flèche)']].forEach(([v,l]) => {
       const opt = document.createElement('option'); opt.value = v; opt.textContent = l;
       if ((q.type || 'choice') === v) opt.selected = true;
       typeSelect.appendChild(opt);
@@ -2598,14 +2243,24 @@
         block.remove(); updateSeqQuestionTitles(); refreshSequencePreview();
       }
     });
+    // "Allow retry" checkbox
+    const allowRetryLabel = document.createElement('label');
+    allowRetryLabel.style.cssText = 'display:flex;align-items:center;gap:4px;font-size:0.75rem;color:#64748b;cursor:pointer;white-space:nowrap';
+    const allowRetryChk = document.createElement('input');
+    allowRetryChk.type = 'checkbox'; allowRetryChk.className = 'seq-q-allow-retry';
+    allowRetryChk.checked = q.allowRetry !== false;
+    allowRetryLabel.append(allowRetryChk, document.createTextNode('2ᵉ essai'));
     // "Show items on retry" checkbox
     const retryLabel = document.createElement('label');
     retryLabel.style.cssText = 'display:flex;align-items:center;gap:4px;font-size:0.75rem;color:#64748b;cursor:pointer;white-space:nowrap';
     const retryChk = document.createElement('input');
     retryChk.type = 'checkbox'; retryChk.className = 'seq-q-show-on-retry';
-    retryChk.checked = q.showOnRetry !== false; // default true
+    retryChk.checked = q.showOnRetry !== false;
     retryLabel.append(retryChk, document.createTextNode('Réafficher au 2ᵉ essai'));
-    header.append(title, typeSelect, retryLabel, delBtn);
+    // Hide showOnRetry when allowRetry is off
+    const syncRetryVis = () => { retryLabel.style.display = allowRetryChk.checked ? '' : 'none'; };
+    allowRetryChk.addEventListener('change', syncRetryVis); syncRetryVis();
+    header.append(title, typeSelect, allowRetryLabel, retryLabel, delBtn);
     block.appendChild(header);
 
     // Question text
@@ -2697,15 +2352,68 @@
     writeInput.addEventListener('input', refreshSequencePreview);
     writeSection.append(writeLabel, writeInput);
 
+    // ── Direction section ─────────────────────────────────────────────────────
+    const dirSection = document.createElement('div');
+    dirSection.className = 'seq-q-direction-section';
+    const dirRuleRow = document.createElement('div');
+    dirRuleRow.className = 'field-row';
+    dirRuleRow.innerHTML = '<label>Règle</label>';
+    const ruleSelect = document.createElement('select');
+    ruleSelect.className = 'seq-q-direction-rule';
+    ruleSelect.style.cssText = 'width:100%;padding:7px 10px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:0.9rem;outline:none;font-family:inherit;color:#0f172a';
+    [['same','↔ Même sens'],['inverse','↔ Sens inverse']].forEach(([v,l]) => {
+      const opt = document.createElement('option'); opt.value = v; opt.textContent = l;
+      if ((q.rule || 'same') === v) opt.selected = true;
+      ruleSelect.appendChild(opt);
+    });
+    dirRuleRow.appendChild(ruleSelect);
+    const dirOptsRow = document.createElement('div');
+    dirOptsRow.className = 'field-row';
+    dirOptsRow.innerHTML = '<label>Nbre d\'options</label>';
+    const optsSelect = document.createElement('select');
+    optsSelect.className = 'seq-q-direction-opts';
+    optsSelect.style.cssText = 'width:100%;padding:7px 10px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:0.9rem;outline:none;font-family:inherit;color:#0f172a';
+    [2,3,4].forEach(n => {
+      const opt = document.createElement('option'); opt.value = String(n); opt.textContent = String(n);
+      if ((q.numOptions || 4) === n) opt.selected = true;
+      optsSelect.appendChild(opt);
+    });
+    dirOptsRow.appendChild(optsSelect);
+    dirSection.append(dirRuleRow, dirOptsRow);
+
+    // ── Item overrides section ───────────────────────────────────────────────
+    const ovSection = document.createElement('div');
+    ovSection.style.cssText = 'margin-top:10px;padding-top:8px;border-top:1px dashed #e2e8f0';
+    const ovHeader = document.createElement('div');
+    ovHeader.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:4px';
+    const ovLabel = document.createElement('span');
+    ovLabel.style.cssText = 'font-size:0.78rem;color:#64748b;font-weight:500;flex:1';
+    ovLabel.textContent = 'Modifier des items au 2ᵉ essai';
+    const addOvBtn = document.createElement('button');
+    addOvBtn.type = 'button'; addOvBtn.textContent = '+ Modifier un item';
+    addOvBtn.style.cssText = 'padding:2px 8px;border:1.5px solid #fde68a;border-radius:6px;background:#fffbeb;color:#92400e;font-size:0.75rem;cursor:pointer;font-family:inherit';
+    addOvBtn.addEventListener('click', () => {
+      ovRows.appendChild(buildOverrideRow(0, '', getSeqItemLabels()));
+      refreshSequencePreview();
+    });
+    ovHeader.append(ovLabel, addOvBtn);
+    const ovRows = document.createElement('div');
+    const labels = getSeqItemLabels();
+    (q.itemOverrides || []).forEach(ov => ovRows.appendChild(buildOverrideRow(ov.index, ov.value, labels)));
+    ovSection.append(ovHeader, ovRows);
+
     // Show/hide sections based on type
     const applyType = (type) => {
-      choiceSection.style.display = type === 'choice' ? 'block' : 'none';
-      writeSection.style.display  = type === 'write'  ? 'block' : 'none';
+      choiceSection.style.display = type === 'choice'    ? 'block' : 'none';
+      writeSection.style.display  = type === 'write'     ? 'block' : 'none';
+      dirSection.style.display    = type === 'direction' ? 'block' : 'none';
+      ovSection.style.display     = type !== 'direction' ? 'block' : 'none';
     };
     applyType(q.type || 'choice');
     typeSelect.addEventListener('change', () => { applyType(typeSelect.value); refreshSequencePreview(); });
 
-    block.append(choiceSection, writeSection);
+    block.append(choiceSection, writeSection, dirSection, ovSection);
+
     return block;
   }
 
@@ -2725,9 +2433,13 @@
     items.forEach(item => {
       const box = document.createElement('div');
       box.style.cssText = isSingle
-        ? 'padding:8px 16px;border:2px solid #3b82f6;border-radius:8px;font-size:1rem;background:#eff6ff;color:#0f172a;max-width:280px;word-break:break-word'
-        : 'min-width:32px;padding:6px 10px;border:2px solid #e2e8f0;border-radius:8px;font-size:1rem;font-weight:700;font-family:Courier New,monospace;background:white;color:#0f172a;text-align:center';
-      box.textContent = item || '?';
+        ? 'width:80px;height:80px;border:2px solid #3b82f6;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:1.4rem'
+        : 'width:52px;height:52px;border:2px solid #e2e8f0;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:1rem';
+      if (item && typeof item === 'object') {
+        applyItemStyle(box, item);
+      } else {
+        box.textContent = item || '?';
+      }
       previewItems.appendChild(box);
     });
     const previewQs = document.getElementById('seq-preview-questions');
@@ -2741,6 +2453,10 @@
       if (qType === 'write') {
         const ans = (block.querySelector('.seq-q-write-answer')?.value || '').trim();
         choicesHtml = '<span style="padding:1px 8px;border-radius:4px;background:#f0fdf4;border:1px solid #86efac;font-style:italic">✏ ' + escapeHtml(ans || '?') + '</span>';
+      } else if (qType === 'direction') {
+        const rule = block.querySelector('.seq-q-direction-rule')?.value || 'same';
+        const opts = block.querySelector('.seq-q-direction-opts')?.value || '4';
+        choicesHtml = '<span style="padding:1px 8px;border-radius:4px;background:#eff6ff;border:1px solid #bae6fd">↕ ' + (rule === 'inverse' ? 'sens inverse' : 'même sens') + ' · ' + opts + ' options</span>';
       } else {
         const choices = Array.from(block.querySelectorAll('.seq-q-choice')).map(inp => inp.value.trim());
         const corrects = new Set(getCorrectIndicesFromBlock(block));
@@ -2760,12 +2476,13 @@
   }
 
   function fillSequenceModal(pair) {
-    const numItems = (pair.items || []).length || 1;
-    document.getElementById('seq-num-items').value = numItems;
-    document.getElementById('seq-duration').value = ((pair.displayDuration || 1000) / 1000);
+    const rawItems = pair.items || [];
+    seqItems = rawItems.map(i => typeof i === 'string' ? {type:'text',text:i,color:'#1a1a1a',fontSize:32,fontFamily:'Arial',textTransform:'none',imageUrl:null,audioUrl:null} : {...i});
+    if (seqItems.length === 0) seqItems = [{type:'text',text:'',color:'#1a1a1a',fontSize:32,fontFamily:'Arial',textTransform:'none',imageUrl:null,audioUrl:null}];
+    document.getElementById('seq-num-items').value = seqItems.length;
+    const dur = pair.displayDuration != null ? pair.displayDuration : 1000;
+    document.getElementById('seq-duration').value = (dur / 1000);
     refreshSequenceItemInputs();
-    const itemInputs = document.getElementById('seq-items-row').querySelectorAll('input');
-    (pair.items || []).forEach((v, i) => { if (itemInputs[i]) itemInputs[i].value = v; });
     // Normalize old format to questions array
     const questions = pair.questions || [{questionText: pair.questionText || '', choices: pair.choices || ['', '']}];
     const container = document.getElementById('seq-questions-container');
@@ -2779,15 +2496,25 @@
     const questions = Array.from(document.getElementById('seq-questions-container').querySelectorAll('.seq-q-block')).map(block => {
       const type = block.querySelector('.seq-q-type').value;
       const showOnRetry = block.querySelector('.seq-q-show-on-retry')?.checked ?? true;
-      const base = { questionText: block.querySelector('.seq-q-text').value.trim(), type, showOnRetry };
-      if (type === 'write') {
+      const allowRetry  = block.querySelector('.seq-q-allow-retry')?.checked  ?? true;
+      const base = { questionText: block.querySelector('.seq-q-text').value.trim(), type, showOnRetry, allowRetry };
+      if (type === 'direction') {
+        base.rule       = block.querySelector('.seq-q-direction-rule')?.value || 'same';
+        base.numOptions = parseInt(block.querySelector('.seq-q-direction-opts')?.value || '4', 10);
+      } else if (type === 'write') {
         const raw = (block.querySelector('.seq-q-write-answer')?.value || '').trim();
         base.writeAnswers = raw ? raw.split('|').map(s => s.trim()).filter(Boolean) : [];
-        base.choices = base.writeAnswers; // keep choices for backward compat display
+        base.choices = base.writeAnswers;
         base.correctIndices = [0];
       } else {
         base.choices = Array.from(block.querySelectorAll('.seq-q-choice')).map(i => i.value.trim());
         base.correctIndices = getCorrectIndicesFromBlock(block);
+      }
+      if (type !== 'direction') {
+        base.itemOverrides = Array.from(block.querySelectorAll('.seq-q-override-row')).map(row => ({
+          index: parseInt(row.querySelector('.seq-q-override-idx').value, 10),
+          value: row.querySelector('.seq-q-override-val').value.trim(),
+        })).filter(o => o.value !== '');
       }
       return base;
     });
@@ -3269,6 +2996,7 @@ ${patientSessions.length === 0
 
   // ── Init ──────────────────────────────────────────────────────────────────────
   migratePatients();
+  migrateAllPairs();
   initSetup();
 </script>
 </body>

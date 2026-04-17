@@ -2441,9 +2441,6 @@
     ovSection.style.cssText = 'margin-top:10px;padding-top:8px;border-top:1px dashed #e2e8f0';
     const ovHeader = document.createElement('div');
     ovHeader.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:4px';
-    const ovLabel = document.createElement('span');
-    ovLabel.style.cssText = 'font-size:0.78rem;color:#64748b;font-weight:500;flex:1';
-    ovLabel.textContent = 'Modifier des items au 2ᵉ essai';
     const addOvBtn = document.createElement('button');
     addOvBtn.type = 'button'; addOvBtn.textContent = '+ Modifier un item';
     addOvBtn.style.cssText = 'padding:2px 8px;border:1.5px solid #fde68a;border-radius:6px;background:#fffbeb;color:#92400e;font-size:0.75rem;cursor:pointer;font-family:inherit';
@@ -2451,7 +2448,7 @@
       ovRows.appendChild(buildOverrideRow(0, '', getSeqItemLabels()));
       refreshSequencePreview();
     });
-    ovHeader.append(ovLabel, addOvBtn);
+    ovHeader.append(addOvBtn);
     const ovRows = document.createElement('div');
     const labels = getSeqItemLabels();
     (q.itemOverrides || []).forEach(ov => ovRows.appendChild(buildOverrideRow(ov.index, ov.item || ov.value, labels)));

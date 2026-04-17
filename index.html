@@ -1705,8 +1705,9 @@
       items.slice(0, 4).forEach(item => {
         const chip = document.createElement('div');
         chip.className = 'pair-item-preview';
-        chip.style.cssText = 'width:38px;height:38px;overflow:hidden;flex:none;display:flex;align-items:center;justify-content:center;font-size:18px';
+        chip.style.cssText = 'width:38px;height:38px;min-height:0;overflow:hidden;flex:none;display:flex;align-items:center;justify-content:center';
         applyItemStyle(chip, typeof item === 'string' ? {type:'text',text:item} : item);
+        chip.style.fontSize = Math.min(parseFloat(chip.style.fontSize) || 32, 24) + 'px';
         preview.appendChild(chip);
       });
       if (items.length > 4) {
@@ -2449,6 +2450,10 @@
         : 'width:52px;height:52px;border:2px solid #e2e8f0;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:1rem';
       if (item && typeof item === 'object') {
         applyItemStyle(box, item);
+        const boxFs = parseFloat(box.style.fontSize) || 32;
+        const isArrow = item.type === 'arrow';
+        const maxFs = isSingle ? (isArrow ? 56 : 40) : (isArrow ? 34 : 18);
+        if (boxFs > maxFs) box.style.fontSize = maxFs + 'px';
       } else {
         box.textContent = item || '?';
       }

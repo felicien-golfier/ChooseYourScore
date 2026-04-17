@@ -1706,13 +1706,18 @@
 
       // All pairs are sequences — show item chips + question summary
       const items = pair.items || [];
+      const isMobile = window.innerWidth <= 640;
       items.slice(0, 4).forEach(item => {
         const chip = document.createElement('div');
         chip.className = 'pair-item-preview';
-        chip.style.cssText = 'width:38px;height:38px;min-height:0;overflow:hidden;flex:none;display:flex;align-items:center;justify-content:center;white-space:nowrap';
+        const chipW = isMobile ? 56 : 38;
+        chip.style.cssText = `width:${chipW}px;height:38px;min-height:0;overflow:hidden;flex:none;display:flex;align-items:center;justify-content:center;white-space:nowrap`;
         const itemObj = typeof item === 'string' ? {type:'text',text:item} : item;
         applyItemStyle(chip, itemObj);
-        if (window.innerWidth <= 640 && itemObj.type !== 'arrow') {
+        if (itemObj.type === 'arrow') {
+          // Cap arrow glyph so it always fits inside the 38px-tall box
+          chip.style.fontSize = Math.min(parseFloat(chip.style.fontSize) || 72, 26) + 'px';
+        } else if (isMobile) {
           chip.style.fontSize = Math.min(parseFloat(chip.style.fontSize) || 32, 13) + 'px';
         }
         preview.appendChild(chip);

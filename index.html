@@ -1351,6 +1351,7 @@
 
   function handleSequenceResponse(chosen, correctAnswers, foundAnswers, pair, questions, qIdx, isRetry) {
     if (isWaiting) return;
+    const q = questions[qIdx];
     const choicesEl = document.getElementById('sequence-choices');
     const clickedBtn = Array.from(choicesEl.querySelectorAll('.sequence-choice-btn'))
       .find(b => b.dataset.value === chosen);

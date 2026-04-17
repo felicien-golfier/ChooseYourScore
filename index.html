@@ -1278,7 +1278,9 @@
       const overriddenItems = baseItems.map((item, i) => {
         const ov = overrides.find(o => o.index === i);
         if (!ov) return item;
-        return typeof item === 'object' ? {...item, text: ov.value} : {type:'text', text:ov.value};
+        // Support new format (item object) and old format (string value)
+        if (ov.item) return ov.item;
+        return typeof item === 'object' ? {...item, text: ov.value || ''} : {type:'text', text: ov.value || ''};
       });
       displayEl.innerHTML = '';
       const isSingle = overriddenItems.length === 1;
@@ -1373,7 +1375,7 @@
         b.disabled = true;
         if (b.dataset.value === chosen) b.classList.add('incorrect');
         // Only reveal correct answers on the final (retry) attempt, not the first wrong attempt
-        else if (isRetry && correctAnswers.includes(b.dataset.value) && !foundAnswers.has(b.dataset.value)) b.classList.add('missed');
+        else if (isRetry && q.highlightCorrectOnRetry !== false && correctAnswers.includes(b.dataset.value) && !foundAnswers.has(b.dataset.value)) b.classList.add('missed');
       });
       setTimeout(() => {
         if (!isRetry && q.allowRetry !== false) startSequenceQuestion(pair, qIdx, true);
@@ -1569,6 +1571,7 @@
   let simModalImage = null;         // base64 image for seq-item-modal
   let simModalAudio = null;         // base64 audio for seq-item-modal
   let editingItemIdx = -1;          // which seqItems index is being edited
+  let pendingOverrideCallback = null; // callback(item) when editing an override item
   const collapsedFolders = new Set();
   function getSelectedEx() { return exercises.find(e => e.id === editorSelectedId) || null; }
 
@@ -1708,7 +1711,7 @@
         chip.className = 'pair-item-preview';
         chip.style.cssText = 'width:38px;height:38px;min-height:0;overflow:hidden;flex:none;display:flex;align-items:center;justify-content:center';
         applyItemStyle(chip, typeof item === 'string' ? {type:'text',text:item} : item);
-        chip.style.fontSize = Math.min(parseFloat(chip.style.fontSize) || 32, 24) + 'px';
+        chip.style.fontSize = Math.min(parseFloat(chip.style.fontSize) || 32, 13) + 'px';
         preview.appendChild(chip);
       });
       if (items.length > 4) {
@@ -2025,6 +2028,7 @@
   function closeSeqItemModal() {
     document.getElementById('seq-item-modal').style.display = 'none';
     editingItemIdx = -1;
+    pendingOverrideCallback = null;
   }
 
   document.querySelectorAll('#sim-type-tabs .item-type-btn').forEach(btn => {
@@ -2061,10 +2065,18 @@
   });
 
   document.getElementById('sim-save').addEventListener('click', () => {
-    if (editingItemIdx < 0) return;
-    seqItems[editingItemIdx] = readItemModal();
-    closeSeqItemModal();
-    refreshSequenceItemInputs();
+    const item = readItemModal();
+    if (pendingOverrideCallback) {
+      pendingOverrideCallback(item);
+      pendingOverrideCallback = null;
+      closeSeqItemModal();
+      refreshSequencePreview();
+    } else {
+      if (editingItemIdx < 0) return;
+      seqItems[editingItemIdx] = item;
+      closeSeqItemModal();
+      refreshSequenceItemInputs();
+    }
   });
   document.getElementById('sim-cancel').addEventListener('click', closeSeqItemModal);
   document.getElementById('seq-item-modal').addEventListener('click', e => {
@@ -2203,10 +2215,15 @@
     });
   }
 
-  function buildOverrideRow(idx, val, labels) {
+  function buildOverrideRow(idx, itemOrVal, labels) {
+    // Support old format (string value) and new format (item object)
+    const initItem = (itemOrVal && typeof itemOrVal === 'object')
+      ? itemOrVal
+      : { type: 'text', text: typeof itemOrVal === 'string' ? itemOrVal : '', color: '#1a1a1a', fontSize: 32, fontFamily: 'Arial', textTransform: 'none', imageUrl: null, audioUrl: null };
     const row = document.createElement('div');
     row.className = 'seq-q-override-row';
     row.style.cssText = 'display:flex;align-items:center;gap:6px;margin-bottom:4px';
+    row._overrideItem = initItem;
     const sel = document.createElement('select');
     sel.className = 'seq-q-override-idx';
     sel.style.cssText = 'padding:4px 6px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:0.82rem;font-family:inherit;color:#0f172a;background:white;flex:none;max-width:120px';
@@ -2219,16 +2236,30 @@
     });
     const arrow = document.createElement('span');
     arrow.textContent = '→'; arrow.style.cssText = 'color:#94a3b8;flex:none';
-    const input = document.createElement('input');
-    input.type = 'text'; input.className = 'seq-q-override-val';
-    input.value = val || ''; input.placeholder = 'Nouvelle valeur…';
-    input.style.cssText = 'flex:1;padding:4px 8px;border:1.5px solid #fde68a;border-radius:6px;font-size:0.85rem;font-family:inherit;color:#0f172a;background:#fffbeb;outline:none';
-    input.addEventListener('input', refreshSequencePreview);
+    const previewBox = document.createElement('div');
+    previewBox.className = 'seq-q-override-preview';
+    previewBox.style.cssText = 'width:36px;height:36px;border:1.5px solid #fde68a;border-radius:7px;background:#fffbeb;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:12px;flex:none';
+    applyItemStyle(previewBox, initItem);
+    const boxFs = parseFloat(previewBox.style.fontSize) || 32;
+    if (boxFs > 14) previewBox.style.fontSize = '14px';
+    const editBtn = document.createElement('button');
+    editBtn.type = 'button'; editBtn.textContent = '✏ Modifier';
+    editBtn.style.cssText = 'padding:3px 8px;border:1.5px solid #fde68a;border-radius:6px;background:#fffbeb;color:#92400e;font-size:0.75rem;cursor:pointer;font-family:inherit;flex:none';
+    editBtn.addEventListener('click', () => {
+      pendingOverrideCallback = (newItem) => {
+        row._overrideItem = newItem;
+        applyItemStyle(previewBox, newItem);
+        const fs = parseFloat(previewBox.style.fontSize) || 32;
+        if (fs > 14) previewBox.style.fontSize = '14px';
+      };
+      fillItemModal(row._overrideItem);
+      document.getElementById('seq-item-modal').style.display = 'flex';
+    });
     const delBtn = document.createElement('button');
     delBtn.type = 'button'; delBtn.textContent = '✕';
     delBtn.style.cssText = 'padding:2px 6px;border:1px solid #fca5a5;border-radius:5px;background:white;color:#ef4444;font-size:0.75rem;cursor:pointer;font-family:inherit;flex:none';
     delBtn.addEventListener('click', () => { row.remove(); refreshSequencePreview(); });
-    row.append(sel, arrow, input, delBtn);
+    row.append(sel, arrow, previewBox, editBtn, delBtn);
     return row;
   }
 
@@ -2275,10 +2306,20 @@
     retryChk.type = 'checkbox'; retryChk.className = 'seq-q-show-on-retry';
     retryChk.checked = q.showOnRetry !== false;
     retryLabel.append(retryChk, document.createTextNode('Réafficher au 2ᵉ essai'));
-    // Hide showOnRetry when allowRetry is off
-    const syncRetryVis = () => { retryLabel.style.display = allowRetryChk.checked ? '' : 'none'; };
+    // "Highlight correct answer in green on retry" checkbox
+    const highlightLabel = document.createElement('label');
+    highlightLabel.style.cssText = 'display:flex;align-items:center;gap:4px;font-size:0.75rem;color:#64748b;cursor:pointer;white-space:nowrap';
+    const highlightChk = document.createElement('input');
+    highlightChk.type = 'checkbox'; highlightChk.className = 'seq-q-highlight-correct';
+    highlightChk.checked = q.highlightCorrectOnRetry !== false;
+    highlightLabel.append(highlightChk, document.createTextNode('Colorier correcte en vert'));
+    // Hide retry options when allowRetry is off
+    const syncRetryVis = () => {
+      retryLabel.style.display   = allowRetryChk.checked ? '' : 'none';
+      highlightLabel.style.display = allowRetryChk.checked ? '' : 'none';
+    };
     allowRetryChk.addEventListener('change', syncRetryVis); syncRetryVis();
-    header.append(title, typeSelect, allowRetryLabel, retryLabel, delBtn);
+    header.append(title, typeSelect, allowRetryLabel, retryLabel, highlightLabel, delBtn);
     block.appendChild(header);
 
     // Question text
@@ -2413,7 +2454,7 @@
     ovHeader.append(ovLabel, addOvBtn);
     const ovRows = document.createElement('div');
     const labels = getSeqItemLabels();
-    (q.itemOverrides || []).forEach(ov => ovRows.appendChild(buildOverrideRow(ov.index, ov.value, labels)));
+    (q.itemOverrides || []).forEach(ov => ovRows.appendChild(buildOverrideRow(ov.index, ov.item || ov.value, labels)));
     ovSection.append(ovHeader, ovRows);
 
     // Show/hide sections based on type
@@ -2446,15 +2487,12 @@
     previewItems.innerHTML = '';
     items.forEach(item => {
       const box = document.createElement('div');
-      box.style.cssText = isSingle
-        ? 'width:80px;height:80px;border:2px solid #3b82f6;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:1.4rem'
-        : 'width:52px;height:52px;border:2px solid #e2e8f0;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:1rem';
+      box.className = 'sequence-item-box';
       if (item && typeof item === 'object') {
         applyItemStyle(box, item);
         const boxFs = parseFloat(box.style.fontSize) || 32;
         const isArrow = item.type === 'arrow';
-        const maxFs = isSingle ? (isArrow ? 56 : 40) : (isArrow ? 34 : 18);
-        if (boxFs > maxFs) box.style.fontSize = maxFs + 'px';
+        if (boxFs > (isArrow ? 56 : 40)) box.style.fontSize = (isArrow ? 56 : 40) + 'px';
       } else {
         box.textContent = item || '?';
       }
@@ -2512,9 +2550,10 @@
   function readSequenceModal() {
     const questions = Array.from(document.getElementById('seq-questions-container').querySelectorAll('.seq-q-block')).map(block => {
       const type = block.querySelector('.seq-q-type').value;
-      const showOnRetry = block.querySelector('.seq-q-show-on-retry')?.checked ?? true;
-      const allowRetry  = block.querySelector('.seq-q-allow-retry')?.checked  ?? true;
-      const base = { questionText: block.querySelector('.seq-q-text').value.trim(), type, showOnRetry, allowRetry };
+      const showOnRetry           = block.querySelector('.seq-q-show-on-retry')?.checked      ?? true;
+      const allowRetry            = block.querySelector('.seq-q-allow-retry')?.checked       ?? true;
+      const highlightCorrectOnRetry = block.querySelector('.seq-q-highlight-correct')?.checked ?? true;
+      const base = { questionText: block.querySelector('.seq-q-text').value.trim(), type, showOnRetry, allowRetry, highlightCorrectOnRetry };
       if (type === 'direction') {
         base.rule       = block.querySelector('.seq-q-direction-rule')?.value || 'same';
         base.numOptions = parseInt(block.querySelector('.seq-q-direction-opts')?.value || '4', 10);
@@ -2530,8 +2569,8 @@
       if (type !== 'direction') {
         base.itemOverrides = Array.from(block.querySelectorAll('.seq-q-override-row')).map(row => ({
           index: parseInt(row.querySelector('.seq-q-override-idx').value, 10),
-          value: row.querySelector('.seq-q-override-val').value.trim(),
-        })).filter(o => o.value !== '');
+          item: row._overrideItem || { type: 'text', text: '', imageUrl: null, audioUrl: null },
+        })).filter(o => o.item && (o.item.text || o.item.imageUrl || o.item.audioUrl || o.item.type !== 'text'));
       }
       return base;
     });

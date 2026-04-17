@@ -1,22 +1,4 @@
-✅ TÂCHE 1 — Fusion des types de paires (séquence universelle)
-   - migrateAllPairs() : migration auto choice/arrow → sequence au démarrage
-   - HTML supprimé : #pair-container, #arrow-container, #pair-type, #arrow-config, #choice-config
-   - CSS supprimé : .pair-container, .arrow-container, .arrow-card, .arrow-key-btn, .modal-preview, .items-edit-grid, etc.
-   - JS supprimé : handleClick, handleArrowResponse, fillModalSide, readModalSide, playPairAudios, etc.
-   - renderPair() / openPairModal() / btn-modal-save unifiés (séquence uniquement)
-   - #seq-item-modal créé (IDs sim-*) avec cartes visuelles seq-item-card
-   - Type de question 'direction' : showDirectionButtons + handleDirectionResponse
-   - allowRetry par question (défaut true)
-
-✅ TÂCHE 2 — Zéro code legacy
-   - Règle appliquée : toute suppression de système supprime aussitôt son HTML/CSS/JS
-   - Seules exceptions tolérées : fonctions migrateXxx() pour la migration localStorage
-
-✅ TÂCHE 3 — Simplification / DRY
-   - downloadBlob() helper (3 usages)
-   - getFocusedOrLastChoice() helper (2 usages)
-   - getPairQuestions() helper (2 usages)
-   - shouldShowItems unifie keepVisible + showOnRetry
-   - exportSessionsJson / importSessionsJson partagés patients/résultats
-   - CSV paires export/import unifié séquence
-
+tâche : à côté du checkbox "Réafficher au 2ᵉ essai" il faut un autre checkbox true par default qui permet d'actuver ou non la feature qui contour en vert la bonne réponse lorsque la deuxième réponse est toujours fausse.
+tâche : visuellement sur telei, les items s'affichent très mal sur la vue des paires (on voit 2 lettres par item. on peut réduire la police pour que ça rentre dans le cadre des aperçu) 
+ainsi que l'aperçu dans l'édition qui lui doit être ce que l'on voit un peu plus tard. il serait donc judicieux de réutiliser le code d'affichage final plutôt que d'avoir un nouveau code pour afficher l'aperçu.
+tâche : lors de la modification des items lors de la réponse, il faut que ce soit le même code que pour modifier normalement. ainsi on peut modifier y compris les images, sons etc...

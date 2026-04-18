@@ -863,7 +863,6 @@
       <button class="item-type-btn" data-type="image">Image</button>
       <button class="item-type-btn" data-type="audio">Audio</button>
       <button class="item-type-btn" data-type="arrow">Flèche</button>
-      <button class="item-type-btn" data-type="color">Couleur</button>
     </div>
     <!-- section : texte -->
     <div id="sim-sect-text">
@@ -921,22 +920,10 @@
           <option value="left">← Gauche</option><option value="right">→ Droite</option>
           <option value="up">↑ Haut</option><option value="down">↓ Bas</option>
         </select></div>
-      <div class="field-row"><label>Couleur de fond</label>
-        <input type="color" id="sim-arrow-bg" value="#3b82f6" style="width:100%;height:38px;padding:2px;border:1.5px solid #d1d5db;border-radius:8px;cursor:pointer"></div>
     </div>
-    <!-- section : couleur -->
-    <div id="sim-sect-color" style="display:none">
-      <div class="field-row"><label>Couleur de fond</label>
-        <input type="color" id="sim-color-bg" value="#3b82f6" style="width:100%;height:38px;padding:2px;border:1.5px solid #d1d5db;border-radius:8px;cursor:pointer"></div>
-      <div class="field-row"><label>Texte (optionnel)</label><input type="text" id="sim-color-text" placeholder="Texte affiché…"></div>
-      <div class="field-row"><label>Couleur du texte</label><input type="color" id="sim-color-textcolor" value="#ffffff"></div>
-      <div class="field-row"><label>Taille (px)</label>
-        <select id="sim-color-size">
-          <option value="16">16</option><option value="20">20</option><option value="24">24</option>
-          <option value="28">28</option><option value="32" selected>32</option><option value="40">40</option>
-          <option value="48">48</option><option value="56">56</option><option value="64">64</option><option value="72">72</option>
-        </select></div>
-    </div>
+    <!-- couleur de fond commune à tous les types -->
+    <div class="field-row"><label>Couleur de fond</label>
+      <input type="color" id="sim-bg-color" value="#ffffff" style="width:100%;height:38px;padding:2px;border:1.5px solid #d1d5db;border-radius:8px;cursor:pointer"></div>
     <!-- preview -->
     <div style="margin:16px 0;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:12px;padding:12px;text-align:center">
       <div style="font-size:0.78rem;color:#94a3b8;margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.04em">Aperçu</div>
@@ -1045,14 +1032,7 @@
       el.textContent = ARROW_CHARS[item.arrowDirection || 'left'] || '←';
       return;
     }
-    if (itype === 'color') {
-      const ac = resolveArrowColor(item.bgColor || '#3b82f6');
-      el.style.background = ac.bg; el.style.color = item.color || ac.fg;
-      el.style.backgroundImage = ''; el.style.textTransform = item.textTransform || 'none';
-      el.style.fontSize = (item.fontSize || 32) + 'px'; el.style.fontFamily = item.fontFamily || 'Arial';
-      el.textContent = item.text || '';
-      return;
-    }
+    el.style.background    = item.bgColor || 'white';
     el.style.color         = item.color         || '#1a1a1a';
     el.style.fontSize      = (item.fontSize || 32) + 'px';
     el.style.fontFamily    = item.fontFamily    || 'Arial';
@@ -1949,7 +1929,7 @@
 
   // ── Seq-item modal ────────────────────────────────────────────────────────────
   function setSimSect(type) {
-    ['text','image','audio','arrow','color'].forEach(t => {
+    ['text','image','audio','arrow'].forEach(t => {
       const el = document.getElementById('sim-sect-'+t);
       if (el) el.style.display = t === type ? 'block' : 'none';
     });
@@ -1975,9 +1955,13 @@
   }
 
   function fillItemModal(item) {
+    // Migrate legacy 'color' type items to 'text' with bgColor
+    if (item && item.type === 'color') item = { type: 'text', text: item.text || '', color: item.color || '#1a1a1a', fontSize: item.fontSize || 32, fontFamily: item.fontFamily || 'Arial', textTransform: item.textTransform || 'none', bgColor: item.bgColor || '#3b82f6', imageUrl: null, audioUrl: null };
     const type = (item && item.type) || 'text';
     setSimSect(type);
     simModalImage = null; simModalAudio = null;
+    const defaultBg = type === 'arrow' ? '#3b82f6' : '#ffffff';
+    document.getElementById('sim-bg-color').value = item.bgColor || defaultBg;
     if (type === 'image') {
       simModalImage = item.imageUrl || null; updateSimImageThumb();
       document.getElementById('sim-img-text').value = item.text || '';
@@ -1987,12 +1971,6 @@
       document.getElementById('sim-audio-label').value = item.text || '';
     } else if (type === 'arrow') {
       document.getElementById('sim-arrow-dir').value = item.arrowDirection || 'left';
-      document.getElementById('sim-arrow-bg').value  = item.bgColor || '#3b82f6';
-    } else if (type === 'color') {
-      document.getElementById('sim-color-bg').value        = item.bgColor || '#3b82f6';
-      document.getElementById('sim-color-text').value      = item.text || '';
-      document.getElementById('sim-color-textcolor').value = item.color || '#ffffff';
-      pickOption('sim-color-size', String(item.fontSize || 32));
     } else {
       document.getElementById('sim-text').value  = item.text  || '';
       document.getElementById('sim-color').value = item.color || '#1a1a1a';
@@ -2005,26 +1983,24 @@
 
   function readItemModal() {
     const type = document.querySelector('#sim-type-tabs .item-type-btn.active')?.dataset.type || 'text';
+    const bgColor = document.getElementById('sim-bg-color').value;
     if (type === 'image') return { type, imageUrl: simModalImage||null,
       text: document.getElementById('sim-img-text').value||'',
-      color: document.getElementById('sim-img-textcolor').value, audioUrl: null };
+      color: document.getElementById('sim-img-textcolor').value,
+      bgColor, audioUrl: null };
     if (type === 'audio') return { type, audioUrl: simModalAudio||null,
-      text: document.getElementById('sim-audio-label').value||'', imageUrl: null };
+      text: document.getElementById('sim-audio-label').value||'',
+      bgColor, imageUrl: null };
     if (type === 'arrow') return { type,
       arrowDirection: document.getElementById('sim-arrow-dir').value,
-      bgColor: document.getElementById('sim-arrow-bg').value };
-    if (type === 'color') return { type,
-      bgColor: document.getElementById('sim-color-bg').value,
-      text: document.getElementById('sim-color-text').value||'',
-      color: document.getElementById('sim-color-textcolor').value,
-      fontSize: parseInt(document.getElementById('sim-color-size').value, 10)||32 };
+      bgColor };
     return { type: 'text',
       text:          document.getElementById('sim-text').value,
       color:         document.getElementById('sim-color').value,
       fontSize:      parseInt(document.getElementById('sim-size').value, 10)||32,
       fontFamily:    document.getElementById('sim-font').value,
       textTransform: document.getElementById('sim-transform').value,
-      imageUrl: null, audioUrl: null };
+      bgColor, imageUrl: null, audioUrl: null };
   }
 
   function openSeqItemModal(idx) {
@@ -2044,8 +2020,7 @@
   });
 
   ['sim-text','sim-color','sim-size','sim-font','sim-transform',
-   'sim-img-text','sim-img-textcolor','sim-arrow-dir','sim-arrow-bg',
-   'sim-color-bg','sim-color-text','sim-color-textcolor','sim-color-size',
+   'sim-img-text','sim-img-textcolor','sim-arrow-dir','sim-bg-color',
    'sim-audio-label'].forEach(id => {
     const el = document.getElementById(id);
     if (el) { el.addEventListener('input', refreshSimPreview); el.addEventListener('change', refreshSimPreview); }

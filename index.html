@@ -1315,6 +1315,8 @@
       choicesEl.style.display = 'flex';
       const shuffledChoices = shuffleArray([...(q.choices || [])]);
       choicesEl.innerHTML = '';
+      choicesEl.style.pointerEvents = 'none';
+      setTimeout(() => { choicesEl.style.pointerEvents = ''; }, 300);
       const foundAnswers = new Set();
       shuffledChoices.forEach(choice => {
         const btn = document.createElement('button');

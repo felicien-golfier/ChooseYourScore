@@ -475,8 +475,9 @@
       display: flex; align-items: center; justify-content: center;
       word-break: break-word; text-align: center; line-height: 1.3;
     }
-    .sequence-choice-btn:hover:not(:disabled) { border-color: #3b82f6; background: #eff6ff; transform: translateY(-2px); }
-    .no-hover-flash .sequence-choice-btn:hover:not(:disabled) { border-color: #e2e8f0; background: white; transform: none; }
+    @media (hover: hover) {
+      .sequence-choice-btn:hover:not(:disabled) { border-color: #3b82f6; background: #eff6ff; transform: translateY(-2px); }
+    }
     .sequence-choice-btn:disabled { cursor: default; }
     .sequence-choice-btn.correct   { border-color: #22c55e; background: #f0fdf4; }
     .sequence-choice-btn.incorrect { border-color: #ef4444; background: #fef2f2; }
@@ -1316,9 +1317,6 @@
       choicesEl.style.display = 'flex';
       const shuffledChoices = shuffleArray([...(q.choices || [])]);
       choicesEl.innerHTML = '';
-      choicesEl.classList.add('no-hover-flash');
-      const removeFlash = () => { choicesEl.classList.remove('no-hover-flash'); choicesEl.removeEventListener('mousemove', removeFlash); };
-      choicesEl.addEventListener('mousemove', removeFlash);
       const foundAnswers = new Set();
       shuffledChoices.forEach(choice => {
         const btn = document.createElement('button');

@@ -1457,7 +1457,7 @@
     Array.from(choicesEl.querySelectorAll('[data-dir]')).forEach(btn => {
       btn.disabled = true;
       if (btn.dataset.dir === pressed) { btn.style.borderColor = isCorrect ? '#22c55e' : '#ef4444'; btn.style.background = isCorrect ? '#f0fdf4' : '#fef2f2'; }
-      else if (!isCorrect && btn.dataset.dir === correctDir) { btn.style.borderColor = '#22c55e'; btn.style.background = '#f0fdf4'; btn.style.opacity = '0.6'; }
+      else if (!isCorrect && btn.dataset.dir === correctDir && isRetry && q.highlightCorrectOnRetry !== false) { btn.style.borderColor = '#22c55e'; btn.style.background = '#f0fdf4'; btn.style.opacity = '0.6'; }
     });
     setTimeout(() => {
       if (!isCorrect && !isRetry && q.allowRetry !== false) startSequenceQuestion(pair, qIdx, true);

@@ -864,7 +864,7 @@
           <span style="font-size:0.88rem;color:#374151">Passer directement aux questions</span>
         </label>
         <label class="checkbox-row" style="cursor:pointer;user-select:none">
-          <input type="checkbox" id="seq-hide-items" style="width:16px;height:16px;accent-color:#3b82f6">
+          <input type="checkbox" id="seq-hide-items" checked style="width:16px;height:16px;accent-color:#3b82f6">
           <span style="font-size:0.88rem;color:#374151">Masquer la paire par défaut</span>
         </label>
       </div>
@@ -1276,7 +1276,8 @@
         displayEl.appendChild(el);
       });
     }
-    const shouldShowItems = (pair.skipDisplay && !pair.hideItems) || (!pair.skipDisplay && isRetry && q.showOnRetry !== false);
+    const hideItems = pair.hideItems !== false;
+    const shouldShowItems = (pair.skipDisplay && !hideItems) || (!pair.skipDisplay && isRetry && q.showOnRetry !== false);
     displayEl.style.display = shouldShowItems ? 'flex' : 'none';
 
     // Bouton Revoir/Masquer — identique pour tous les types de question
@@ -2538,7 +2539,7 @@
     const skip = pair.skipDisplay === true;
     document.getElementById('seq-skip-display').checked = skip;
     document.getElementById('seq-duration-row').style.display = skip ? 'none' : '';
-    document.getElementById('seq-hide-items').checked = pair.hideItems === true;
+    document.getElementById('seq-hide-items').checked = pair.hideItems !== false;
     refreshSequenceItemInputs();
     const questions = getPairQuestions(pair);
     const container = document.getElementById('seq-questions-container');

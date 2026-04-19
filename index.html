@@ -1202,7 +1202,6 @@
       displayEl.appendChild(el);
       if (itemObj.audioUrl) audioUrls.push(itemObj.audioUrl);
     });
-    displayEl.style.display  = 'flex';
     questionEl.style.display = 'none';
     choicesEl.style.display  = 'none';
     document.getElementById('seq-show-again-btn').style.display = 'none';
@@ -1218,9 +1217,12 @@
       timerFill.style.transition = 'none';
       timerFill.style.width = '0%';
       currentQuestionIndex = 0;
-      sequenceTimer = setTimeout(() => { sequenceTimer = null; startSequenceQuestion(pair, 0); }, 0);
+      // displayEl visibility is set entirely by startSequenceQuestion — no assignment here
+      startSequenceQuestion(pair, 0);
       return;
     }
+
+    displayEl.style.display = 'flex';
 
     if (dur > 0) {
       timerFill.style.transition = 'none';

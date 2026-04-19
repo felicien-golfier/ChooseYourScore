@@ -1206,17 +1206,10 @@
     questionEl.style.display = 'none';
     choicesEl.style.display  = 'none';
     document.getElementById('seq-show-again-btn').style.display = 'none';
-    const wz = document.getElementById('seq-write-zone');
-    wz.style.display = 'none';
-    const wi = document.getElementById('seq-write-input');
-    wi.value = ''; wi.disabled = false; wi.style.borderColor = '#e2e8f0';
-    const wf = document.getElementById('seq-write-feedback');
-    wf.style.display = 'none'; wf.innerHTML = '';
-    document.getElementById('seq-write-validate').disabled = false;
+    document.getElementById('seq-write-zone').style.display = 'none';
 
     if (pair.skipDisplay) {
       timerBar.style.display = 'none';
-      currentQuestionIndex = 0;
       startSequenceQuestion(pair, 0);
       return;
     }
@@ -1235,14 +1228,12 @@
       timerFill.style.width = '0%';
     }
 
-    // Play audio items sequentially
     if (audioUrls.length > 0) {
       let i = 0;
       function playNext() { if (i >= audioUrls.length) return; const a = new Audio(audioUrls[i++]); a.addEventListener('ended', playNext); a.play().catch(() => {}); }
       playNext();
     }
 
-    currentQuestionIndex = 0;
     sequenceTimer = setTimeout(() => { sequenceTimer = null; startSequenceQuestion(pair, 0); }, dur || 50);
   }
 
@@ -1402,11 +1393,13 @@
         // Only reveal correct answers on the final attempt (retry or no-retry-allowed), not the first wrong attempt when retry is available
         else if ((isRetry || q.allowRetry === false) && q.highlightCorrectOnRetry !== false && correctAnswers.includes(b.dataset.value) && !foundAnswers.has(b.dataset.value)) b.classList.add('missed');
       });
-      setTimeout(() => {
-        if (!isRetry && q.allowRetry !== false) startSequenceQuestion(pair, qIdx, true);
-        else advance(pair, questions, qIdx, isRetry);
-      }, 1200);
+      setTimeout(() => resolveQuestion(false, q, pair, questions, qIdx, isRetry), 1200);
     }
+  }
+
+  function resolveQuestion(isCorrect, q, pair, questions, qIdx, isRetry) {
+    if (!isCorrect && !isRetry && q.allowRetry !== false) startSequenceQuestion(pair, qIdx, true);
+    else advance(pair, questions, qIdx, isRetry);
   }
 
   function advance(pair, questions, qIdx, isRetry) {
@@ -1438,8 +1431,7 @@
     setTimeout(() => {
       writeInput.disabled = false;
       document.getElementById('seq-write-validate').disabled = false;
-      if (!isCorrect && !isRetry && q.allowRetry !== false) startSequenceQuestion(pair, qIdx, true);
-      else advance(pair, questions, qIdx, isRetry);
+      resolveQuestion(isCorrect, q, pair, questions, qIdx, isRetry);
     }, delay);
   }
 
@@ -1466,10 +1458,7 @@
       if (btn.dataset.dir === pressed) { btn.style.borderColor = isCorrect ? '#22c55e' : '#ef4444'; btn.style.background = isCorrect ? '#f0fdf4' : '#fef2f2'; }
       else if (!isCorrect && btn.dataset.dir === correctDir && q.highlightCorrectOnRetry !== false && (isRetry || q.allowRetry === false)) { btn.style.borderColor = '#22c55e'; btn.style.background = '#f0fdf4'; btn.style.opacity = '0.6'; }
     });
-    setTimeout(() => {
-      if (!isCorrect && !isRetry && q.allowRetry !== false) startSequenceQuestion(pair, qIdx, true);
-      else advance(pair, questions, qIdx, isRetry);
-    }, 700);
+    setTimeout(() => resolveQuestion(isCorrect, q, pair, questions, qIdx, isRetry), 700);
   }
 
   document.addEventListener('keydown', e => {

@@ -571,6 +571,29 @@
     @media (max-width: 400px) {
       .stats-grid { grid-template-columns: 1fr; }
     }
+
+    /* ── Boutons de direction (flèches) ─────────────────────────────────────── */
+    .dir-key-layout { display:flex; flex-direction:column; align-items:center; gap:8px; }
+    .dir-key-row    { display:flex; gap:8px; justify-content:center; }
+    .dir-key-btn {
+      width:64px; height:64px; border:2px solid #e2e8f0; border-radius:12px;
+      background:white; font-size:1.8rem; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition:all 0.15s; font-family:inherit;
+    }
+    .dir-key-btn:hover:not(:disabled)                 { border-color:#3b82f6; background:#eff6ff; }
+    .no-hover-flash .dir-key-btn:hover:not(:disabled) { border-color:#e2e8f0; background:white; }
+    body.is-fullscreen .dir-key-btn                   { width:80px; height:80px; font-size:2.2rem; }
+
+    /* ── Composants JS (sequence question builder) ──────────────────────────── */
+    .seq-q-override-row    { display:flex; align-items:center; gap:6px; margin-bottom:4px; }
+    .seq-q-header          { display:flex; align-items:center; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
+    .seq-q-choices-wrap    { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+    .seq-q-choice-wrap     { display:flex; align-items:center; gap:4px; position:relative; }
+    .seq-q-override-section{ margin-top:10px; padding-top:8px; border-top:1px dashed #e2e8f0; }
+    .seq-q-override-header { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+    .sq-picker             { display:flex; align-items:center; gap:6px; margin-top:6px; flex-wrap:wrap; }
+    .sq-picker-label       { font-size:0.72rem; color:#94a3b8; }
   </style>
 </head>
 <body>
@@ -938,7 +961,9 @@
 </div>
 
 <script>
-  // ── Storage ───────────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // STORAGE
+  // ═══════════════════════════════════════════════════════════════════════════════
   let exercises = JSON.parse(localStorage.getItem('cys_exercises') || '[]');
   let sessions  = JSON.parse(localStorage.getItem('cys_sessions')  || '[]');
   let patients  = JSON.parse(localStorage.getItem('cys_patients')  || '[]');
@@ -949,17 +974,9 @@
   function savePatients()  { localStorage.setItem('cys_patients',  JSON.stringify(patients));  }
   function saveFolders()   { localStorage.setItem('cys_folders',   JSON.stringify(folders));   }
 
-  function migratePatients() {
-    if (patients.length > 0 || sessions.length === 0) return;
-    const names = [...new Set(sessions.map(s => s.patientName).filter(Boolean))];
-    names.forEach(name => patients.push({ id: newId('pat'), name, birthDate: '', notes: '', createdAt: new Date().toISOString() }));
-    sessions.forEach(s => {
-      if (!s.patientId) { const p = patients.find(p => p.name === s.patientName); if (p) s.patientId = p.id; }
-    });
-    savePatients(); saveSessions();
-  }
-
-  // ── Arrow constants ───────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // CONSTANTS & UTILS
+  // ═══════════════════════════════════════════════════════════════════════════════
   const ARROW_CHARS = { left: '←', right: '→', up: '↑', down: '↓' };
   const OPPOSITE    = { left: 'right', right: 'left', up: 'down', down: 'up' };
 
@@ -973,48 +990,9 @@
     return { bg: '#3b82f6', fg: 'white' };
   }
 
-  function migrateAllPairs() {
-    let changed = false;
-    exercises.forEach(ex => {
-      (ex.pairs || []).forEach((pair, idx) => {
-        if (pair.type === 'choice') {
-          const left  = pair.left  || {};
-          const right = pair.right || {};
-          const itemL = typeof left  === 'string' ? {type:'text', text:left}  : left;
-          const itemR = typeof right === 'string' ? {type:'text', text:right} : right;
-          ex.pairs[idx] = {
-            id: pair.id, type: 'sequence', items: [itemL, itemR], displayDuration: 0,
-            questions: [{ questionText: '', type: 'choice',
-              choices: [itemL.text||'Item 1', itemR.text||'Item 2'],
-              correctIndices: [pair.correct === 'right' ? 1 : 0],
-              showOnRetry: true, itemOverrides: [] }]
-          };
-          changed = true;
-        } else if (pair.type === 'arrow') {
-          const bgHex = resolveArrowColor(pair.bgColor || 'blue').bg;
-          const rule  = pair.rule || (pair.bgColor === 'yellow' ? 'inverse' : 'same');
-          ex.pairs[idx] = {
-            id: pair.id, type: 'sequence',
-            items: [{ type: 'arrow', arrowDirection: pair.direction || 'left', bgColor: bgHex }],
-            displayDuration: 1000,
-            questions: [{ questionText: '', type: 'direction', rule,
-              numOptions: pair.numOptions || 4, showOnRetry: false }]
-          };
-          changed = true;
-        } else if (pair.type === 'sequence') {
-          let ic = false;
-          pair.items = (pair.items || []).map(item => {
-            if (typeof item === 'string') { ic = true; return {type:'text', text:item}; }
-            return item;
-          });
-          if (ic) changed = true;
-        }
-      });
-    });
-    if (changed) saveExercises();
-  }
-
-  // ── Utils ─────────────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // CONSTANTS (suite) – UTILS
+  // ═══════════════════════════════════════════════════════════════════════════════
   function getItemType(item) {
     if (!item) return 'text';
     if (item.type) return item.type;
@@ -1063,7 +1041,9 @@
     return a;
   }
 
-  // ── Navigation ────────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // NAVIGATION
+  // ═══════════════════════════════════════════════════════════════════════════════
   const NAV_BUTTONS = { setup: 'nav-exercise', editor: 'nav-editor', results: 'nav-results', patients: 'nav-patients' };
 
   function showView(name) {
@@ -1086,7 +1066,9 @@
     if (name === 'patients') initPatientsView();
   }
 
-  // ── Setup ─────────────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // SETUP VIEW
+  // ═══════════════════════════════════════════════════════════════════════════════
   function initSetup() {
     const select = document.getElementById('exercise-select');
     select.innerHTML = '';
@@ -1162,7 +1144,9 @@
     showView('instruction');
   });
 
-  // ── Exercise ──────────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // EXERCISE – STATE & RUNTIME
+  // ═══════════════════════════════════════════════════════════════════════════════
   let currentExercise = null, currentPatient = '', currentPatientId = null, currentPairs = [];
   let pairIndex = 0, responses = [], exerciseStartTime = 0, pairStartTime = 0, isWaiting = false;
   let currentSessionId = null;
@@ -1177,6 +1161,7 @@
   let sequenceTimer = null;
   let currentQuestionIndex = 0;
 
+  // ── Affichage des paires ───────────────────────────────────────────────────
   function renderPair() {
     const pair = currentPairs[pairIndex];
     if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
@@ -1242,24 +1227,24 @@
 
   function startSequenceQuestion(pair, qIdx, isRetry) {
     currentQuestionIndex = qIdx;
-    const questions = getPairQuestions(pair);
-    const q = questions[qIdx];
+    const questions    = getPairQuestions(pair);
+    const q            = questions[qIdx];
     const correctIndices = q.correctIndices && q.correctIndices.length ? q.correctIndices : [0];
     const correctAnswers = correctIndices.map(i => (q.choices || [])[i]).filter(Boolean);
 
-    const displayEl  = document.getElementById('sequence-display');
-    const questionEl = document.getElementById('sequence-question');
-    const choicesEl  = document.getElementById('sequence-choices');
-    const writeZone  = document.getElementById('seq-write-zone');
+    const displayEl    = document.getElementById('sequence-display');
+    const questionEl   = document.getElementById('sequence-question');
+    const choicesEl    = document.getElementById('sequence-choices');
+    const writeZone    = document.getElementById('seq-write-zone');
+    const showAgainBtn = document.getElementById('seq-show-again-btn');
 
-    // Always apply overrides to the DOM so the button "Revoir" reveals updated items
+    // Apply item overrides so "Revoir" reveals the updated items
     const overrides = q.itemOverrides || [];
     if (overrides.length > 0) {
       const baseItems = pair.items || [];
       const overriddenItems = baseItems.map((item, i) => {
         const ov = overrides.find(o => o.index === i);
         if (!ov) return item;
-        // Support new format (item object) and old format (string value)
         if (ov.item) return ov.item;
         return typeof item === 'object' ? {...item, text: ov.value || ''} : {type:'text', text: ov.value || ''};
       });
@@ -1268,73 +1253,107 @@
       overriddenItems.forEach(item => {
         const el = document.createElement('div');
         el.className = isSingle ? 'sequence-text-display' : 'sequence-item-box';
-        applyItemStyle(el, typeof item === 'string' ? {type:'text',text:item} : item);
+        applyItemStyle(el, typeof item === 'string' ? {type:'text', text:item} : item);
         displayEl.appendChild(el);
       });
     }
     const shouldShowItems = isRetry && q.showOnRetry !== false;
     displayEl.style.display = shouldShowItems ? 'flex' : 'none';
 
-    const showAgainBtn = document.getElementById('seq-show-again-btn');
-    if (q.type === 'direction') {
-      showAgainBtn.style.display = 'none';
-    } else {
-      showAgainBtn.style.display = '';
-      showAgainBtn.textContent = shouldShowItems ? '🙈 Masquer' : '👁 Revoir';
-      showAgainBtn.onclick = () => {
-        const visible = displayEl.style.display !== 'none';
-        displayEl.style.display = visible ? 'none' : 'flex';
-        showAgainBtn.textContent = visible ? '👁 Revoir' : '🙈 Masquer';
-      };
-    }
+    // Bouton Revoir/Masquer — identique pour tous les types de question
+    showAgainBtn.style.display = '';
+    showAgainBtn.textContent   = shouldShowItems ? '🙈 Masquer' : '👁 Revoir';
+    showAgainBtn.onclick = () => {
+      const visible = displayEl.style.display !== 'none';
+      displayEl.style.display  = visible ? 'none' : 'flex';
+      showAgainBtn.textContent = visible ? '👁 Revoir' : '🙈 Masquer';
+    };
 
     questionEl.textContent = q.questionText || '';
     questionEl.style.display = q.questionText ? 'block' : 'none';
 
+    // Réinitialisation des conteneurs + suppression du flash au survol
+    writeZone.style.display   = 'none';
+    choicesEl.innerHTML       = '';
+    choicesEl.style.display   = 'none';
+    choicesEl.classList.add('no-hover-flash');
+    const removeFlash = () => {
+      choicesEl.classList.remove('no-hover-flash');
+      choicesEl.removeEventListener('mousemove', removeFlash);
+    };
+    choicesEl.addEventListener('mousemove', removeFlash);
+
+    // ── Direction ──────────────────────────────────────────────────────────────
     if (q.type === 'direction') {
-      writeZone.style.display = 'none';
-      showDirectionButtons(pair, q, questions, qIdx, isRetry);
-      return;
+      const arrowItem  = (pair.items || []).find(i => i.type === 'arrow') || (pair.items || [])[0];
+      const dir        = arrowItem?.arrowDirection || 'left';
+      const rule       = q.rule || 'same';
+      const numOpts    = q.numOptions || 4;
+      const activeDirs = getDirectionsForOpts(dir, numOpts);
+      const correctDir = rule === 'inverse' ? OPPOSITE[dir] : dir;
+
+      const keyLayout = document.createElement('div');
+      keyLayout.className = 'dir-key-layout';
+      const upRow  = document.createElement('div'); upRow.className  = 'dir-key-row';
+      const midRow = document.createElement('div'); midRow.className = 'dir-key-row';
+
+      ['up', 'left', 'down', 'right'].forEach(d => {
+        const btn = document.createElement('button');
+        btn.className        = 'dir-key-btn';
+        btn.textContent      = ARROW_CHARS[d];
+        btn.dataset.dir      = d;
+        const visible        = activeDirs.includes(d);
+        btn.style.visibility = visible ? '' : 'hidden';
+        btn.disabled         = !visible;
+        if (visible) btn.addEventListener('click', () =>
+          handleDirectionResponse(d, correctDir, activeDirs, pair, questions, qIdx, isRetry));
+        if (d === 'up') upRow.appendChild(btn); else midRow.appendChild(btn);
+      });
+      keyLayout.append(upRow, midRow);
+      choicesEl.appendChild(keyLayout);
+      choicesEl.style.display = 'flex';
+
+      document.getElementById('keyboard-hint').textContent =
+        activeDirs.map(d => ARROW_CHARS[d]).join('  ') + '  Flèches du clavier';
+
+    // ── Saisie libre ───────────────────────────────────────────────────────────
     } else if (q.type === 'write') {
-      choicesEl.style.display = 'none';
-      writeZone.style.display = 'flex';
       const writeInput    = document.getElementById('seq-write-input');
       const writeFeedback = document.getElementById('seq-write-feedback');
-      writeInput.value            = '';
-      writeInput.disabled         = false;
+      writeInput.value             = '';
+      writeInput.disabled          = false;
       writeInput.style.borderColor = '#e2e8f0';
       writeFeedback.style.display  = 'none';
       writeFeedback.innerHTML      = '';
       document.getElementById('seq-write-validate').disabled = false;
+      writeZone.style.display = 'flex';
       setTimeout(() => writeInput.focus(), 50);
-
       const validate = () => handleSequenceWrite(writeInput.value.trim(), correctAnswers, pair, questions, qIdx, isRetry);
       document.getElementById('seq-write-validate').onclick = validate;
       writeInput.onkeydown = e => { if (e.key === 'Enter') validate(); };
+
+    // ── Choix multiples ────────────────────────────────────────────────────────
     } else {
-      writeZone.style.display = 'none';
-      choicesEl.style.display = 'flex';
       const shuffledChoices = shuffleArray([...(q.choices || [])]);
-      choicesEl.innerHTML = '';
-      choicesEl.classList.add('no-hover-flash');
-      const removeFlash = () => { choicesEl.classList.remove('no-hover-flash'); choicesEl.removeEventListener('mousemove', removeFlash); };
-      choicesEl.addEventListener('mousemove', removeFlash);
-      const foundAnswers = new Set();
+      const foundAnswers    = new Set();
       shuffledChoices.forEach(choice => {
         const btn = document.createElement('button');
-        btn.className = 'sequence-choice-btn';
+        btn.className    = 'sequence-choice-btn';
         btn.dataset.value = choice;
-        if (hasSqCodes(choice)) { btn.appendChild(renderSqChoice(choice)); }
-        else { btn.textContent = choice; }
-        btn.addEventListener('click', () => handleSequenceResponse(choice, correctAnswers, foundAnswers, pair, questions, qIdx, isRetry));
+        if (hasSqCodes(choice)) btn.appendChild(renderSqChoice(choice));
+        else btn.textContent = choice;
+        btn.addEventListener('click', () =>
+          handleSequenceResponse(choice, correctAnswers, foundAnswers, pair, questions, qIdx, isRetry));
         choicesEl.appendChild(btn);
       });
+      choicesEl.style.display = 'flex';
     }
 
-    isWaiting = false;
+    isWaiting    = false;
     pairStartTime = Date.now();
   }
 
+  // ── Gestion des réponses ───────────────────────────────────────────────────
   function handleSequenceResponse(chosen, correctAnswers, foundAnswers, pair, questions, qIdx, isRetry) {
     if (isWaiting) return;
     const q = questions[qIdx];
@@ -1411,44 +1430,6 @@
     return ['left', 'right', 'up', 'down'];
   }
 
-  function showDirectionButtons(pair, q, questions, qIdx, isRetry) {
-    const arrowItem = (pair.items||[]).find(i=>i.type==='arrow') || (pair.items||[])[0];
-    const dir = arrowItem?.arrowDirection || 'left';
-    const rule = q.rule || 'same';
-    const numOpts = q.numOptions || 4;
-    const activeDirs = getDirectionsForOpts(dir, numOpts);
-    const correctDir = rule === 'inverse' ? OPPOSITE[dir] : dir;
-
-    const choicesEl = document.getElementById('sequence-choices');
-    choicesEl.innerHTML = '';
-    choicesEl.style.display = 'flex';
-
-    const keyLayout = document.createElement('div');
-    keyLayout.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:8px';
-    const upRow  = document.createElement('div'); upRow.style.cssText  = 'display:flex;gap:8px;justify-content:center';
-    const midRow = document.createElement('div'); midRow.style.cssText = 'display:flex;gap:8px;justify-content:center';
-
-    ['up','left','down','right'].forEach(d => {
-      const btn = document.createElement('button');
-      btn.style.cssText = 'width:64px;height:64px;border:2px solid #e2e8f0;border-radius:12px;background:white;font-size:1.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;font-family:inherit';
-      btn.textContent = ARROW_CHARS[d];
-      btn.dataset.dir = d;
-      const visible = activeDirs.includes(d);
-      btn.style.visibility = visible ? '' : 'hidden';
-      btn.disabled = !visible;
-      if (visible) btn.addEventListener('click', () => handleDirectionResponse(d, correctDir, activeDirs, pair, questions, qIdx, isRetry));
-      if (d === 'up') upRow.appendChild(btn); else midRow.appendChild(btn);
-    });
-
-    keyLayout.append(upRow, midRow);
-    choicesEl.appendChild(keyLayout);
-
-    const hintChars = activeDirs.map(d => ARROW_CHARS[d]).join('  ');
-    document.getElementById('keyboard-hint').textContent = hintChars + '  Flèches du clavier';
-
-    isWaiting = false;
-    pairStartTime = Date.now();
-  }
 
   function handleDirectionResponse(pressed, correctDir, activeDirs, pair, questions, qIdx, isRetry) {
     if (isWaiting) return;
@@ -1485,6 +1466,7 @@
     }
   });
 
+  // ── Fin de session ─────────────────────────────────────────────────────────
   function finishExercise() {
     const totalTimeMs = Date.now() - exerciseStartTime;
     let score = 0, totalReactionMs = 0, reactionCount = 0;
@@ -1529,6 +1511,7 @@
     saveSessions();
   });
 
+  // ── Plein écran ────────────────────────────────────────────────────────────
   function toggleFullscreen() {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen().catch(() => {});
@@ -1549,7 +1532,9 @@
     document.body.classList.toggle('is-fullscreen', isFullscreen);
   });
 
-  // ── Editor ────────────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // EDITOR
+  // ═══════════════════════════════════════════════════════════════════════════════
   let editorSelectedId = null, editingPairId = null;
   let seqItems = [];                // array of typed item objects for current seq modal
   let simModalImage = null;         // base64 image for seq-item-modal
@@ -1892,7 +1877,9 @@
     [ex.pairs[i], ex.pairs[j]] = [ex.pairs[j], ex.pairs[i]]; saveExercises(); renderExerciseEditor();
   }
 
-  // ── Pair modal ────────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // EDITOR – PAIR MODAL
+  // ═══════════════════════════════════════════════════════════════════════════════
   function openPairModal(pairId) {
     const ex = getSelectedEx(); if (!ex) return;
     const pair = ex.pairs.find(p => p.id === pairId); if (!pair) return;
@@ -1931,7 +1918,9 @@
 
   function closeModal() { document.getElementById('pair-modal').style.display='none'; editingPairId=null; }
 
-  // ── Seq-item modal ────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // EDITOR – ITEM MODAL
+  // ═══════════════════════════════════════════════════════════════════════════════
   function setSimSect(type) {
     ['text','image','audio','arrow'].forEach(t => {
       const el = document.getElementById('sim-sect-'+t);
@@ -2070,7 +2059,9 @@
     if (e.target === document.getElementById('seq-item-modal')) closeSeqItemModal();
   });
 
-  // ── Sequence modal helpers ────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // EDITOR – SEQUENCE BUILDER (items)
+  // ═══════════════════════════════════════════════════════════════════════════════
   function refreshSequenceItemInputs() {
     const numItems = Math.max(1, parseInt(document.getElementById('seq-num-items').value, 10) || 1);
     // Resize seqItems array: pad with blank text items, or trim from end
@@ -2095,7 +2086,7 @@
 
   function getSequenceItemValues() { return seqItems; }  // returns typed item objects
 
-  // ── Sq-code helpers ──────────────────────────────────────────────────────────
+  // ── Sq-code helpers (codes visuels de zones) ─────────────────────────────────
   const SQ_CODES = ['[sq:m]', '[sq:um]', '[sq:ml]', '[sq:uml]'];
 
   function isSqCode(str) { return SQ_CODES.includes(str); }
@@ -2143,14 +2134,16 @@
     return wrapper;
   }
 
-  // ── Sequence question blocks ──────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // EDITOR – SEQUENCE BUILDER (questions)
+  // ═══════════════════════════════════════════════════════════════════════════════
   function buildChoicesRow(container, choices, correctIndices) {
     container.innerHTML = '';
     const corrects = new Set(correctIndices && correctIndices.length ? correctIndices : [0]);
     choices.forEach((val, i) => {
       const isCorrect = corrects.has(i);
       const wrapper = document.createElement('div');
-      wrapper.style.cssText = 'display:flex;align-items:center;gap:4px;position:relative';
+      wrapper.className = 'seq-q-choice-wrap';
       // Correct toggle button
       const toggle = document.createElement('button');
       toggle.type = 'button';
@@ -2209,7 +2202,6 @@
       : { type: 'text', text: typeof itemOrVal === 'string' ? itemOrVal : '', color: '#1a1a1a', fontSize: 32, fontFamily: 'Arial', textTransform: 'none', imageUrl: null, audioUrl: null };
     const row = document.createElement('div');
     row.className = 'seq-q-override-row';
-    row.style.cssText = 'display:flex;align-items:center;gap:6px;margin-bottom:4px';
     row._overrideItem = initItem;
     const sel = document.createElement('select');
     sel.className = 'seq-q-override-idx';
@@ -2257,7 +2249,7 @@
 
     // Header: title + type toggle + delete
     const header = document.createElement('div');
-    header.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap';
+    header.className = 'seq-q-header';
     const title = document.createElement('span');
     title.className = 'seq-q-title';
     title.style.cssText = 'font-size:0.78rem;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.04em;flex:1';
@@ -2333,8 +2325,7 @@
     numInput.value = (q.choices || []).length || 2;
     numInput.style.cssText = 'width:52px;padding:4px 6px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:0.85rem;outline:none;font-family:inherit;color:#0f172a';
     const choicesRow = document.createElement('div');
-    choicesRow.className = 'seq-q-choices-row';
-    choicesRow.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;align-items:center';
+    choicesRow.className = 'seq-q-choices-row seq-q-choices-wrap';
     const initialChoices  = (q.choices && q.choices.length >= 1) ? q.choices : ['', ''];
     const initialCorrects = q.correctIndices && q.correctIndices.length ? q.correctIndices : [0];
     buildChoicesRow(choicesRow, initialChoices, initialCorrects);
@@ -2350,9 +2341,9 @@
 
     // Sq-code picker
     const picker = document.createElement('div');
-    picker.style.cssText = 'display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap';
+    picker.className = 'sq-picker';
     const pickerLabel = document.createElement('span');
-    pickerLabel.style.cssText = 'font-size:0.72rem;color:#94a3b8';
+    pickerLabel.className = 'sq-picker-label';
     pickerLabel.textContent = 'Insérer :';
     picker.appendChild(pickerLabel);
     SQ_CODES.forEach(code => {
@@ -2425,9 +2416,9 @@
 
     // ── Item overrides section ───────────────────────────────────────────────
     const ovSection = document.createElement('div');
-    ovSection.style.cssText = 'margin-top:10px;padding-top:8px;border-top:1px dashed #e2e8f0';
+    ovSection.className = 'seq-q-override-section';
     const ovHeader = document.createElement('div');
-    ovHeader.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:4px';
+    ovHeader.className = 'seq-q-override-header';
     const addOvBtn = document.createElement('button');
     addOvBtn.type = 'button'; addOvBtn.textContent = '+ Modifier un item';
     addOvBtn.style.cssText = 'padding:2px 8px;border:1.5px solid #fde68a;border-radius:6px;background:#fffbeb;color:#92400e;font-size:0.75rem;cursor:pointer;font-family:inherit';
@@ -2575,7 +2566,9 @@
   document.getElementById('pair-modal').addEventListener('click', e => { if (e.target===document.getElementById('pair-modal')) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key==='Escape' && document.getElementById('pair-modal').style.display!=='none') closeModal(); });
 
-  // ── Patients view ─────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // PATIENTS VIEW
+  // ═══════════════════════════════════════════════════════════════════════════════
   let patientSelectedId = null;
   function getSelectedPatient() { return patients.find(p => p.id === patientSelectedId) || null; }
 
@@ -2807,7 +2800,9 @@ ${patientSessions.length === 0
     savePatients(); renderPatientSidebar(); renderPatientDetail();
   });
 
-  // ── Export / Import ───────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // EXPORT / IMPORT
+  // ═══════════════════════════════════════════════════════════════════════════════
   document.getElementById('btn-export').addEventListener('click', () => {
     downloadBlob(JSON.stringify(exercises, null, 2), 'cys-exercices-'+new Date().toISOString().slice(0,10)+'.json');
   });
@@ -2865,7 +2860,7 @@ ${patientSessions.length === 0
     input.click();
   }
 
-  // ── Export / Import résultats ─────────────────────────────────────────────────
+  // ── Export / Import – résultats ───────────────────────────────────────────────
   document.getElementById('btn-export-results').addEventListener('click', () => {
     exportSessionsJson(getFilteredSessions(), 'resultats-cys-' + new Date().toISOString().slice(0,10) + '.json');
   });
@@ -2874,7 +2869,9 @@ ${patientSessions.length === 0
     importSessionsJson(added => { alert(added + ' session(s) importée(s).'); renderResults(); });
   });
 
-  // ── Results ───────────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // RESULTS VIEW
+  // ═══════════════════════════════════════════════════════════════════════════════
   let rScoreChart = null, rTimeChart = null;
 
   function initResults() {
@@ -3005,7 +3002,7 @@ ${patientSessions.length === 0
       notesTd.addEventListener('blur',  () => {
         session.notes = notesTd.textContent.trim();
         saveSessions();
-        notesTd.style.fontStyle = session.notes ? 'italic' : 'italic';
+        notesTd.style.fontStyle = session.notes ? 'italic' : 'normal';
       });
       notesTd.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); notesTd.blur(); } });
       const btn = document.createElement('button');
@@ -3027,9 +3024,9 @@ ${patientSessions.length === 0
     populateExerciseFilter(); renderResults();
   });
 
-  // ── Init ──────────────────────────────────────────────────────────────────────
-  migratePatients();
-  migrateAllPairs();
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // INIT
+  // ═══════════════════════════════════════════════════════════════════════════════
   initSetup();
 </script>
 </body>

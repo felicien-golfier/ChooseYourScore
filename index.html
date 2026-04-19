@@ -2295,8 +2295,7 @@
     highlightLabel.append(highlightChk, document.createTextNode('Colorier correcte en vert'));
     // Hide retry options when allowRetry is off
     const syncRetryVis = () => {
-      retryLabel.style.display   = allowRetryChk.checked ? '' : 'none';
-      highlightLabel.style.display = allowRetryChk.checked ? '' : 'none';
+      retryLabel.style.display = allowRetryChk.checked ? '' : 'none';
     };
     allowRetryChk.addEventListener('change', syncRetryVis); syncRetryVis();
     header.append(title, typeSelect, allowRetryLabel, retryLabel, highlightLabel, delBtn);

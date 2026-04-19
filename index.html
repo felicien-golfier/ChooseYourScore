@@ -848,15 +848,21 @@
 
     <!-- Sequence config (always shown) -->
     <div id="sequence-config" style="margin-bottom:28px">
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:12px">
         <div class="field-row">
           <label>Nbre d'items</label>
           <input type="number" id="seq-num-items" min="1" step="1" value="4" style="width:100%;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.9rem;outline:none;font-family:inherit;color:#0f172a;transition:border-color .15s">
         </div>
-        <div class="field-row">
+        <div class="field-row" id="seq-duration-row">
           <label>Durée d'affichage (secondes)</label>
           <input type="number" id="seq-duration" min="0.1" step="0.1" value="1" style="width:100%;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.9rem;outline:none;font-family:inherit;color:#0f172a;transition:border-color .15s">
         </div>
+      </div>
+      <div style="margin-bottom:16px">
+        <label class="checkbox-row" style="cursor:pointer;user-select:none">
+          <input type="checkbox" id="seq-skip-display" style="width:16px;height:16px;accent-color:#3b82f6">
+          <span style="font-size:0.88rem;color:#374151">Passer directement aux questions <span style="color:#64748b">(paire visible par défaut)</span></span>
+        </label>
       </div>
       <div style="margin-bottom:16px">
         <div class="field-row" style="margin-bottom:8px"><label>Items à afficher (un par case)</label></div>
@@ -1204,6 +1210,14 @@
     wf.style.display = 'none'; wf.innerHTML = '';
     document.getElementById('seq-write-validate').disabled = false;
 
+    if (pair.skipDisplay) {
+      timerFill.style.transition = 'none';
+      timerFill.style.width = '0%';
+      currentQuestionIndex = 0;
+      sequenceTimer = setTimeout(() => { sequenceTimer = null; startSequenceQuestion(pair, 0); }, 0);
+      return;
+    }
+
     if (dur > 0) {
       timerFill.style.transition = 'none';
       timerFill.style.width = '100%';
@@ -1258,7 +1272,7 @@
         displayEl.appendChild(el);
       });
     }
-    const shouldShowItems = isRetry && q.showOnRetry !== false;
+    const shouldShowItems = pair.skipDisplay || (isRetry && q.showOnRetry !== false);
     displayEl.style.display = shouldShowItems ? 'flex' : 'none';
 
     // Bouton Revoir/Masquer — identique pour tous les types de question
@@ -1702,7 +1716,8 @@
       lbl.style.cssText = 'font-size:0.8rem;color:#64748b;margin-left:8px';
       const questions = pair.questions || [];
       const dur = pair.displayDuration != null ? pair.displayDuration : 1000;
-      lbl.textContent = dur + ' ms · ' + questions.length + ' question' + (questions.length !== 1 ? 's' : '');
+      const durLabel = pair.skipDisplay ? 'Direct' : dur + ' ms';
+      lbl.textContent = durLabel + ' · ' + questions.length + ' question' + (questions.length !== 1 ? 's' : '');
       preview.appendChild(lbl);
       const actions = document.createElement('div');
       actions.className = 'pair-actions';
@@ -1899,6 +1914,7 @@
     const seqData = readSequenceModal();
     pair.type            = 'sequence';
     pair.items           = seqData.items;
+    pair.skipDisplay     = seqData.skipDisplay;
     pair.displayDuration = seqData.displayDuration;
     pair.questions       = seqData.questions;
     delete pair.questionText; delete pair.choices;
@@ -2514,6 +2530,9 @@
     document.getElementById('seq-num-items').value = seqItems.length;
     const dur = pair.displayDuration != null ? pair.displayDuration : 1000;
     document.getElementById('seq-duration').value = (dur / 1000);
+    const skip = pair.skipDisplay === true;
+    document.getElementById('seq-skip-display').checked = skip;
+    document.getElementById('seq-duration-row').style.display = skip ? 'none' : '';
     refreshSequenceItemInputs();
     const questions = getPairQuestions(pair);
     const container = document.getElementById('seq-questions-container');
@@ -2550,15 +2569,20 @@
       }
       return base;
     });
+    const skipDisplay = document.getElementById('seq-skip-display').checked;
     return {
       items:           getSequenceItemValues(),
-      displayDuration: Math.round((parseFloat(document.getElementById('seq-duration').value) || 1) * 1000),
+      skipDisplay,
+      displayDuration: skipDisplay ? 0 : Math.round((parseFloat(document.getElementById('seq-duration').value) || 1) * 1000),
       questions,
     };
   }
 
   document.getElementById('seq-num-items').addEventListener('input',  () => { refreshSequenceItemInputs(); });
   document.getElementById('seq-num-items').addEventListener('change', () => { refreshSequenceItemInputs(); });
+  document.getElementById('seq-skip-display').addEventListener('change', function() {
+    document.getElementById('seq-duration-row').style.display = this.checked ? 'none' : '';
+  });
   document.getElementById('seq-add-question-btn').addEventListener('click', () => {
     document.getElementById('seq-questions-container').appendChild(buildSequenceQuestionBlock({questionText:'', choices:['','']}));
     updateSeqQuestionTitles(); refreshSequencePreview();

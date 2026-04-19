@@ -662,7 +662,7 @@
       <div class="progress-label" id="progress-label"></div>
     </div>
     <div class="sequence-container" id="sequence-container">
-      <div class="sequence-timer-bar"><div class="sequence-timer-fill" id="sequence-timer-fill" style="width:100%"></div></div>
+      <div class="sequence-timer-bar" id="sequence-timer-bar"><div class="sequence-timer-fill" id="sequence-timer-fill" style="width:100%"></div></div>
       <div class="sequence-display" id="sequence-display"></div>
       <div class="sequence-question" id="sequence-question" style="display:none"></div>
       <div class="sequence-choices" id="sequence-choices" style="display:none"></div>
@@ -1188,6 +1188,7 @@
     const displayEl  = document.getElementById('sequence-display');
     const questionEl = document.getElementById('sequence-question');
     const choicesEl  = document.getElementById('sequence-choices');
+    const timerBar   = document.getElementById('sequence-timer-bar');
     const timerFill  = document.getElementById('sequence-timer-fill');
     const dur = pair.displayDuration != null ? pair.displayDuration : 1000;
 
@@ -1214,14 +1215,13 @@
     document.getElementById('seq-write-validate').disabled = false;
 
     if (pair.skipDisplay) {
-      timerFill.style.transition = 'none';
-      timerFill.style.width = '0%';
+      timerBar.style.display = 'none';
       currentQuestionIndex = 0;
-      // displayEl visibility is set entirely by startSequenceQuestion — no assignment here
       startSequenceQuestion(pair, 0);
       return;
     }
 
+    timerBar.style.display = '';
     displayEl.style.display = 'flex';
 
     if (dur > 0) {

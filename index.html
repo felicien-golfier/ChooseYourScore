@@ -863,10 +863,15 @@
           <input type="checkbox" id="seq-skip-display" style="width:16px;height:16px;accent-color:#3b82f6">
           <span style="font-size:0.88rem;color:#374151">Passer directement aux questions</span>
         </label>
-        <label class="checkbox-row" style="cursor:pointer;user-select:none">
-          <input type="checkbox" id="seq-hide-items" checked style="width:16px;height:16px;accent-color:#3b82f6">
-          <span style="font-size:0.88rem;color:#374151">Masquer la paire par défaut</span>
-        </label>
+        <div class="field-row" style="flex-direction:column;gap:4px">
+          <label style="font-size:0.88rem;color:#374151;font-weight:500">Visibilité par défaut</label>
+          <select id="seq-visibility-mode" style="width:100%;padding:7px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.88rem;outline:none;font-family:inherit;color:#0f172a;background:white">
+            <option value="always_hide">Masquer par défaut</option>
+            <option value="always_show">Afficher par défaut</option>
+            <option value="hide_if_prev_correct">Masquer si réponse précédente correcte</option>
+            <option value="hide_if_prev_incorrect">Masquer si réponse précédente incorrecte</option>
+          </select>
+        </div>
       </div>
       <div style="margin-bottom:16px">
         <div class="field-row" style="margin-bottom:8px"><label>Items à afficher (un par case)</label></div>
@@ -1161,9 +1166,10 @@
   let currentExercise = null, currentPatient = '', currentPatientId = null, currentPairs = [];
   let pairIndex = 0, responses = [], exerciseStartTime = 0, pairStartTime = 0, isWaiting = false;
   let currentSessionId = null;
+  let previousPairWasCorrect = null;
 
   document.getElementById('btn-ready').addEventListener('click', () => {
-    pairIndex = 0; responses = [];
+    pairIndex = 0; responses = []; previousPairWasCorrect = null;
     exerciseStartTime = Date.now(); isWaiting = false;
     showView('exercise');
     renderPair();
@@ -1250,26 +1256,12 @@
     const writeZone    = document.getElementById('seq-write-zone');
     const showAgainBtn = document.getElementById('seq-show-again-btn');
 
-    // Apply item overrides so "Revoir" reveals the updated items
-    const overrides = q.itemOverrides || [];
-    if (overrides.length > 0) {
-      const baseItems = pair.items || [];
-      const overriddenItems = baseItems.map((item, i) => {
-        const ov = overrides.find(o => o.index === i);
-        if (!ov) return item;
-        if (ov.item) return ov.item;
-        return typeof item === 'object' ? {...item, text: ov.value || ''} : {type:'text', text: ov.value || ''};
-      });
-      displayEl.innerHTML = '';
-      const isSingle = overriddenItems.length === 1;
-      overriddenItems.forEach(item => {
-        const el = document.createElement('div');
-        el.className = isSingle ? 'sequence-text-display' : 'sequence-item-box';
-        applyItemStyle(el, typeof item === 'string' ? {type:'text', text:item} : item);
-        displayEl.appendChild(el);
-      });
-    }
-    const hideItems = pair.hideItems !== false;
+    const visMode = pair.visibilityMode || (pair.hideItems !== false ? 'always_hide' : 'always_show');
+    let hideItems;
+    if (visMode === 'always_show') hideItems = false;
+    else if (visMode === 'hide_if_prev_correct') hideItems = previousPairWasCorrect === true;
+    else if (visMode === 'hide_if_prev_incorrect') hideItems = previousPairWasCorrect === false;
+    else hideItems = true; // always_hide
     const shouldShowItems = (pair.skipDisplay && !hideItems) || (!pair.skipDisplay && isRetry && q.showOnRetry !== false);
     displayEl.style.display = shouldShowItems ? 'flex' : 'none';
 
@@ -1406,6 +1398,7 @@
     if (qIdx + 1 < questions.length) {
       startSequenceQuestion(pair, qIdx + 1, false);
     } else {
+      previousPairWasCorrect = responses.length > 0 ? responses[responses.length - 1].isCorrect : null;
       pairIndex++;
       if (pairIndex >= currentPairs.length) finishExercise(); else renderPair();
     }
@@ -1834,11 +1827,11 @@
           const correctIdx = ['droite','right','d','r','1'].includes(last) ? 1 : 0;
           questions = [{questionText:'', type:'choice',
             choices: itemTexts, correctIndices:[correctIdx],
-            showOnRetry:true, allowRetry:true, itemOverrides:[]}];
+            showOnRetry:true, allowRetry:true}];
         } else {
           questions = [{questionText:'', type:'choice',
             choices: itemTexts, correctIndices:[0],
-            showOnRetry:true, allowRetry:true, itemOverrides:[]}];
+            showOnRetry:true, allowRetry:true}];
         }
         ex.pairs.push({id:newId('pair'), type:'sequence', items,
           displayDuration: isCorrectMarker && items.length === 2 ? 0 : 1000, questions});
@@ -1911,7 +1904,7 @@
     pair.type            = 'sequence';
     pair.items           = seqData.items;
     pair.skipDisplay     = seqData.skipDisplay;
-    pair.hideItems       = seqData.hideItems;
+    pair.visibilityMode  = seqData.visibilityMode;
     pair.displayDuration = seqData.displayDuration;
     pair.questions       = seqData.questions;
     delete pair.questionText; delete pair.choices;
@@ -2209,53 +2202,6 @@
     });
   }
 
-  function buildOverrideRow(idx, itemOrVal, labels) {
-    // Support old format (string value) and new format (item object)
-    const initItem = (itemOrVal && typeof itemOrVal === 'object')
-      ? itemOrVal
-      : { type: 'text', text: typeof itemOrVal === 'string' ? itemOrVal : '', color: '#1a1a1a', fontSize: 32, fontFamily: 'Arial', textTransform: 'none', imageUrl: null, audioUrl: null };
-    const row = document.createElement('div');
-    row.className = 'seq-q-override-row';
-    row._overrideItem = initItem;
-    const sel = document.createElement('select');
-    sel.className = 'seq-q-override-idx';
-    sel.style.cssText = 'padding:4px 6px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:0.82rem;font-family:inherit;color:#0f172a;background:white;flex:none;max-width:120px';
-    labels.forEach((label, i) => {
-      const opt = document.createElement('option');
-      opt.value = String(i);
-      opt.textContent = 'Item ' + (i + 1) + (label ? ' (' + label + ')' : '');
-      if (i === idx) opt.selected = true;
-      sel.appendChild(opt);
-    });
-    const arrow = document.createElement('span');
-    arrow.textContent = '→'; arrow.style.cssText = 'color:#94a3b8;flex:none';
-    const previewBox = document.createElement('div');
-    previewBox.className = 'seq-q-override-preview';
-    previewBox.style.cssText = 'width:36px;height:36px;border:1.5px solid #fde68a;border-radius:7px;background:#fffbeb;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:12px;flex:none';
-    applyItemStyle(previewBox, initItem);
-    const boxFs = parseFloat(previewBox.style.fontSize) || 32;
-    if (boxFs > 14) previewBox.style.fontSize = '14px';
-    const editBtn = document.createElement('button');
-    editBtn.type = 'button'; editBtn.textContent = '✏ Modifier';
-    editBtn.style.cssText = 'padding:3px 8px;border:1.5px solid #fde68a;border-radius:6px;background:#fffbeb;color:#92400e;font-size:0.75rem;cursor:pointer;font-family:inherit;flex:none';
-    editBtn.addEventListener('click', () => {
-      pendingOverrideCallback = (newItem) => {
-        row._overrideItem = newItem;
-        applyItemStyle(previewBox, newItem);
-        const fs = parseFloat(previewBox.style.fontSize) || 32;
-        if (fs > 14) previewBox.style.fontSize = '14px';
-      };
-      fillItemModal(row._overrideItem);
-      document.getElementById('seq-item-modal').style.display = 'flex';
-    });
-    const delBtn = document.createElement('button');
-    delBtn.type = 'button'; delBtn.textContent = '✕';
-    delBtn.style.cssText = 'padding:2px 6px;border:1px solid #fca5a5;border-radius:5px;background:white;color:#ef4444;font-size:0.75rem;cursor:pointer;font-family:inherit;flex:none';
-    delBtn.addEventListener('click', () => { row.remove(); refreshSequencePreview(); });
-    row.append(sel, arrow, previewBox, editBtn, delBtn);
-    return row;
-  }
-
   function buildSequenceQuestionBlock(q) {
     const block = document.createElement('div');
     block.className = 'seq-q-block';
@@ -2428,35 +2374,16 @@
     dirOptsRow.appendChild(optsSelect);
     dirSection.append(dirRuleRow, dirOptsRow);
 
-    // ── Item overrides section ───────────────────────────────────────────────
-    const ovSection = document.createElement('div');
-    ovSection.className = 'seq-q-override-section';
-    const ovHeader = document.createElement('div');
-    ovHeader.className = 'seq-q-override-header';
-    const addOvBtn = document.createElement('button');
-    addOvBtn.type = 'button'; addOvBtn.textContent = '+ Modifier un item';
-    addOvBtn.style.cssText = 'padding:2px 8px;border:1.5px solid #fde68a;border-radius:6px;background:#fffbeb;color:#92400e;font-size:0.75rem;cursor:pointer;font-family:inherit';
-    addOvBtn.addEventListener('click', () => {
-      ovRows.appendChild(buildOverrideRow(0, '', getSeqItemLabels()));
-      refreshSequencePreview();
-    });
-    ovHeader.append(addOvBtn);
-    const ovRows = document.createElement('div');
-    const labels = getSeqItemLabels();
-    (q.itemOverrides || []).forEach(ov => ovRows.appendChild(buildOverrideRow(ov.index, ov.item || ov.value, labels)));
-    ovSection.append(ovHeader, ovRows);
-
     // Show/hide sections based on type
     const applyType = (type) => {
       choiceSection.style.display = type === 'choice'    ? 'block' : 'none';
       writeSection.style.display  = type === 'write'     ? 'block' : 'none';
       dirSection.style.display    = type === 'direction' ? 'block' : 'none';
-      ovSection.style.display     = type !== 'direction' ? 'block' : 'none';
     };
     applyType(q.type || 'choice');
     typeSelect.addEventListener('change', () => { applyType(typeSelect.value); refreshSequencePreview(); });
 
-    block.append(choiceSection, writeSection, dirSection, ovSection);
+    block.append(choiceSection, writeSection, dirSection);
 
     return block;
   }
@@ -2530,7 +2457,8 @@
     const skip = pair.skipDisplay === true;
     document.getElementById('seq-skip-display').checked = skip;
     document.getElementById('seq-duration-row').style.display = skip ? 'none' : '';
-    document.getElementById('seq-hide-items').checked = pair.hideItems !== false;
+    const visMode = pair.visibilityMode || (pair.hideItems !== false ? 'always_hide' : 'always_show');
+    document.getElementById('seq-visibility-mode').value = visMode;
     refreshSequenceItemInputs();
     const questions = getPairQuestions(pair);
     const container = document.getElementById('seq-questions-container');
@@ -2559,20 +2487,14 @@
         base.choices = Array.from(block.querySelectorAll('.seq-q-choice')).map(i => i.value.trim());
         base.correctIndices = getCorrectIndicesFromBlock(block);
       }
-      if (type !== 'direction') {
-        base.itemOverrides = Array.from(block.querySelectorAll('.seq-q-override-row')).map(row => ({
-          index: parseInt(row.querySelector('.seq-q-override-idx').value, 10),
-          item: row._overrideItem || { type: 'text', text: '', imageUrl: null, audioUrl: null },
-        })).filter(o => o.item && (o.item.text || o.item.imageUrl || o.item.audioUrl || o.item.type !== 'text'));
-      }
       return base;
     });
-    const skipDisplay = document.getElementById('seq-skip-display').checked;
-    const hideItems   = document.getElementById('seq-hide-items').checked;
+    const skipDisplay    = document.getElementById('seq-skip-display').checked;
+    const visibilityMode = document.getElementById('seq-visibility-mode').value || 'always_hide';
     return {
       items:           getSequenceItemValues(),
       skipDisplay,
-      hideItems,
+      visibilityMode,
       displayDuration: skipDisplay ? 0 : Math.round((parseFloat(document.getElementById('seq-duration').value) || 1) * 1000),
       questions,
     };

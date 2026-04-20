@@ -687,6 +687,8 @@
       <div class="result-card"><div class="label">Score</div><div class="value good" id="res-score">–</div></div>
       <div class="result-card"><div class="label">Temps total</div><div class="value" id="res-time">–</div></div>
       <div class="result-card" id="card-avg-reaction" style="display:none"><div class="label">Temps de réaction moyen</div><div class="value" id="res-avg-reaction">–</div></div>
+      <div class="result-card" id="card-errors-left" style="display:none"><div class="label">Err. gauche (←)</div><div class="value" id="res-errors-left">–</div></div>
+      <div class="result-card" id="card-errors-right" style="display:none"><div class="label">Err. droite (→)</div><div class="value" id="res-errors-right">–</div></div>
     </div>
     <div class="notes-section">
       <label for="session-notes">Notes du clinicien</label>
@@ -1474,6 +1476,7 @@
   function finishExercise() {
     const totalTimeMs = Date.now() - exerciseStartTime;
     let score = 0, totalReactionMs = 0, reactionCount = 0;
+    let errorsLeft = 0, errorsRight = 0, hasDirectionQuestions = false;
 
     const totalQuestions = currentPairs.reduce((sum, p) =>
       sum + (p.questions || [{}]).length, 0);
@@ -1482,6 +1485,13 @@
       if (r.isRetry) return;
       if (r.isCorrect) score++;
       totalReactionMs += r.timeMs; reactionCount++;
+      if (r.type === 'direction') {
+        hasDirectionQuestions = true;
+        if (!r.isCorrect) {
+          if (r.correctAnswer === 'left') errorsLeft++;
+          else if (r.correctAnswer === 'right') errorsRight++;
+        }
+      }
     });
 
     const avgReactionMs = reactionCount > 0 ? Math.round(totalReactionMs / reactionCount) : null;
@@ -1490,6 +1500,7 @@
       id: newId('sess'), exerciseId: currentExercise.id, exerciseName: currentExercise.name,
       patientName: currentPatient, patientId: currentPatientId, date: new Date().toISOString(),
       totalTimeMs, totalPairs: totalQuestions, score, responses, notes: '',
+      ...(hasDirectionQuestions ? { errorsLeft, errorsRight } : {}),
     };
     sessions.push(newSession);
     currentSessionId = newSession.id;
@@ -1502,6 +1513,12 @@
     document.getElementById('res-time').textContent  = formatDuration(totalTimeMs);
     document.getElementById('card-avg-reaction').style.display = avgReactionMs !== null ? 'block' : 'none';
     if (avgReactionMs !== null) document.getElementById('res-avg-reaction').textContent = (avgReactionMs / 1000).toFixed(2) + ' s';
+    document.getElementById('card-errors-left').style.display = hasDirectionQuestions ? 'block' : 'none';
+    document.getElementById('card-errors-right').style.display = hasDirectionQuestions ? 'block' : 'none';
+    if (hasDirectionQuestions) {
+      document.getElementById('res-errors-left').textContent = errorsLeft;
+      document.getElementById('res-errors-right').textContent = errorsRight;
+    }
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
     showView('session-result');
   }

@@ -740,6 +740,11 @@
         <label class="editor-section-label" for="exercise-instruction">Consigne affichée au patient</label>
         <textarea id="exercise-instruction" rows="3" placeholder="ex. Cliquez uniquement sur les animaux"></textarea>
       </div>
+      <div class="form-group">
+        <label class="editor-section-label" for="exercise-default-duration">Durée d'affichage par défaut (secondes)</label>
+        <input type="number" id="exercise-default-duration" min="0.1" step="0.1" placeholder="— non définie —" style="width:100%;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.9rem;outline:none;font-family:inherit;color:#0f172a;transition:border-color .15s">
+        <small style="color:#94a3b8;font-size:0.76rem;display:block;margin-top:4px">Durée appliquée à toutes les paires sauf si une paire définit sa propre valeur.</small>
+      </div>
       <div class="pairs-header">
         <span class="editor-section-label">Paires <span class="badge" id="pair-count-badge">0</span></span>
         <button class="btn-dup" id="btn-export-csv-pairs">⬇ Exporter CSV</button>
@@ -865,6 +870,12 @@
           <input type="checkbox" id="seq-skip-display" style="width:16px;height:16px;accent-color:#3b82f6">
           <span style="font-size:0.88rem;color:#374151">Passer directement aux questions</span>
         </label>
+        <div id="seq-exercise-default-row" style="display:none">
+          <label class="checkbox-row" style="cursor:pointer;user-select:none">
+            <input type="checkbox" id="seq-use-exercise-duration" style="width:16px;height:16px;accent-color:#6366f1">
+            <span style="font-size:0.88rem;color:#374151">Utiliser la durée de l'exercice (<span id="seq-exercise-default-value">1</span> s)</span>
+          </label>
+        </div>
         <div class="field-row" style="flex-direction:column;gap:4px">
           <label style="font-size:0.88rem;color:#374151;font-weight:500">Visibilité par défaut</label>
           <select id="seq-visibility-mode" style="width:100%;padding:7px 10px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:0.88rem;outline:none;font-family:inherit;color:#0f172a;background:white">
@@ -1198,7 +1209,9 @@
     const choicesEl  = document.getElementById('sequence-choices');
     const timerBar   = document.getElementById('sequence-timer-bar');
     const timerFill  = document.getElementById('sequence-timer-fill');
-    const dur = pair.displayDuration != null ? pair.displayDuration : 1000;
+    const dur = (pair.useExerciseDefault && currentExercise?.defaultDisplayDuration != null)
+      ? currentExercise.defaultDisplayDuration
+      : (pair.displayDuration != null ? pair.displayDuration : 1000);
 
     displayEl.innerHTML = '';
     const isSingle = (pair.items || []).length === 1;
@@ -1680,6 +1693,7 @@
     if (!ex) return;
     document.getElementById('exercise-name').value        = ex.name;
     document.getElementById('exercise-instruction').value = ex.instruction || '';
+    document.getElementById('exercise-default-duration').value = ex.defaultDisplayDuration != null ? (ex.defaultDisplayDuration / 1000) : '';
     document.getElementById('pair-count-badge').textContent = (ex.pairs||[]).length;
     renderFolderSelect();
     renderPairsList(ex);
@@ -1721,8 +1735,16 @@
       const lbl = document.createElement('span');
       lbl.style.cssText = 'font-size:0.8rem;color:#64748b;margin-left:8px';
       const questions = pair.questions || [];
-      const dur = pair.displayDuration != null ? pair.displayDuration : 1000;
-      const durLabel = pair.skipDisplay ? 'Direct' : dur + ' ms';
+      let durLabel;
+      if (pair.skipDisplay) {
+        durLabel = 'Direct';
+      } else if (pair.useExerciseDefault) {
+        const exDur = ex.defaultDisplayDuration;
+        durLabel = exDur != null ? 'Défaut (' + (exDur / 1000) + ' s)' : 'Défaut';
+      } else {
+        const dur = pair.displayDuration != null ? pair.displayDuration : 1000;
+        durLabel = (dur / 1000) + ' s';
+      }
       lbl.textContent = durLabel + ' · ' + questions.length + ' question' + (questions.length !== 1 ? 's' : '');
       preview.appendChild(lbl);
       const actions = document.createElement('div');
@@ -1766,7 +1788,7 @@
   });
 
   document.getElementById('btn-new-exercise').addEventListener('click', () => {
-    const ex = { id: newId('ex'), name: 'Nouvel exercice', instruction: '', pairs: [], folderId: null };
+    const ex = { id: newId('ex'), name: 'Nouvel exercice', instruction: '', pairs: [], folderId: null, defaultDisplayDuration: null };
     exercises.push(ex); saveExercises();
     editorSelectedId = ex.id; renderSidebar(); renderExerciseEditor();
     setTimeout(() => { const i = document.getElementById('exercise-name'); i.focus(); i.select(); }, 50);
@@ -1781,6 +1803,13 @@
   document.getElementById('exercise-instruction').addEventListener('input', () => {
     const ex = getSelectedEx(); if (!ex) return;
     ex.instruction = document.getElementById('exercise-instruction').value;
+    saveExercises();
+  });
+
+  document.getElementById('exercise-default-duration').addEventListener('input', () => {
+    const ex = getSelectedEx(); if (!ex) return;
+    const val = parseFloat(document.getElementById('exercise-default-duration').value);
+    ex.defaultDisplayDuration = (!isNaN(val) && val > 0) ? Math.round(val * 1000) : null;
     saveExercises();
   });
 
@@ -1918,12 +1947,13 @@
     const ex = getSelectedEx(); if (!ex) return;
     const pair = ex.pairs.find(p => p.id === editingPairId); if (!pair) return;
     const seqData = readSequenceModal();
-    pair.type            = 'sequence';
-    pair.items           = seqData.items;
-    pair.skipDisplay     = seqData.skipDisplay;
-    pair.visibilityMode  = seqData.visibilityMode;
-    pair.displayDuration = seqData.displayDuration;
-    pair.questions       = seqData.questions;
+    pair.type                = 'sequence';
+    pair.items               = seqData.items;
+    pair.skipDisplay         = seqData.skipDisplay;
+    pair.visibilityMode      = seqData.visibilityMode;
+    pair.useExerciseDefault  = seqData.useExerciseDefault;
+    pair.displayDuration     = seqData.displayDuration;
+    pair.questions           = seqData.questions;
     delete pair.questionText; delete pair.choices;
     delete pair.left; delete pair.right; delete pair.correct;
     delete pair.direction; delete pair.bgColor; delete pair.rule; delete pair.numOptions;
@@ -2473,7 +2503,13 @@
     document.getElementById('seq-duration').value = (dur / 1000);
     const skip = pair.skipDisplay === true;
     document.getElementById('seq-skip-display').checked = skip;
-    document.getElementById('seq-duration-row').style.display = skip ? 'none' : '';
+    const ex = getSelectedEx();
+    const hasExDefault = !skip && ex && ex.defaultDisplayDuration != null;
+    const useExDefault = hasExDefault && pair.useExerciseDefault === true;
+    document.getElementById('seq-exercise-default-row').style.display = hasExDefault ? '' : 'none';
+    if (hasExDefault) document.getElementById('seq-exercise-default-value').textContent = (ex.defaultDisplayDuration / 1000);
+    document.getElementById('seq-use-exercise-duration').checked = useExDefault;
+    document.getElementById('seq-duration-row').style.display = (skip || useExDefault) ? 'none' : '';
     const visMode = pair.visibilityMode || (pair.hideItems !== false ? 'always_hide' : 'always_show');
     document.getElementById('seq-visibility-mode').value = visMode;
     refreshSequenceItemInputs();
@@ -2506,13 +2542,15 @@
       }
       return base;
     });
-    const skipDisplay    = document.getElementById('seq-skip-display').checked;
-    const visibilityMode = document.getElementById('seq-visibility-mode').value || 'always_hide';
+    const skipDisplay        = document.getElementById('seq-skip-display').checked;
+    const useExerciseDefault = !skipDisplay && document.getElementById('seq-use-exercise-duration').checked;
+    const visibilityMode     = document.getElementById('seq-visibility-mode').value || 'always_hide';
     return {
-      items:           getSequenceItemValues(),
+      items:            getSequenceItemValues(),
       skipDisplay,
       visibilityMode,
-      displayDuration: skipDisplay ? 0 : Math.round((parseFloat(document.getElementById('seq-duration').value) || 1) * 1000),
+      useExerciseDefault,
+      displayDuration: skipDisplay ? 0 : (useExerciseDefault ? null : Math.round((parseFloat(document.getElementById('seq-duration').value) || 1) * 1000)),
       questions,
     };
   }
@@ -2520,6 +2558,16 @@
   document.getElementById('seq-num-items').addEventListener('input',  () => { refreshSequenceItemInputs(); });
   document.getElementById('seq-num-items').addEventListener('change', () => { refreshSequenceItemInputs(); });
   document.getElementById('seq-skip-display').addEventListener('change', function() {
+    const skip = this.checked;
+    const ex = getSelectedEx();
+    const hasExDefault = !skip && ex && ex.defaultDisplayDuration != null;
+    document.getElementById('seq-exercise-default-row').style.display = hasExDefault ? '' : 'none';
+    if (!hasExDefault) document.getElementById('seq-use-exercise-duration').checked = false;
+    const useExDefault = hasExDefault && document.getElementById('seq-use-exercise-duration').checked;
+    document.getElementById('seq-duration-row').style.display = (skip || useExDefault) ? 'none' : '';
+  });
+
+  document.getElementById('seq-use-exercise-duration').addEventListener('change', function() {
     document.getElementById('seq-duration-row').style.display = this.checked ? 'none' : '';
   });
   document.getElementById('seq-add-question-btn').addEventListener('click', () => {

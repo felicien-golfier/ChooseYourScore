@@ -1788,7 +1788,7 @@
   });
 
   document.getElementById('btn-new-exercise').addEventListener('click', () => {
-    const ex = { id: newId('ex'), name: 'Nouvel exercice', instruction: '', pairs: [], folderId: null, defaultDisplayDuration: null };
+    const ex = { id: newId('ex'), name: 'Nouvel exercice', instruction: '', pairs: [], folderId: null, defaultDisplayDuration: 3000 };
     exercises.push(ex); saveExercises();
     editorSelectedId = ex.id; renderSidebar(); renderExerciseEditor();
     setTimeout(() => { const i = document.getElementById('exercise-name'); i.focus(); i.select(); }, 50);
@@ -1901,7 +1901,7 @@
     const ex = getSelectedEx(); if (!ex) return;
     const pair = { id: newId('pair'), type: 'sequence',
       items: [{type:'text',text:'',color:'#1a1a1a',fontSize:32,fontFamily:'Arial',textTransform:'none',imageUrl:null,audioUrl:null}],
-      displayDuration: 1000,
+      displayDuration: null, useExerciseDefault: true,
       questions: [{questionText:'',type:'choice',choices:['',''],correctIndices:[0],showOnRetry:true,allowRetry:true,itemOverrides:[]}] };
     ex.pairs.push(pair); saveExercises(); renderExerciseEditor(); openPairModal(pair.id);
   });
@@ -2505,7 +2505,7 @@
     document.getElementById('seq-skip-display').checked = skip;
     const ex = getSelectedEx();
     const hasExDefault = !skip && ex && ex.defaultDisplayDuration != null;
-    const useExDefault = hasExDefault && pair.useExerciseDefault === true;
+    const useExDefault = hasExDefault && (pair.useExerciseDefault === true || pair.useExerciseDefault === undefined);
     document.getElementById('seq-exercise-default-row').style.display = hasExDefault ? '' : 'none';
     if (hasExDefault) document.getElementById('seq-exercise-default-value').textContent = (ex.defaultDisplayDuration / 1000);
     document.getElementById('seq-use-exercise-duration').checked = useExDefault;

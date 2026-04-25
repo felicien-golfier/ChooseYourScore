@@ -239,6 +239,14 @@
     .pair-action-btn.edit:hover   { background: #eff6ff; color: #2563eb; border-color: #93c5fd; }
     .pair-action-btn.delete:hover { background: #fef2f2; color: #dc2626; border-color: #fca5a5; }
 
+    .pair-sound-btn {
+      flex-shrink: 0; padding: 2px 7px; border: 1px solid #bfdbfe; border-radius: 5px;
+      background: white; color: #3b82f6; font-size: 0.85rem; cursor: pointer;
+      font-family: inherit; transition: background 0.1s, color 0.1s; line-height: 1.4;
+    }
+    .pair-sound-btn:hover { background: #eff6ff; }
+    .pair-sound-btn.playing { background: #eff6ff; color: #1d4ed8; border-color: #93c5fd; }
+
     .btn-add-pair {
       width: 100%; padding: 13px; border: 2px dashed #cbd5e1; border-radius: 12px;
       background: transparent; color: #64748b; font-size: 0.95rem;
@@ -1753,6 +1761,33 @@
       }
       lbl.textContent = durLabel + ' · ' + questions.length + ' question' + (questions.length !== 1 ? 's' : '');
       preview.appendChild(lbl);
+
+      const audioUrls = items
+        .filter(it => typeof it === 'object' && it.audioUrl)
+        .map(it => it.audioUrl);
+      if (audioUrls.length > 0) {
+        const soundBtn = document.createElement('button');
+        soundBtn.className = 'pair-sound-btn';
+        soundBtn.title = 'Rejouer le son';
+        soundBtn.textContent = '🔊';
+        let currentAudio = null;
+        soundBtn.addEventListener('click', e => {
+          e.stopPropagation();
+          if (currentAudio) { currentAudio.pause(); currentAudio = null; soundBtn.classList.remove('playing'); soundBtn.textContent = '🔊'; return; }
+          let idx = 0;
+          soundBtn.classList.add('playing'); soundBtn.textContent = '🔉';
+          function playNext() {
+            if (idx >= audioUrls.length) { currentAudio = null; soundBtn.classList.remove('playing'); soundBtn.textContent = '🔊'; return; }
+            const a = new Audio(audioUrls[idx++]);
+            currentAudio = a;
+            a.addEventListener('ended', playNext);
+            a.play().catch(() => { currentAudio = null; soundBtn.classList.remove('playing'); soundBtn.textContent = '🔊'; });
+          }
+          playNext();
+        });
+        preview.appendChild(soundBtn);
+      }
+
       const actions = document.createElement('div');
       actions.className = 'pair-actions';
       const editBtn      = makePairBtn('✏','edit',  'Modifier',   () => openPairModal(pair.id));

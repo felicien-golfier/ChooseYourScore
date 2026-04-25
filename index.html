@@ -619,6 +619,7 @@
   </style>
 </head>
 <body>
+<audio id="cys-audio-el" preload="none" style="display:none"></audio>
 
 <!-- ── Topbar ──────────────────────────────────────────────────────────────── -->
 <div id="topbar">
@@ -986,6 +987,12 @@
         </div>
       </div>
       <div class="field-row"><label>Étiquette (optionnel)</label><input type="text" id="sim-audio-label" placeholder="Nom affiché…"></div>
+      <div class="field-row">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.88rem">
+          <input type="checkbox" id="sim-audio-autoplay">
+          Lancer automatiquement à l'affichage
+        </label>
+      </div>
     </div>
     <!-- section : flèche -->
     <div id="sim-sect-arrow" style="display:none">
@@ -1023,6 +1030,51 @@
   function saveSessions()  { localStorage.setItem('cys_sessions',  JSON.stringify(sessions));  }
   function savePatients()  { localStorage.setItem('cys_patients',  JSON.stringify(patients));  }
   function saveFolders()   { localStorage.setItem('cys_folders',   JSON.stringify(folders));   }
+
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // AUDIO UTILS
+  // ═══════════════════════════════════════════════════════════════════════════════
+  const _audioEl = document.getElementById('cys-audio-el');
+  let _audioQueue = [], _audioBlobUrl = null;
+
+  function _audioNext() {
+    if (_audioBlobUrl) { URL.revokeObjectURL(_audioBlobUrl); _audioBlobUrl = null; }
+    if (_audioQueue.length === 0) return;
+    const { dataUrl, onDone } = _audioQueue.shift();
+    _audioBlobUrl = _dataUrlToBlob(dataUrl);
+    _audioEl.src = _audioBlobUrl;
+    _audioEl.onended = () => { onDone && onDone(); _audioNext(); };
+    _audioEl.onerror = () => { onDone && onDone(); _audioNext(); };
+    _audioEl.play().catch(() => { onDone && onDone(); _audioNext(); });
+  }
+
+  function _dataUrlToBlob(dataUrl) {
+    try {
+      const [header, b64] = dataUrl.split(',');
+      const mime = (header.match(/:(.*?);/) || [])[1] || 'audio/mpeg';
+      const raw = atob(b64);
+      const arr = new Uint8Array(raw.length);
+      for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+      return URL.createObjectURL(new Blob([arr], {type: mime}));
+    } catch(e) { return dataUrl; }
+  }
+
+  // Interrupt any current playback and play a single dataUrl; calls onDone when finished.
+  function playAudioUrl(dataUrl, onDone) {
+    _audioEl.pause();
+    _audioQueue = [];
+    if (_audioBlobUrl) { URL.revokeObjectURL(_audioBlobUrl); _audioBlobUrl = null; }
+    _audioQueue = [{ dataUrl, onDone }];
+    _audioNext();
+  }
+
+  // Queue an array of dataUrls to play sequentially (interrupts current playback).
+  function playAudioSequence(dataUrls) {
+    _audioEl.pause();
+    if (_audioBlobUrl) { URL.revokeObjectURL(_audioBlobUrl); _audioBlobUrl = null; }
+    _audioQueue = dataUrls.map(u => ({ dataUrl: u, onDone: null }));
+    _audioNext();
+  }
 
   // ═══════════════════════════════════════════════════════════════════════════════
   // CONSTANTS & UTILS
@@ -1243,7 +1295,7 @@
       el.className = isSingle ? 'sequence-text-display' : 'sequence-item-box';
       applyItemStyle(el, itemObj);
       if (itemObj.audioUrl) {
-        audioUrls.push(itemObj.audioUrl);
+        if (itemObj.autoPlay !== false) audioUrls.push(itemObj.audioUrl);
         const wrapper = document.createElement('div');
         wrapper.className = 'seq-sound-wrapper' + (isSingle ? ' seq-sound-wrapper--single' : '');
         wrapper.appendChild(el);
@@ -1251,15 +1303,12 @@
         sndBtn.className = 'seq-item-sound-btn';
         sndBtn.title = 'Rejouer le son';
         sndBtn.textContent = '🔊';
-        let sndCurrent = null;
         sndBtn.addEventListener('click', e => {
           e.stopPropagation();
-          if (sndCurrent) { sndCurrent.pause(); sndCurrent = null; sndBtn.classList.remove('playing'); sndBtn.textContent = '🔊'; return; }
+          const isPlaying = sndBtn.classList.contains('playing');
+          if (isPlaying) { _audioEl.pause(); _audioQueue = []; sndBtn.classList.remove('playing'); sndBtn.textContent = '🔊'; return; }
           sndBtn.classList.add('playing'); sndBtn.textContent = '🔉';
-          const a = new Audio(itemObj.audioUrl);
-          sndCurrent = a;
-          a.addEventListener('ended', () => { sndCurrent = null; sndBtn.classList.remove('playing'); sndBtn.textContent = '🔊'; });
-          a.play().catch(() => { sndCurrent = null; sndBtn.classList.remove('playing'); sndBtn.textContent = '🔊'; });
+          playAudioUrl(itemObj.audioUrl, () => { sndBtn.classList.remove('playing'); sndBtn.textContent = '🔊'; });
         });
         wrapper.appendChild(sndBtn);
         displayEl.appendChild(wrapper);
@@ -1292,11 +1341,7 @@
       timerFill.style.width = '0%';
     }
 
-    if (audioUrls.length > 0) {
-      let i = 0;
-      function playNext() { if (i >= audioUrls.length) return; const a = new Audio(audioUrls[i++]); a.addEventListener('ended', playNext); a.play().catch(() => {}); }
-      playNext();
-    }
+    if (audioUrls.length > 0) playAudioSequence(audioUrls);
 
     sequenceTimer = setTimeout(() => { sequenceTimer = null; startSequenceQuestion(pair, 0); }, dur || 50);
   }
@@ -1805,18 +1850,14 @@
         soundBtn.className = 'pair-sound-btn';
         soundBtn.title = 'Rejouer le son';
         soundBtn.textContent = '🔊';
-        let currentAudio = null;
         soundBtn.addEventListener('click', e => {
           e.stopPropagation();
-          if (currentAudio) { currentAudio.pause(); currentAudio = null; soundBtn.classList.remove('playing'); soundBtn.textContent = '🔊'; return; }
-          let idx = 0;
+          if (soundBtn.classList.contains('playing')) { _audioEl.pause(); _audioQueue = []; soundBtn.classList.remove('playing'); soundBtn.textContent = '🔊'; return; }
           soundBtn.classList.add('playing'); soundBtn.textContent = '🔉';
+          const remaining = [...audioUrls];
           function playNext() {
-            if (idx >= audioUrls.length) { currentAudio = null; soundBtn.classList.remove('playing'); soundBtn.textContent = '🔊'; return; }
-            const a = new Audio(audioUrls[idx++]);
-            currentAudio = a;
-            a.addEventListener('ended', playNext);
-            a.play().catch(() => { currentAudio = null; soundBtn.classList.remove('playing'); soundBtn.textContent = '🔊'; });
+            if (remaining.length === 0) { soundBtn.classList.remove('playing'); soundBtn.textContent = '🔊'; return; }
+            playAudioUrl(remaining.shift(), playNext);
           }
           playNext();
         });
@@ -2092,6 +2133,7 @@
     } else if (type === 'audio') {
       simModalAudio = item.audioUrl || null; updateSimAudioUI();
       document.getElementById('sim-audio-label').value = item.text || '';
+      document.getElementById('sim-audio-autoplay').checked = item.autoPlay !== false;
     } else if (type === 'arrow') {
       document.getElementById('sim-arrow-dir').value = item.arrowDirection || 'left';
     } else {
@@ -2113,6 +2155,7 @@
       bgColor, audioUrl: null };
     if (type === 'audio') return { type, audioUrl: simModalAudio||null,
       text: document.getElementById('sim-audio-label').value||'',
+      autoPlay: document.getElementById('sim-audio-autoplay').checked,
       bgColor, imageUrl: null };
     if (type === 'arrow') return { type,
       arrowDirection: document.getElementById('sim-arrow-dir').value,
@@ -2167,7 +2210,7 @@
   });
   document.getElementById('sim-audio-remove').addEventListener('click', () => { simModalAudio = null; updateSimAudioUI(); refreshSimPreview(); });
   document.getElementById('sim-audio-play').addEventListener('click', () => {
-    if (simModalAudio) new Audio(simModalAudio).play().catch(() => {});
+    if (simModalAudio) playAudioUrl(simModalAudio);
   });
 
   document.getElementById('sim-save').addEventListener('click', () => {

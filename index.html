@@ -470,6 +470,19 @@
       background: white; display: flex; align-items: center; justify-content: center;
       overflow: hidden;
     }
+    .seq-sound-wrapper { position: relative; display: inline-flex; }
+    .seq-sound-wrapper--single { width: 100%; }
+    .seq-sound-wrapper--single .sequence-text-display { width: 100%; }
+    .seq-item-sound-btn {
+      position: absolute; bottom: 5px; right: 5px;
+      width: 24px; height: 24px; border-radius: 50%;
+      border: 1.5px solid rgba(59,130,246,0.45); background: rgba(255,255,255,0.92);
+      color: #3b82f6; font-size: 0.7rem; cursor: pointer; padding: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.1s; z-index: 2; font-family: inherit;
+    }
+    .seq-item-sound-btn:hover { background: #eff6ff; }
+    .seq-item-sound-btn.playing { background: #eff6ff; color: #1d4ed8; border-color: #93c5fd; }
     .sequence-question { font-size: 1.4rem; font-weight: 600; color: #0f172a; text-align: center; }
     .sequence-choices { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
     .sequence-text-display {
@@ -1229,8 +1242,30 @@
       const el = document.createElement('div');
       el.className = isSingle ? 'sequence-text-display' : 'sequence-item-box';
       applyItemStyle(el, itemObj);
-      displayEl.appendChild(el);
-      if (itemObj.audioUrl) audioUrls.push(itemObj.audioUrl);
+      if (itemObj.audioUrl) {
+        audioUrls.push(itemObj.audioUrl);
+        const wrapper = document.createElement('div');
+        wrapper.className = 'seq-sound-wrapper' + (isSingle ? ' seq-sound-wrapper--single' : '');
+        wrapper.appendChild(el);
+        const sndBtn = document.createElement('button');
+        sndBtn.className = 'seq-item-sound-btn';
+        sndBtn.title = 'Rejouer le son';
+        sndBtn.textContent = '🔊';
+        let sndCurrent = null;
+        sndBtn.addEventListener('click', e => {
+          e.stopPropagation();
+          if (sndCurrent) { sndCurrent.pause(); sndCurrent = null; sndBtn.classList.remove('playing'); sndBtn.textContent = '🔊'; return; }
+          sndBtn.classList.add('playing'); sndBtn.textContent = '🔉';
+          const a = new Audio(itemObj.audioUrl);
+          sndCurrent = a;
+          a.addEventListener('ended', () => { sndCurrent = null; sndBtn.classList.remove('playing'); sndBtn.textContent = '🔊'; });
+          a.play().catch(() => { sndCurrent = null; sndBtn.classList.remove('playing'); sndBtn.textContent = '🔊'; });
+        });
+        wrapper.appendChild(sndBtn);
+        displayEl.appendChild(wrapper);
+      } else {
+        displayEl.appendChild(el);
+      }
     });
     questionEl.style.display = 'none';
     choicesEl.style.display  = 'none';

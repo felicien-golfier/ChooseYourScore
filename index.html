@@ -506,8 +506,12 @@
     .sq-profile { display: flex; gap: 3px; align-items: center; }
     .sq-profile .sq-zone-svg { width: 22px; height: 66px; display: block; }
     body.is-fullscreen .sequence-container { flex: 1; width: 100%; justify-content: center; }
-    body.is-fullscreen .sequence-item-box { width: 110px; height: 110px; font-size: 3.5rem; }
-    body.is-fullscreen .sequence-text-display { font-size: 2rem; padding: 36px 48px; }
+    body.is-fullscreen #sequence-display { flex: 1; align-items: stretch; flex-wrap: nowrap; gap: 20px; }
+    body.is-fullscreen .sequence-item-box { flex: 1; min-width: 120px; height: auto; min-height: 220px; font-size: 3.5rem; }
+    body.is-fullscreen .seq-sound-wrapper { flex: 1; display: flex; align-items: stretch; min-height: 220px; }
+    body.is-fullscreen .seq-sound-wrapper .sequence-item-box { flex: 1; width: 100%; height: auto; min-height: 220px; }
+    body.is-fullscreen .seq-item-sound-btn { width: 44px; height: 44px; font-size: 1.3rem; bottom: 14px; right: 14px; }
+    body.is-fullscreen .sequence-text-display { flex: 1; font-size: 2rem; padding: 36px 48px; }
     body.is-fullscreen .sequence-choice-btn { min-width: 120px; max-width: 360px; padding: 20px 28px; font-size: 1.8rem; }
     body.is-fullscreen .sequence-choice-btn .sq-profile .sq-zone-svg { width: 34px; height: 102px; }
 

@@ -1481,6 +1481,12 @@
           const btn = document.querySelector('#sequence-choices [data-dir="'+dir+'"]:not(:disabled)');
           if (btn && !isWaiting) btn.click();
         }
+      } else if (q && q.type === 'choice') {
+        const choiceBtns = Array.from(document.querySelectorAll('#sequence-choices .sequence-choice-btn:not(:disabled)'));
+        if (!isWaiting && choiceBtns.length > 0) {
+          if (e.key === 'ArrowLeft') { e.preventDefault(); choiceBtns[0].click(); }
+          else if (e.key === 'ArrowRight') { e.preventDefault(); choiceBtns[choiceBtns.length - 1].click(); }
+        }
       }
     }
   });

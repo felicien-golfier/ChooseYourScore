@@ -465,12 +465,12 @@
     .sequence-timer-fill { height: 100%; background: #3b82f6; border-radius: 4px; }
     .sequence-display { display: flex; gap: 12px; justify-content: center; align-items: center; flex-wrap: wrap; width: 100%; }
     .sequence-item-box {
-      min-width: 64px; height: 80px; padding: 0 16px;
+      flex: 1; min-width: 100px; min-height: 160px; padding: 16px;
       border: 2.5px solid #e2e8f0; border-radius: 16px;
       background: white; display: flex; align-items: center; justify-content: center;
       overflow: hidden;
     }
-    .seq-sound-wrapper { position: relative; display: inline-flex; }
+    .seq-sound-wrapper { position: relative; flex: 1; display: flex; align-items: stretch; }
     .seq-sound-wrapper--single { width: 100%; }
     .seq-sound-wrapper--single .sequence-text-display { width: 100%; }
     .seq-item-sound-btn {
@@ -545,7 +545,7 @@
       .subtitle { margin-bottom: 24px; }
 
       .sequence-display { gap: 8px; }
-      .sequence-item-box { font-size: 1.6rem; height: 60px; min-width: 48px; padding: 0 10px; border-radius: 10px; }
+      .sequence-item-box { font-size: 1.6rem; min-height: 100px; min-width: 80px; padding: 10px; border-radius: 10px; }
       .sequence-text-display { padding: 18px 20px; font-size: 1.2rem; }
       .sequence-choice-btn { font-size: 1.1rem; padding: 12px 16px; }
 

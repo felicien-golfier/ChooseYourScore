@@ -1080,6 +1080,19 @@
     _audioNext();
   }
 
+  // Returns a Promise<number> with total duration in ms for an array of audio data URLs.
+  function getAudiosDuration(dataUrls) {
+    if (!dataUrls.length) return Promise.resolve(0);
+    return Promise.all(dataUrls.map(url => new Promise(resolve => {
+      const blobUrl = _dataUrlToBlob(url);
+      const a = document.createElement('audio');
+      a.addEventListener('loadedmetadata', () => { URL.revokeObjectURL(blobUrl); resolve((a.duration || 0) * 1000); });
+      a.addEventListener('error', () => { URL.revokeObjectURL(blobUrl); resolve(0); });
+      a.preload = 'metadata';
+      a.src = blobUrl;
+    }))).then(durations => durations.reduce((s, d) => s + d, 0));
+  }
+
   // ═══════════════════════════════════════════════════════════════════════════════
   // CONSTANTS & UTILS
   // ═══════════════════════════════════════════════════════════════════════════════
@@ -1334,20 +1347,24 @@
     timerBar.style.display = '';
     displayEl.style.display = 'flex';
 
-    if (dur > 0) {
-      timerFill.style.transition = 'none';
-      timerFill.style.width = '100%';
-      timerFill.getBoundingClientRect();
-      timerFill.style.transition = 'width ' + dur + 'ms linear';
-      timerFill.style.width = '0%';
-    } else {
-      timerFill.style.transition = 'none';
-      timerFill.style.width = '0%';
-    }
+    getAudiosDuration(audioUrls).then(audioDurMs => {
+      const effectiveDur = Math.max(dur, audioDurMs);
 
-    if (audioUrls.length > 0) playAudioSequence(audioUrls);
+      if (effectiveDur > 0) {
+        timerFill.style.transition = 'none';
+        timerFill.style.width = '100%';
+        timerFill.getBoundingClientRect();
+        timerFill.style.transition = 'width ' + effectiveDur + 'ms linear';
+        timerFill.style.width = '0%';
+      } else {
+        timerFill.style.transition = 'none';
+        timerFill.style.width = '0%';
+      }
 
-    sequenceTimer = setTimeout(() => { sequenceTimer = null; startSequenceQuestion(pair, 0); }, dur || 50);
+      if (audioUrls.length > 0) playAudioSequence(audioUrls);
+
+      sequenceTimer = setTimeout(() => { sequenceTimer = null; startSequenceQuestion(pair, 0); }, effectiveDur || 50);
+    });
   }
 
   function startSequenceQuestion(pair, qIdx, isRetry) {

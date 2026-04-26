@@ -1347,8 +1347,9 @@
     document.getElementById('seq-show-again-btn').style.display = 'none';
     document.getElementById('seq-write-zone').style.display = 'none';
 
-    if (pair.skipDisplay) {
+    if (pair.skipDisplay || getPairQuestions(pair).some(q => q.type === 'click-item')) {
       timerBar.style.display = 'none';
+      displayEl.style.display = 'flex';
       startSequenceQuestion(pair, 0);
       return;
     }

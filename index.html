@@ -503,6 +503,15 @@
     .sequence-choice-btn.correct   { border-color: #22c55e; background: #f0fdf4; }
     .sequence-choice-btn.incorrect { border-color: #ef4444; background: #fef2f2; }
     .sequence-choice-btn.missed    { border-color: #22c55e; background: #f0fdf4; opacity: 0.6; }
+    /* ── click-item mode ──────────────────────────────────────────────────────── */
+    .sequence-item-box.item-clickable { cursor: pointer; transition: box-shadow 0.15s, transform 0.15s; }
+    @media (hover: hover) {
+      .sequence-item-box.item-clickable:hover:not(.item-done) { box-shadow: 0 0 0 3px #3b82f6; transform: translateY(-2px); }
+    }
+    .sequence-item-box.item-done  { cursor: default; pointer-events: none; }
+    .sequence-item-box.correct    { box-shadow: 0 0 0 3px #22c55e !important; }
+    .sequence-item-box.incorrect  { box-shadow: 0 0 0 3px #ef4444 !important; }
+    .sequence-item-box.missed     { box-shadow: 0 0 0 3px #22c55e !important; opacity: 0.6; }
     .sq-profile { display: flex; gap: 3px; align-items: center; }
     .sq-profile .sq-zone-svg { width: 22px; height: 66px; display: block; }
     body.is-fullscreen .sequence-container { flex: 1; width: 100%; justify-content: center; }
@@ -1461,6 +1470,20 @@
       document.getElementById('seq-write-validate').onclick = validate;
       writeInput.onkeydown = e => { if (e.key === 'Enter') validate(); };
 
+    // ── Cliquer sur l'item ─────────────────────────────────────────────────────
+    } else if (q.type === 'click-item') {
+      const correctItemIndices = (q.correctItemIndices && q.correctItemIndices.length) ? q.correctItemIndices : [0];
+      const foundItemIndices   = new Set();
+      displayEl.style.display  = 'flex';
+      showAgainBtn.style.display = 'none';
+      const allItemEls = Array.from(displayEl.querySelectorAll('.sequence-item-box, .sequence-text-display'));
+      allItemEls.forEach((el, i) => {
+        el.classList.remove('item-done', 'correct', 'incorrect', 'missed');
+        el.dataset.itemIndex = String(i);
+        el.classList.add('item-clickable');
+        el.onclick = () => handleClickItemResponse(i, correctItemIndices, foundItemIndices, pair, questions, qIdx, isRetry);
+      });
+
     // ── Choix multiples ────────────────────────────────────────────────────────
     } else {
       const shuffledChoices = shuffleArray([...(q.choices || [])]);
@@ -1508,6 +1531,34 @@
         if (b.dataset.value === chosen) b.classList.add('incorrect');
         // Only reveal correct answers on the final attempt (retry or no-retry-allowed), not the first wrong attempt when retry is available
         else if ((isRetry || q.allowRetry === false) && q.highlightCorrectOnRetry !== false && correctAnswers.includes(b.dataset.value) && !foundAnswers.has(b.dataset.value)) b.classList.add('missed');
+      });
+      setTimeout(() => resolveQuestion(false, q, pair, questions, qIdx, isRetry), 1200);
+    }
+  }
+
+  function handleClickItemResponse(chosenIdx, correctItemIndices, foundItemIndices, pair, questions, qIdx, isRetry) {
+    if (isWaiting) return;
+    const q = questions[qIdx];
+    const displayEl  = document.getElementById('sequence-display');
+    const allItemEls = Array.from(displayEl.querySelectorAll('.sequence-item-box, .sequence-text-display'));
+    const clickedEl  = allItemEls.find(el => el.dataset.itemIndex === String(chosenIdx));
+    const isCorrect  = correctItemIndices.includes(chosenIdx);
+    responses.push({ pairId: pair.id, type: 'sequence', items: pair.items, questionIndex: qIdx, chosen: String(chosenIdx), isCorrect, correctAnswer: String(correctItemIndices[0] ?? 0), correctAnswers: correctItemIndices.map(String), isRetry: !!isRetry, timeMs: Date.now() - pairStartTime });
+
+    if (isCorrect) {
+      foundItemIndices.add(chosenIdx);
+      if (clickedEl) { clickedEl.classList.add('correct'); clickedEl.classList.add('item-done'); }
+      if (foundItemIndices.size < correctItemIndices.length) return;
+      isWaiting = true;
+      allItemEls.forEach(el => el.classList.add('item-done'));
+      setTimeout(() => advance(pair, questions, qIdx, isRetry), 700);
+    } else {
+      isWaiting = true;
+      allItemEls.forEach(el => {
+        el.classList.add('item-done');
+        const idx = parseInt(el.dataset.itemIndex);
+        if (idx === chosenIdx) el.classList.add('incorrect');
+        else if ((isRetry || q.allowRetry === false) && q.highlightCorrectOnRetry !== false && correctItemIndices.includes(idx) && !foundItemIndices.has(idx)) el.classList.add('missed');
       });
       setTimeout(() => resolveQuestion(false, q, pair, questions, qIdx, isRetry), 1200);
     }
@@ -2404,7 +2455,7 @@
     const typeSelect = document.createElement('select');
     typeSelect.className = 'seq-q-type';
     typeSelect.style.cssText = 'padding:3px 8px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:0.8rem;font-family:inherit;outline:none;color:#0f172a;background:white;cursor:pointer';
-    [['choice','Choix multiples'],['write','Saisie libre'],['direction','Direction (flèche)']].forEach(([v,l]) => {
+    [['choice','Choix multiples'],['write','Saisie libre'],['direction','Direction (flèche)'],['click-item','Cliquer sur l\'item']].forEach(([v,l]) => {
       const opt = document.createElement('option'); opt.value = v; opt.textContent = l;
       if ((q.type || 'choice') === v) opt.selected = true;
       typeSelect.appendChild(opt);
@@ -2561,16 +2612,64 @@
     dirOptsRow.appendChild(optsSelect);
     dirSection.append(dirRuleRow, dirOptsRow);
 
+    // ── Click-item section ────────────────────────────────────────────────────
+    const clickItemSection = document.createElement('div');
+    clickItemSection.className = 'seq-q-click-item-section';
+
+    const buildClickItemToggles = (savedCorrectIndices) => {
+      clickItemSection.innerHTML = '';
+      const labels = getSeqItemLabels();
+      const correctSet = new Set(savedCorrectIndices && savedCorrectIndices.length ? savedCorrectIndices : [0]);
+      const labelEl = document.createElement('div');
+      labelEl.style.cssText = 'font-size:0.78rem;color:#64748b;font-weight:500;margin-bottom:6px';
+      labelEl.innerHTML = 'Item(s) correct(s) <span style="color:#16a34a;font-size:0.72rem">(● = correct)</span>';
+      clickItemSection.appendChild(labelEl);
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;flex-wrap:wrap;gap:10px';
+      labels.forEach((label, i) => {
+        const wrapper = document.createElement('div');
+        wrapper.style.cssText = 'display:flex;align-items:center;gap:6px';
+        const toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'seq-correct-toggle seq-item-toggle';
+        toggle.dataset.itemIndex = String(i);
+        const isCorrect = correctSet.has(i);
+        toggle.dataset.correct = isCorrect ? '1' : '0';
+        toggle.style.cssText = applyToggleStyle(isCorrect);
+        toggle.textContent = '✓';
+        toggle.addEventListener('click', () => {
+          const nowCorrect = toggle.dataset.correct !== '1';
+          toggle.dataset.correct = nowCorrect ? '1' : '0';
+          toggle.style.cssText = applyToggleStyle(nowCorrect);
+          refreshSequencePreview();
+        });
+        const labelSpan = document.createElement('span');
+        labelSpan.style.cssText = 'font-size:0.85rem;color:#334155;font-weight:600;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
+        labelSpan.textContent = 'Item ' + (i + 1) + (label ? ' – ' + label.slice(0, 15) : '');
+        labelSpan.title = label || ('Item ' + (i + 1));
+        wrapper.append(toggle, labelSpan);
+        row.appendChild(wrapper);
+      });
+      clickItemSection.appendChild(row);
+    };
+    buildClickItemToggles(q.correctItemIndices);
+
     // Show/hide sections based on type
     const applyType = (type) => {
-      choiceSection.style.display = type === 'choice'    ? 'block' : 'none';
-      writeSection.style.display  = type === 'write'     ? 'block' : 'none';
-      dirSection.style.display    = type === 'direction' ? 'block' : 'none';
+      choiceSection.style.display    = type === 'choice'     ? 'block' : 'none';
+      writeSection.style.display     = type === 'write'      ? 'block' : 'none';
+      dirSection.style.display       = type === 'direction'  ? 'block' : 'none';
+      clickItemSection.style.display = type === 'click-item' ? 'block' : 'none';
+      if (type === 'click-item') {
+        const saved = Array.from(block.querySelectorAll('.seq-item-toggle'))
+          .filter(t => t.dataset.correct === '1').map(t => parseInt(t.dataset.itemIndex));
+        buildClickItemToggles(saved.length ? saved : (q.correctItemIndices || []));
+      }
     };
     applyType(q.type || 'choice');
     typeSelect.addEventListener('change', () => { applyType(typeSelect.value); refreshSequencePreview(); });
 
-    block.append(choiceSection, writeSection, dirSection);
+    block.append(choiceSection, writeSection, dirSection, clickItemSection);
 
     return block;
   }
@@ -2616,6 +2715,14 @@
         const rule = block.querySelector('.seq-q-direction-rule')?.value || 'same';
         const opts = block.querySelector('.seq-q-direction-opts')?.value || '4';
         choicesHtml = '<span style="padding:1px 8px;border-radius:4px;background:#eff6ff;border:1px solid #bae6fd">↕ ' + (rule === 'inverse' ? 'sens inverse' : 'même sens') + ' · ' + opts + ' options</span>';
+      } else if (qType === 'click-item') {
+        const corrects = new Set(Array.from(block.querySelectorAll('.seq-item-toggle'))
+          .filter(t => t.dataset.correct === '1').map(t => parseInt(t.dataset.itemIndex)));
+        const labels = getSeqItemLabels();
+        choicesHtml = labels.map((l, i) => {
+          const isCorr = corrects.has(i);
+          return '<span style="padding:1px 6px;border-radius:4px;background:' + (isCorr ? '#f0fdf4' : '#f8fafc') + ';border:1px solid ' + (isCorr ? '#86efac' : '#e2e8f0') + '">🖱 ' + escapeHtml(l || ('item ' + (i + 1))) + '</span>';
+        }).join(' ');
       } else {
         const choices = Array.from(block.querySelectorAll('.seq-q-choice')).map(inp => inp.value.trim());
         const corrects = new Set(getCorrectIndicesFromBlock(block));
@@ -2676,6 +2783,10 @@
         base.writeAnswers = raw ? raw.split('|').map(s => s.trim()).filter(Boolean) : [];
         base.choices = base.writeAnswers;
         base.correctIndices = [0];
+      } else if (type === 'click-item') {
+        base.correctItemIndices = Array.from(block.querySelectorAll('.seq-item-toggle'))
+          .filter(t => t.dataset.correct === '1').map(t => parseInt(t.dataset.itemIndex));
+        if (!base.correctItemIndices.length) base.correctItemIndices = [0];
       } else {
         base.choices = Array.from(block.querySelectorAll('.seq-q-choice')).map(i => i.value.trim());
         base.correctIndices = getCorrectIndicesFromBlock(block);

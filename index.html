@@ -465,12 +465,12 @@
     .sequence-timer-fill { height: 100%; background: #3b82f6; border-radius: 4px; }
     .sequence-display { display: flex; gap: 12px; justify-content: center; align-items: center; flex-wrap: wrap; width: 100%; }
     .sequence-item-box {
-      min-width: 64px; height: 80px; padding: 0 16px;
+      flex: 1; min-width: 100px; min-height: 160px; padding: 16px;
       border: 2.5px solid #e2e8f0; border-radius: 16px;
       background: white; display: flex; align-items: center; justify-content: center;
       overflow: hidden;
     }
-    .seq-sound-wrapper { position: relative; display: inline-flex; }
+    .seq-sound-wrapper { position: relative; flex: 1; display: flex; align-items: stretch; }
     .seq-sound-wrapper--single { width: 100%; }
     .seq-sound-wrapper--single .sequence-text-display { width: 100%; }
     .seq-item-sound-btn {
@@ -503,11 +503,24 @@
     .sequence-choice-btn.correct   { border-color: #22c55e; background: #f0fdf4; }
     .sequence-choice-btn.incorrect { border-color: #ef4444; background: #fef2f2; }
     .sequence-choice-btn.missed    { border-color: #22c55e; background: #f0fdf4; opacity: 0.6; }
+    /* ── click-item mode ──────────────────────────────────────────────────────── */
+    .sequence-item-box.item-clickable { cursor: pointer; transition: box-shadow 0.15s, transform 0.15s; }
+    @media (hover: hover) {
+      .sequence-item-box.item-clickable:hover:not(.item-done) { box-shadow: 0 0 0 3px #3b82f6; transform: translateY(-2px); }
+    }
+    .sequence-item-box.item-done  { cursor: default; pointer-events: none; }
+    .sequence-item-box.correct    { box-shadow: 0 0 0 3px #22c55e !important; }
+    .sequence-item-box.incorrect  { box-shadow: 0 0 0 3px #ef4444 !important; }
+    .sequence-item-box.missed     { box-shadow: 0 0 0 3px #22c55e !important; opacity: 0.6; }
     .sq-profile { display: flex; gap: 3px; align-items: center; }
     .sq-profile .sq-zone-svg { width: 22px; height: 66px; display: block; }
     body.is-fullscreen .sequence-container { flex: 1; width: 100%; justify-content: center; }
-    body.is-fullscreen .sequence-item-box { width: 110px; height: 110px; font-size: 3.5rem; }
-    body.is-fullscreen .sequence-text-display { font-size: 2rem; padding: 36px 48px; }
+    body.is-fullscreen #sequence-display { flex: 1; align-items: stretch; flex-wrap: nowrap; gap: 20px; }
+    body.is-fullscreen .sequence-item-box { flex: 1; min-width: 120px; height: auto; min-height: 220px; font-size: 3.5rem; }
+    body.is-fullscreen .seq-sound-wrapper { flex: 1; display: flex; align-items: stretch; min-height: 220px; }
+    body.is-fullscreen .seq-sound-wrapper .sequence-item-box { flex: 1; width: 100%; height: auto; min-height: 220px; }
+    body.is-fullscreen .seq-item-sound-btn { width: 44px; height: 44px; font-size: 1.3rem; bottom: 14px; right: 14px; }
+    body.is-fullscreen .sequence-text-display { flex: 1; font-size: 2rem; padding: 36px 48px; }
     body.is-fullscreen .sequence-choice-btn { min-width: 120px; max-width: 360px; padding: 20px 28px; font-size: 1.8rem; }
     body.is-fullscreen .sequence-choice-btn .sq-profile .sq-zone-svg { width: 34px; height: 102px; }
 
@@ -541,7 +554,7 @@
       .subtitle { margin-bottom: 24px; }
 
       .sequence-display { gap: 8px; }
-      .sequence-item-box { font-size: 1.6rem; height: 60px; min-width: 48px; padding: 0 10px; border-radius: 10px; }
+      .sequence-item-box { font-size: 1.6rem; min-height: 100px; min-width: 80px; padding: 10px; border-radius: 10px; }
       .sequence-text-display { padding: 18px 20px; font-size: 1.2rem; }
       .sequence-choice-btn { font-size: 1.1rem; padding: 12px 16px; }
 
@@ -619,6 +632,7 @@
   </style>
 </head>
 <body>
+<audio id="cys-audio-el" preload="none" style="display:none"></audio>
 
 <!-- ── Topbar ──────────────────────────────────────────────────────────────── -->
 <div id="topbar">
@@ -655,6 +669,12 @@
         <label class="checkbox-row">
           <input type="checkbox" id="shuffle-pairs">
           <span>Mélanger l'ordre des paires</span>
+        </label>
+      </div>
+      <div class="form-group">
+        <label class="checkbox-row">
+          <input type="checkbox" id="shuffle-questions">
+          <span>Mélanger l'ordre des questions</span>
         </label>
       </div>
       <div style="display:flex;gap:10px;align-items:center">
@@ -986,6 +1006,12 @@
         </div>
       </div>
       <div class="field-row"><label>Étiquette (optionnel)</label><input type="text" id="sim-audio-label" placeholder="Nom affiché…"></div>
+      <div class="field-row">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.88rem">
+          <input type="checkbox" id="sim-audio-autoplay">
+          Lancer automatiquement à l'affichage
+        </label>
+      </div>
     </div>
     <!-- section : flèche -->
     <div id="sim-sect-arrow" style="display:none">
@@ -1023,6 +1049,64 @@
   function saveSessions()  { localStorage.setItem('cys_sessions',  JSON.stringify(sessions));  }
   function savePatients()  { localStorage.setItem('cys_patients',  JSON.stringify(patients));  }
   function saveFolders()   { localStorage.setItem('cys_folders',   JSON.stringify(folders));   }
+
+  // ═══════════════════════════════════════════════════════════════════════════════
+  // AUDIO UTILS
+  // ═══════════════════════════════════════════════════════════════════════════════
+  const _audioEl = document.getElementById('cys-audio-el');
+  let _audioQueue = [], _audioBlobUrl = null;
+
+  function _audioNext() {
+    if (_audioBlobUrl) { URL.revokeObjectURL(_audioBlobUrl); _audioBlobUrl = null; }
+    if (_audioQueue.length === 0) return;
+    const { dataUrl, onDone } = _audioQueue.shift();
+    _audioBlobUrl = _dataUrlToBlob(dataUrl);
+    _audioEl.src = _audioBlobUrl;
+    _audioEl.onended = () => { onDone && onDone(); _audioNext(); };
+    _audioEl.onerror = () => { onDone && onDone(); _audioNext(); };
+    _audioEl.play().catch(() => { onDone && onDone(); _audioNext(); });
+  }
+
+  function _dataUrlToBlob(dataUrl) {
+    try {
+      const [header, b64] = dataUrl.split(',');
+      const mime = (header.match(/:(.*?);/) || [])[1] || 'audio/mpeg';
+      const raw = atob(b64);
+      const arr = new Uint8Array(raw.length);
+      for (let i = 0; i < raw.length; i++) arr[i] = raw.charCodeAt(i);
+      return URL.createObjectURL(new Blob([arr], {type: mime}));
+    } catch(e) { return dataUrl; }
+  }
+
+  // Interrupt any current playback and play a single dataUrl; calls onDone when finished.
+  function playAudioUrl(dataUrl, onDone) {
+    _audioEl.pause();
+    _audioQueue = [];
+    if (_audioBlobUrl) { URL.revokeObjectURL(_audioBlobUrl); _audioBlobUrl = null; }
+    _audioQueue = [{ dataUrl, onDone }];
+    _audioNext();
+  }
+
+  // Queue an array of dataUrls to play sequentially (interrupts current playback).
+  function playAudioSequence(dataUrls) {
+    _audioEl.pause();
+    if (_audioBlobUrl) { URL.revokeObjectURL(_audioBlobUrl); _audioBlobUrl = null; }
+    _audioQueue = dataUrls.map(u => ({ dataUrl: u, onDone: null }));
+    _audioNext();
+  }
+
+  // Returns a Promise<number> with total duration in ms for an array of audio data URLs.
+  function getAudiosDuration(dataUrls) {
+    if (!dataUrls.length) return Promise.resolve(0);
+    return Promise.all(dataUrls.map(url => new Promise(resolve => {
+      const blobUrl = _dataUrlToBlob(url);
+      const a = document.createElement('audio');
+      a.addEventListener('loadedmetadata', () => { URL.revokeObjectURL(blobUrl); resolve((a.duration || 0) * 1000); });
+      a.addEventListener('error', () => { URL.revokeObjectURL(blobUrl); resolve(0); });
+      a.preload = 'metadata';
+      a.src = blobUrl;
+    }))).then(durations => durations.reduce((s, d) => s + d, 0));
+  }
 
   // ═══════════════════════════════════════════════════════════════════════════════
   // CONSTANTS & UTILS
@@ -1188,6 +1272,7 @@
 
     currentPairs = document.getElementById('shuffle-pairs').checked
       ? shuffleArray(currentExercise.pairs) : [...currentExercise.pairs];
+    shuffleQuestions = document.getElementById('shuffle-questions').checked;
 
     document.getElementById('instruction-text').textContent =
       currentExercise.instruction || '(Aucune consigne définie)';
@@ -1201,6 +1286,7 @@
   let pairIndex = 0, responses = [], exerciseStartTime = 0, pairStartTime = 0, isWaiting = false;
   let currentSessionId = null;
   let previousPairWasCorrect = null;
+  let shuffleQuestions = false, currentPairQuestions = [];
 
   document.getElementById('btn-ready').addEventListener('click', () => {
     pairIndex = 0; responses = []; previousPairWasCorrect = null;
@@ -1217,6 +1303,7 @@
     const pair = currentPairs[pairIndex];
     if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
     isWaiting = false;
+    currentPairQuestions = shuffleQuestions ? shuffleArray(getPairQuestions(pair)) : getPairQuestions(pair);
     document.getElementById('progress-fill').style.width  = (pairIndex / currentPairs.length * 100) + '%';
     document.getElementById('progress-label').textContent = (pairIndex+1) + ' / ' + currentPairs.length;
     document.getElementById('sequence-container').style.display = 'flex';
@@ -1243,7 +1330,7 @@
       el.className = isSingle ? 'sequence-text-display' : 'sequence-item-box';
       applyItemStyle(el, itemObj);
       if (itemObj.audioUrl) {
-        audioUrls.push(itemObj.audioUrl);
+        if (itemObj.autoPlay !== false) audioUrls.push(itemObj.audioUrl);
         const wrapper = document.createElement('div');
         wrapper.className = 'seq-sound-wrapper' + (isSingle ? ' seq-sound-wrapper--single' : '');
         wrapper.appendChild(el);
@@ -1251,15 +1338,12 @@
         sndBtn.className = 'seq-item-sound-btn';
         sndBtn.title = 'Rejouer le son';
         sndBtn.textContent = '🔊';
-        let sndCurrent = null;
         sndBtn.addEventListener('click', e => {
           e.stopPropagation();
-          if (sndCurrent) { sndCurrent.pause(); sndCurrent = null; sndBtn.classList.remove('playing'); sndBtn.textContent = '🔊'; return; }
+          const isPlaying = sndBtn.classList.contains('playing');
+          if (isPlaying) { _audioEl.pause(); _audioQueue = []; sndBtn.classList.remove('playing'); sndBtn.textContent = '🔊'; return; }
           sndBtn.classList.add('playing'); sndBtn.textContent = '🔉';
-          const a = new Audio(itemObj.audioUrl);
-          sndCurrent = a;
-          a.addEventListener('ended', () => { sndCurrent = null; sndBtn.classList.remove('playing'); sndBtn.textContent = '🔊'; });
-          a.play().catch(() => { sndCurrent = null; sndBtn.classList.remove('playing'); sndBtn.textContent = '🔊'; });
+          playAudioUrl(itemObj.audioUrl, () => { sndBtn.classList.remove('playing'); sndBtn.textContent = '🔊'; });
         });
         wrapper.appendChild(sndBtn);
         displayEl.appendChild(wrapper);
@@ -1272,8 +1356,9 @@
     document.getElementById('seq-show-again-btn').style.display = 'none';
     document.getElementById('seq-write-zone').style.display = 'none';
 
-    if (pair.skipDisplay) {
+    if (pair.skipDisplay || currentPairQuestions.some(q => q.type === 'click-item')) {
       timerBar.style.display = 'none';
+      displayEl.style.display = 'flex';
       startSequenceQuestion(pair, 0);
       return;
     }
@@ -1281,29 +1366,29 @@
     timerBar.style.display = '';
     displayEl.style.display = 'flex';
 
-    if (dur > 0) {
-      timerFill.style.transition = 'none';
-      timerFill.style.width = '100%';
-      timerFill.getBoundingClientRect();
-      timerFill.style.transition = 'width ' + dur + 'ms linear';
-      timerFill.style.width = '0%';
-    } else {
-      timerFill.style.transition = 'none';
-      timerFill.style.width = '0%';
-    }
+    getAudiosDuration(audioUrls).then(audioDurMs => {
+      const effectiveDur = Math.max(dur, audioDurMs);
 
-    if (audioUrls.length > 0) {
-      let i = 0;
-      function playNext() { if (i >= audioUrls.length) return; const a = new Audio(audioUrls[i++]); a.addEventListener('ended', playNext); a.play().catch(() => {}); }
-      playNext();
-    }
+      if (effectiveDur > 0) {
+        timerFill.style.transition = 'none';
+        timerFill.style.width = '100%';
+        timerFill.getBoundingClientRect();
+        timerFill.style.transition = 'width ' + effectiveDur + 'ms linear';
+        timerFill.style.width = '0%';
+      } else {
+        timerFill.style.transition = 'none';
+        timerFill.style.width = '0%';
+      }
 
-    sequenceTimer = setTimeout(() => { sequenceTimer = null; startSequenceQuestion(pair, 0); }, dur || 50);
+      if (audioUrls.length > 0) playAudioSequence(audioUrls);
+
+      sequenceTimer = setTimeout(() => { sequenceTimer = null; startSequenceQuestion(pair, 0); }, effectiveDur || 50);
+    });
   }
 
   function startSequenceQuestion(pair, qIdx, isRetry) {
     currentQuestionIndex = qIdx;
-    const questions    = getPairQuestions(pair);
+    const questions    = currentPairQuestions;
     const q            = questions[qIdx];
     const correctIndices = q.correctIndices && q.correctIndices.length ? q.correctIndices : [0];
     const correctAnswers = correctIndices.map(i => (q.choices || [])[i]).filter(Boolean);
@@ -1395,6 +1480,20 @@
       document.getElementById('seq-write-validate').onclick = validate;
       writeInput.onkeydown = e => { if (e.key === 'Enter') validate(); };
 
+    // ── Cliquer sur l'item ─────────────────────────────────────────────────────
+    } else if (q.type === 'click-item') {
+      const correctItemIndices = (q.correctItemIndices && q.correctItemIndices.length) ? q.correctItemIndices : [0];
+      const foundItemIndices   = new Set();
+      displayEl.style.display  = 'flex';
+      showAgainBtn.style.display = 'none';
+      const allItemEls = Array.from(displayEl.querySelectorAll('.sequence-item-box, .sequence-text-display'));
+      allItemEls.forEach((el, i) => {
+        el.classList.remove('item-done', 'correct', 'incorrect', 'missed');
+        el.dataset.itemIndex = String(i);
+        el.classList.add('item-clickable');
+        el.onclick = () => handleClickItemResponse(i, correctItemIndices, foundItemIndices, pair, questions, qIdx, isRetry);
+      });
+
     // ── Choix multiples ────────────────────────────────────────────────────────
     } else {
       const shuffledChoices = shuffleArray([...(q.choices || [])]);
@@ -1442,6 +1541,34 @@
         if (b.dataset.value === chosen) b.classList.add('incorrect');
         // Only reveal correct answers on the final attempt (retry or no-retry-allowed), not the first wrong attempt when retry is available
         else if ((isRetry || q.allowRetry === false) && q.highlightCorrectOnRetry !== false && correctAnswers.includes(b.dataset.value) && !foundAnswers.has(b.dataset.value)) b.classList.add('missed');
+      });
+      setTimeout(() => resolveQuestion(false, q, pair, questions, qIdx, isRetry), 1200);
+    }
+  }
+
+  function handleClickItemResponse(chosenIdx, correctItemIndices, foundItemIndices, pair, questions, qIdx, isRetry) {
+    if (isWaiting) return;
+    const q = questions[qIdx];
+    const displayEl  = document.getElementById('sequence-display');
+    const allItemEls = Array.from(displayEl.querySelectorAll('.sequence-item-box, .sequence-text-display'));
+    const clickedEl  = allItemEls.find(el => el.dataset.itemIndex === String(chosenIdx));
+    const isCorrect  = correctItemIndices.includes(chosenIdx);
+    responses.push({ pairId: pair.id, type: 'sequence', items: pair.items, questionIndex: qIdx, chosen: String(chosenIdx), isCorrect, correctAnswer: String(correctItemIndices[0] ?? 0), correctAnswers: correctItemIndices.map(String), isRetry: !!isRetry, timeMs: Date.now() - pairStartTime });
+
+    if (isCorrect) {
+      foundItemIndices.add(chosenIdx);
+      if (clickedEl) { clickedEl.classList.add('correct'); clickedEl.classList.add('item-done'); }
+      if (foundItemIndices.size < correctItemIndices.length) return;
+      isWaiting = true;
+      allItemEls.forEach(el => el.classList.add('item-done'));
+      setTimeout(() => advance(pair, questions, qIdx, isRetry), 700);
+    } else {
+      isWaiting = true;
+      allItemEls.forEach(el => {
+        el.classList.add('item-done');
+        const idx = parseInt(el.dataset.itemIndex);
+        if (idx === chosenIdx) el.classList.add('incorrect');
+        else if ((isRetry || q.allowRetry === false) && q.highlightCorrectOnRetry !== false && correctItemIndices.includes(idx) && !foundItemIndices.has(idx)) el.classList.add('missed');
       });
       setTimeout(() => resolveQuestion(false, q, pair, questions, qIdx, isRetry), 1200);
     }
@@ -1805,18 +1932,14 @@
         soundBtn.className = 'pair-sound-btn';
         soundBtn.title = 'Rejouer le son';
         soundBtn.textContent = '🔊';
-        let currentAudio = null;
         soundBtn.addEventListener('click', e => {
           e.stopPropagation();
-          if (currentAudio) { currentAudio.pause(); currentAudio = null; soundBtn.classList.remove('playing'); soundBtn.textContent = '🔊'; return; }
-          let idx = 0;
+          if (soundBtn.classList.contains('playing')) { _audioEl.pause(); _audioQueue = []; soundBtn.classList.remove('playing'); soundBtn.textContent = '🔊'; return; }
           soundBtn.classList.add('playing'); soundBtn.textContent = '🔉';
+          const remaining = [...audioUrls];
           function playNext() {
-            if (idx >= audioUrls.length) { currentAudio = null; soundBtn.classList.remove('playing'); soundBtn.textContent = '🔊'; return; }
-            const a = new Audio(audioUrls[idx++]);
-            currentAudio = a;
-            a.addEventListener('ended', playNext);
-            a.play().catch(() => { currentAudio = null; soundBtn.classList.remove('playing'); soundBtn.textContent = '🔊'; });
+            if (remaining.length === 0) { soundBtn.classList.remove('playing'); soundBtn.textContent = '🔊'; return; }
+            playAudioUrl(remaining.shift(), playNext);
           }
           playNext();
         });
@@ -2092,6 +2215,7 @@
     } else if (type === 'audio') {
       simModalAudio = item.audioUrl || null; updateSimAudioUI();
       document.getElementById('sim-audio-label').value = item.text || '';
+      document.getElementById('sim-audio-autoplay').checked = item.autoPlay !== false;
     } else if (type === 'arrow') {
       document.getElementById('sim-arrow-dir').value = item.arrowDirection || 'left';
     } else {
@@ -2113,6 +2237,7 @@
       bgColor, audioUrl: null };
     if (type === 'audio') return { type, audioUrl: simModalAudio||null,
       text: document.getElementById('sim-audio-label').value||'',
+      autoPlay: document.getElementById('sim-audio-autoplay').checked,
       bgColor, imageUrl: null };
     if (type === 'arrow') return { type,
       arrowDirection: document.getElementById('sim-arrow-dir').value,
@@ -2167,7 +2292,7 @@
   });
   document.getElementById('sim-audio-remove').addEventListener('click', () => { simModalAudio = null; updateSimAudioUI(); refreshSimPreview(); });
   document.getElementById('sim-audio-play').addEventListener('click', () => {
-    if (simModalAudio) new Audio(simModalAudio).play().catch(() => {});
+    if (simModalAudio) playAudioUrl(simModalAudio);
   });
 
   document.getElementById('sim-save').addEventListener('click', () => {
@@ -2340,7 +2465,7 @@
     const typeSelect = document.createElement('select');
     typeSelect.className = 'seq-q-type';
     typeSelect.style.cssText = 'padding:3px 8px;border:1.5px solid #e2e8f0;border-radius:6px;font-size:0.8rem;font-family:inherit;outline:none;color:#0f172a;background:white;cursor:pointer';
-    [['choice','Choix multiples'],['write','Saisie libre'],['direction','Direction (flèche)']].forEach(([v,l]) => {
+    [['choice','Choix multiples'],['write','Saisie libre'],['direction','Direction (flèche)'],['click-item','Cliquer sur l\'item']].forEach(([v,l]) => {
       const opt = document.createElement('option'); opt.value = v; opt.textContent = l;
       if ((q.type || 'choice') === v) opt.selected = true;
       typeSelect.appendChild(opt);
@@ -2497,16 +2622,64 @@
     dirOptsRow.appendChild(optsSelect);
     dirSection.append(dirRuleRow, dirOptsRow);
 
+    // ── Click-item section ────────────────────────────────────────────────────
+    const clickItemSection = document.createElement('div');
+    clickItemSection.className = 'seq-q-click-item-section';
+
+    const buildClickItemToggles = (savedCorrectIndices) => {
+      clickItemSection.innerHTML = '';
+      const labels = getSeqItemLabels();
+      const correctSet = new Set(savedCorrectIndices && savedCorrectIndices.length ? savedCorrectIndices : [0]);
+      const labelEl = document.createElement('div');
+      labelEl.style.cssText = 'font-size:0.78rem;color:#64748b;font-weight:500;margin-bottom:6px';
+      labelEl.innerHTML = 'Item(s) correct(s) <span style="color:#16a34a;font-size:0.72rem">(● = correct)</span>';
+      clickItemSection.appendChild(labelEl);
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;flex-wrap:wrap;gap:10px';
+      labels.forEach((label, i) => {
+        const wrapper = document.createElement('div');
+        wrapper.style.cssText = 'display:flex;align-items:center;gap:6px';
+        const toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'seq-correct-toggle seq-item-toggle';
+        toggle.dataset.itemIndex = String(i);
+        const isCorrect = correctSet.has(i);
+        toggle.dataset.correct = isCorrect ? '1' : '0';
+        toggle.style.cssText = applyToggleStyle(isCorrect);
+        toggle.textContent = '✓';
+        toggle.addEventListener('click', () => {
+          const nowCorrect = toggle.dataset.correct !== '1';
+          toggle.dataset.correct = nowCorrect ? '1' : '0';
+          toggle.style.cssText = applyToggleStyle(nowCorrect);
+          refreshSequencePreview();
+        });
+        const labelSpan = document.createElement('span');
+        labelSpan.style.cssText = 'font-size:0.85rem;color:#334155;font-weight:600;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
+        labelSpan.textContent = 'Item ' + (i + 1) + (label ? ' – ' + label.slice(0, 15) : '');
+        labelSpan.title = label || ('Item ' + (i + 1));
+        wrapper.append(toggle, labelSpan);
+        row.appendChild(wrapper);
+      });
+      clickItemSection.appendChild(row);
+    };
+    buildClickItemToggles(q.correctItemIndices);
+
     // Show/hide sections based on type
     const applyType = (type) => {
-      choiceSection.style.display = type === 'choice'    ? 'block' : 'none';
-      writeSection.style.display  = type === 'write'     ? 'block' : 'none';
-      dirSection.style.display    = type === 'direction' ? 'block' : 'none';
+      choiceSection.style.display    = type === 'choice'     ? 'block' : 'none';
+      writeSection.style.display     = type === 'write'      ? 'block' : 'none';
+      dirSection.style.display       = type === 'direction'  ? 'block' : 'none';
+      clickItemSection.style.display = type === 'click-item' ? 'block' : 'none';
+      if (type === 'click-item') {
+        const saved = Array.from(block.querySelectorAll('.seq-item-toggle'))
+          .filter(t => t.dataset.correct === '1').map(t => parseInt(t.dataset.itemIndex));
+        buildClickItemToggles(saved.length ? saved : (q.correctItemIndices || []));
+      }
     };
     applyType(q.type || 'choice');
     typeSelect.addEventListener('change', () => { applyType(typeSelect.value); refreshSequencePreview(); });
 
-    block.append(choiceSection, writeSection, dirSection);
+    block.append(choiceSection, writeSection, dirSection, clickItemSection);
 
     return block;
   }
@@ -2552,6 +2725,14 @@
         const rule = block.querySelector('.seq-q-direction-rule')?.value || 'same';
         const opts = block.querySelector('.seq-q-direction-opts')?.value || '4';
         choicesHtml = '<span style="padding:1px 8px;border-radius:4px;background:#eff6ff;border:1px solid #bae6fd">↕ ' + (rule === 'inverse' ? 'sens inverse' : 'même sens') + ' · ' + opts + ' options</span>';
+      } else if (qType === 'click-item') {
+        const corrects = new Set(Array.from(block.querySelectorAll('.seq-item-toggle'))
+          .filter(t => t.dataset.correct === '1').map(t => parseInt(t.dataset.itemIndex)));
+        const labels = getSeqItemLabels();
+        choicesHtml = labels.map((l, i) => {
+          const isCorr = corrects.has(i);
+          return '<span style="padding:1px 6px;border-radius:4px;background:' + (isCorr ? '#f0fdf4' : '#f8fafc') + ';border:1px solid ' + (isCorr ? '#86efac' : '#e2e8f0') + '">🖱 ' + escapeHtml(l || ('item ' + (i + 1))) + '</span>';
+        }).join(' ');
       } else {
         const choices = Array.from(block.querySelectorAll('.seq-q-choice')).map(inp => inp.value.trim());
         const corrects = new Set(getCorrectIndicesFromBlock(block));
@@ -2612,6 +2793,10 @@
         base.writeAnswers = raw ? raw.split('|').map(s => s.trim()).filter(Boolean) : [];
         base.choices = base.writeAnswers;
         base.correctIndices = [0];
+      } else if (type === 'click-item') {
+        base.correctItemIndices = Array.from(block.querySelectorAll('.seq-item-toggle'))
+          .filter(t => t.dataset.correct === '1').map(t => parseInt(t.dataset.itemIndex));
+        if (!base.correctItemIndices.length) base.correctItemIndices = [0];
       } else {
         base.choices = Array.from(block.querySelectorAll('.seq-q-choice')).map(i => i.value.trim());
         base.correctIndices = getCorrectIndicesFromBlock(block);

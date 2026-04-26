@@ -671,6 +671,12 @@
           <span>Mélanger l'ordre des paires</span>
         </label>
       </div>
+      <div class="form-group">
+        <label class="checkbox-row">
+          <input type="checkbox" id="shuffle-questions">
+          <span>Mélanger l'ordre des questions</span>
+        </label>
+      </div>
       <div style="display:flex;gap:10px;align-items:center">
         <button class="btn btn-primary" id="btn-start" style="flex:1">Commencer l'exercice →</button>
         <button class="btn" id="btn-fullscreen-setup" title="Plein écran" style="flex:none;padding:10px 14px;font-size:1.1rem">⛶</button>
@@ -1266,6 +1272,7 @@
 
     currentPairs = document.getElementById('shuffle-pairs').checked
       ? shuffleArray(currentExercise.pairs) : [...currentExercise.pairs];
+    shuffleQuestions = document.getElementById('shuffle-questions').checked;
 
     document.getElementById('instruction-text').textContent =
       currentExercise.instruction || '(Aucune consigne définie)';
@@ -1279,6 +1286,7 @@
   let pairIndex = 0, responses = [], exerciseStartTime = 0, pairStartTime = 0, isWaiting = false;
   let currentSessionId = null;
   let previousPairWasCorrect = null;
+  let shuffleQuestions = false, currentPairQuestions = [];
 
   document.getElementById('btn-ready').addEventListener('click', () => {
     pairIndex = 0; responses = []; previousPairWasCorrect = null;
@@ -1295,6 +1303,7 @@
     const pair = currentPairs[pairIndex];
     if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
     isWaiting = false;
+    currentPairQuestions = shuffleQuestions ? shuffleArray(getPairQuestions(pair)) : getPairQuestions(pair);
     document.getElementById('progress-fill').style.width  = (pairIndex / currentPairs.length * 100) + '%';
     document.getElementById('progress-label').textContent = (pairIndex+1) + ' / ' + currentPairs.length;
     document.getElementById('sequence-container').style.display = 'flex';
@@ -1347,7 +1356,7 @@
     document.getElementById('seq-show-again-btn').style.display = 'none';
     document.getElementById('seq-write-zone').style.display = 'none';
 
-    if (pair.skipDisplay || getPairQuestions(pair).some(q => q.type === 'click-item')) {
+    if (pair.skipDisplay || currentPairQuestions.some(q => q.type === 'click-item')) {
       timerBar.style.display = 'none';
       displayEl.style.display = 'flex';
       startSequenceQuestion(pair, 0);
@@ -1379,7 +1388,7 @@
 
   function startSequenceQuestion(pair, qIdx, isRetry) {
     currentQuestionIndex = qIdx;
-    const questions    = getPairQuestions(pair);
+    const questions    = currentPairQuestions;
     const q            = questions[qIdx];
     const correctIndices = q.correctIndices && q.correctIndices.length ? q.correctIndices : [0];
     const correctAnswers = correctIndices.map(i => (q.choices || [])[i]).filter(Boolean);

@@ -671,12 +671,6 @@
           <span>Mélanger l'ordre des paires</span>
         </label>
       </div>
-      <div class="form-group">
-        <label class="checkbox-row">
-          <input type="checkbox" id="shuffle-answers" checked>
-          <span>Mélanger l'ordre des réponses</span>
-        </label>
-      </div>
       <div style="display:flex;gap:10px;align-items:center">
         <button class="btn btn-primary" id="btn-start" style="flex:1">Commencer l'exercice →</button>
         <button class="btn" id="btn-fullscreen-setup" title="Plein écran" style="flex:none;padding:10px 14px;font-size:1.1rem">⛶</button>
@@ -1272,7 +1266,6 @@
 
     currentPairs = document.getElementById('shuffle-pairs').checked
       ? shuffleArray(currentExercise.pairs) : [...currentExercise.pairs];
-    shuffleAnswers = document.getElementById('shuffle-answers').checked;
 
     document.getElementById('instruction-text').textContent =
       currentExercise.instruction || '(Aucune consigne définie)';
@@ -1286,7 +1279,7 @@
   let pairIndex = 0, responses = [], exerciseStartTime = 0, pairStartTime = 0, isWaiting = false;
   let currentSessionId = null;
   let previousPairWasCorrect = null;
-  let shuffleAnswers = true, currentPairQuestions = [];
+  let currentPairQuestions = [];
 
   document.getElementById('btn-ready').addEventListener('click', () => {
     pairIndex = 0; responses = []; previousPairWasCorrect = null;
@@ -1496,7 +1489,7 @@
 
     // ── Choix multiples ────────────────────────────────────────────────────────
     } else {
-      const shuffledChoices = shuffleAnswers ? shuffleArray([...(q.choices || [])]) : [...(q.choices || [])];
+      const shuffledChoices = q.shuffleAnswers !== false ? shuffleArray([...(q.choices || [])]) : [...(q.choices || [])];
       const foundAnswers    = new Set();
       shuffledChoices.forEach(choice => {
         const btn = document.createElement('button');
@@ -2506,7 +2499,14 @@
       highlightLabel.style.display = allowRetryChk.checked ? '' : 'none';
     };
     allowRetryChk.addEventListener('change', syncRetryVis); syncRetryVis();
-    header.append(title, typeSelect, allowRetryLabel, retryLabel, highlightLabel, delBtn);
+    // "Shuffle answers" checkbox (choice type only)
+    const shuffleAnswersLabel = document.createElement('label');
+    shuffleAnswersLabel.style.cssText = 'display:flex;align-items:center;gap:4px;font-size:0.75rem;color:#64748b;cursor:pointer;white-space:nowrap';
+    const shuffleAnswersChk = document.createElement('input');
+    shuffleAnswersChk.type = 'checkbox'; shuffleAnswersChk.className = 'seq-q-shuffle-answers';
+    shuffleAnswersChk.checked = q.shuffleAnswers !== false;
+    shuffleAnswersLabel.append(shuffleAnswersChk, document.createTextNode('Mélanger les réponses'));
+    header.append(title, typeSelect, allowRetryLabel, retryLabel, highlightLabel, shuffleAnswersLabel, delBtn);
     block.appendChild(header);
 
     // Question text
@@ -2670,6 +2670,7 @@
       writeSection.style.display     = type === 'write'      ? 'block' : 'none';
       dirSection.style.display       = type === 'direction'  ? 'block' : 'none';
       clickItemSection.style.display = type === 'click-item' ? 'block' : 'none';
+      shuffleAnswersLabel.style.display = type === 'choice'  ? ''      : 'none';
       if (type === 'click-item') {
         const saved = Array.from(block.querySelectorAll('.seq-item-toggle'))
           .filter(t => t.dataset.correct === '1').map(t => parseInt(t.dataset.itemIndex));
@@ -2784,7 +2785,8 @@
       const showOnRetry           = block.querySelector('.seq-q-show-on-retry')?.checked      ?? true;
       const allowRetry            = block.querySelector('.seq-q-allow-retry')?.checked       ?? true;
       const highlightCorrectOnRetry = block.querySelector('.seq-q-highlight-correct')?.checked ?? true;
-      const base = { questionText: block.querySelector('.seq-q-text').value.trim(), type, showOnRetry, allowRetry, highlightCorrectOnRetry };
+      const shuffleAnswers = block.querySelector('.seq-q-shuffle-answers')?.checked ?? true;
+      const base = { questionText: block.querySelector('.seq-q-text').value.trim(), type, showOnRetry, allowRetry, highlightCorrectOnRetry, shuffleAnswers };
       if (type === 'direction') {
         base.rule       = block.querySelector('.seq-q-direction-rule')?.value || 'same';
         base.numOptions = parseInt(block.querySelector('.seq-q-direction-opts')?.value || '4', 10);

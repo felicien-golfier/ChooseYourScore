@@ -673,8 +673,8 @@
       </div>
       <div class="form-group">
         <label class="checkbox-row">
-          <input type="checkbox" id="shuffle-questions" checked>
-          <span>Mélanger l'ordre des questions</span>
+          <input type="checkbox" id="shuffle-answers" checked>
+          <span>Mélanger l'ordre des réponses</span>
         </label>
       </div>
       <div style="display:flex;gap:10px;align-items:center">
@@ -1272,7 +1272,7 @@
 
     currentPairs = document.getElementById('shuffle-pairs').checked
       ? shuffleArray(currentExercise.pairs) : [...currentExercise.pairs];
-    shuffleQuestions = document.getElementById('shuffle-questions').checked;
+    shuffleAnswers = document.getElementById('shuffle-answers').checked;
 
     document.getElementById('instruction-text').textContent =
       currentExercise.instruction || '(Aucune consigne définie)';
@@ -1286,7 +1286,7 @@
   let pairIndex = 0, responses = [], exerciseStartTime = 0, pairStartTime = 0, isWaiting = false;
   let currentSessionId = null;
   let previousPairWasCorrect = null;
-  let shuffleQuestions = false, currentPairQuestions = [];
+  let shuffleAnswers = true, currentPairQuestions = [];
 
   document.getElementById('btn-ready').addEventListener('click', () => {
     pairIndex = 0; responses = []; previousPairWasCorrect = null;
@@ -1303,7 +1303,7 @@
     const pair = currentPairs[pairIndex];
     if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
     isWaiting = false;
-    currentPairQuestions = shuffleQuestions ? shuffleArray(getPairQuestions(pair)) : getPairQuestions(pair);
+    currentPairQuestions = getPairQuestions(pair);
     document.getElementById('progress-fill').style.width  = (pairIndex / currentPairs.length * 100) + '%';
     document.getElementById('progress-label').textContent = (pairIndex+1) + ' / ' + currentPairs.length;
     document.getElementById('sequence-container').style.display = 'flex';
@@ -1496,7 +1496,7 @@
 
     // ── Choix multiples ────────────────────────────────────────────────────────
     } else {
-      const shuffledChoices = shuffleArray([...(q.choices || [])]);
+      const shuffledChoices = shuffleAnswers ? shuffleArray([...(q.choices || [])]) : [...(q.choices || [])];
       const foundAnswers    = new Set();
       shuffledChoices.forEach(choice => {
         const btn = document.createElement('button');

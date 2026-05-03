@@ -442,11 +442,8 @@
     .folder-header:hover .folder-del-btn { opacity: 1; }
     .folder-del-btn:hover { background: #fef2f2; color: #dc2626; }
     .exercise-item.in-folder { padding-left: 24px; }
-    .exercise-item .ex-move-btns { display: none; gap: 2px; }
-    .exercise-item:hover .ex-move-btns { display: flex; }
-    .ex-move-btn { padding: 1px 5px; border: 1px solid #e2e8f0; border-radius: 4px; background: white; color: #94a3b8; font-size: 0.7rem; cursor: pointer; line-height: 1.3; flex-shrink: 0; }
-    .ex-move-btn:hover:not(:disabled) { border-color: #3b82f6; color: #3b82f6; background: #eff6ff; }
-    .ex-move-btn:disabled { opacity: 0.3; cursor: default; }
+    .exercise-item .reorder-wrap { display: none; gap: 2px; }
+    .exercise-item:hover .reorder-wrap { display: flex; }
     .no-folder-label { padding: 5px 12px 3px; font-size: 0.72rem; color: #cbd5e1; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
 
     .btn-dup {
@@ -1752,6 +1749,36 @@
   const collapsedFolders = new Set();
   function getSelectedEx() { return exercises.find(e => e.id === editorSelectedId) || null; }
 
+  // ── Réordonnancement universel ────────────────────────────────────────────────
+  // Crée deux boutons ↑/↓ avec le style standard .pair-action-btn.
+  // Retourne { wrap, up, dn } — wrap est un div contenant les deux boutons.
+  function makeReorderBtns(upHandler, downHandler) {
+    const wrap = document.createElement('div');
+    wrap.className = 'reorder-wrap';
+    wrap.style.cssText = 'display:flex;gap:2px;flex-shrink:0';
+    const up = document.createElement('button');
+    up.type = 'button'; up.className = 'pair-action-btn reorder-up'; up.title = 'Monter'; up.textContent = '↑';
+    up.addEventListener('click', upHandler);
+    const dn = document.createElement('button');
+    dn.type = 'button'; dn.className = 'pair-action-btn reorder-dn'; dn.title = 'Descendre'; dn.textContent = '↓';
+    dn.addEventListener('click', downHandler);
+    wrap.append(up, dn);
+    return { wrap, up, dn };
+  }
+
+  function setReorderDisabled(btn, disabled) {
+    if (btn) btn.disabled = disabled;
+  }
+
+  // Met à jour l'état disabled des boutons ↑/↓ d'une liste de wrappers DOM.
+  function syncReorderBtns(wrappers) {
+    const n = wrappers.length;
+    wrappers.forEach((el, i) => {
+      setReorderDisabled(el.querySelector('.reorder-up'), i === 0);
+      setReorderDisabled(el.querySelector('.reorder-dn'), i === n - 1);
+    });
+  }
+
   function initEditor() {
     if (editorSelectedId === null && exercises.length > 0) editorSelectedId = exercises[0].id;
     renderSidebar();
@@ -1841,19 +1868,16 @@
     nameSpan.style.cssText = 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1';
     const peers = exercises.filter(e => (e.folderId || null) === (ex.folderId || null));
     const pi = peers.indexOf(ex);
-    const moveBtns = document.createElement('div');
-    moveBtns.className = 'ex-move-btns';
-    const upBtn = document.createElement('button');
-    upBtn.className = 'ex-move-btn'; upBtn.textContent = '↑'; upBtn.title = 'Monter'; upBtn.disabled = (pi === 0);
-    upBtn.addEventListener('click', e => { e.stopPropagation(); moveExercise(ex.id, -1); });
-    const downBtn = document.createElement('button');
-    downBtn.className = 'ex-move-btn'; downBtn.textContent = '↓'; downBtn.title = 'Descendre'; downBtn.disabled = (pi === peers.length - 1);
-    downBtn.addEventListener('click', e => { e.stopPropagation(); moveExercise(ex.id, 1); });
-    moveBtns.append(upBtn, downBtn);
+    const { wrap, up, dn } = makeReorderBtns(
+      e => { e.stopPropagation(); moveExercise(ex.id, -1); },
+      e => { e.stopPropagation(); moveExercise(ex.id,  1); }
+    );
+    up.disabled = (pi === 0);
+    dn.disabled = (pi === peers.length - 1);
     const countSpan = document.createElement('span');
     countSpan.className = 'pair-count';
     countSpan.textContent = (ex.pairs||[]).length;
-    div.append(nameSpan, moveBtns, countSpan);
+    div.append(nameSpan, wrap, countSpan);
     div.addEventListener('click', () => { editorSelectedId = ex.id; renderSidebar(); renderExerciseEditor(); });
     return div;
   }
@@ -1970,12 +1994,14 @@
       actions.className = 'pair-actions';
       const editBtn      = makePairBtn('✏','edit',  'Modifier',   () => openPairModal(pair.id));
       const duplicateBtn = makePairBtn('⧉','',     'Dupliquer',  () => duplicatePair(pair.id));
-      const upBtn        = makePairBtn('↑','',      'Monter',     () => movePair(pair.id,-1));
-      const downBtn      = makePairBtn('↓','',      'Descendre',  () => movePair(pair.id, 1));
-      const deleteBtn    = makePairBtn('✕','delete','Supprimer',  () => deletePair(pair.id));
-      if (i===0)                   upBtn.disabled   = true;
-      if (i===ex.pairs.length-1)   downBtn.disabled = true;
-      actions.append(editBtn, duplicateBtn, upBtn, downBtn, deleteBtn);
+      const { wrap: mvWrap, up: upBtn, dn: downBtn } = makeReorderBtns(
+        () => movePair(pair.id, -1),
+        () => movePair(pair.id,  1)
+      );
+      upBtn.disabled   = (i === 0);
+      downBtn.disabled = (i === ex.pairs.length - 1);
+      const deleteBtn  = makePairBtn('✕','delete','Supprimer',  () => deletePair(pair.id));
+      actions.append(editBtn, duplicateBtn, mvWrap, deleteBtn);
       row.append(preview, actions);
       list.appendChild(row);
     });
@@ -2345,6 +2371,8 @@
     const row = document.getElementById('seq-items-row');
     row.innerHTML = '';
     seqItems.forEach((item, i) => {
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:2px';
       const card = document.createElement('div');
       card.className = 'seq-item-card';
       const preview = document.createElement('div');
@@ -2353,10 +2381,24 @@
       const editBtn = document.createElement('button');
       editBtn.type = 'button'; editBtn.className = 'seq-item-edit-btn'; editBtn.title = 'Éditer'; editBtn.textContent = '✏';
       editBtn.addEventListener('click', () => openSeqItemModal(i));
+      const { wrap: mvWrap, up, dn } = makeReorderBtns(
+        () => moveSeqItem(i, -1),
+        () => moveSeqItem(i,  1)
+      );
+      up.disabled = (i === 0);
+      dn.disabled = (i === seqItems.length - 1);
       card.append(preview, editBtn);
-      row.appendChild(card);
+      wrap.append(mvWrap, card);
+      row.appendChild(wrap);
     });
     refreshSequencePreview();
+  }
+
+  function moveSeqItem(i, dir) {
+    const j = i + dir;
+    if (j < 0 || j >= seqItems.length) return;
+    [seqItems[i], seqItems[j]] = [seqItems[j], seqItems[i]];
+    refreshSequenceItemInputs();
   }
 
   function getSequenceItemValues() { return seqItems; }  // returns typed item objects
@@ -2419,6 +2461,12 @@
       const isCorrect = corrects.has(i);
       const wrapper = document.createElement('div');
       wrapper.className = 'seq-q-choice-wrap';
+      const { wrap: mvWrap, up, dn } = makeReorderBtns(
+        () => moveChoice(container, wrapper, -1),
+        () => moveChoice(container, wrapper,  1)
+      );
+      up.disabled = (i === 0);
+      dn.disabled = (i === choices.length - 1);
       // Correct toggle button
       const toggle = document.createElement('button');
       toggle.type = 'button';
@@ -2444,9 +2492,19 @@
         input.style.background  = nowCorrect ? '#f0fdf4' : 'white';
         refreshSequencePreview();
       });
-      wrapper.append(toggle, input);
+      wrapper.append(mvWrap, toggle, input);
       container.appendChild(wrapper);
     });
+  }
+
+  function moveChoice(container, wrapper, dir) {
+    const wrappers = Array.from(container.querySelectorAll('.seq-q-choice-wrap'));
+    const i = wrappers.indexOf(wrapper), j = i + dir;
+    if (j < 0 || j >= wrappers.length) return;
+    if (dir === -1) container.insertBefore(wrapper, wrappers[j]);
+    else container.insertBefore(wrappers[j], wrapper);
+    syncReorderBtns(Array.from(container.querySelectorAll('.seq-q-choice-wrap')));
+    refreshSequencePreview();
   }
 
   function applyToggleStyle(isCorrect) {
@@ -2533,17 +2591,12 @@
     shuffleAnswersChk.type = 'checkbox'; shuffleAnswersChk.className = 'seq-q-shuffle-answers';
     shuffleAnswersChk.checked = q.shuffleAnswers !== false;
     shuffleAnswersLabel.append(shuffleAnswersChk, document.createTextNode('Mélanger les réponses'));
-    const upQBtn = document.createElement('button');
-    upQBtn.type = 'button'; upQBtn.className = 'seq-q-up';
-    upQBtn.textContent = '↑'; upQBtn.title = 'Monter la question';
-    upQBtn.style.cssText = 'padding:2px 7px;border:1px solid #e2e8f0;border-radius:5px;background:white;color:#64748b;font-size:0.8rem;cursor:pointer;font-family:inherit';
-    upQBtn.addEventListener('click', () => moveQuestionBlock(block, -1));
-    const downQBtn = document.createElement('button');
-    downQBtn.type = 'button'; downQBtn.className = 'seq-q-down';
-    downQBtn.textContent = '↓'; downQBtn.title = 'Descendre la question';
-    downQBtn.style.cssText = 'padding:2px 7px;border:1px solid #e2e8f0;border-radius:5px;background:white;color:#64748b;font-size:0.8rem;cursor:pointer;font-family:inherit';
-    downQBtn.addEventListener('click', () => moveQuestionBlock(block, 1));
-    header.append(title, upQBtn, downQBtn, typeSelect, allowRetryLabel, retryLabel, highlightLabel, shuffleAnswersLabel, delBtn);
+    const { wrap: qMvWrap, up: upQBtn, dn: downQBtn } = makeReorderBtns(
+      () => moveQuestionBlock(block, -1),
+      () => moveQuestionBlock(block,  1)
+    );
+    qMvWrap.style.display = 'flex'; // always visible (pas de hover ici)
+    header.append(title, qMvWrap, typeSelect, allowRetryLabel, retryLabel, highlightLabel, shuffleAnswersLabel, delBtn);
     block.appendChild(header);
 
     // Question text
@@ -2723,16 +2776,12 @@
   }
 
   function updateSeqQuestionTitles() {
-    const blocks = document.getElementById('seq-questions-container').querySelectorAll('.seq-q-block');
-    const n = blocks.length;
+    const blocks = Array.from(document.getElementById('seq-questions-container').querySelectorAll('.seq-q-block'));
     blocks.forEach((block, i) => {
       block.querySelector('.seq-q-title').textContent = 'Question ' + (i + 1);
-      block.querySelector('.seq-q-del').style.display = n > 1 ? '' : 'none';
-      const upBtn = block.querySelector('.seq-q-up');
-      const downBtn = block.querySelector('.seq-q-down');
-      if (upBtn)   { upBtn.disabled   = (i === 0);     upBtn.style.opacity   = (i === 0)     ? '0.35' : '1'; }
-      if (downBtn) { downBtn.disabled = (i === n - 1); downBtn.style.opacity = (i === n - 1) ? '0.35' : '1'; }
+      block.querySelector('.seq-q-del').style.display = blocks.length > 1 ? '' : 'none';
     });
+    syncReorderBtns(blocks);
   }
 
   function moveQuestionBlock(block, dir) {

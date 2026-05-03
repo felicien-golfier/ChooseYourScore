@@ -1357,7 +1357,7 @@
     document.getElementById('seq-show-again-btn').style.display = 'none';
     document.getElementById('seq-write-zone').style.display = 'none';
 
-    if (pair.skipDisplay || currentPairQuestions.some(q => q.type === 'click-item')) {
+    if (pair.skipDisplay || currentPairQuestions[0]?.type === 'click-item') {
       timerBar.style.display = 'none';
       displayEl.style.display = 'flex';
       (afterDisplayFn || (() => startSequenceQuestion(pair, 0)))();
@@ -1413,7 +1413,7 @@
     showAgainBtn.style.display = '';
     showAgainBtn.textContent   = shouldShowItems ? '🙈 Masquer' : '👁 Revoir';
     showAgainBtn.onclick = () => {
-      if (!pair.skipDisplay && !currentPairQuestions.some(qq => qq.type === 'click-item')) {
+      if (!pair.skipDisplay && currentPairQuestions[0]?.type !== 'click-item' && q.type !== 'click-item') {
         const visible = displayEl.style.display !== 'none';
         if (visible) {
           displayEl.style.display = 'none';

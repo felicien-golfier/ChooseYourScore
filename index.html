@@ -442,6 +442,8 @@
     .folder-header:hover .folder-del-btn { opacity: 1; }
     .folder-del-btn:hover { background: #fef2f2; color: #dc2626; }
     .exercise-item.in-folder { padding-left: 24px; }
+    .exercise-item .reorder-wrap { display: none; gap: 2px; }
+    .exercise-item:hover .reorder-wrap { display: flex; }
     .no-folder-label { padding: 5px 12px 3px; font-size: 0.72rem; color: #cbd5e1; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
 
     .btn-dup {
@@ -571,8 +573,8 @@
       /* Editor / Patients: sidebar en haut */
       #view-editor.active,
       #view-patients.active { flex-direction: column; overflow: auto; }
-      .sidebar { width: 100%; max-height: 200px; border-right: none; border-bottom: 1px solid #e2e8f0; }
-      .exercise-list { max-height: 130px; }
+      .sidebar { width: 100%; max-height: 45vh; border-right: none; border-bottom: 1px solid #e2e8f0; }
+      .exercise-list { max-height: none; }
       .editor-main { flex: 0 0 auto; overflow-y: visible; padding: 16px; }
       .editor-header { flex-wrap: wrap; gap: 10px; }
       .editor-header h3 { min-width: 0; flex: 1 1 100%; }
@@ -905,6 +907,12 @@
           <input type="checkbox" id="seq-skip-display" style="width:16px;height:16px;accent-color:#3b82f6">
           <span style="font-size:0.88rem;color:#374151">Passer directement aux questions</span>
         </label>
+        <div id="seq-replay-on-error-row">
+          <label class="checkbox-row" style="cursor:pointer;user-select:none">
+            <input type="checkbox" id="seq-replay-on-error" style="width:16px;height:16px;accent-color:#3b82f6">
+            <span style="font-size:0.88rem;color:#374151">Rejouer l'affichage en cas d'erreur (avant le 2ᵉ essai)</span>
+          </label>
+        </div>
         <div id="seq-exercise-default-row" style="display:none">
           <label class="checkbox-row" style="cursor:pointer;user-select:none">
             <input type="checkbox" id="seq-use-exercise-duration" style="width:16px;height:16px;accent-color:#6366f1">
@@ -1304,7 +1312,7 @@
     startSequenceDisplay(pair);
   }
 
-  function startSequenceDisplay(pair) {
+  function startSequenceDisplay(pair, afterDisplayFn) {
     const displayEl  = document.getElementById('sequence-display');
     const questionEl = document.getElementById('sequence-question');
     const choicesEl  = document.getElementById('sequence-choices');
@@ -1349,10 +1357,10 @@
     document.getElementById('seq-show-again-btn').style.display = 'none';
     document.getElementById('seq-write-zone').style.display = 'none';
 
-    if (pair.skipDisplay || currentPairQuestions.some(q => q.type === 'click-item')) {
+    if (pair.skipDisplay || currentPairQuestions[0]?.type === 'click-item') {
       timerBar.style.display = 'none';
       displayEl.style.display = 'flex';
-      startSequenceQuestion(pair, 0);
+      (afterDisplayFn || (() => startSequenceQuestion(pair, 0)))();
       return;
     }
 
@@ -1375,11 +1383,11 @@
 
       if (audioUrls.length > 0) playAudioSequence(audioUrls);
 
-      sequenceTimer = setTimeout(() => { sequenceTimer = null; startSequenceQuestion(pair, 0); }, effectiveDur || 50);
+      sequenceTimer = setTimeout(() => { sequenceTimer = null; (afterDisplayFn || (() => startSequenceQuestion(pair, 0)))(); }, effectiveDur || 50);
     });
   }
 
-  function startSequenceQuestion(pair, qIdx, isRetry) {
+  function startSequenceQuestion(pair, qIdx, isRetry, isAfterReplay) {
     currentQuestionIndex = qIdx;
     const questions    = currentPairQuestions;
     const q            = questions[qIdx];
@@ -1398,16 +1406,26 @@
     else if (visMode === 'hide_if_prev_correct') hideItems = previousPairWasCorrect === true;
     else if (visMode === 'hide_if_prev_incorrect') hideItems = previousPairWasCorrect === false;
     else hideItems = true; // always_hide
-    const shouldShowItems = (pair.skipDisplay && !hideItems) || (!pair.skipDisplay && isRetry && q.showOnRetry !== false);
+    const shouldShowItems = (pair.skipDisplay && !hideItems) || (!pair.skipDisplay && isRetry && !isAfterReplay && q.showOnRetry !== false);
     displayEl.style.display = shouldShowItems ? 'flex' : 'none';
 
-    // Bouton Revoir/Masquer — identique pour tous les types de question
+    // Bouton Revoir — rejoue l'affichage complet pour les paires non-skip, toggle pour les autres
     showAgainBtn.style.display = '';
     showAgainBtn.textContent   = shouldShowItems ? '🙈 Masquer' : '👁 Revoir';
     showAgainBtn.onclick = () => {
-      const visible = displayEl.style.display !== 'none';
-      displayEl.style.display  = visible ? 'none' : 'flex';
-      showAgainBtn.textContent = visible ? '👁 Revoir' : '🙈 Masquer';
+      if (!pair.skipDisplay && currentPairQuestions[0]?.type !== 'click-item' && q.type !== 'click-item') {
+        const visible = displayEl.style.display !== 'none';
+        if (visible) {
+          displayEl.style.display = 'none';
+          showAgainBtn.textContent = '👁 Revoir';
+        } else {
+          startSequenceDisplay(pair, () => startSequenceQuestion(pair, qIdx, isRetry, true));
+        }
+      } else {
+        const visible = displayEl.style.display !== 'none';
+        displayEl.style.display  = visible ? 'none' : 'flex';
+        showAgainBtn.textContent = visible ? '👁 Revoir' : '🙈 Masquer';
+      }
     };
 
     questionEl.textContent = q.questionText || '';
@@ -1568,8 +1586,15 @@
   }
 
   function resolveQuestion(isCorrect, q, pair, questions, qIdx, isRetry) {
-    if (!isCorrect && !isRetry && q.allowRetry !== false) startSequenceQuestion(pair, qIdx, true);
-    else advance(pair, questions, qIdx, isRetry);
+    if (!isCorrect && !isRetry && q.allowRetry !== false) {
+      if (pair.replayOnError && !pair.skipDisplay) {
+        startSequenceDisplay(pair, () => startSequenceQuestion(pair, qIdx, true, true));
+      } else {
+        startSequenceQuestion(pair, qIdx, true);
+      }
+    } else {
+      advance(pair, questions, qIdx, isRetry);
+    }
   }
 
   function advance(pair, questions, qIdx, isRetry) {
@@ -1747,6 +1772,36 @@
   const collapsedFolders = new Set();
   function getSelectedEx() { return exercises.find(e => e.id === editorSelectedId) || null; }
 
+  // ── Réordonnancement universel ────────────────────────────────────────────────
+  // Crée deux boutons ↑/↓ avec le style standard .pair-action-btn.
+  // Retourne { wrap, up, dn } — wrap est un div contenant les deux boutons.
+  function makeReorderBtns(upHandler, downHandler) {
+    const wrap = document.createElement('div');
+    wrap.className = 'reorder-wrap';
+    wrap.style.cssText = 'display:flex;gap:2px;flex-shrink:0';
+    const up = document.createElement('button');
+    up.type = 'button'; up.className = 'pair-action-btn reorder-up'; up.title = 'Monter'; up.textContent = '↑';
+    up.addEventListener('click', upHandler);
+    const dn = document.createElement('button');
+    dn.type = 'button'; dn.className = 'pair-action-btn reorder-dn'; dn.title = 'Descendre'; dn.textContent = '↓';
+    dn.addEventListener('click', downHandler);
+    wrap.append(up, dn);
+    return { wrap, up, dn };
+  }
+
+  function setReorderDisabled(btn, disabled) {
+    if (btn) btn.disabled = disabled;
+  }
+
+  // Met à jour l'état disabled des boutons ↑/↓ d'une liste de wrappers DOM.
+  function syncReorderBtns(wrappers) {
+    const n = wrappers.length;
+    wrappers.forEach((el, i) => {
+      setReorderDisabled(el.querySelector('.reorder-up'), i === 0);
+      setReorderDisabled(el.querySelector('.reorder-dn'), i === n - 1);
+    });
+  }
+
   function initEditor() {
     if (editorSelectedId === null && exercises.length > 0) editorSelectedId = exercises[0].id;
     renderSidebar();
@@ -1833,13 +1888,32 @@
     div.className = 'exercise-item' + (ex.id === editorSelectedId ? ' active' : '') + (indented ? ' in-folder' : '');
     const nameSpan = document.createElement('span');
     nameSpan.textContent = ex.name;
-    nameSpan.style.cssText = 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
+    nameSpan.style.cssText = 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1';
+    const peers = exercises.filter(e => (e.folderId || null) === (ex.folderId || null));
+    const pi = peers.indexOf(ex);
+    const { wrap, up, dn } = makeReorderBtns(
+      e => { e.stopPropagation(); moveExercise(ex.id, -1); },
+      e => { e.stopPropagation(); moveExercise(ex.id,  1); }
+    );
+    up.disabled = (pi === 0);
+    dn.disabled = (pi === peers.length - 1);
     const countSpan = document.createElement('span');
     countSpan.className = 'pair-count';
     countSpan.textContent = (ex.pairs||[]).length;
-    div.append(nameSpan, countSpan);
+    div.append(nameSpan, wrap, countSpan);
     div.addEventListener('click', () => { editorSelectedId = ex.id; renderSidebar(); renderExerciseEditor(); });
     return div;
+  }
+
+  function moveExercise(exId, dir) {
+    const ex = exercises.find(e => e.id === exId);
+    if (!ex) return;
+    const peers = exercises.filter(e => (e.folderId || null) === (ex.folderId || null));
+    const pi = peers.indexOf(ex), pj = pi + dir;
+    if (pj < 0 || pj >= peers.length) return;
+    const gi = exercises.indexOf(ex), gj = exercises.indexOf(peers[pj]);
+    [exercises[gi], exercises[gj]] = [exercises[gj], exercises[gi]];
+    saveExercises(); renderSidebar();
   }
 
   function renderFolderSelect() {
@@ -1943,12 +2017,14 @@
       actions.className = 'pair-actions';
       const editBtn      = makePairBtn('✏','edit',  'Modifier',   () => openPairModal(pair.id));
       const duplicateBtn = makePairBtn('⧉','',     'Dupliquer',  () => duplicatePair(pair.id));
-      const upBtn        = makePairBtn('↑','',      'Monter',     () => movePair(pair.id,-1));
-      const downBtn      = makePairBtn('↓','',      'Descendre',  () => movePair(pair.id, 1));
-      const deleteBtn    = makePairBtn('✕','delete','Supprimer',  () => deletePair(pair.id));
-      if (i===0)                   upBtn.disabled   = true;
-      if (i===ex.pairs.length-1)   downBtn.disabled = true;
-      actions.append(editBtn, duplicateBtn, upBtn, downBtn, deleteBtn);
+      const { wrap: mvWrap, up: upBtn, dn: downBtn } = makeReorderBtns(
+        () => movePair(pair.id, -1),
+        () => movePair(pair.id,  1)
+      );
+      upBtn.disabled   = (i === 0);
+      downBtn.disabled = (i === ex.pairs.length - 1);
+      const deleteBtn  = makePairBtn('✕','delete','Supprimer',  () => deletePair(pair.id));
+      actions.append(editBtn, duplicateBtn, mvWrap, deleteBtn);
       row.append(preview, actions);
       list.appendChild(row);
     });
@@ -2143,6 +2219,7 @@
     pair.items               = seqData.items;
     pair.skipDisplay         = seqData.skipDisplay;
     pair.visibilityMode      = seqData.visibilityMode;
+    pair.replayOnError       = seqData.replayOnError;
     pair.useExerciseDefault  = seqData.useExerciseDefault;
     pair.displayDuration     = seqData.displayDuration;
     pair.questions           = seqData.questions;
@@ -2318,6 +2395,8 @@
     const row = document.getElementById('seq-items-row');
     row.innerHTML = '';
     seqItems.forEach((item, i) => {
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:2px';
       const card = document.createElement('div');
       card.className = 'seq-item-card';
       const preview = document.createElement('div');
@@ -2326,10 +2405,24 @@
       const editBtn = document.createElement('button');
       editBtn.type = 'button'; editBtn.className = 'seq-item-edit-btn'; editBtn.title = 'Éditer'; editBtn.textContent = '✏';
       editBtn.addEventListener('click', () => openSeqItemModal(i));
+      const { wrap: mvWrap, up, dn } = makeReorderBtns(
+        () => moveSeqItem(i, -1),
+        () => moveSeqItem(i,  1)
+      );
+      up.disabled = (i === 0);
+      dn.disabled = (i === seqItems.length - 1);
       card.append(preview, editBtn);
-      row.appendChild(card);
+      wrap.append(mvWrap, card);
+      row.appendChild(wrap);
     });
     refreshSequencePreview();
+  }
+
+  function moveSeqItem(i, dir) {
+    const j = i + dir;
+    if (j < 0 || j >= seqItems.length) return;
+    [seqItems[i], seqItems[j]] = [seqItems[j], seqItems[i]];
+    refreshSequenceItemInputs();
   }
 
   function getSequenceItemValues() { return seqItems; }  // returns typed item objects
@@ -2392,6 +2485,12 @@
       const isCorrect = corrects.has(i);
       const wrapper = document.createElement('div');
       wrapper.className = 'seq-q-choice-wrap';
+      const { wrap: mvWrap, up, dn } = makeReorderBtns(
+        () => moveChoice(container, wrapper, -1),
+        () => moveChoice(container, wrapper,  1)
+      );
+      up.disabled = (i === 0);
+      dn.disabled = (i === choices.length - 1);
       // Correct toggle button
       const toggle = document.createElement('button');
       toggle.type = 'button';
@@ -2417,9 +2516,19 @@
         input.style.background  = nowCorrect ? '#f0fdf4' : 'white';
         refreshSequencePreview();
       });
-      wrapper.append(toggle, input);
+      wrapper.append(mvWrap, toggle, input);
       container.appendChild(wrapper);
     });
+  }
+
+  function moveChoice(container, wrapper, dir) {
+    const wrappers = Array.from(container.querySelectorAll('.seq-q-choice-wrap'));
+    const i = wrappers.indexOf(wrapper), j = i + dir;
+    if (j < 0 || j >= wrappers.length) return;
+    if (dir === -1) container.insertBefore(wrapper, wrappers[j]);
+    else container.insertBefore(wrappers[j], wrapper);
+    syncReorderBtns(Array.from(container.querySelectorAll('.seq-q-choice-wrap')));
+    refreshSequencePreview();
   }
 
   function applyToggleStyle(isCorrect) {
@@ -2506,7 +2615,12 @@
     shuffleAnswersChk.type = 'checkbox'; shuffleAnswersChk.className = 'seq-q-shuffle-answers';
     shuffleAnswersChk.checked = q.shuffleAnswers !== false;
     shuffleAnswersLabel.append(shuffleAnswersChk, document.createTextNode('Mélanger les réponses'));
-    header.append(title, typeSelect, allowRetryLabel, retryLabel, highlightLabel, shuffleAnswersLabel, delBtn);
+    const { wrap: qMvWrap, up: upQBtn, dn: downQBtn } = makeReorderBtns(
+      () => moveQuestionBlock(block, -1),
+      () => moveQuestionBlock(block,  1)
+    );
+    qMvWrap.style.display = 'flex'; // always visible (pas de hover ici)
+    header.append(title, qMvWrap, typeSelect, allowRetryLabel, retryLabel, highlightLabel, shuffleAnswersLabel, delBtn);
     block.appendChild(header);
 
     // Question text
@@ -2686,11 +2800,23 @@
   }
 
   function updateSeqQuestionTitles() {
-    document.getElementById('seq-questions-container').querySelectorAll('.seq-q-block').forEach((block, i) => {
+    const blocks = Array.from(document.getElementById('seq-questions-container').querySelectorAll('.seq-q-block'));
+    blocks.forEach((block, i) => {
       block.querySelector('.seq-q-title').textContent = 'Question ' + (i + 1);
-      block.querySelector('.seq-q-del').style.display =
-        document.getElementById('seq-questions-container').querySelectorAll('.seq-q-block').length > 1 ? '' : 'none';
+      block.querySelector('.seq-q-del').style.display = blocks.length > 1 ? '' : 'none';
     });
+    syncReorderBtns(blocks);
+  }
+
+  function moveQuestionBlock(block, dir) {
+    const container = document.getElementById('seq-questions-container');
+    const blocks = Array.from(container.querySelectorAll('.seq-q-block'));
+    const i = blocks.indexOf(block), j = i + dir;
+    if (j < 0 || j >= blocks.length) return;
+    if (dir === -1) container.insertBefore(block, blocks[j]);
+    else container.insertBefore(blocks[j], block);
+    updateSeqQuestionTitles();
+    refreshSequencePreview();
   }
 
   function refreshSequencePreview() {
@@ -2770,6 +2896,8 @@
     document.getElementById('seq-duration-row').style.display = (skip || useExDefault) ? 'none' : '';
     const visMode = pair.visibilityMode || (pair.hideItems !== false ? 'always_hide' : 'always_show');
     document.getElementById('seq-visibility-mode').value = visMode;
+    document.getElementById('seq-replay-on-error').checked = pair.replayOnError === true;
+    document.getElementById('seq-replay-on-error-row').style.display = skip ? 'none' : '';
     refreshSequenceItemInputs();
     const questions = getPairQuestions(pair);
     const container = document.getElementById('seq-questions-container');
@@ -2808,10 +2936,12 @@
     const skipDisplay        = document.getElementById('seq-skip-display').checked;
     const useExerciseDefault = !skipDisplay && document.getElementById('seq-use-exercise-duration').checked;
     const visibilityMode     = document.getElementById('seq-visibility-mode').value || 'always_hide';
+    const replayOnError      = !skipDisplay && document.getElementById('seq-replay-on-error').checked;
     return {
       items:            getSequenceItemValues(),
       skipDisplay,
       visibilityMode,
+      replayOnError,
       useExerciseDefault,
       displayDuration: skipDisplay ? 0 : (useExerciseDefault ? null : Math.round((parseFloat(document.getElementById('seq-duration').value) || 1) * 1000)),
       questions,
@@ -2828,6 +2958,7 @@
     if (!hasExDefault) document.getElementById('seq-use-exercise-duration').checked = false;
     const useExDefault = hasExDefault && document.getElementById('seq-use-exercise-duration').checked;
     document.getElementById('seq-duration-row').style.display = (skip || useExDefault) ? 'none' : '';
+    document.getElementById('seq-replay-on-error-row').style.display = skip ? 'none' : '';
   });
 
   document.getElementById('seq-use-exercise-duration').addEventListener('change', function() {

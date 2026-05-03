@@ -2506,7 +2506,17 @@
     shuffleAnswersChk.type = 'checkbox'; shuffleAnswersChk.className = 'seq-q-shuffle-answers';
     shuffleAnswersChk.checked = q.shuffleAnswers !== false;
     shuffleAnswersLabel.append(shuffleAnswersChk, document.createTextNode('Mélanger les réponses'));
-    header.append(title, typeSelect, allowRetryLabel, retryLabel, highlightLabel, shuffleAnswersLabel, delBtn);
+    const upQBtn = document.createElement('button');
+    upQBtn.type = 'button'; upQBtn.className = 'seq-q-up';
+    upQBtn.textContent = '↑'; upQBtn.title = 'Monter la question';
+    upQBtn.style.cssText = 'padding:2px 7px;border:1px solid #e2e8f0;border-radius:5px;background:white;color:#64748b;font-size:0.8rem;cursor:pointer;font-family:inherit';
+    upQBtn.addEventListener('click', () => moveQuestionBlock(block, -1));
+    const downQBtn = document.createElement('button');
+    downQBtn.type = 'button'; downQBtn.className = 'seq-q-down';
+    downQBtn.textContent = '↓'; downQBtn.title = 'Descendre la question';
+    downQBtn.style.cssText = 'padding:2px 7px;border:1px solid #e2e8f0;border-radius:5px;background:white;color:#64748b;font-size:0.8rem;cursor:pointer;font-family:inherit';
+    downQBtn.addEventListener('click', () => moveQuestionBlock(block, 1));
+    header.append(title, upQBtn, downQBtn, typeSelect, allowRetryLabel, retryLabel, highlightLabel, shuffleAnswersLabel, delBtn);
     block.appendChild(header);
 
     // Question text
@@ -2686,11 +2696,27 @@
   }
 
   function updateSeqQuestionTitles() {
-    document.getElementById('seq-questions-container').querySelectorAll('.seq-q-block').forEach((block, i) => {
+    const blocks = document.getElementById('seq-questions-container').querySelectorAll('.seq-q-block');
+    const n = blocks.length;
+    blocks.forEach((block, i) => {
       block.querySelector('.seq-q-title').textContent = 'Question ' + (i + 1);
-      block.querySelector('.seq-q-del').style.display =
-        document.getElementById('seq-questions-container').querySelectorAll('.seq-q-block').length > 1 ? '' : 'none';
+      block.querySelector('.seq-q-del').style.display = n > 1 ? '' : 'none';
+      const upBtn = block.querySelector('.seq-q-up');
+      const downBtn = block.querySelector('.seq-q-down');
+      if (upBtn)   { upBtn.disabled   = (i === 0);     upBtn.style.opacity   = (i === 0)     ? '0.35' : '1'; }
+      if (downBtn) { downBtn.disabled = (i === n - 1); downBtn.style.opacity = (i === n - 1) ? '0.35' : '1'; }
     });
+  }
+
+  function moveQuestionBlock(block, dir) {
+    const container = document.getElementById('seq-questions-container');
+    const blocks = Array.from(container.querySelectorAll('.seq-q-block'));
+    const i = blocks.indexOf(block), j = i + dir;
+    if (j < 0 || j >= blocks.length) return;
+    if (dir === -1) container.insertBefore(block, blocks[j]);
+    else container.insertBefore(blocks[j], block);
+    updateSeqQuestionTitles();
+    refreshSequencePreview();
   }
 
   function refreshSequencePreview() {

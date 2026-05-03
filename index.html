@@ -442,6 +442,11 @@
     .folder-header:hover .folder-del-btn { opacity: 1; }
     .folder-del-btn:hover { background: #fef2f2; color: #dc2626; }
     .exercise-item.in-folder { padding-left: 24px; }
+    .exercise-item .ex-move-btns { display: none; gap: 2px; }
+    .exercise-item:hover .ex-move-btns { display: flex; }
+    .ex-move-btn { padding: 1px 5px; border: 1px solid #e2e8f0; border-radius: 4px; background: white; color: #94a3b8; font-size: 0.7rem; cursor: pointer; line-height: 1.3; flex-shrink: 0; }
+    .ex-move-btn:hover:not(:disabled) { border-color: #3b82f6; color: #3b82f6; background: #eff6ff; }
+    .ex-move-btn:disabled { opacity: 0.3; cursor: default; }
     .no-folder-label { padding: 5px 12px 3px; font-size: 0.72rem; color: #cbd5e1; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
 
     .btn-dup {
@@ -1833,13 +1838,35 @@
     div.className = 'exercise-item' + (ex.id === editorSelectedId ? ' active' : '') + (indented ? ' in-folder' : '');
     const nameSpan = document.createElement('span');
     nameSpan.textContent = ex.name;
-    nameSpan.style.cssText = 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap';
+    nameSpan.style.cssText = 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1';
+    const peers = exercises.filter(e => (e.folderId || null) === (ex.folderId || null));
+    const pi = peers.indexOf(ex);
+    const moveBtns = document.createElement('div');
+    moveBtns.className = 'ex-move-btns';
+    const upBtn = document.createElement('button');
+    upBtn.className = 'ex-move-btn'; upBtn.textContent = '↑'; upBtn.title = 'Monter'; upBtn.disabled = (pi === 0);
+    upBtn.addEventListener('click', e => { e.stopPropagation(); moveExercise(ex.id, -1); });
+    const downBtn = document.createElement('button');
+    downBtn.className = 'ex-move-btn'; downBtn.textContent = '↓'; downBtn.title = 'Descendre'; downBtn.disabled = (pi === peers.length - 1);
+    downBtn.addEventListener('click', e => { e.stopPropagation(); moveExercise(ex.id, 1); });
+    moveBtns.append(upBtn, downBtn);
     const countSpan = document.createElement('span');
     countSpan.className = 'pair-count';
     countSpan.textContent = (ex.pairs||[]).length;
-    div.append(nameSpan, countSpan);
+    div.append(nameSpan, moveBtns, countSpan);
     div.addEventListener('click', () => { editorSelectedId = ex.id; renderSidebar(); renderExerciseEditor(); });
     return div;
+  }
+
+  function moveExercise(exId, dir) {
+    const ex = exercises.find(e => e.id === exId);
+    if (!ex) return;
+    const peers = exercises.filter(e => (e.folderId || null) === (ex.folderId || null));
+    const pi = peers.indexOf(ex), pj = pi + dir;
+    if (pj < 0 || pj >= peers.length) return;
+    const gi = exercises.indexOf(ex), gj = exercises.indexOf(peers[pj]);
+    [exercises[gi], exercises[gj]] = [exercises[gj], exercises[gi]];
+    saveExercises(); renderSidebar();
   }
 
   function renderFolderSelect() {

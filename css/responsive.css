@@ -1,0 +1,229 @@
+/* ── MOBILE ──────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  body {
+    overflow: auto;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  #topbar {
+    padding: 0 10px;
+    gap: 2px;
+    height: auto;
+    flex-wrap: wrap;
+    padding: 6px 10px;
+  }
+
+  #topbar .logo {
+    font-size: 0.88rem;
+    margin-right: 4px;
+  }
+
+  .nav-btn {
+    padding: 5px 9px;
+    font-size: 0.78rem;
+  }
+
+  .view.centered {
+    padding: 12px 8px;
+  }
+
+  .screen {
+    padding: 24px 18px;
+    border-radius: var(--radius-lg);
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    margin-bottom: 16px;
+  }
+
+  .subtitle {
+    margin-bottom: 24px;
+  }
+
+  .sequence-display {
+    gap: 8px;
+  }
+
+  .sequence-item-box {
+    font-size: 1.6rem;
+    min-height: 120px;
+    min-width: 90px;
+    padding: 12px;
+    border-radius: var(--radius);
+  }
+
+  .sequence-text-display {
+    padding: 20px 22px;
+    font-size: 1.2rem;
+  }
+
+  .sequence-choice-btn {
+    font-size: 1.2rem;
+    padding: 16px 18px;
+    min-width: 80px;
+  }
+
+  .results-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .result-card {
+    padding: 16px 18px;
+  }
+
+  .result-card .value {
+    font-size: 1.7rem;
+  }
+
+  .btn-group {
+    flex-direction: column;
+  }
+
+  .btn-group .btn {
+    justify-content: center;
+  }
+
+  .btn {
+    padding: 16px 22px;
+  }
+
+  .instruction-box {
+    padding: 22px 18px;
+    font-size: 1.1rem;
+  }
+
+  #view-editor.active, #view-patients.active {
+    flex-direction: column;
+    overflow: auto;
+  }
+
+  .sidebar {
+    width: 100%;
+    max-height: 44vh;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .exercise-list {
+    max-height: none;
+  }
+
+  .editor-main {
+    flex: 0 0 auto;
+    overflow-y: visible;
+    padding: 16px 14px;
+  }
+
+  .editor-header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .pair-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .pair-preview {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .pair-item-preview {
+    flex: 1 1 110px;
+    min-height: 56px;
+    font-size: 1rem;
+    word-break: break-word;
+    overflow: visible;
+    white-space: normal;
+  }
+
+  .pair-vs {
+    align-self: center;
+  }
+
+  .pair-actions {
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 6px;
+    border-top: 1px solid var(--border);
+    padding-top: 8px;
+  }
+
+  .pair-action-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  #pair-modal {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .modal {
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    max-height: 95vh;
+    padding: 24px 16px 32px;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .btn-save, .btn-cancel {
+    width: 100%;
+    text-align: center;
+  }
+
+  .results-page {
+    padding: 14px 10px;
+  }
+
+  .filters {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .filter-group {
+    min-width: auto;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .charts-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .table-card {
+    padding: 14px 10px;
+  }
+
+  table {
+    min-width: 520px;
+  }
+
+  .dir-key-btn {
+    width: 64px;
+    height: 64px;
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}

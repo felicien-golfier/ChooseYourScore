@@ -1,4 +1,0 @@
-tâche : à côté du checkbox "Réafficher au 2ᵉ essai" il faut un autre checkbox true par default qui permet d'actuver ou non la feature qui contour en vert la bonne réponse lorsque la deuxième réponse est toujours fausse.
-tâche : visuellement sur telei, les items s'affichent très mal sur la vue des paires (on voit 2 lettres par item. on peut réduire la police pour que ça rentre dans le cadre des aperçu) 
-ainsi que l'aperçu dans l'édition qui lui doit être ce que l'on voit un peu plus tard. il serait donc judicieux de réutiliser le code d'affichage final plutôt que d'avoir un nouveau code pour afficher l'aperçu.
-tâche : lors de la modification des items lors de la réponse, il faut que ce soit le même code que pour modifier normalement. ainsi on peut modifier y compris les images, sons etc...

@@ -22,3 +22,8 @@ function showView(name) {
   if (name === 'results')  initResults();
   if (name === 'patients') initPatientsView();
 }
+
+document.getElementById('nav-exercise').addEventListener('click', () => showView('setup'));
+document.getElementById('nav-editor')  .addEventListener('click', () => showView('editor'));
+document.getElementById('nav-results') .addEventListener('click', () => showView('results'));
+document.getElementById('nav-patients').addEventListener('click', () => showView('patients'));

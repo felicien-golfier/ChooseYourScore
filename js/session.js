@@ -132,23 +132,13 @@ function startSequenceQuestion(pair, qIdx, isRetry, isAfterReplay) {
   const shouldShowItems = (pair.skipDisplay && !hideItems) || (!pair.skipDisplay && isRetry && !isAfterReplay && q.showOnRetry !== false);
   displayEl.style.display = shouldShowItems ? 'flex' : 'none';
 
-  // Bouton Revoir — rejoue l'affichage complet pour les paires non-skip, toggle pour les autres
-  showAgainBtn.style.display = '';
-  showAgainBtn.textContent   = shouldShowItems ? '🙈 Masquer' : '👁 Revoir';
+  // Bouton Masquer/Revoir — toggle simple dans tous les cas
+  showAgainBtn.style.display = 'inline-block';
+  showAgainBtn.textContent   = shouldShowItems ? '🙈 Masquer' : '👁  Revoir';
   showAgainBtn.onclick = () => {
-    if (!pair.skipDisplay && currentPairQuestions[0]?.type !== 'click-item' && q.type !== 'click-item') {
-      const visible = displayEl.style.display !== 'none';
-      if (visible) {
-        displayEl.style.display = 'none';
-        showAgainBtn.textContent = '👁 Revoir';
-      } else {
-        startSequenceDisplay(pair, () => startSequenceQuestion(pair, qIdx, isRetry, true));
-      }
-    } else {
-      const visible = displayEl.style.display !== 'none';
-      displayEl.style.display  = visible ? 'none' : 'flex';
-      showAgainBtn.textContent = visible ? '👁 Revoir' : '🙈 Masquer';
-    }
+    const visible = displayEl.style.display !== 'none';
+    displayEl.style.display  = visible ? 'none' : 'flex';
+    showAgainBtn.textContent = visible ? '👁  Revoir' : '🙈 Masquer';
   };
 
   questionEl.textContent = q.questionText || '';
@@ -310,7 +300,7 @@ function handleClickItemResponse(chosenIdx, correctItemIndices, foundItemIndices
 
 function resolveQuestion(isCorrect, q, pair, questions, qIdx, isRetry) {
   if (!isCorrect && !isRetry && q.allowRetry !== false) {
-    if (pair.replayOnError && !pair.skipDisplay) {
+    if (q.showOnRetry !== false && q.replayWithTimer === true && !pair.skipDisplay) {
       startSequenceDisplay(pair, () => startSequenceQuestion(pair, qIdx, true, true));
     } else {
       startSequenceQuestion(pair, qIdx, true);

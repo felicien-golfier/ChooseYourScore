@@ -427,7 +427,6 @@ document.getElementById('btn-modal-save').addEventListener('click', () => {
   pair.items               = seqData.items;
   pair.skipDisplay         = seqData.skipDisplay;
   pair.visibilityMode      = seqData.visibilityMode;
-  pair.replayOnError       = seqData.replayOnError;
   pair.useExerciseDefault  = seqData.useExerciseDefault;
   pair.displayDuration     = seqData.displayDuration;
   pair.questions           = seqData.questions;
@@ -824,11 +823,21 @@ function buildSequenceQuestionBlock(q) {
   highlightChk.checked = q.highlightCorrectOnRetry !== false;
   highlightChk.style.cssText = 'accent-color:var(--accent)';
   highlightLabel.append(highlightChk, document.createTextNode('Colorier correcte en vert'));
+  // "Replay with timer on retry" checkbox
+  const replayTimerLabel = document.createElement('label');
+  replayTimerLabel.style.cssText = 'display:flex;align-items:center;gap:4px;font-size:0.75rem;color:var(--text-2);cursor:pointer;white-space:nowrap';
+  const replayTimerChk = document.createElement('input');
+  replayTimerChk.type = 'checkbox'; replayTimerChk.className = 'seq-q-replay-with-timer';
+  replayTimerChk.checked = q.replayWithTimer === true;
+  replayTimerChk.style.cssText = 'accent-color:var(--accent)';
+  replayTimerLabel.append(replayTimerChk, document.createTextNode('Rejouer avec le temps'));
   // Hide retry options when allowRetry is off
   const syncRetryVis = () => {
-    retryLabel.style.display    = allowRetryChk.checked ? '' : 'none';
-    highlightLabel.style.display = allowRetryChk.checked ? '' : 'none';
+    retryLabel.style.display       = allowRetryChk.checked ? '' : 'none';
+    highlightLabel.style.display   = allowRetryChk.checked ? '' : 'none';
+    replayTimerLabel.style.display = (allowRetryChk.checked && retryChk.checked) ? '' : 'none';
   };
+  retryChk.addEventListener('change', syncRetryVis);
   allowRetryChk.addEventListener('change', syncRetryVis); syncRetryVis();
   // "Shuffle answers" checkbox (choice type only)
   const shuffleAnswersLabel = document.createElement('label');
@@ -843,7 +852,7 @@ function buildSequenceQuestionBlock(q) {
     () => moveQuestionBlock(block,  1)
   );
   qMvWrap.style.display = 'flex';
-  header.append(title, qMvWrap, typeSelect, allowRetryLabel, retryLabel, highlightLabel, shuffleAnswersLabel, delBtn);
+  header.append(title, qMvWrap, typeSelect, allowRetryLabel, retryLabel, replayTimerLabel, highlightLabel, shuffleAnswersLabel, delBtn);
   block.appendChild(header);
 
   // Question text
@@ -1050,8 +1059,6 @@ function fillSequenceModal(pair) {
   document.getElementById('seq-duration-row').style.display = (skip || useExDefault) ? 'none' : '';
   const visMode = pair.visibilityMode || (pair.hideItems !== false ? 'always_hide' : 'always_show');
   document.getElementById('seq-visibility-mode').value = visMode;
-  document.getElementById('seq-replay-on-error').checked = pair.replayOnError === true;
-  document.getElementById('seq-replay-on-error-row').style.display = skip ? 'none' : '';
   refreshSequenceItemInputs();
   const questions = getPairQuestions(pair);
   const container = document.getElementById('seq-questions-container');
@@ -1068,7 +1075,8 @@ function readSequenceModal() {
     const allowRetry              = block.querySelector('.seq-q-allow-retry')?.checked        ?? true;
     const highlightCorrectOnRetry = block.querySelector('.seq-q-highlight-correct')?.checked  ?? true;
     const shuffleAnswers          = block.querySelector('.seq-q-shuffle-answers')?.checked    ?? true;
-    const base = { questionText: block.querySelector('.seq-q-text').value.trim(), type, showOnRetry, allowRetry, highlightCorrectOnRetry, shuffleAnswers };
+    const replayWithTimer         = block.querySelector('.seq-q-replay-with-timer')?.checked  ?? false;
+    const base = { questionText: block.querySelector('.seq-q-text').value.trim(), type, showOnRetry, allowRetry, highlightCorrectOnRetry, shuffleAnswers, replayWithTimer };
     if (type === 'direction') {
       base.rule       = block.querySelector('.seq-q-direction-rule')?.value || 'same';
       base.numOptions = parseInt(block.querySelector('.seq-q-direction-opts')?.value || '4', 10);
@@ -1090,12 +1098,10 @@ function readSequenceModal() {
   const skipDisplay        = document.getElementById('seq-skip-display').checked;
   const useExerciseDefault = !skipDisplay && document.getElementById('seq-use-exercise-duration').checked;
   const visibilityMode     = document.getElementById('seq-visibility-mode').value || 'always_hide';
-  const replayOnError      = !skipDisplay && document.getElementById('seq-replay-on-error').checked;
   return {
     items:            getSequenceItemValues(),
     skipDisplay,
     visibilityMode,
-    replayOnError,
     useExerciseDefault,
     displayDuration: skipDisplay ? 0 : (useExerciseDefault ? null : Math.round((parseFloat(document.getElementById('seq-duration').value) || 1) * 1000)),
     questions,

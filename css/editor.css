@@ -1011,7 +1011,6 @@ tbody td[contenteditable]:focus {
 }
 
 #seq-exercise-default-row {
-  display: none;
 }
 
 .seq-items-section {

@@ -80,7 +80,7 @@ function startSequenceDisplay(pair, afterDisplayFn) {
   document.getElementById('seq-show-again-btn').style.display = 'none';
   document.getElementById('seq-write-zone').style.display = 'none';
 
-  const _visMode = pair.visibilityMode || (pair.hideItems !== false ? 'always_hide' : 'always_show');
+  const _visMode = pair.visibilityMode || 'always_show';
   let _hideItems;
   if (_visMode === 'always_show') _hideItems = false;
   else if (_visMode === 'hide_if_prev_correct') _hideItems = previousPairWasCorrect === true;
@@ -130,7 +130,7 @@ function startSequenceQuestion(pair, qIdx, isRetry, isAfterReplay) {
   const writeZone    = document.getElementById('seq-write-zone');
   const showAgainBtn = document.getElementById('seq-show-again-btn');
 
-  const visMode = pair.visibilityMode || (pair.hideItems !== false ? 'always_hide' : 'always_show');
+  const visMode = pair.visibilityMode || 'always_show';
   let hideItems;
   if (visMode === 'always_show') hideItems = false;
   else if (visMode === 'hide_if_prev_correct') hideItems = previousPairWasCorrect === true;

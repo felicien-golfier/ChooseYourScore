@@ -53,9 +53,16 @@ function renderSidebar() {
       folders = folders.filter(f => f.id !== folder.id);
       saveFolders(); saveExercises(); renderSidebar(); renderFolderSelect();
     });
-    header.append(toggle, nameSpan, countSpan, delBtn);
+    const fi = folders.indexOf(folder);
+    const { wrap: mvWrap, up: upBtn, dn: dnBtn } = makeReorderBtns(
+      e => { e.stopPropagation(); moveFolder(folder.id, -1); },
+      e => { e.stopPropagation(); moveFolder(folder.id,  1); }
+    );
+    setReorderDisabled(upBtn, fi === 0);
+    setReorderDisabled(dnBtn, fi === folders.length - 1);
+    header.append(toggle, nameSpan, countSpan, mvWrap, delBtn);
     header.addEventListener('click', e => {
-      if (e.target === delBtn || e.target === nameSpan) return;
+      if (e.target === delBtn || e.target === nameSpan || mvWrap.contains(e.target)) return;
       if (collapsedFolders.has(folder.id)) collapsedFolders.delete(folder.id); else collapsedFolders.add(folder.id);
       renderSidebar();
     });
@@ -123,6 +130,14 @@ function moveExercise(exId, dir) {
   const gi = exercises.indexOf(ex), gj = exercises.indexOf(peers[pj]);
   [exercises[gi], exercises[gj]] = [exercises[gj], exercises[gi]];
   saveExercises(); renderSidebar();
+}
+
+function moveFolder(folderId, dir) {
+  const fi = folders.findIndex(f => f.id === folderId);
+  const fj = fi + dir;
+  if (fj < 0 || fj >= folders.length) return;
+  [folders[fi], folders[fj]] = [folders[fj], folders[fi]];
+  saveFolders(); renderSidebar();
 }
 
 function renderFolderSelect() {
@@ -1046,17 +1061,15 @@ function fillSequenceModal(pair) {
   seqItems = rawItems.map(i => typeof i === 'string' ? {type:'text',text:i,color:'#1a1a1a',fontSize:32,fontFamily:'Arial',textTransform:'none',imageUrl:null,audioUrl:null} : {...i});
   if (seqItems.length === 0) seqItems = [{type:'text',text:'',color:'#1a1a1a',fontSize:32,fontFamily:'Arial',textTransform:'none',imageUrl:null,audioUrl:null}];
   document.getElementById('seq-num-items').value = seqItems.length;
-  const dur = pair.displayDuration != null ? pair.displayDuration : 1000;
+  const dur = pair.skipDisplay === true ? 0 : (pair.displayDuration != null ? pair.displayDuration : 1000);
   document.getElementById('seq-duration').value = (dur / 1000);
-  const skip = pair.skipDisplay === true;
-  document.getElementById('seq-skip-display').checked = skip;
   const ex = getSelectedEx();
-  const hasExDefault = !skip && ex && ex.defaultDisplayDuration != null;
+  const hasExDefault = ex && ex.defaultDisplayDuration != null;
   const useExDefault = hasExDefault && (pair.useExerciseDefault === true || pair.useExerciseDefault === undefined);
-  document.getElementById('seq-exercise-default-row').style.display = hasExDefault ? '' : 'none';
-  if (hasExDefault) document.getElementById('seq-exercise-default-value').textContent = (ex.defaultDisplayDuration / 1000);
+  document.getElementById('seq-exercise-default-row').style.display = '';
+  document.getElementById('seq-exercise-default-value').textContent = hasExDefault ? (ex.defaultDisplayDuration / 1000) : '—';
   document.getElementById('seq-use-exercise-duration').checked = useExDefault;
-  document.getElementById('seq-duration-row').style.display = (skip || useExDefault) ? 'none' : '';
+  document.getElementById('seq-duration-row').style.display = useExDefault ? 'none' : '';
   const visMode = pair.visibilityMode || (pair.hideItems !== false ? 'always_hide' : 'always_show');
   document.getElementById('seq-visibility-mode').value = visMode;
   refreshSequenceItemInputs();
@@ -1095,15 +1108,16 @@ function readSequenceModal() {
     }
     return base;
   });
-  const skipDisplay        = document.getElementById('seq-skip-display').checked;
-  const useExerciseDefault = !skipDisplay && document.getElementById('seq-use-exercise-duration').checked;
-  const visibilityMode     = document.getElementById('seq-visibility-mode').value || 'always_hide';
+  const useExerciseDefault = document.getElementById('seq-use-exercise-duration').checked;
+  const rawDur = useExerciseDefault ? null : Math.round((parseFloat(document.getElementById('seq-duration').value) || 0) * 1000);
+  const skipDisplay = !useExerciseDefault && rawDur === 0;
+  const visibilityMode = document.getElementById('seq-visibility-mode').value || 'always_show';
   return {
     items:            getSequenceItemValues(),
     skipDisplay,
     visibilityMode,
     useExerciseDefault,
-    displayDuration: skipDisplay ? 0 : (useExerciseDefault ? null : Math.round((parseFloat(document.getElementById('seq-duration').value) || 1) * 1000)),
+    displayDuration:  skipDisplay ? 0 : rawDur,
     questions,
   };
 }
@@ -1169,17 +1183,6 @@ function refreshSequencePreview() {
 
 document.getElementById('seq-num-items').addEventListener('input',  () => { refreshSequenceItemInputs(); });
 document.getElementById('seq-num-items').addEventListener('change', () => { refreshSequenceItemInputs(); });
-document.getElementById('seq-skip-display').addEventListener('change', function() {
-  const skip = this.checked;
-  const ex = getSelectedEx();
-  const hasExDefault = !skip && ex && ex.defaultDisplayDuration != null;
-  document.getElementById('seq-exercise-default-row').style.display = hasExDefault ? '' : 'none';
-  if (!hasExDefault) document.getElementById('seq-use-exercise-duration').checked = false;
-  const useExDefault = hasExDefault && document.getElementById('seq-use-exercise-duration').checked;
-  document.getElementById('seq-duration-row').style.display = (skip || useExDefault) ? 'none' : '';
-  document.getElementById('seq-replay-on-error-row').style.display = skip ? 'none' : '';
-});
-
 document.getElementById('seq-use-exercise-duration').addEventListener('change', function() {
   document.getElementById('seq-duration-row').style.display = this.checked ? 'none' : '';
 });

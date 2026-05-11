@@ -281,15 +281,11 @@
           <input type="number" id="seq-num-items" min="1" step="1" value="4">
         </div>
         <div class="field-row" id="seq-duration-row">
-          <label>Durée d'affichage (secondes)</label>
-          <input type="number" id="seq-duration" min="0.1" step="0.1" value="1">
+          <label>Durée d'affichage (secondes, 0 = direct)</label>
+          <input type="number" id="seq-duration" min="0" step="0.1" value="1">
         </div>
       </div>
       <div class="seq-options-group">
-        <label class="checkbox-row">
-          <input type="checkbox" id="seq-skip-display">
-          <span>Passer directement aux questions</span>
-        </label>
         <div id="seq-exercise-default-row">
           <label class="checkbox-row">
             <input type="checkbox" id="seq-use-exercise-duration">
@@ -299,8 +295,8 @@
         <div class="field-row field-row--col">
           <label>Visibilité par défaut</label>
           <select id="seq-visibility-mode">
-            <option value="always_hide">Masquer par défaut</option>
             <option value="always_show">Afficher par défaut</option>
+            <option value="always_hide">Masquer par défaut</option>
             <option value="hide_if_prev_correct">Masquer si réponse précédente correcte</option>
             <option value="hide_if_prev_incorrect">Masquer si réponse précédente incorrecte</option>
           </select>

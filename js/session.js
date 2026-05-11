@@ -80,9 +80,16 @@ function startSequenceDisplay(pair, afterDisplayFn) {
   document.getElementById('seq-show-again-btn').style.display = 'none';
   document.getElementById('seq-write-zone').style.display = 'none';
 
-  if (pair.skipDisplay || currentPairQuestions[0]?.type === 'click-item') {
+  const _visMode = pair.visibilityMode || (pair.hideItems !== false ? 'always_hide' : 'always_show');
+  let _hideItems;
+  if (_visMode === 'always_show') _hideItems = false;
+  else if (_visMode === 'hide_if_prev_correct') _hideItems = previousPairWasCorrect === true;
+  else if (_visMode === 'hide_if_prev_incorrect') _hideItems = previousPairWasCorrect === false;
+  else _hideItems = true;
+
+  if (pair.skipDisplay || _hideItems || currentPairQuestions[0]?.type === 'click-item') {
     timerBar.style.display = 'none';
-    displayEl.style.display = 'flex';
+    displayEl.style.display = _hideItems ? 'none' : 'flex';
     (afterDisplayFn || (() => startSequenceQuestion(pair, 0)))();
     return;
   }

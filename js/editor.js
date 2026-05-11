@@ -377,7 +377,7 @@ document.getElementById('btn-add-pair').addEventListener('click', () => {
   const ex = getSelectedEx(); if (!ex) return;
   const pair = { id: newId('pair'), type: 'sequence',
     items: [{type:'text',text:'',color:'#1a1a1a',fontSize:32,fontFamily:'Arial',textTransform:'none',imageUrl:null,audioUrl:null}],
-    displayDuration: null, useExerciseDefault: true,
+    displayDuration: null, useExerciseDefault: true, visibilityMode: 'always_show',
     questions: [{questionText:'',type:'choice',choices:['',''],correctIndices:[0],showOnRetry:true,allowRetry:true,itemOverrides:[]}] };
   ex.pairs.push(pair); saveExercises(); renderExerciseEditor(); openPairModal(pair.id);
 });

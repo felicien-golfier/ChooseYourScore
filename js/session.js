@@ -20,6 +20,11 @@ let currentQuestionIndex = 0;
 // ── Affichage des paires ───────────────────────────────────────────────────
 function renderPair() {
   const pair = currentPairs[pairIndex];
+  if (!(pair.items || []).length && !(pair.questions || []).length) {
+    pairIndex++;
+    if (pairIndex >= currentPairs.length) finishExercise(); else renderPair();
+    return;
+  }
   if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
   isWaiting = false;
   currentPairQuestions = getPairQuestions(pair);
@@ -110,7 +115,7 @@ function startSequenceQuestion(pair, qIdx, isRetry, isAfterReplay) {
   const questions    = currentPairQuestions;
   const q            = questions[qIdx];
   const correctIndices = q.correctIndices && q.correctIndices.length ? q.correctIndices : [0];
-  const correctAnswers = correctIndices.map(i => (q.choices || [])[i]).filter(Boolean);
+  const correctAnswers = correctIndices.map(i => (q.choices || [])[i]).filter(v => v != null);
 
   const displayEl    = document.getElementById('sequence-display');
   const questionEl   = document.getElementById('sequence-question');

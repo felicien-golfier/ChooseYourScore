@@ -10,35 +10,6 @@ let pendingOverrideCallback = null;
 const collapsedFolders = new Set();
 function getSelectedEx() { return exercises.find(e => e.id === editorSelectedId) || null; }
 
-// ── Réordonnancement universel ────────────────────────────────────────────────
-// Crée deux boutons ↑/↓ avec le style standard .pair-action-btn.
-// Retourne { wrap, up, dn } — wrap est un div contenant les deux boutons.
-function makeReorderBtns(upHandler, downHandler) {
-  const wrap = document.createElement('div');
-  wrap.className = 'reorder-wrap';
-  wrap.style.cssText = 'display:flex;gap:2px;flex-shrink:0';
-  const up = document.createElement('button');
-  up.type = 'button'; up.className = 'pair-action-btn reorder-up'; up.title = 'Monter'; up.textContent = '↑';
-  up.addEventListener('click', upHandler);
-  const dn = document.createElement('button');
-  dn.type = 'button'; dn.className = 'pair-action-btn reorder-dn'; dn.title = 'Descendre'; dn.textContent = '↓';
-  dn.addEventListener('click', downHandler);
-  wrap.append(up, dn);
-  return { wrap, up, dn };
-}
-
-function setReorderDisabled(btn, disabled) {
-  if (btn) btn.disabled = disabled;
-}
-
-// Met à jour l'état disabled des boutons ↑/↓ d'une liste de wrappers DOM.
-function syncReorderBtns(wrappers) {
-  const n = wrappers.length;
-  wrappers.forEach((el, i) => {
-    setReorderDisabled(el.querySelector('.reorder-up'), i === 0);
-    setReorderDisabled(el.querySelector('.reorder-dn'), i === n - 1);
-  });
-}
 
 function initEditor() {
   if (editorSelectedId === null && exercises.length > 0) editorSelectedId = exercises[0].id;

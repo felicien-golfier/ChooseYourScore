@@ -95,6 +95,31 @@
   color: var(--danger);
 }
 
+/* ── QUIT EXERCISE BUTTON ────────────────────────────────────────────────── */
+.btn-quit-exercise {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-3);
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.1s;
+}
+
+.btn-quit-exercise:hover {
+  background: var(--danger-bg);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
 /* ── FULLSCREEN BUTTON ───────────────────────────────────────────────────── */
 .btn-fullscreen {
   position: absolute;

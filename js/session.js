@@ -470,6 +470,12 @@ function toggleFullscreen() {
   }
 }
 
+document.getElementById('btn-quit-exercise').addEventListener('click', () => {
+  if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
+  if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+  showView('setup');
+});
+
 document.getElementById('btn-fullscreen').addEventListener('click', toggleFullscreen);
 document.getElementById('btn-fullscreen-setup').addEventListener('click', toggleFullscreen);
 

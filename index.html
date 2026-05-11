@@ -7,27 +7,26 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/reset.css">
-  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
   <link rel="stylesheet" href="css/session.css">
   <link rel="stylesheet" href="css/editor.css">
   <link rel="stylesheet" href="css/results.css">
   <link rel="stylesheet" href="css/responsive.css">
-  <script src="chart.umd.min.js"></script>
 </head>
 <body>
 <audio id="cys-audio-el" preload="none"></audio>
 
 <!-- ── Topbar ──────────────────────────────────────────────────────────────── -->
-<div id="topbar">
+<nav id="topbar">
   <span class="logo"><span class="logo-dot"></span>ChooseYourScore</span>
   <button class="nav-btn active" id="nav-exercise">Exercice</button>
   <button class="nav-btn"        id="nav-editor"  >Éditeur</button>
   <button class="nav-btn"        id="nav-results" >Résultats</button>
   <button class="nav-btn"        id="nav-patients">Patients</button>
-</div>
+</nav>
 
 <!-- ── Setup view ──────────────────────────────────────────────────────────── -->
 <div id="view-setup" class="view centered active">
@@ -77,6 +76,7 @@
 <!-- ── Exercise view ───────────────────────────────────────────────────────── -->
 <div id="view-exercise" class="view centered">
   <div class="screen">
+    <button class="btn-quit-exercise" id="btn-quit-exercise" title="Quitter l'exercice">✕</button>
     <button class="btn-fullscreen" id="btn-fullscreen" title="Plein écran">⛶</button>
     <div class="progress-section">
       <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
@@ -421,8 +421,10 @@
   </div>
 </div>
 
+<script src="chart.umd.min.js"></script>
 <script src="js/data.js"></script>
 <script src="js/utils.js"></script>
+<script src="js/ui.js"></script>
 <script src="js/nav.js"></script>
 <script src="js/setup.js"></script>
 <script src="js/session.js"></script>

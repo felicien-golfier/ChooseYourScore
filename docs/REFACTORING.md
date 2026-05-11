@@ -16,7 +16,7 @@ Chaque étape est un commit indépendant. On peut s'arrêter n'importe quand et 
 | 2 | Extraire le JS → `js/` (8 fichiers) | ✅ fait |
 | 3 | Nettoyer les `style=` inline statiques dans le HTML | ✅ fait |
 | 4 | Nettoyer les `onclick=` inline → event listeners | ✅ fait |
-| 5 | Reformater le CSS (une propriété par ligne) | ⬜ à faire |
+| 5 | Reformater le CSS (une propriété par ligne) | ✅ fait |
 | 6 | Remplacer les valeurs brutes par les variables CSS | ⬜ à faire |
 
 ---

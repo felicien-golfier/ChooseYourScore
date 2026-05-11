@@ -337,7 +337,7 @@ body.is-fullscreen .keyboard-hint {
     border-color: var(--accent);
     background: var(--accent-bg);
     transform: translateY(-3px);
-    box-shadow: 0 6px 20px oklch(52% 0.22 255 / 0.16);
+    box-shadow: 0 6px 20px var(--accent-a16);
   }
 }
 
@@ -498,7 +498,7 @@ body.is-fullscreen .sequence-choice-btn .sq-profile .sq-zone-svg {
   border-color: var(--accent);
   background: var(--accent-bg);
   transform: translateY(-2px);
-  box-shadow: 0 4px 14px oklch(52% 0.22 255 / 0.14);
+  box-shadow: 0 4px 14px var(--accent-a14);
 }
 
 .no-hover-flash .dir-key-btn:hover:not(:disabled) {

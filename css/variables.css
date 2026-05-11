@@ -30,4 +30,14 @@
   --font: 'DM Sans', system-ui, sans-serif;
   --font-mono: 'DM Mono', 'Courier New', monospace;
   --topbar-h: 52px;
+  /* accent alpha variants (for box-shadow glows) */
+  --accent-a06: oklch(52% 0.22 255 / 0.06);
+  --accent-a10: oklch(52% 0.22 255 / 0.10);
+  --accent-a12: oklch(52% 0.22 255 / 0.12);
+  --accent-a14: oklch(52% 0.22 255 / 0.14);
+  --accent-a16: oklch(52% 0.22 255 / 0.16);
+  --accent-a28: oklch(52% 0.22 255 / 0.28);
+  /* extended palette */
+  --backdrop: oklch(0% 0 0 / 0.42);
+  --purple:   oklch(52% 0.22 300);
 }

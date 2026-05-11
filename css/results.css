@@ -134,7 +134,7 @@
 }
 
 .stat-card .value.purple {
-  color: oklch(52% 0.22 300);
+  color: var(--purple);
 }
 
 .charts-row {

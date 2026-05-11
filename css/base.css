@@ -72,7 +72,7 @@ h2 {
 
 .form-group select:focus, .form-group input[type="text"]:focus, .form-group input[type="date"]:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px oklch(52% 0.22 255 / 0.12);
+  box-shadow: 0 0 0 3px var(--accent-a12);
 }
 
 .checkbox-row {
@@ -121,7 +121,7 @@ h2 {
 .btn-primary:hover {
   background: var(--accent-hover);
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px oklch(52% 0.22 255 / 0.28);
+  box-shadow: 0 4px 14px var(--accent-a28);
 }
 
 .btn-secondary {

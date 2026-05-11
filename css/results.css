@@ -113,3 +113,7 @@ tbody tr:last-child td { border-bottom: none; }
 .score-pct { color: var(--text-3); font-size: 0.78rem; }
 .good-score { color: var(--success); font-weight: 700; font-family: var(--font-mono); }
 .low-score  { color: var(--danger); font-weight: 700; font-family: var(--font-mono); }
+
+/* ── RESULTS HEADER ACTIONS ──────────────────────────────────────────────── */
+#r-content { display: none; }
+.filters-actions { display: flex; gap: 8px; align-self: flex-end; margin-left: auto; }

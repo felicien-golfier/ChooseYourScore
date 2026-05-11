@@ -85,7 +85,7 @@
 .empty-state p { font-size: 1rem; margin-bottom: 6px; color: var(--text-2); }
 .empty-state small { font-size: 0.84rem; }
 
-#exercise-editor { max-width: 720px; }
+#exercise-editor { display: none; max-width: 720px; }
 
 .editor-header { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
 .editor-header input {
@@ -233,7 +233,7 @@
 #pair-modal {
   position: fixed; inset: 0;
   background: oklch(0% 0 0 / 0.42);
-  display: flex; align-items: center; justify-content: center;
+  display: none; align-items: center; justify-content: center;
   z-index: 100; padding: 24px;
   backdrop-filter: blur(3px);
 }
@@ -324,7 +324,7 @@
 }
 .btn-upload-img:hover, .btn-upload-audio:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
 
-.img-thumb-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.img-thumb-row { display: none; align-items: center; gap: 8px; margin-top: 6px; }
 .img-thumb-row img { width: 46px; height: 46px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--border); flex-shrink: 0; }
 .btn-remove-img {
   padding: 3px 8px; border: 1px solid var(--danger-border);
@@ -335,7 +335,7 @@
 .btn-remove-img:hover { background: var(--danger-bg); }
 
 .audio-loaded-row {
-  display: flex; align-items: center; gap: 8px; margin-top: 6px;
+  display: none; align-items: center; gap: 8px; margin-top: 6px;
   background: var(--success-bg); border: 1px solid var(--success-border);
   border-radius: var(--radius-sm); padding: 6px 10px;
 }
@@ -411,3 +411,180 @@ tbody td[contenteditable]:focus { background: var(--warn-bg); border-bottom: 2px
 .seq-q-override-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
 .sq-picker             { display: flex; align-items: center; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
 .sq-picker-label       { font-size: 0.7rem; color: var(--text-3); }
+
+/* ── SIDEBAR HEADER ACTIONS ──────────────────────────────────────────────── */
+.sidebar-header-actions { display: flex; gap: 4px; }
+#btn-new-folder { background: oklch(52% 0.18 300); font-size: 0.8rem; }
+
+/* ── HIDDEN FILE INPUTS ──────────────────────────────────────────────────── */
+#import-input, #csv-pairs-input, #sim-img-input, #sim-audio-input { display: none; }
+
+/* ── FOLDER SELECT ROW ───────────────────────────────────────────────────── */
+.folder-select-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.folder-select-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-3);
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+#exercise-folder {
+  flex: 1;
+  padding: 7px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  outline: none;
+  font-family: var(--font);
+  color: var(--text-1);
+  background: var(--surface);
+  transition: border-color 0.15s;
+  appearance: none;
+}
+#exercise-default-duration {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  outline: none;
+  font-family: var(--font);
+  color: var(--text-1);
+  background: var(--surface);
+  transition: border-color 0.15s;
+}
+
+/* ── FIELD-ROW NUMBER INPUTS ─────────────────────────────────────────────── */
+.field-row input[type="number"] {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  outline: none;
+  font-family: var(--font);
+  color: var(--text-1);
+  background: var(--surface);
+  transition: border-color 0.15s;
+}
+
+/* ── FIELD-ROW MODIFIERS ─────────────────────────────────────────────────── */
+.field-row--col { display: flex; flex-direction: column; gap: 4px; }
+.field-row--col label { text-transform: none; letter-spacing: 0; font-size: 0.88rem; color: var(--text-2); font-weight: 500; margin-bottom: 0; }
+.field-row--sm { margin-bottom: 8px; }
+.no-mb { margin-bottom: 0; }
+
+/* ── PATIENTS SECTION ────────────────────────────────────────────────────── */
+#patient-detail { display: none; max-width: 720px; }
+#patient-dob { max-width: 220px; }
+#patient-mini-stats { display: flex; gap: 20px; font-size: 0.84rem; color: var(--text-2); }
+#patient-sessions-wrap { margin-top: 12px; overflow-x: auto; }
+.pairs-header--mt { margin-top: 8px; }
+
+/* ── CHECKBOX-ROW INSIDE FIELD-ROW ───────────────────────────────────────── */
+.field-row .checkbox-row {
+  font-size: 0.88rem;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+  margin-bottom: 0;
+  display: flex;
+  color: var(--text-2);
+}
+
+/* ── SEQUENCE CONFIG MODAL ───────────────────────────────────────────────── */
+#sequence-config { margin-bottom: 28px; }
+.seq-config-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.seq-options-group { margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px; }
+#seq-exercise-default-row { display: none; }
+.seq-items-section { margin-bottom: 16px; }
+#seq-items-row { display: flex; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+#seq-questions-container { margin-bottom: 12px; }
+#seq-add-question-btn {
+  width: 100%;
+  padding: 10px;
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text-3);
+  font-size: 0.88rem;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all 0.15s;
+  margin-bottom: 16px;
+}
+.seq-preview-panel {
+  background: var(--surface-2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+.preview-label {
+  font-size: 0.72rem;
+  color: var(--text-3);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-align: center;
+  margin-bottom: 10px;
+}
+#seq-preview-items { display: flex; gap: 10px; justify-content: center; margin-bottom: 10px; flex-wrap: wrap; }
+#seq-preview-questions { display: flex; flex-direction: column; gap: 6px; }
+
+/* ── SEQ ITEM MODAL ──────────────────────────────────────────────────────── */
+#seq-item-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: oklch(0% 0 0 / 0.42);
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 24px;
+  backdrop-filter: blur(3px);
+}
+#seq-item-modal .modal { max-width: 500px; }
+#sim-sect-image, #sim-sect-audio, #sim-sect-arrow { display: none; }
+
+/* ── SIM PREVIEW BOX ─────────────────────────────────────────────────────── */
+.sim-preview-wrap {
+  margin: 16px 0;
+  background: var(--surface-2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  text-align: center;
+}
+.sim-preview-label {
+  font-size: 0.72rem;
+  color: var(--text-3);
+  margin-bottom: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+#sim-preview-box {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: white;
+  font-size: 2rem;
+}

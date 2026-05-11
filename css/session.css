@@ -138,8 +138,8 @@ body.is-fullscreen .keyboard-hint { flex-shrink: 0; font-size: 0.95rem; margin-t
 }
 .seq-item-sound-btn:hover { background: var(--accent-bg); }
 .seq-item-sound-btn.playing { background: var(--accent-bg); }
-.sequence-question { font-size: 1.35rem; font-weight: 600; color: var(--text-1); text-align: center; letter-spacing: -0.01em; }
-.sequence-choices { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.sequence-question { display: none; font-size: 1.35rem; font-weight: 600; color: var(--text-1); text-align: center; letter-spacing: -0.01em; }
+.sequence-choices { display: none; gap: 16px; justify-content: center; flex-wrap: wrap; }
 .sequence-text-display {
   width: 100%; padding: 32px 40px;
   border: 2px solid var(--border); border-radius: var(--radius-lg);
@@ -218,3 +218,66 @@ body.is-fullscreen .sequence-choice-btn .sq-profile .sq-zone-svg { width: 34px; 
 }
 .no-hover-flash .dir-key-btn:hover:not(:disabled) { border-color: var(--border); background: var(--surface); transform: none; box-shadow: none; }
 body.is-fullscreen .dir-key-btn { width: 90px; height: 90px; font-size: 2.4rem; }
+
+/* ── SESSION RESULT CARDS (conditional) ─────────────────────────────────── */
+#card-avg-reaction,
+#card-errors-left,
+#card-errors-right { display: none; }
+
+/* ── SEQ WRITE ZONE ──────────────────────────────────────────────────────── */
+#seq-write-zone {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 420px;
+}
+#seq-write-zone input {
+  width: 100%;
+  padding: 16px 18px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 1.2rem;
+  font-family: var(--font);
+  outline: none;
+  text-align: center;
+  transition: border-color 0.2s;
+  background: var(--surface);
+  color: var(--text-1);
+}
+#seq-write-validate {
+  padding: 14px 36px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  font-family: var(--font);
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+#seq-write-validate:hover { background: var(--accent-hover); }
+#seq-write-feedback {
+  display: none;
+  font-size: 0.92rem;
+  color: var(--danger);
+  background: var(--danger-bg);
+  border: 1.5px solid var(--danger-border);
+  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  text-align: center;
+}
+#seq-show-again-btn {
+  display: none;
+  padding: 7px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 0.82rem;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all 0.15s;
+}

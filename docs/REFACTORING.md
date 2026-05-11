@@ -12,9 +12,9 @@ Chaque étape est un commit indépendant. On peut s'arrêter n'importe quand et 
 | # | Étape | Statut |
 |---|---|---|
 | 0 | Créer `docs/CODING_STANDARDS.md` et `docs/REFACTORING.md` | ✅ fait |
-| 1 | Extraire le CSS → `css/` (8 fichiers) | ⬜ à faire |
-| 2 | Extraire le JS → `js/` (8 fichiers) | ⬜ à faire |
-| 3 | Nettoyer les `style=` inline statiques dans le HTML | ⬜ à faire |
+| 1 | Extraire le CSS → `css/` (8 fichiers) | ✅ fait |
+| 2 | Extraire le JS → `js/` (8 fichiers) | ✅ fait |
+| 3 | Nettoyer les `style=` inline statiques dans le HTML | ✅ fait |
 | 4 | Nettoyer les `onclick=` inline → event listeners | ⬜ à faire |
 | 5 | Reformater le CSS (une propriété par ligne) | ⬜ à faire |
 | 6 | Remplacer les valeurs brutes par les variables CSS | ⬜ à faire |

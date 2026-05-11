@@ -53,7 +53,7 @@ h2 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; color: var(--
   box-shadow: 0 0 0 3px oklch(52% 0.22 255 / 0.12);
 }
 
-.checkbox-row { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.checkbox-row { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
 .checkbox-row input[type="checkbox"] {
   width: 18px; height: 18px; cursor: pointer;
   accent-color: var(--accent);
@@ -85,3 +85,11 @@ h2 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; color: var(--
   margin-bottom: 22px;
   font-size: 0.9rem;
 }
+
+/* ── SETUP FORM ──────────────────────────────────────────────────────────── */
+#no-exercises-msg { display: none; }
+#new-patient-row  { display: none; }
+.btn-start-row { display: flex; gap: 10px; align-items: center; }
+#btn-start { flex: 1; }
+#btn-fullscreen-setup { flex: none; padding: 13px 16px; font-size: 1rem; }
+.field-hint { color: var(--text-3); font-size: 0.74rem; display: block; margin-top: 4px; }

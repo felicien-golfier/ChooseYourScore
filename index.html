@@ -18,7 +18,7 @@
   <script src="chart.umd.min.js"></script>
 </head>
 <body>
-<audio id="cys-audio-el" preload="none" style="display:none"></audio>
+<audio id="cys-audio-el" preload="none"></audio>
 
 <!-- ── Topbar ──────────────────────────────────────────────────────────────── -->
 <div id="topbar">
@@ -35,7 +35,7 @@
     <h1>ChooseYourScore</h1>
     <p class="subtitle">Outil d'évaluation clinique</p>
 
-    <div id="no-exercises-msg" class="alert-box" style="display:none">
+    <div id="no-exercises-msg" class="alert-box">
       Aucun exercice disponible. Créez-en un dans l'onglet <strong>Éditeur</strong>.
     </div>
     <div id="setup-form">
@@ -47,7 +47,7 @@
         <label for="patient-select-setup">Patient</label>
         <select id="patient-select-setup"></select>
       </div>
-      <div class="form-group" id="new-patient-row" style="display:none">
+      <div class="form-group" id="new-patient-row">
         <label for="new-patient-name">Nom du nouveau patient</label>
         <input id="new-patient-name" type="text" placeholder="ex. Marie Dubois" autocomplete="off">
       </div>
@@ -57,9 +57,9 @@
           <span>Mélanger l'ordre des paires</span>
         </label>
       </div>
-      <div style="display:flex;gap:10px;align-items:center">
-        <button class="btn btn-primary" id="btn-start" style="flex:1">Commencer l'exercice →</button>
-        <button class="btn btn-secondary" id="btn-fullscreen-setup" title="Plein écran" style="flex:none;padding:13px 16px;font-size:1rem">⛶</button>
+      <div class="btn-start-row">
+        <button class="btn btn-primary" id="btn-start">Commencer l'exercice →</button>
+        <button class="btn btn-secondary" id="btn-fullscreen-setup" title="Plein écran">⛶</button>
       </div>
     </div>
   </div>
@@ -85,15 +85,14 @@
     <div class="sequence-container" id="sequence-container">
       <div class="sequence-timer-bar" id="sequence-timer-bar"><div class="sequence-timer-fill" id="sequence-timer-fill" style="width:100%"></div></div>
       <div class="sequence-display" id="sequence-display"></div>
-      <div class="sequence-question" id="sequence-question" style="display:none"></div>
-      <div class="sequence-choices" id="sequence-choices" style="display:none"></div>
-      <div id="seq-write-zone" style="display:none;flex-direction:column;align-items:center;gap:12px;width:100%;max-width:420px">
-        <input type="text" id="seq-write-input" placeholder="Écris ta réponse…" autocomplete="off" autocorrect="off" spellcheck="false"
-          style="width:100%;padding:16px 18px;border:2px solid var(--border);border-radius:var(--radius);font-size:1.2rem;font-family:var(--font);outline:none;text-align:center;transition:border-color .2s;background:var(--surface);color:var(--text-1)">
-        <button id="seq-write-validate" style="padding:14px 36px;background:var(--accent);color:white;border:none;border-radius:var(--radius);font-size:1rem;font-family:var(--font);cursor:pointer;font-weight:600;transition:background .15s">Valider</button>
-        <div id="seq-write-feedback" style="display:none;font-size:0.92rem;color:var(--danger);background:var(--danger-bg);border:1.5px solid var(--danger-border);border-radius:var(--radius-sm);padding:8px 16px;text-align:center"></div>
+      <div class="sequence-question" id="sequence-question"></div>
+      <div class="sequence-choices" id="sequence-choices"></div>
+      <div id="seq-write-zone">
+        <input type="text" id="seq-write-input" placeholder="Écris ta réponse…" autocomplete="off" autocorrect="off" spellcheck="false">
+        <button id="seq-write-validate">Valider</button>
+        <div id="seq-write-feedback"></div>
       </div>
-      <button id="seq-show-again-btn" style="display:none;padding:7px 16px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text-2);font-size:0.82rem;cursor:pointer;font-family:var(--font);transition:all 0.15s">👁 Revoir</button>
+      <button id="seq-show-again-btn">👁 Revoir</button>
     </div>
     <div class="keyboard-hint" id="keyboard-hint">← Flèche gauche &nbsp;|&nbsp; Flèche droite →</div>
   </div>
@@ -107,9 +106,9 @@
     <div class="results-grid">
       <div class="result-card"><div class="label">Score</div><div class="value good" id="res-score">–</div></div>
       <div class="result-card"><div class="label">Temps total</div><div class="value" id="res-time">–</div></div>
-      <div class="result-card" id="card-avg-reaction" style="display:none"><div class="label">Réaction moyenne</div><div class="value" id="res-avg-reaction">–</div></div>
-      <div class="result-card" id="card-errors-left" style="display:none"><div class="label">Err. gauche (←)</div><div class="value" id="res-errors-left">–</div></div>
-      <div class="result-card" id="card-errors-right" style="display:none"><div class="label">Err. droite (→)</div><div class="value" id="res-errors-right">–</div></div>
+      <div class="result-card" id="card-avg-reaction"><div class="label">Réaction moyenne</div><div class="value" id="res-avg-reaction">–</div></div>
+      <div class="result-card" id="card-errors-left"><div class="label">Err. gauche (←)</div><div class="value" id="res-errors-left">–</div></div>
+      <div class="result-card" id="card-errors-right"><div class="label">Err. droite (→)</div><div class="value" id="res-errors-right">–</div></div>
     </div>
     <div class="notes-section">
       <label for="session-notes">Notes du clinicien</label>
@@ -127,8 +126,8 @@
   <div class="sidebar">
     <div class="sidebar-header">
       <h3>Exercices</h3>
-      <div style="display:flex;gap:4px">
-        <button class="btn-icon" id="btn-new-folder" title="Nouveau dossier" style="background:oklch(52% 0.18 300);font-size:0.8rem">📁</button>
+      <div class="sidebar-header-actions">
+        <button class="btn-icon" id="btn-new-folder" title="Nouveau dossier">📁</button>
         <button class="btn-icon" id="btn-new-exercise" title="Créer un exercice">+</button>
       </div>
     </div>
@@ -137,7 +136,7 @@
       <div class="import-export">
         <button id="btn-export">↓ Exporter</button>
         <button id="btn-import">↑ Importer</button>
-        <input type="file" id="import-input" accept=".json" style="display:none">
+        <input type="file" id="import-input" accept=".json">
       </div>
     </div>
   </div>
@@ -147,15 +146,15 @@
       <p>Aucun exercice sélectionné</p>
       <small>Cliquez sur + pour créer votre premier exercice</small>
     </div>
-    <div id="exercise-editor" style="display:none">
+    <div id="exercise-editor">
       <div class="editor-header">
         <input type="text" id="exercise-name" placeholder="Nom de l'exercice" maxlength="100">
         <button class="btn-dup" id="btn-duplicate-exercise">Dupliquer</button>
         <button class="btn-danger" id="btn-delete-exercise">Supprimer</button>
       </div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px">
-        <span style="font-size:0.76rem;font-weight:700;color:var(--text-3);white-space:nowrap;flex-shrink:0;text-transform:uppercase;letter-spacing:.05em">Dossier</span>
-        <select id="exercise-folder" style="flex:1;padding:7px 10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.88rem;outline:none;font-family:var(--font);color:var(--text-1);background:var(--surface);transition:border-color .15s;appearance:none"></select>
+      <div class="folder-select-row">
+        <span class="folder-select-label">Dossier</span>
+        <select id="exercise-folder"></select>
       </div>
       <div class="form-group">
         <label class="editor-section-label" for="exercise-instruction">Consigne affichée au patient</label>
@@ -163,14 +162,14 @@
       </div>
       <div class="form-group">
         <label class="editor-section-label" for="exercise-default-duration">Durée d'affichage par défaut (secondes)</label>
-        <input type="number" id="exercise-default-duration" min="0.1" step="0.1" placeholder="— non définie —" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.9rem;outline:none;font-family:var(--font);color:var(--text-1);background:var(--surface);transition:border-color .15s">
-        <small style="color:var(--text-3);font-size:0.74rem;display:block;margin-top:4px">Durée appliquée à toutes les paires sauf si une paire définit sa propre valeur.</small>
+        <input type="number" id="exercise-default-duration" min="0.1" step="0.1" placeholder="— non définie —">
+        <small class="field-hint">Durée appliquée à toutes les paires sauf si une paire définit sa propre valeur.</small>
       </div>
       <div class="pairs-header">
-        <span class="editor-section-label" style="margin-bottom:0">Paires <span class="badge" id="pair-count-badge">0</span></span>
+        <span class="editor-section-label no-mb">Paires <span class="badge" id="pair-count-badge">0</span></span>
         <button class="btn-dup" id="btn-export-csv-pairs">↓ CSV</button>
         <button class="btn-dup" id="btn-import-csv-pairs">↑ CSV</button>
-        <input type="file" id="csv-pairs-input" accept=".csv,.txt" style="display:none">
+        <input type="file" id="csv-pairs-input" accept=".csv,.txt">
       </div>
       <div class="pairs-list" id="pairs-list"></div>
       <button class="btn-add-pair" id="btn-add-pair">+ Ajouter une paire</button>
@@ -191,13 +190,13 @@
         <select id="exercise-filter"><option value="">— Tous les exercices —</option></select>
       </div>
       <button class="btn-clear" id="btn-clear-filters">Effacer</button>
-      <div style="display:flex;gap:8px;align-self:flex-end;margin-left:auto">
+      <div class="filters-actions">
         <button class="btn-clear" id="btn-export-results">↓ Exporter</button>
         <button class="btn-clear" id="btn-import-results">↑ Importer</button>
       </div>
     </div>
 
-    <div id="r-content" style="display:none">
+    <div id="r-content">
       <div class="stats-grid">
         <div class="stat-card"><div class="label">Sessions</div><div class="value blue"   id="stat-sessions">–</div></div>
         <div class="stat-card"><div class="label">Score moyen</div><div class="value green"  id="stat-avg-score">–</div></div>
@@ -233,7 +232,7 @@
   <div class="sidebar">
     <div class="sidebar-header">
       <h3>Patients</h3>
-      <div style="display:flex;gap:4px">
+      <div class="sidebar-header-actions">
         <button class="btn-icon" id="btn-new-patient" title="Nouveau patient">+</button>
       </div>
     </div>
@@ -244,7 +243,7 @@
       <p>Aucun patient sélectionné</p>
       <small>Cliquez sur + pour créer votre premier patient</small>
     </div>
-    <div id="patient-detail" style="display:none; max-width:720px;">
+    <div id="patient-detail">
       <div class="editor-header">
         <input type="text" id="patient-name-input" placeholder="Nom du patient" maxlength="100">
         <button class="btn-dup" id="btn-export-patient-json">↓ JSON</button>
@@ -254,58 +253,58 @@
       </div>
       <div class="form-group">
         <label class="editor-section-label" for="patient-dob">Date de naissance</label>
-        <input type="date" id="patient-dob" style="max-width:220px;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.9rem;outline:none;font-family:var(--font);color:var(--text-1);background:var(--surface);transition:border-color .15s">
+        <input type="date" id="patient-dob">
       </div>
       <div class="form-group">
         <label class="editor-section-label" for="patient-notes-field">Notes</label>
         <textarea id="patient-notes-field" rows="3" placeholder="Informations, antécédents, remarques…"></textarea>
       </div>
-      <div class="pairs-header" style="margin-top:8px">
-        <span class="editor-section-label" style="margin-bottom:0">Sessions <span class="badge" id="patient-session-count">0</span></span>
-        <div id="patient-mini-stats" style="display:flex;gap:20px;font-size:0.84rem;color:var(--text-2);"></div>
+      <div class="pairs-header pairs-header--mt">
+        <span class="editor-section-label no-mb">Sessions <span class="badge" id="patient-session-count">0</span></span>
+        <div id="patient-mini-stats"></div>
       </div>
-      <div id="patient-sessions-wrap" style="margin-top:12px;overflow-x:auto"></div>
+      <div id="patient-sessions-wrap"></div>
     </div>
   </div>
 </div>
 
 <!-- ── Pair edit modal ─────────────────────────────────────────────────────── -->
-<div id="pair-modal" style="display:none">
+<div id="pair-modal">
   <div class="modal">
     <h3>Modifier la paire</h3>
 
     <!-- Sequence config (always shown) -->
-    <div id="sequence-config" style="margin-bottom:28px">
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:12px">
+    <div id="sequence-config">
+      <div class="seq-config-grid">
         <div class="field-row">
           <label>Nbre d'items</label>
-          <input type="number" id="seq-num-items" min="1" step="1" value="4" style="width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.9rem;outline:none;font-family:var(--font);color:var(--text-1);background:var(--surface);transition:border-color .15s">
+          <input type="number" id="seq-num-items" min="1" step="1" value="4">
         </div>
         <div class="field-row" id="seq-duration-row">
           <label>Durée d'affichage (secondes)</label>
-          <input type="number" id="seq-duration" min="0.1" step="0.1" value="1" style="width:100%;padding:8px 10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.9rem;outline:none;font-family:var(--font);color:var(--text-1);background:var(--surface);transition:border-color .15s">
+          <input type="number" id="seq-duration" min="0.1" step="0.1" value="1">
         </div>
       </div>
-      <div style="margin-bottom:16px;display:flex;flex-direction:column;gap:8px">
-        <label class="checkbox-row" style="cursor:pointer;user-select:none">
-          <input type="checkbox" id="seq-skip-display" style="width:16px;height:16px;accent-color:var(--accent)">
-          <span style="font-size:0.88rem;color:var(--text-2)">Passer directement aux questions</span>
+      <div class="seq-options-group">
+        <label class="checkbox-row">
+          <input type="checkbox" id="seq-skip-display">
+          <span>Passer directement aux questions</span>
         </label>
         <div id="seq-replay-on-error-row">
-          <label class="checkbox-row" style="cursor:pointer;user-select:none">
-            <input type="checkbox" id="seq-replay-on-error" style="width:16px;height:16px;accent-color:var(--accent)">
-            <span style="font-size:0.88rem;color:var(--text-2)">Rejouer l'affichage en cas d'erreur (avant le 2ᵉ essai)</span>
+          <label class="checkbox-row">
+            <input type="checkbox" id="seq-replay-on-error">
+            <span>Rejouer l'affichage en cas d'erreur (avant le 2ᵉ essai)</span>
           </label>
         </div>
-        <div id="seq-exercise-default-row" style="display:none">
-          <label class="checkbox-row" style="cursor:pointer;user-select:none">
-            <input type="checkbox" id="seq-use-exercise-duration" style="width:16px;height:16px;accent-color:var(--accent)">
-            <span style="font-size:0.88rem;color:var(--text-2)">Utiliser la durée de l'exercice (<span id="seq-exercise-default-value">1</span> s)</span>
+        <div id="seq-exercise-default-row">
+          <label class="checkbox-row">
+            <input type="checkbox" id="seq-use-exercise-duration">
+            <span>Utiliser la durée de l'exercice (<span id="seq-exercise-default-value">1</span> s)</span>
           </label>
         </div>
-        <div class="field-row" style="flex-direction:column;gap:4px">
-          <label style="font-size:0.88rem;color:var(--text-2);font-weight:500;text-transform:none;letter-spacing:0">Visibilité par défaut</label>
-          <select id="seq-visibility-mode" style="width:100%;padding:7px 10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.88rem;outline:none;font-family:var(--font);color:var(--text-1);background:var(--surface)">
+        <div class="field-row field-row--col">
+          <label>Visibilité par défaut</label>
+          <select id="seq-visibility-mode">
             <option value="always_hide">Masquer par défaut</option>
             <option value="always_show">Afficher par défaut</option>
             <option value="hide_if_prev_correct">Masquer si réponse précédente correcte</option>
@@ -313,18 +312,18 @@
           </select>
         </div>
       </div>
-      <div style="margin-bottom:16px">
-        <div class="field-row" style="margin-bottom:8px"><label>Items à afficher (un par case)</label></div>
-        <div id="seq-items-row" style="display:flex; gap:8px; margin-bottom:4px; flex-wrap:wrap"></div>
-        <div style="font-size:0.74rem;color:var(--text-3);margin-top:4px">Lettres, chiffres, mots… Un item par case.</div>
+      <div class="seq-items-section">
+        <div class="field-row field-row--sm"><label>Items à afficher (un par case)</label></div>
+        <div id="seq-items-row"></div>
+        <div class="field-hint">Lettres, chiffres, mots… Un item par case.</div>
       </div>
-      <div id="seq-questions-container" style="margin-bottom:12px"></div>
-      <button type="button" id="seq-add-question-btn" style="width:100%;padding:10px;border:1.5px dashed var(--border);border-radius:var(--radius);background:transparent;color:var(--text-3);font-size:0.88rem;cursor:pointer;font-family:var(--font);transition:all .15s;margin-bottom:16px">+ Ajouter une question</button>
+      <div id="seq-questions-container"></div>
+      <button type="button" id="seq-add-question-btn">+ Ajouter une question</button>
       <!-- preview -->
-      <div style="background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--radius);padding:16px">
-        <div style="font-size:0.72rem;color:var(--text-3);margin-bottom:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;text-align:center">Aperçu</div>
-        <div id="seq-preview-items" style="display:flex;gap:10px;justify-content:center;margin-bottom:10px;flex-wrap:wrap"></div>
-        <div id="seq-preview-questions" style="display:flex;flex-direction:column;gap:6px"></div>
+      <div class="seq-preview-panel">
+        <div class="preview-label">Aperçu</div>
+        <div id="seq-preview-items"></div>
+        <div id="seq-preview-questions"></div>
       </div>
     </div>
 
@@ -336,8 +335,8 @@
 </div>
 
 <!-- ── Seq item edit modal ──────────────────────────────────────────────────── -->
-<div id="seq-item-modal" style="display:none; position:fixed; inset:0; background:oklch(0% 0 0 / 0.42); align-items:center; justify-content:center; z-index:200; padding:24px; backdrop-filter:blur(3px)">
-  <div class="modal" style="max-width:500px">
+<div id="seq-item-modal">
+  <div class="modal">
     <h3>Modifier l'item</h3>
     <div class="item-type-tabs" id="sim-type-tabs">
       <button class="item-type-btn active" data-type="text">Texte</button>
@@ -367,12 +366,12 @@
         </select></div>
     </div>
     <!-- section : image -->
-    <div id="sim-sect-image" style="display:none">
+    <div id="sim-sect-image">
       <div class="field-row">
         <label>Image</label>
-        <input type="file" id="sim-img-input" accept="image/*" style="display:none">
+        <input type="file" id="sim-img-input" accept="image/*">
         <button type="button" class="btn-upload-img" id="sim-img-btn">Choisir une image</button>
-        <div class="img-thumb-row" id="sim-img-thumb-row" style="display:none">
+        <div class="img-thumb-row" id="sim-img-thumb-row">
           <img id="sim-img-thumb" alt="">
           <button type="button" class="btn-remove-img" id="sim-img-remove">✕ Supprimer</button>
         </div>
@@ -381,12 +380,12 @@
       <div class="field-row"><label>Couleur du texte</label><input type="color" id="sim-img-textcolor" value="#ffffff"></div>
     </div>
     <!-- section : audio -->
-    <div id="sim-sect-audio" style="display:none">
+    <div id="sim-sect-audio">
       <div class="field-row">
         <label>Audio</label>
-        <input type="file" id="sim-audio-input" accept="audio/*" style="display:none">
+        <input type="file" id="sim-audio-input" accept="audio/*">
         <button type="button" class="btn-upload-audio" id="sim-audio-btn">Choisir un audio</button>
-        <div class="audio-loaded-row" id="sim-audio-loaded" style="display:none">
+        <div class="audio-loaded-row" id="sim-audio-loaded">
           <span id="sim-audio-name"></span>
           <button type="button" class="btn-play-audio" id="sim-audio-play">▶ Écouter</button>
           <button type="button" class="btn-remove-img" id="sim-audio-remove">✕</button>
@@ -394,14 +393,14 @@
       </div>
       <div class="field-row"><label>Étiquette (optionnel)</label><input type="text" id="sim-audio-label" placeholder="Nom affiché…"></div>
       <div class="field-row">
-        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:0.88rem;text-transform:none;letter-spacing:0">
+        <label class="checkbox-row">
           <input type="checkbox" id="sim-audio-autoplay">
-          Lancer automatiquement à l'affichage
+          <span>Lancer automatiquement à l'affichage</span>
         </label>
       </div>
     </div>
     <!-- section : flèche -->
-    <div id="sim-sect-arrow" style="display:none">
+    <div id="sim-sect-arrow">
       <div class="field-row"><label>Direction</label>
         <select id="sim-arrow-dir">
           <option value="left">← Gauche</option><option value="right">→ Droite</option>
@@ -410,10 +409,10 @@
     </div>
     <!-- couleur de fond commune à tous les types -->
     <div class="field-row"><label>Couleur de fond</label>
-      <input type="color" id="sim-bg-color" value="#ffffff" style="width:100%;height:38px;padding:2px;border:1.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer"></div>
-    <div style="margin:16px 0;background:var(--surface-2);border:1.5px solid var(--border);border-radius:var(--radius);padding:12px;text-align:center">
-      <div style="font-size:0.72rem;color:var(--text-3);margin-bottom:8px;font-weight:700;text-transform:uppercase;letter-spacing:.06em">Aperçu</div>
-      <div id="sim-preview-box" style="width:100px;height:100px;margin:0 auto;border:2px solid var(--border);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;overflow:hidden;background:white;font-size:2rem"></div>
+      <input type="color" id="sim-bg-color" value="#ffffff"></div>
+    <div class="sim-preview-wrap">
+      <div class="sim-preview-label">Aperçu</div>
+      <div id="sim-preview-box"></div>
     </div>
     <div class="modal-actions">
       <button class="btn-cancel" id="sim-cancel">Annuler</button>

@@ -1,0 +1,33 @@
+/* ── DESIGN TOKENS ───────────────────────────────────────────────────────── */
+:root {
+  --bg:          oklch(97% 0.006 260);
+  --surface:     oklch(100% 0 0);
+  --surface-2:   oklch(96% 0.006 260);
+  --border:      oklch(90% 0.008 260);
+  --border-focus:oklch(56% 0.22 255);
+  --text-1:      oklch(16% 0.012 260);
+  --text-2:      oklch(44% 0.014 260);
+  --text-3:      oklch(64% 0.010 260);
+  --accent:      oklch(52% 0.22 255);
+  --accent-hover:oklch(46% 0.22 255);
+  --accent-bg:   oklch(96% 0.04 255);
+  --accent-border:oklch(80% 0.09 255);
+  --success:     oklch(52% 0.18 155);
+  --success-bg:  oklch(96% 0.04 155);
+  --success-border:oklch(78% 0.10 155);
+  --danger:      oklch(52% 0.22 22);
+  --danger-bg:   oklch(97% 0.03 22);
+  --danger-border:oklch(78% 0.12 22);
+  --warn-bg:     oklch(97% 0.04 85);
+  --warn-border: oklch(82% 0.12 85);
+  --warn-text:   oklch(40% 0.12 70);
+  --radius-sm:   8px;
+  --radius:      12px;
+  --radius-lg:   18px;
+  --shadow-sm:   0 1px 4px oklch(0% 0 0 / 0.05);
+  --shadow:      0 2px 16px oklch(0% 0 0 / 0.07);
+  --shadow-lg:   0 8px 40px oklch(0% 0 0 / 0.14);
+  --font:        'DM Sans', system-ui, sans-serif;
+  --font-mono:   'DM Mono', 'Courier New', monospace;
+  --topbar-h:    52px;
+}

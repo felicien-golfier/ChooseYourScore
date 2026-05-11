@@ -1,0 +1,58 @@
+/* ── TOPBAR ──────────────────────────────────────────────────────────────── */
+#topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  height: var(--topbar-h);
+}
+
+#topbar .logo {
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+  color: var(--text-1);
+  margin-right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+#topbar .logo-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.nav-btn {
+  padding: 6px 13px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-2);
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: background 0.12s, color 0.12s;
+  letter-spacing: -0.01em;
+}
+.nav-btn:hover  { background: var(--surface-2); color: var(--text-1); }
+.nav-btn.active { background: var(--accent-bg); color: var(--accent); font-weight: 600; }
+
+/* ── VIEWS ───────────────────────────────────────────────────────────────── */
+.view { display: none; flex: 1; overflow-y: auto; }
+
+.view.centered {
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 16px;
+}
+.view.centered.active { display: flex; }
+#view-editor.active   { display: flex; overflow: hidden; }
+#view-results.active  { display: block; }

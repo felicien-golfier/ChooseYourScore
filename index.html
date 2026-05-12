@@ -337,6 +337,14 @@
     <!-- section : texte -->
     <div id="sim-sect-text">
       <div class="field-row"><label>Texte</label><input type="text" id="sim-text" placeholder="Texte affiché"></div>
+      <div id="sim-char-grid-section" style="display:none;margin:4px 0 6px">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px">
+          <button type="button" id="sim-char-select-all" class="btn-char-action">Tout</button>
+          <button type="button" id="sim-char-deselect" class="btn-char-action">Aucun</button>
+          <button type="button" id="sim-char-reset" class="btn-char-action">Réinitialiser</button>
+        </div>
+        <div id="sim-char-grid"></div>
+      </div>
       <div class="field-row"><label>Couleur</label><input type="color" id="sim-color" value="#1a1a1a"></div>
       <div class="field-row"><label>Taille (px)</label>
         <select id="sim-size">
@@ -354,43 +362,6 @@
           <option value="none">Normale</option><option value="uppercase">MAJUSCULES</option>
           <option value="lowercase">minuscules</option><option value="capitalize">Capitalisé</option>
         </select></div>
-      <!-- formatage par caractère -->
-      <div id="sim-char-grid-section" style="display:none;margin-top:10px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-          <span style="font-size:0.82rem;font-weight:600;color:var(--text-2)">Formatage par caractère</span>
-          <div style="display:flex;gap:5px">
-            <button type="button" id="sim-char-select-all" class="btn-char-action">Tout</button>
-            <button type="button" id="sim-char-deselect" class="btn-char-action">Aucun</button>
-            <button type="button" id="sim-char-reset-all" class="btn-char-action">Réinitialiser tout</button>
-          </div>
-        </div>
-        <div id="sim-char-grid"></div>
-        <div id="sim-char-toolbar" style="display:none;margin-top:8px;padding:8px 10px;background:var(--surface-2);border:1.5px solid var(--accent-border);border-radius:var(--radius-sm)">
-          <div style="font-size:0.72rem;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Style des caractères sélectionnés</div>
-          <div class="field-row"><label>Couleur</label>
-            <input type="color" id="sim-char-color" value="#1a1a1a">
-            <button type="button" id="sim-char-reset-color" class="btn-char-action">Défaut</button>
-          </div>
-          <div class="field-row"><label>Taille</label>
-            <select id="sim-char-size">
-              <option value="">Défaut</option>
-              <option value="16">16</option><option value="20">20</option><option value="24">24</option>
-              <option value="28">28</option><option value="32">32</option><option value="40">40</option>
-              <option value="48">48</option><option value="56">56</option><option value="64">64</option><option value="72">72</option>
-            </select>
-          </div>
-          <div class="field-row"><label>Police</label>
-            <select id="sim-char-font">
-              <option value="">Défaut</option>
-              <option>Arial</option><option>Times New Roman</option><option>Courier New</option>
-              <option>Georgia</option><option>Verdana</option><option>Comic Sans MS</option><option>Impact</option>
-            </select>
-          </div>
-          <div class="field-row" style="margin-top:4px">
-            <button type="button" id="sim-char-reset" class="btn-char-action">Réinitialiser la sélection</button>
-          </div>
-        </div>
-      </div>
     </div>
     <!-- section : image -->
     <div id="sim-sect-image">

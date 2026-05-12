@@ -109,9 +109,10 @@ function applyItemStyle(el, item) {
       el.innerHTML = '<span>' + Array.from(text).map((char, i) => {
         const cs = _cs[i];
         let st = '';
-        if (cs && cs.color)      st += 'color:' + cs.color + ';';
-        if (cs && cs.fontSize)   st += 'font-size:' + cs.fontSize + 'px;';
-        if (cs && cs.fontFamily) st += 'font-family:' + cs.fontFamily + ';';
+        if (cs && cs.color)         st += 'color:' + cs.color + ';';
+        if (cs && cs.fontSize)      st += 'font-size:' + cs.fontSize + 'px;';
+        if (cs && cs.fontFamily)    st += 'font-family:' + cs.fontFamily + ';';
+        if (cs && cs.textTransform) st += 'text-transform:' + cs.textTransform + ';';
         return '<span' + (st ? ' style="' + st + '"' : '') + '>' + escapeHtml(char) + '</span>';
       }).join('') + '</span>';
     } else {

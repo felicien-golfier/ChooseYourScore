@@ -11,6 +11,8 @@ let simCharStyles = [];
 let simCharSel = new Set();
 let _simTextPrev = '';
 let simItemLevel = { color: '#1a1a1a', fontSize: 32, fontFamily: 'Arial', textTransform: 'none' };
+let simMultiSelectMode = false;
+let _charPressTimer = null;
 const collapsedFolders = new Set();
 function getSelectedEx() { return exercises.find(e => e.id === editorSelectedId) || null; }
 
@@ -512,6 +514,8 @@ function buildSimCharGrid() {
   if (!section || !grid) return;
 
   section.style.display = text.length > 0 ? '' : 'none';
+  const hint = document.getElementById('sim-char-multiselect-hint');
+  if (hint) hint.style.display = (text.length > 0 && simMultiSelectMode) ? '' : 'none';
 
   grid.innerHTML = '';
   Array.from(text).forEach((char, i) => {
@@ -533,6 +537,35 @@ function buildSimCharGrid() {
         const last = Math.max(...simCharSel);
         const start = Math.min(last, i), end = Math.max(last, i);
         for (let j = start; j <= end; j++) simCharSel.add(j);
+      } else if (simMultiSelectMode) {
+        if (simCharSel.has(i)) simCharSel.delete(i); else simCharSel.add(i);
+        if (simCharSel.size === 0) simMultiSelectMode = false;
+      } else {
+        simCharSel.clear();
+        simCharSel.add(i);
+      }
+      buildSimCharGrid();
+    });
+    cell.addEventListener('touchstart', e => {
+      e.preventDefault();
+      _charPressTimer = setTimeout(() => {
+        _charPressTimer = null;
+        simMultiSelectMode = true;
+        simCharSel.clear();
+        simCharSel.add(i);
+        buildSimCharGrid();
+      }, 500);
+    }, { passive: false });
+    cell.addEventListener('touchmove', () => {
+      if (_charPressTimer) { clearTimeout(_charPressTimer); _charPressTimer = null; }
+    }, { passive: true });
+    cell.addEventListener('touchend', () => {
+      if (!_charPressTimer) return;
+      clearTimeout(_charPressTimer);
+      _charPressTimer = null;
+      if (simMultiSelectMode) {
+        if (simCharSel.has(i)) simCharSel.delete(i); else simCharSel.add(i);
+        if (simCharSel.size === 0) simMultiSelectMode = false;
       } else {
         simCharSel.clear();
         simCharSel.add(i);
@@ -614,6 +647,7 @@ function fillItemModal(item) {
     pickOption('sim-transform', simItemLevel.textTransform);
     simCharStyles = (item && item.charStyles) ? item.charStyles.map(cs => cs ? {...cs} : null) : [];
     simCharSel = new Set(Array.from({length: _text.length}, (_, i) => i));
+    simMultiSelectMode = false;
     _simTextPrev = _text;
     buildSimCharGrid();
   }
@@ -706,6 +740,7 @@ document.getElementById('sim-char-select-all').addEventListener('click', () => {
 });
 document.getElementById('sim-char-deselect').addEventListener('click', () => {
   simCharSel.clear();
+  simMultiSelectMode = false;
   buildSimCharGrid();
 });
 document.getElementById('sim-char-reset').addEventListener('click', () => {

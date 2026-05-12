@@ -10,6 +10,7 @@ let pendingOverrideCallback = null;
 let simCharStyles = [];
 let simCharSel = new Set();
 let _simTextPrev = '';
+let simItemLevel = { color: '#1a1a1a', fontSize: 32, fontFamily: 'Arial', textTransform: 'none' };
 const collapsedFolders = new Set();
 function getSelectedEx() { return exercises.find(e => e.id === editorSelectedId) || null; }
 
@@ -511,7 +512,6 @@ function buildSimCharGrid() {
   if (!section || !grid) return;
 
   section.style.display = text.length > 0 ? '' : 'none';
-  const baseColor = document.getElementById('sim-color')?.value || '#1a1a1a';
 
   grid.innerHTML = '';
   Array.from(text).forEach((char, i) => {
@@ -520,11 +520,11 @@ function buildSimCharGrid() {
     const isStyled = cs && Object.keys(cs).length > 0;
     const cell = document.createElement('div');
     cell.className = 'char-cell' + (isSel ? ' char-selected' : '') + (isStyled ? ' char-styled' : '');
-    cell.style.color = (cs && cs.color) ? cs.color : baseColor;
-    if (cs && cs.fontSize)   cell.style.fontSize   = cs.fontSize + 'px';
-    if (cs && cs.fontFamily) cell.style.fontFamily  = cs.fontFamily;
+    cell.style.color      = (cs && cs.color)      ? cs.color              : simItemLevel.color;
+    cell.style.fontSize   = (cs && cs.fontSize)   ? cs.fontSize + 'px'    : simItemLevel.fontSize + 'px';
+    cell.style.fontFamily = (cs && cs.fontFamily) ? cs.fontFamily          : simItemLevel.fontFamily;
     cell.textContent = char === ' ' ? ' ' : char;
-    cell.title = 'Clic : sélectionner · Ctrl+clic : ajouter/retirer · Maj+clic : plage';
+    cell.title = 'Clic';
     cell.addEventListener('mousedown', e => {
       e.preventDefault();
       if (e.ctrlKey || e.metaKey) {
@@ -541,31 +541,42 @@ function buildSimCharGrid() {
     });
     grid.appendChild(cell);
   });
-  updateSimCharToolbar();
+  updateControlsFromSelection();
 }
 
-function updateSimCharToolbar() {
-  const toolbar = document.getElementById('sim-char-toolbar');
-  if (!toolbar) return;
-  if (simCharSel.size === 0) { toolbar.style.display = 'none'; return; }
-  toolbar.style.display = '';
-  const first = Math.min(...simCharSel);
-  const cs = simCharStyles[first];
-  const baseColor = document.getElementById('sim-color')?.value || '#1a1a1a';
-  document.getElementById('sim-char-color').value = (cs && cs.color) ? cs.color : baseColor;
-  document.getElementById('sim-char-size').value  = (cs && cs.fontSize)   ? String(cs.fontSize)   : '';
-  document.getElementById('sim-char-font').value  = (cs && cs.fontFamily) ? cs.fontFamily          : '';
+function updateControlsFromSelection() {
+  const first = simCharSel.size > 0 ? Math.min(...simCharSel) : -1;
+  const cs = first >= 0 ? (simCharStyles[first] || {}) : {};
+  document.getElementById('sim-color').value = cs.color || simItemLevel.color;
+  pickOption('sim-size',      String(cs.fontSize      || simItemLevel.fontSize));
+  pickOption('sim-font',      cs.fontFamily            || simItemLevel.fontFamily);
+  pickOption('sim-transform', cs.textTransform         || simItemLevel.textTransform);
 }
 
-function applyCharStyle(updates) {
-  simCharSel.forEach(i => {
-    if (!simCharStyles[i]) simCharStyles[i] = {};
-    for (const [k, v] of Object.entries(updates)) {
-      if (v == null) delete simCharStyles[i][k];
-      else simCharStyles[i][k] = v;
-    }
-    if (Object.keys(simCharStyles[i]).length === 0) simCharStyles[i] = null;
-  });
+function applyCharStyle(prop, value) {
+  const text = document.getElementById('sim-text').value;
+  const allSelected = text.length > 0 && simCharSel.size === text.length;
+  if (allSelected) {
+    simItemLevel[prop] = value;
+    simCharStyles = simCharStyles.map(cs => {
+      if (!cs) return null;
+      const copy = {...cs};
+      delete copy[prop];
+      return Object.keys(copy).length > 0 ? copy : null;
+    });
+  } else {
+    simCharSel.forEach(i => {
+      if (value === simItemLevel[prop]) {
+        if (simCharStyles[i]) {
+          delete simCharStyles[i][prop];
+          if (Object.keys(simCharStyles[i]).length === 0) simCharStyles[i] = null;
+        }
+      } else {
+        if (!simCharStyles[i]) simCharStyles[i] = {};
+        simCharStyles[i][prop] = value;
+      }
+    });
+  }
   buildSimCharGrid();
   refreshSimPreview();
 }
@@ -589,14 +600,21 @@ function fillItemModal(item) {
   } else if (type === 'arrow') {
     document.getElementById('sim-arrow-dir').value = item.arrowDirection || 'left';
   } else {
-    document.getElementById('sim-text').value  = item.text  || '';
-    document.getElementById('sim-color').value = item.color || '#1a1a1a';
-    pickOption('sim-size',      String(item.fontSize  || 32));
-    pickOption('sim-font',      item.fontFamily   || 'Arial');
-    pickOption('sim-transform', item.textTransform || 'none');
+    const _text = item.text || '';
+    document.getElementById('sim-text').value = _text;
+    simItemLevel = {
+      color:         item.color         || '#1a1a1a',
+      fontSize:      item.fontSize      || 32,
+      fontFamily:    item.fontFamily    || 'Arial',
+      textTransform: item.textTransform || 'none'
+    };
+    document.getElementById('sim-color').value = simItemLevel.color;
+    pickOption('sim-size',      String(simItemLevel.fontSize));
+    pickOption('sim-font',      simItemLevel.fontFamily);
+    pickOption('sim-transform', simItemLevel.textTransform);
     simCharStyles = (item && item.charStyles) ? item.charStyles.map(cs => cs ? {...cs} : null) : [];
-    simCharSel = new Set();
-    _simTextPrev = (item && item.text) || '';
+    simCharSel = new Set(Array.from({length: _text.length}, (_, i) => i));
+    _simTextPrev = _text;
     buildSimCharGrid();
   }
   refreshSimPreview();
@@ -620,10 +638,10 @@ function readItemModal() {
   const _hasCharStyles = _cleanCharStyles.some(s => s !== null);
   return { type: 'text',
     text:          document.getElementById('sim-text').value,
-    color:         document.getElementById('sim-color').value,
-    fontSize:      parseInt(document.getElementById('sim-size').value, 10)||32,
-    fontFamily:    document.getElementById('sim-font').value,
-    textTransform: document.getElementById('sim-transform').value,
+    color:         simItemLevel.color,
+    fontSize:      simItemLevel.fontSize,
+    fontFamily:    simItemLevel.fontFamily,
+    textTransform: simItemLevel.textTransform,
     bgColor, imageUrl: null, audioUrl: null,
     charStyles: _hasCharStyles ? _cleanCharStyles : undefined };
 }
@@ -644,8 +662,8 @@ document.querySelectorAll('#sim-type-tabs .item-type-btn').forEach(btn => {
   btn.addEventListener('click', () => { setSimSect(btn.dataset.type); refreshSimPreview(); });
 });
 
-['sim-text','sim-color','sim-size','sim-font','sim-transform',
- 'sim-img-text','sim-img-textcolor','sim-arrow-dir','sim-bg-color',
+['sim-text','sim-bg-color',
+ 'sim-img-text','sim-img-textcolor','sim-arrow-dir',
  'sim-audio-label'].forEach(id => {
   const el = document.getElementById(id);
   if (el) { el.addEventListener('input', refreshSimPreview); el.addEventListener('change', refreshSimPreview); }
@@ -674,26 +692,13 @@ document.getElementById('sim-text').addEventListener('change', e => {
   _simTextPrev = e.target.value;
   buildSimCharGrid();
 });
-['sim-color','sim-size','sim-font'].forEach(id => {
-  const el = document.getElementById(id);
-  if (el) { el.addEventListener('input', buildSimCharGrid); el.addEventListener('change', buildSimCharGrid); }
-});
+// Format controls now apply to selected characters
+document.getElementById('sim-color').addEventListener('input',  e => applyCharStyle('color', e.target.value));
+document.getElementById('sim-color').addEventListener('change', e => applyCharStyle('color', e.target.value));
+document.getElementById('sim-size').addEventListener('change',  e => applyCharStyle('fontSize', parseInt(e.target.value) || simItemLevel.fontSize));
+document.getElementById('sim-font').addEventListener('change',  e => applyCharStyle('fontFamily', e.target.value || simItemLevel.fontFamily));
+document.getElementById('sim-transform').addEventListener('change', e => applyCharStyle('textTransform', e.target.value || 'none'));
 
-// Char toolbar events
-document.getElementById('sim-char-color').addEventListener('input', e => applyCharStyle({ color: e.target.value }));
-document.getElementById('sim-char-reset-color').addEventListener('click', () => applyCharStyle({ color: null }));
-document.getElementById('sim-char-size').addEventListener('change', e => applyCharStyle({ fontSize: e.target.value ? parseInt(e.target.value) : null }));
-document.getElementById('sim-char-font').addEventListener('change', e => applyCharStyle({ fontFamily: e.target.value || null }));
-document.getElementById('sim-char-reset').addEventListener('click', () => {
-  simCharSel.forEach(i => { simCharStyles[i] = null; });
-  buildSimCharGrid(); refreshSimPreview();
-});
-document.getElementById('sim-char-reset-all').addEventListener('click', () => {
-  if (!confirm('Réinitialiser tout le formatage par caractère ?')) return;
-  simCharStyles = simCharStyles.map(() => null);
-  simCharSel.clear();
-  buildSimCharGrid(); refreshSimPreview();
-});
 document.getElementById('sim-char-select-all').addEventListener('click', () => {
   const text = document.getElementById('sim-text').value;
   for (let i = 0; i < text.length; i++) simCharSel.add(i);
@@ -702,6 +707,10 @@ document.getElementById('sim-char-select-all').addEventListener('click', () => {
 document.getElementById('sim-char-deselect').addEventListener('click', () => {
   simCharSel.clear();
   buildSimCharGrid();
+});
+document.getElementById('sim-char-reset').addEventListener('click', () => {
+  simCharSel.forEach(i => { simCharStyles[i] = null; });
+  buildSimCharGrid(); refreshSimPreview();
 });
 
 document.getElementById('sim-img-btn').addEventListener('click', () => document.getElementById('sim-img-input').click());

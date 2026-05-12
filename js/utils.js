@@ -103,7 +103,20 @@ function applyItemStyle(el, item) {
     el.innerHTML = item.text ? '<span style="position:relative;text-shadow:0 1px 4px rgba(0,0,0,0.65)">' + escapeHtml(item.text) + '</span>' : '';
   } else {
     el.style.backgroundImage = '';
-    el.textContent = item.text || (itype === 'audio' ? '♪' : '');
+    const _cs = item.charStyles;
+    if (_cs && _cs.some(s => s != null)) {
+      const text = item.text || '';
+      el.innerHTML = '<span>' + Array.from(text).map((char, i) => {
+        const cs = _cs[i];
+        let st = '';
+        if (cs && cs.color)      st += 'color:' + cs.color + ';';
+        if (cs && cs.fontSize)   st += 'font-size:' + cs.fontSize + 'px;';
+        if (cs && cs.fontFamily) st += 'font-family:' + cs.fontFamily + ';';
+        return '<span' + (st ? ' style="' + st + '"' : '') + '>' + escapeHtml(char) + '</span>';
+      }).join('') + '</span>';
+    } else {
+      el.textContent = item.text || (itype === 'audio' ? '♪' : '');
+    }
   }
 }
 function formatDuration(ms) {

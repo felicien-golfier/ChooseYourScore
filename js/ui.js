@@ -28,3 +28,14 @@ function syncReorderBtns(wrappers) {
     setReorderDisabled(el.querySelector('.reorder-dn'), i === n - 1);
   });
 }
+
+// ── Compteur +/− ─────────────────────────────────────────────────────────────
+function makeCounterBtns(minusHandler, plusHandler) {
+  const minus = document.createElement('button');
+  minus.type = 'button'; minus.className = 'pair-action-btn counter-minus'; minus.title = 'Diminuer'; minus.textContent = '−';
+  minus.addEventListener('click', minusHandler);
+  const plus = document.createElement('button');
+  plus.type = 'button'; plus.className = 'pair-action-btn counter-plus'; plus.title = 'Augmenter'; plus.textContent = '+';
+  plus.addEventListener('click', plusHandler);
+  return { minus, plus };
+}

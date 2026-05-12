@@ -28,6 +28,11 @@ function renderPair() {
   if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
   isWaiting = false;
   currentPairQuestions = getPairQuestions(pair);
+  if (!currentPairQuestions.length) {
+    pairIndex++;
+    if (pairIndex >= currentPairs.length) finishExercise(); else renderPair();
+    return;
+  }
   document.getElementById('progress-fill').style.width  = (pairIndex / currentPairs.length * 100) + '%';
   document.getElementById('progress-label').textContent = (pairIndex+1) + ' / ' + currentPairs.length;
   document.getElementById('sequence-container').style.display = 'flex';

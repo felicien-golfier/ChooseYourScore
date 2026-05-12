@@ -1345,6 +1345,7 @@ document.getElementById('seq-num-items').addEventListener('change', () => { refr
     () => { inp.value = Math.max(1, (parseInt(inp.value) || 1) - 1); refreshSequenceItemInputs(); },
     () => { inp.value = (parseInt(inp.value) || 1) + 1; refreshSequenceItemInputs(); }
   );
+  inp.style.cssText = 'width:52px;text-align:center;flex-shrink:0;padding:4px 6px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.9rem;outline:none;font-family:var(--font);color:var(--text-1);background:var(--surface)';
   const wrap = document.createElement('div');
   wrap.className = 'counter-wrap';
   inp.after(wrap);

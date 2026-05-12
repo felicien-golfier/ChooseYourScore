@@ -126,7 +126,7 @@ function formatDuration(ms) {
 function newId(p) { return p + '_' + Date.now() + '_' + Math.random().toString(36).slice(2,6); }
 function escapeHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function getPairQuestions(pair) {
-  return pair.questions || [{questionText: pair.questionText || '', choices: pair.choices || []}];
+  return (pair.questions && pair.questions.length) ? pair.questions : [{questionText: pair.questionText || '', choices: pair.choices || []}];
 }
 function shuffleArray(arr) {
   const a = [...arr];

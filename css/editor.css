@@ -918,17 +918,60 @@ tbody td[contenteditable]:focus {
 
 /* ── COUNTER INPUT GROUP ─────────────────────────────────────────────────── */
 .counter-wrap {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  display: inline-flex;
+  align-items: stretch;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
   flex-shrink: 0;
+  transition: border-color 0.15s;
+}
+
+.counter-wrap:focus-within {
+  border-color: var(--accent);
 }
 
 .counter-wrap input[type="number"],
 .field-row .counter-wrap input[type="number"] {
   width: 52px;
-  text-align: center;
   flex-shrink: 0;
+  border: none;
+  outline: none;
+  padding: 6px 4px;
+  font-size: 0.9rem;
+  text-align: center;
+  background: var(--surface);
+  color: var(--text-1);
+  font-family: var(--font);
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.counter-wrap input[type="number"]::-webkit-inner-spin-button,
+.counter-wrap input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.counter-btns {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--border);
+}
+
+.counter-btns .pair-action-btn {
+  flex: 1;
+  width: 22px;
+  height: auto;
+  min-height: 0;
+  border: none;
+  border-radius: 0;
+  font-size: 0.65rem;
+  padding: 0;
+}
+
+.counter-btns .pair-action-btn:first-child {
+  border-bottom: 1px solid var(--border);
 }
 
 /* ── FIELD-ROW NUMBER INPUTS ─────────────────────────────────────────────── */

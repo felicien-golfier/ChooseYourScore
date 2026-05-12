@@ -1054,13 +1054,10 @@ function buildSequenceQuestionBlock(q) {
     buildChoicesRow(choicesRow, existing.slice(0, n), existingCorrects.length ? existingCorrects : [0]);
     refreshSequencePreview();
   });
-  const { minus: choiceMinus, plus: choicePlus } = makeCounterBtns(
+  const { wrap: numGroup } = makeCounterBtns(numInput,
     () => { numInput.value = Math.max(1, (parseInt(numInput.value) || 1) - 1); numInput.dispatchEvent(new Event('input')); },
     () => { numInput.value = (parseInt(numInput.value) || 1) + 1; numInput.dispatchEvent(new Event('input')); }
   );
-  const numGroup = document.createElement('div');
-  numGroup.className = 'counter-wrap';
-  numGroup.append(choiceMinus, numInput, choicePlus);
   choicesHeader.append(choicesLabel, numGroup);
 
   // Sq-code picker
@@ -1338,18 +1335,15 @@ function refreshSequencePreview() {
 document.getElementById('seq-num-items').addEventListener('input',  () => { refreshSequenceItemInputs(); });
 document.getElementById('seq-num-items').addEventListener('change', () => { refreshSequenceItemInputs(); });
 
-// Boutons +/− pour le nombre d'items (accessibilité mobile)
+// Boutons ↑/↓ pour le nombre d'items (accessibilité mobile)
 (function() {
   const inp = document.getElementById('seq-num-items');
-  const { minus, plus } = makeCounterBtns(
+  const parent = inp.parentNode, next = inp.nextSibling;
+  const { wrap } = makeCounterBtns(inp,
     () => { inp.value = Math.max(1, (parseInt(inp.value) || 1) - 1); refreshSequenceItemInputs(); },
     () => { inp.value = (parseInt(inp.value) || 1) + 1; refreshSequenceItemInputs(); }
   );
-  inp.style.cssText = 'width:52px;text-align:center;flex-shrink:0;padding:4px 6px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.9rem;outline:none;font-family:var(--font);color:var(--text-1);background:var(--surface)';
-  const wrap = document.createElement('div');
-  wrap.className = 'counter-wrap';
-  inp.after(wrap);
-  wrap.append(minus, inp, plus);
+  if (next) parent.insertBefore(wrap, next); else parent.appendChild(wrap);
 })();
 document.getElementById('seq-use-exercise-duration').addEventListener('change', function() {
   document.getElementById('seq-duration-row').style.display = this.checked ? 'none' : '';

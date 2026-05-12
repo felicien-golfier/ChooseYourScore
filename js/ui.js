@@ -29,13 +29,24 @@ function syncReorderBtns(wrappers) {
   });
 }
 
-// ── Compteur +/− ─────────────────────────────────────────────────────────────
-function makeCounterBtns(minusHandler, plusHandler) {
-  const minus = document.createElement('button');
-  minus.type = 'button'; minus.className = 'pair-action-btn counter-minus'; minus.title = 'Diminuer'; minus.textContent = '−';
-  minus.addEventListener('click', minusHandler);
-  const plus = document.createElement('button');
-  plus.type = 'button'; plus.className = 'pair-action-btn counter-plus'; plus.title = 'Augmenter'; plus.textContent = '+';
-  plus.addEventListener('click', plusHandler);
-  return { minus, plus };
+// ── Compteur ↑/↓ intégré au champ ────────────────────────────────────────────
+// Prend l'input existant, le place dans un cadre avec deux flèches empilées
+// à droite (↑ = incrémenter, ↓ = décrémenter). Retourne { wrap, up, dn }.
+function makeCounterBtns(inputEl, decHandler, incHandler) {
+  inputEl.style.border = 'none';
+  inputEl.style.outline = 'none';
+  inputEl.style.borderRadius = '0';
+  const up = document.createElement('button');
+  up.type = 'button'; up.className = 'pair-action-btn counter-up'; up.title = 'Augmenter'; up.textContent = '↑';
+  up.addEventListener('click', incHandler);
+  const dn = document.createElement('button');
+  dn.type = 'button'; dn.className = 'pair-action-btn counter-dn'; dn.title = 'Diminuer'; dn.textContent = '↓';
+  dn.addEventListener('click', decHandler);
+  const btns = document.createElement('div');
+  btns.className = 'counter-btns';
+  btns.append(up, dn);
+  const wrap = document.createElement('div');
+  wrap.className = 'counter-wrap';
+  wrap.append(inputEl, btns);
+  return { wrap, up, dn };
 }

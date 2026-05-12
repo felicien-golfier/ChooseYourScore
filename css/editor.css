@@ -1126,3 +1126,69 @@ tbody td[contenteditable]:focus {
   background: white;
   font-size: 2rem;
 }
+
+/* ── Formatage par caractère ─────────────────────────────────────────────── */
+#sim-char-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.char-cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  padding: 2px 6px;
+  height: 44px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 1.4rem;
+  user-select: none;
+  background: var(--surface);
+  transition: border-color .12s, background .12s;
+  white-space: pre;
+  position: relative;
+}
+
+.char-cell:hover {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.char-cell.char-selected {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+  box-shadow: 0 0 0 2px var(--accent-a28);
+}
+
+.char-cell.char-styled::after {
+  content: '';
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.btn-char-action {
+  padding: 3px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-2);
+  font-size: 0.75rem;
+  cursor: pointer;
+  font-family: var(--font);
+  white-space: nowrap;
+  transition: border-color .12s, color .12s;
+}
+
+.btn-char-action:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}

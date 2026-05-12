@@ -7,6 +7,9 @@ let simModalImage = null;
 let simModalAudio = null;
 let editingItemIdx = -1;
 let pendingOverrideCallback = null;
+let simCharStyles = [];
+let simCharSel = new Set();
+let _simTextPrev = '';
 const collapsedFolders = new Set();
 function getSelectedEx() { return exercises.find(e => e.id === editorSelectedId) || null; }
 
@@ -492,6 +495,81 @@ function updateSimAudioUI() {
   if (simModalAudio) document.getElementById('sim-audio-name').textContent = '🎵 Audio chargé';
 }
 
+// ── Per-character formatting helpers ─────────────────────────────────────────
+function syncSimCharStyles(newLen) {
+  while (simCharStyles.length < newLen) simCharStyles.push(null);
+  simCharStyles = simCharStyles.slice(0, newLen);
+}
+
+function buildSimCharGrid() {
+  const textEl = document.getElementById('sim-text');
+  const text = textEl ? textEl.value : '';
+  syncSimCharStyles(text.length);
+
+  const section = document.getElementById('sim-char-grid-section');
+  const grid = document.getElementById('sim-char-grid');
+  if (!section || !grid) return;
+
+  section.style.display = text.length > 0 ? '' : 'none';
+  const baseColor = document.getElementById('sim-color')?.value || '#1a1a1a';
+
+  grid.innerHTML = '';
+  Array.from(text).forEach((char, i) => {
+    const cs = simCharStyles[i];
+    const isSel = simCharSel.has(i);
+    const isStyled = cs && Object.keys(cs).length > 0;
+    const cell = document.createElement('div');
+    cell.className = 'char-cell' + (isSel ? ' char-selected' : '') + (isStyled ? ' char-styled' : '');
+    cell.style.color = (cs && cs.color) ? cs.color : baseColor;
+    if (cs && cs.fontSize)   cell.style.fontSize   = cs.fontSize + 'px';
+    if (cs && cs.fontFamily) cell.style.fontFamily  = cs.fontFamily;
+    cell.textContent = char === ' ' ? ' ' : char;
+    cell.title = 'Clic : sélectionner · Ctrl+clic : ajouter/retirer · Maj+clic : plage';
+    cell.addEventListener('mousedown', e => {
+      e.preventDefault();
+      if (e.ctrlKey || e.metaKey) {
+        if (simCharSel.has(i)) simCharSel.delete(i); else simCharSel.add(i);
+      } else if (e.shiftKey && simCharSel.size > 0) {
+        const last = Math.max(...simCharSel);
+        const start = Math.min(last, i), end = Math.max(last, i);
+        for (let j = start; j <= end; j++) simCharSel.add(j);
+      } else {
+        simCharSel.clear();
+        simCharSel.add(i);
+      }
+      buildSimCharGrid();
+    });
+    grid.appendChild(cell);
+  });
+  updateSimCharToolbar();
+}
+
+function updateSimCharToolbar() {
+  const toolbar = document.getElementById('sim-char-toolbar');
+  if (!toolbar) return;
+  if (simCharSel.size === 0) { toolbar.style.display = 'none'; return; }
+  toolbar.style.display = '';
+  const first = Math.min(...simCharSel);
+  const cs = simCharStyles[first];
+  const baseColor = document.getElementById('sim-color')?.value || '#1a1a1a';
+  document.getElementById('sim-char-color').value = (cs && cs.color) ? cs.color : baseColor;
+  document.getElementById('sim-char-size').value  = (cs && cs.fontSize)   ? String(cs.fontSize)   : '';
+  document.getElementById('sim-char-font').value  = (cs && cs.fontFamily) ? cs.fontFamily          : '';
+}
+
+function applyCharStyle(updates) {
+  simCharSel.forEach(i => {
+    if (!simCharStyles[i]) simCharStyles[i] = {};
+    for (const [k, v] of Object.entries(updates)) {
+      if (v == null) delete simCharStyles[i][k];
+      else simCharStyles[i][k] = v;
+    }
+    if (Object.keys(simCharStyles[i]).length === 0) simCharStyles[i] = null;
+  });
+  buildSimCharGrid();
+  refreshSimPreview();
+}
+
 function fillItemModal(item) {
   // Migrate legacy 'color' type items to 'text' with bgColor
   if (item && item.type === 'color') item = { type: 'text', text: item.text || '', color: item.color || '#1a1a1a', fontSize: item.fontSize || 32, fontFamily: item.fontFamily || 'Arial', textTransform: item.textTransform || 'none', bgColor: item.bgColor || '#3b82f6', imageUrl: null, audioUrl: null };
@@ -516,6 +594,10 @@ function fillItemModal(item) {
     pickOption('sim-size',      String(item.fontSize  || 32));
     pickOption('sim-font',      item.fontFamily   || 'Arial');
     pickOption('sim-transform', item.textTransform || 'none');
+    simCharStyles = (item && item.charStyles) ? item.charStyles.map(cs => cs ? {...cs} : null) : [];
+    simCharSel = new Set();
+    _simTextPrev = (item && item.text) || '';
+    buildSimCharGrid();
   }
   refreshSimPreview();
 }
@@ -534,13 +616,16 @@ function readItemModal() {
   if (type === 'arrow') return { type,
     arrowDirection: document.getElementById('sim-arrow-dir').value,
     bgColor };
+  const _cleanCharStyles = simCharStyles.map(cs => (cs && Object.keys(cs).length > 0) ? {...cs} : null);
+  const _hasCharStyles = _cleanCharStyles.some(s => s !== null);
   return { type: 'text',
     text:          document.getElementById('sim-text').value,
     color:         document.getElementById('sim-color').value,
     fontSize:      parseInt(document.getElementById('sim-size').value, 10)||32,
     fontFamily:    document.getElementById('sim-font').value,
     textTransform: document.getElementById('sim-transform').value,
-    bgColor, imageUrl: null, audioUrl: null };
+    bgColor, imageUrl: null, audioUrl: null,
+    charStyles: _hasCharStyles ? _cleanCharStyles : undefined };
 }
 
 function openSeqItemModal(idx) {
@@ -564,6 +649,59 @@ document.querySelectorAll('#sim-type-tabs .item-type-btn').forEach(btn => {
  'sim-audio-label'].forEach(id => {
   const el = document.getElementById(id);
   if (el) { el.addEventListener('input', refreshSimPreview); el.addEventListener('change', refreshSimPreview); }
+});
+
+// Rebuild char grid when text content or base styles change
+document.getElementById('sim-text').addEventListener('input', e => {
+  const newText = e.target.value;
+  const oldLen = _simTextPrev.length;
+  const newLen = newText.length;
+  const diff = newLen - oldLen;
+  if (diff === 1) {
+    const pos = e.target.selectionStart - 1;
+    simCharStyles.splice(pos, 0, null);
+  } else if (diff === -1) {
+    const pos = e.target.selectionStart;
+    simCharStyles.splice(pos, 1);
+  } else {
+    syncSimCharStyles(newLen);
+  }
+  _simTextPrev = newText;
+  buildSimCharGrid();
+});
+document.getElementById('sim-text').addEventListener('change', e => {
+  syncSimCharStyles(e.target.value.length);
+  _simTextPrev = e.target.value;
+  buildSimCharGrid();
+});
+['sim-color','sim-size','sim-font'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) { el.addEventListener('input', buildSimCharGrid); el.addEventListener('change', buildSimCharGrid); }
+});
+
+// Char toolbar events
+document.getElementById('sim-char-color').addEventListener('input', e => applyCharStyle({ color: e.target.value }));
+document.getElementById('sim-char-reset-color').addEventListener('click', () => applyCharStyle({ color: null }));
+document.getElementById('sim-char-size').addEventListener('change', e => applyCharStyle({ fontSize: e.target.value ? parseInt(e.target.value) : null }));
+document.getElementById('sim-char-font').addEventListener('change', e => applyCharStyle({ fontFamily: e.target.value || null }));
+document.getElementById('sim-char-reset').addEventListener('click', () => {
+  simCharSel.forEach(i => { simCharStyles[i] = null; });
+  buildSimCharGrid(); refreshSimPreview();
+});
+document.getElementById('sim-char-reset-all').addEventListener('click', () => {
+  if (!confirm('Réinitialiser tout le formatage par caractère ?')) return;
+  simCharStyles = simCharStyles.map(() => null);
+  simCharSel.clear();
+  buildSimCharGrid(); refreshSimPreview();
+});
+document.getElementById('sim-char-select-all').addEventListener('click', () => {
+  const text = document.getElementById('sim-text').value;
+  for (let i = 0; i < text.length; i++) simCharSel.add(i);
+  buildSimCharGrid();
+});
+document.getElementById('sim-char-deselect').addEventListener('click', () => {
+  simCharSel.clear();
+  buildSimCharGrid();
 });
 
 document.getElementById('sim-img-btn').addEventListener('click', () => document.getElementById('sim-img-input').click());

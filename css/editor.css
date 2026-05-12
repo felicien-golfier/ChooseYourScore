@@ -916,6 +916,20 @@ tbody td[contenteditable]:focus {
   transition: border-color 0.15s;
 }
 
+/* ── COUNTER INPUT GROUP ─────────────────────────────────────────────────── */
+.counter-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.counter-wrap input[type="number"] {
+  width: 52px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
 /* ── FIELD-ROW NUMBER INPUTS ─────────────────────────────────────────────── */
 .field-row input[type="number"] {
   width: 100%;

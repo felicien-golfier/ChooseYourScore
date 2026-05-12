@@ -924,7 +924,8 @@ tbody td[contenteditable]:focus {
   flex-shrink: 0;
 }
 
-.counter-wrap input[type="number"] {
+.counter-wrap input[type="number"],
+.field-row .counter-wrap input[type="number"] {
   width: 52px;
   text-align: center;
   flex-shrink: 0;

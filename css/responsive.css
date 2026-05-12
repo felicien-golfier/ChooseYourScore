@@ -101,7 +101,8 @@
 
   #view-editor.active, #view-patients.active {
     flex-direction: column;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   .sidebar {

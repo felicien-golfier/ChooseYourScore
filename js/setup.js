@@ -22,8 +22,12 @@ function initSetup() {
 function renderExercisePicker() {
   const picker = document.getElementById('exercise-picker');
   picker.innerHTML = '';
+  const knownFolderIds = new Set(folders.map(f => f.id));
   const byFolder = {};
-  exercises.forEach(ex => { const k = ex.folderId || '__none__'; (byFolder[k]||(byFolder[k]=[])).push(ex); });
+  exercises.forEach(ex => {
+    const k = (ex.folderId && knownFolderIds.has(ex.folderId)) ? ex.folderId : '__none__';
+    (byFolder[k]||(byFolder[k]=[])).push(ex);
+  });
 
   folders.forEach(folder => {
     const exList = byFolder[folder.id] || [];

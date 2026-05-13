@@ -28,8 +28,12 @@ function renderSidebar() {
     list.innerHTML = '<div style="padding:16px;color:var(--text-3);font-size:0.8rem;text-align:center">Aucun exercice</div>';
     return;
   }
+  const knownFolderIds = new Set(folders.map(f => f.id));
   const byFolder = {};
-  exercises.forEach(ex => { const k = ex.folderId || '__none__'; (byFolder[k]||(byFolder[k]=[])).push(ex); });
+  exercises.forEach(ex => {
+    const k = (ex.folderId && knownFolderIds.has(ex.folderId)) ? ex.folderId : '__none__';
+    (byFolder[k]||(byFolder[k]=[])).push(ex);
+  });
 
   folders.forEach(folder => {
     const exList = byFolder[folder.id] || [];

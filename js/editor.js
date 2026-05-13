@@ -521,7 +521,7 @@ function buildSimCharGrid() {
     cell.className = 'char-cell' + (isSel ? ' char-selected' : '') + (isStyled ? ' char-styled' : '');
     cell.style.color      = (cs && cs.color)      ? cs.color           : simItemLevel.color;
     cell.style.fontSize   = (cs && cs.fontSize)   ? cs.fontSize + 'px' : simItemLevel.fontSize + 'px';
-    cell.style.fontFamily = (cs && cs.fontFamily) ? cs.fontFamily       : simItemLevel.fontFamily;
+    cell.style.fontFamily = _resolveFont((cs && cs.fontFamily) ? cs.fontFamily : simItemLevel.fontFamily);
     cell.style.fontWeight = (cs && cs.fontWeight) ? cs.fontWeight       : simItemLevel.fontWeight;
     cell.style.fontStyle  = (cs && cs.fontStyle)  ? cs.fontStyle        : simItemLevel.fontStyle;
     cell.textContent = char === ' ' ? '\xa0' : char;
@@ -538,7 +538,7 @@ function updateControlsFromSelection() {
   const cs = first >= 0 ? (simCharStyles[first] || {}) : {};
   document.getElementById('sim-color').value = cs.color || simItemLevel.color;
   pickOption('sim-size',      String(cs.fontSize      || simItemLevel.fontSize));
-  pickOption('sim-font',      cs.fontFamily            || simItemLevel.fontFamily);
+  pickOption('sim-font',      _resolveFont(cs.fontFamily || simItemLevel.fontFamily));
   pickOption('sim-transform', cs.textTransform         || simItemLevel.textTransform);
   const fw = cs.fontWeight || simItemLevel.fontWeight;
   const fi = cs.fontStyle  || simItemLevel.fontStyle;
@@ -600,14 +600,14 @@ function fillItemModal(item) {
     simItemLevel = {
       color:         item.color         || '#1a1a1a',
       fontSize:      item.fontSize      || 32,
-      fontFamily:    item.fontFamily    || 'Arial',
+      fontFamily:    _resolveFont(item.fontFamily    || 'Arial'),
       textTransform: item.textTransform || 'none',
       fontWeight:    item.fontWeight    || 'normal',
       fontStyle:     item.fontStyle     || 'normal'
     };
     document.getElementById('sim-color').value = simItemLevel.color;
     pickOption('sim-size',      String(simItemLevel.fontSize));
-    pickOption('sim-font',      simItemLevel.fontFamily);
+    pickOption('sim-font',      _resolveFont(simItemLevel.fontFamily));
     pickOption('sim-transform', simItemLevel.textTransform);
     simCharStyles = (item && item.charStyles) ? item.charStyles.map(cs => cs ? {...cs} : null) : [];
     simCharSel = new Set(Array.from({length: _text.length}, (_, i) => i));

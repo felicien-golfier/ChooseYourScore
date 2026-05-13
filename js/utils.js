@@ -81,6 +81,9 @@ function getItemType(item) {
   return 'text';
 }
 
+const _FONT_COMPAT = { 'Comic Sans MS': 'Comic Neue', 'Impact': 'Oswald', 'Georgia': 'Playfair Display', 'Verdana': 'Raleway' };
+function _resolveFont(f) { return _FONT_COMPAT[f] || f || 'Arial'; }
+
 function applyItemStyle(el, item) {
   const itype = getItemType(item);
   if (itype === 'arrow') {
@@ -94,7 +97,7 @@ function applyItemStyle(el, item) {
   el.style.background    = item.bgColor || 'white';
   el.style.color         = item.color         || '#1a1a1a';
   el.style.fontSize      = (item.fontSize || 32) + 'px';
-  el.style.fontFamily    = item.fontFamily    || 'Arial';
+  el.style.fontFamily    = _resolveFont(item.fontFamily);
   el.style.textTransform = item.textTransform || 'none';
   el.style.fontWeight    = item.fontWeight    || 'normal';
   el.style.fontStyle     = item.fontStyle     || 'normal';
@@ -113,7 +116,7 @@ function applyItemStyle(el, item) {
         let st = '';
         if (cs && cs.color)         st += 'color:' + cs.color + ';';
         if (cs && cs.fontSize)      st += 'font-size:' + cs.fontSize + 'px;';
-        if (cs && cs.fontFamily)    st += 'font-family:' + cs.fontFamily + ';';
+        if (cs && cs.fontFamily)    st += 'font-family:' + _resolveFont(cs.fontFamily) + ';';
         if (cs && cs.textTransform) st += 'text-transform:' + cs.textTransform + ';';
         if (cs && cs.fontWeight)    st += 'font-weight:' + cs.fontWeight + ';';
         if (cs && cs.fontStyle)     st += 'font-style:' + cs.fontStyle + ';';

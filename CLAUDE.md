@@ -1,5 +1,19 @@
 # ChooseYourScore — règles de développement
 
+## Workflow Git
+
+### Toujours synchroniser main avant de commencer
+
+Avant toute modification, fetch et rebase la branche de travail sur main :
+
+```bash
+git fetch origin main
+git checkout claude/<feature-branch>
+git rebase origin/main
+```
+
+Ne jamais commencer à coder sans avoir d'abord aligné la branche sur le dernier état de main. Cela évite les conflits au moment du merge.
+
 ## Principes de code
 
 ### Uniformité : deux choses qui font la même chose utilisent le même code

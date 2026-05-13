@@ -1250,3 +1250,10 @@ tbody td[contenteditable]:focus {
   border-color: var(--accent);
   color: var(--accent);
 }
+
+.btn-char-toggle-active {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+  color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-a28);
+}

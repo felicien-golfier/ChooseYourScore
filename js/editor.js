@@ -10,7 +10,7 @@ let pendingOverrideCallback = null;
 let simCharStyles = [];
 let simCharSel = new Set();
 let _simTextPrev = '';
-let simItemLevel = { color: '#1a1a1a', fontSize: 32, fontFamily: 'Arial', textTransform: 'none' };
+let simItemLevel = { color: '#1a1a1a', fontSize: 32, fontFamily: 'Arial', textTransform: 'none', fontWeight: 'normal', fontStyle: 'normal' };
 const collapsedFolders = new Set();
 function getSelectedEx() { return exercises.find(e => e.id === editorSelectedId) || null; }
 
@@ -512,7 +512,6 @@ function buildSimCharGrid() {
   if (!section || !grid) return;
 
   section.style.display = text.length > 0 ? '' : 'none';
-
   grid.innerHTML = '';
   Array.from(text).forEach((char, i) => {
     const cs = simCharStyles[i];
@@ -520,14 +519,13 @@ function buildSimCharGrid() {
     const isStyled = cs && Object.keys(cs).length > 0;
     const cell = document.createElement('div');
     cell.className = 'char-cell' + (isSel ? ' char-selected' : '') + (isStyled ? ' char-styled' : '');
-    cell.style.color      = (cs && cs.color)      ? cs.color              : simItemLevel.color;
-    cell.style.fontSize   = (cs && cs.fontSize)   ? cs.fontSize + 'px'    : simItemLevel.fontSize + 'px';
-    cell.style.fontFamily = (cs && cs.fontFamily) ? cs.fontFamily          : simItemLevel.fontFamily;
-    cell.textContent = char === ' ' ? ' ' : char;
-    const toggle = () => {
-      if (simCharSel.has(i)) simCharSel.delete(i); else simCharSel.add(i);
-      buildSimCharGrid();
-    };
+    cell.style.color      = (cs && cs.color)      ? cs.color           : simItemLevel.color;
+    cell.style.fontSize   = (cs && cs.fontSize)   ? cs.fontSize + 'px' : simItemLevel.fontSize + 'px';
+    cell.style.fontFamily = (cs && cs.fontFamily) ? cs.fontFamily       : simItemLevel.fontFamily;
+    cell.style.fontWeight = (cs && cs.fontWeight) ? cs.fontWeight       : simItemLevel.fontWeight;
+    cell.style.fontStyle  = (cs && cs.fontStyle)  ? cs.fontStyle        : simItemLevel.fontStyle;
+    cell.textContent = char === ' ' ? '\xa0' : char;
+    const toggle = () => { if (simCharSel.has(i)) simCharSel.delete(i); else simCharSel.add(i); buildSimCharGrid(); };
     cell.addEventListener('mousedown', e => { e.preventDefault(); toggle(); });
     cell.addEventListener('touchstart', e => { e.preventDefault(); toggle(); }, { passive: false });
     grid.appendChild(cell);
@@ -542,11 +540,17 @@ function updateControlsFromSelection() {
   pickOption('sim-size',      String(cs.fontSize      || simItemLevel.fontSize));
   pickOption('sim-font',      cs.fontFamily            || simItemLevel.fontFamily);
   pickOption('sim-transform', cs.textTransform         || simItemLevel.textTransform);
+  const fw = cs.fontWeight || simItemLevel.fontWeight;
+  const fi = cs.fontStyle  || simItemLevel.fontStyle;
+  const boldBtn   = document.getElementById('sim-bold');
+  const italicBtn = document.getElementById('sim-italic');
+  if (boldBtn)   boldBtn.classList.toggle('btn-char-toggle-active', fw === 'bold');
+  if (italicBtn) italicBtn.classList.toggle('btn-char-toggle-active', fi === 'italic');
 }
 
 function applyCharStyle(prop, value) {
   const text = document.getElementById('sim-text').value;
-  const allSelected = text.length > 0 && simCharSel.size === text.length;
+  const allSelected = simCharSel.size === text.length;
   if (allSelected) {
     simItemLevel[prop] = value;
     simCharStyles = simCharStyles.map(cs => {
@@ -597,7 +601,9 @@ function fillItemModal(item) {
       color:         item.color         || '#1a1a1a',
       fontSize:      item.fontSize      || 32,
       fontFamily:    item.fontFamily    || 'Arial',
-      textTransform: item.textTransform || 'none'
+      textTransform: item.textTransform || 'none',
+      fontWeight:    item.fontWeight    || 'normal',
+      fontStyle:     item.fontStyle     || 'normal'
     };
     document.getElementById('sim-color').value = simItemLevel.color;
     pickOption('sim-size',      String(simItemLevel.fontSize));
@@ -633,6 +639,8 @@ function readItemModal() {
     fontSize:      simItemLevel.fontSize,
     fontFamily:    simItemLevel.fontFamily,
     textTransform: simItemLevel.textTransform,
+    fontWeight:    simItemLevel.fontWeight,
+    fontStyle:     simItemLevel.fontStyle,
     bgColor, imageUrl: null, audioUrl: null,
     charStyles: _hasCharStyles ? _cleanCharStyles : undefined };
 }
@@ -660,7 +668,6 @@ document.querySelectorAll('#sim-type-tabs .item-type-btn').forEach(btn => {
   if (el) { el.addEventListener('input', refreshSimPreview); el.addEventListener('change', refreshSimPreview); }
 });
 
-// Rebuild char grid when text content or base styles change
 document.getElementById('sim-text').addEventListener('input', e => {
   const newText = e.target.value;
   const oldLen = _simTextPrev.length;
@@ -669,26 +676,46 @@ document.getElementById('sim-text').addEventListener('input', e => {
   if (diff === 1) {
     const pos = e.target.selectionStart - 1;
     simCharStyles.splice(pos, 0, null);
+    const newSel = new Set();
+    simCharSel.forEach(i => newSel.add(i >= pos ? i + 1 : i));
+    newSel.add(pos);
+    simCharSel = newSel;
   } else if (diff === -1) {
     const pos = e.target.selectionStart;
     simCharStyles.splice(pos, 1);
+    const newSel = new Set();
+    simCharSel.forEach(i => { if (i !== pos) newSel.add(i > pos ? i - 1 : i); });
+    simCharSel = newSel;
   } else {
     syncSimCharStyles(newLen);
+    simCharSel = new Set(Array.from({length: newLen}, (_, i) => i));
   }
   _simTextPrev = newText;
   buildSimCharGrid();
 });
 document.getElementById('sim-text').addEventListener('change', e => {
   syncSimCharStyles(e.target.value.length);
+  simCharSel = new Set(Array.from({length: e.target.value.length}, (_, i) => i));
   _simTextPrev = e.target.value;
   buildSimCharGrid();
 });
-// Format controls now apply to selected characters
+
 document.getElementById('sim-color').addEventListener('input',  e => applyCharStyle('color', e.target.value));
 document.getElementById('sim-color').addEventListener('change', e => applyCharStyle('color', e.target.value));
 document.getElementById('sim-size').addEventListener('change',  e => applyCharStyle('fontSize', parseInt(e.target.value) || simItemLevel.fontSize));
 document.getElementById('sim-font').addEventListener('change',  e => applyCharStyle('fontFamily', e.target.value || simItemLevel.fontFamily));
 document.getElementById('sim-transform').addEventListener('change', e => applyCharStyle('textTransform', e.target.value || 'none'));
+
+document.getElementById('sim-bold').addEventListener('click', () => {
+  const first = simCharSel.size > 0 ? Math.min(...simCharSel) : -1;
+  const fw = first >= 0 ? ((simCharStyles[first] || {}).fontWeight || simItemLevel.fontWeight) : simItemLevel.fontWeight;
+  applyCharStyle('fontWeight', fw === 'bold' ? 'normal' : 'bold');
+});
+document.getElementById('sim-italic').addEventListener('click', () => {
+  const first = simCharSel.size > 0 ? Math.min(...simCharSel) : -1;
+  const fi = first >= 0 ? ((simCharStyles[first] || {}).fontStyle || simItemLevel.fontStyle) : simItemLevel.fontStyle;
+  applyCharStyle('fontStyle', fi === 'italic' ? 'normal' : 'italic');
+});
 
 document.getElementById('sim-char-select-all').addEventListener('click', () => {
   const text = document.getElementById('sim-text').value;

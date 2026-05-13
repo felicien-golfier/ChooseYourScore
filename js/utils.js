@@ -96,6 +96,8 @@ function applyItemStyle(el, item) {
   el.style.fontSize      = (item.fontSize || 32) + 'px';
   el.style.fontFamily    = item.fontFamily    || 'Arial';
   el.style.textTransform = item.textTransform || 'none';
+  el.style.fontWeight    = item.fontWeight    || 'normal';
+  el.style.fontStyle     = item.fontStyle     || 'normal';
   if (item.imageUrl) {
     el.style.backgroundImage    = 'url(' + item.imageUrl + ')';
     el.style.backgroundSize     = 'cover';
@@ -113,6 +115,8 @@ function applyItemStyle(el, item) {
         if (cs && cs.fontSize)      st += 'font-size:' + cs.fontSize + 'px;';
         if (cs && cs.fontFamily)    st += 'font-family:' + cs.fontFamily + ';';
         if (cs && cs.textTransform) st += 'text-transform:' + cs.textTransform + ';';
+        if (cs && cs.fontWeight)    st += 'font-weight:' + cs.fontWeight + ';';
+        if (cs && cs.fontStyle)     st += 'font-style:' + cs.fontStyle + ';';
         return '<span' + (st ? ' style="' + st + '"' : '') + '>' + escapeHtml(char) + '</span>';
       }).join('') + '</span>';
     } else {

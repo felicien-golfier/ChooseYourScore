@@ -716,6 +716,30 @@
   letter-spacing: .06em;
 }
 
+/* ── EXERCISE PICKER (setup view) ────────────────────────────────────────── */
+.exercise-picker {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  max-height: 240px;
+  overflow-y: auto;
+  background: var(--surface);
+  padding: 4px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.exercise-picker:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-a12);
+}
+
+.exercise-picker .folder-header {
+  font-size: 0.82rem;
+}
+
+.exercise-picker .exercise-item {
+  font-size: 0.92rem;
+}
+
 .btn-dup {
   padding: 7px 13px;
   border: 1px solid var(--border);

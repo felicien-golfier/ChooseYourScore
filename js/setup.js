@@ -1,9 +1,10 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // SETUP VIEW
 // ═══════════════════════════════════════════════════════════════════════════════
+let setupSelectedExId = null;
+const setupCollapsedFolders = new Set();
+
 function initSetup() {
-  const select = document.getElementById('exercise-select');
-  select.innerHTML = '';
   if (exercises.length === 0) {
     document.getElementById('no-exercises-msg').style.display = 'block';
     document.getElementById('setup-form').style.display = 'none';
@@ -11,13 +12,65 @@ function initSetup() {
   }
   document.getElementById('no-exercises-msg').style.display = 'none';
   document.getElementById('setup-form').style.display = 'block';
-  exercises.forEach(ex => {
-    const opt = document.createElement('option');
-    opt.value = ex.id;
-    opt.textContent = ex.name + ' (' + (ex.pairs||[]).length + ' paires)';
-    select.appendChild(opt);
-  });
+  if (!setupSelectedExId || !exercises.find(ex => ex.id === setupSelectedExId)) {
+    setupSelectedExId = exercises[0].id;
+  }
+  renderExercisePicker();
   populateSetupPatientSelect();
+}
+
+function renderExercisePicker() {
+  const picker = document.getElementById('exercise-picker');
+  picker.innerHTML = '';
+  const byFolder = {};
+  exercises.forEach(ex => { const k = ex.folderId || '__none__'; (byFolder[k]||(byFolder[k]=[])).push(ex); });
+
+  folders.forEach(folder => {
+    const exList = byFolder[folder.id] || [];
+    const isCollapsed = setupCollapsedFolders.has(folder.id);
+    const header = document.createElement('div');
+    header.className = 'folder-header';
+    const toggle = document.createElement('span');
+    toggle.className = 'folder-toggle' + (isCollapsed ? ' collapsed' : '');
+    toggle.textContent = '▾';
+    const nameSpan = document.createElement('span');
+    nameSpan.className = 'folder-name';
+    nameSpan.textContent = folder.name;
+    const countSpan = document.createElement('span');
+    countSpan.className = 'pair-count';
+    countSpan.textContent = exList.length;
+    header.append(toggle, nameSpan, countSpan);
+    header.addEventListener('click', () => {
+      if (setupCollapsedFolders.has(folder.id)) setupCollapsedFolders.delete(folder.id);
+      else setupCollapsedFolders.add(folder.id);
+      renderExercisePicker();
+    });
+    picker.appendChild(header);
+    if (!isCollapsed) exList.forEach(ex => picker.appendChild(makePickerItem(ex, true)));
+  });
+
+  const uncategorized = byFolder['__none__'] || [];
+  if (folders.length > 0 && uncategorized.length > 0) {
+    const label = document.createElement('div');
+    label.className = 'no-folder-label';
+    label.textContent = 'Sans dossier';
+    picker.appendChild(label);
+  }
+  uncategorized.forEach(ex => picker.appendChild(makePickerItem(ex, folders.length > 0)));
+}
+
+function makePickerItem(ex, indented) {
+  const div = document.createElement('div');
+  div.className = 'exercise-item' + (ex.id === setupSelectedExId ? ' active' : '') + (indented ? ' in-folder' : '');
+  const nameSpan = document.createElement('span');
+  nameSpan.textContent = ex.name;
+  nameSpan.style.cssText = 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1';
+  const countSpan = document.createElement('span');
+  countSpan.className = 'pair-count';
+  countSpan.textContent = (ex.pairs||[]).length + ' paires';
+  div.append(nameSpan, countSpan);
+  div.addEventListener('click', () => { setupSelectedExId = ex.id; renderExercisePicker(); });
+  return div;
 }
 
 function populateSetupPatientSelect() {
@@ -41,7 +94,7 @@ document.getElementById('patient-select-setup').addEventListener('change', () =>
 });
 
 document.getElementById('btn-start').addEventListener('click', () => {
-  currentExercise = exercises.find(ex => ex.id === document.getElementById('exercise-select').value);
+  currentExercise = exercises.find(ex => ex.id === setupSelectedExId);
   if (!currentExercise) return;
 
   const patientSelectEl = document.getElementById('patient-select-setup');

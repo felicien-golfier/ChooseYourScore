@@ -2,7 +2,7 @@
 // SETUP VIEW
 // ═══════════════════════════════════════════════════════════════════════════════
 let setupSelectedExId = null;
-const setupCollapsedFolders = new Set();
+const setupOpenFolders = new Set();
 
 function initSetup() {
   if (exercises.length === 0) {
@@ -15,6 +15,9 @@ function initSetup() {
   if (!setupSelectedExId || !exercises.find(ex => ex.id === setupSelectedExId)) {
     setupSelectedExId = exercises[0].id;
   }
+  // Ouvre le dossier de l'exercice sélectionné par défaut
+  const selEx = exercises.find(ex => ex.id === setupSelectedExId);
+  if (selEx && selEx.folderId) setupOpenFolders.add(selEx.folderId);
   renderExercisePicker();
   populateSetupPatientSelect();
 }
@@ -31,11 +34,11 @@ function renderExercisePicker() {
 
   folders.forEach(folder => {
     const exList = byFolder[folder.id] || [];
-    const isCollapsed = setupCollapsedFolders.has(folder.id);
+    const isOpen = setupOpenFolders.has(folder.id);
     const header = document.createElement('div');
     header.className = 'folder-header';
     const toggle = document.createElement('span');
-    toggle.className = 'folder-toggle' + (isCollapsed ? ' collapsed' : '');
+    toggle.className = 'folder-toggle' + (isOpen ? '' : ' collapsed');
     toggle.textContent = '▾';
     const nameSpan = document.createElement('span');
     nameSpan.className = 'folder-name';
@@ -45,12 +48,12 @@ function renderExercisePicker() {
     countSpan.textContent = exList.length;
     header.append(toggle, nameSpan, countSpan);
     header.addEventListener('click', () => {
-      if (setupCollapsedFolders.has(folder.id)) setupCollapsedFolders.delete(folder.id);
-      else setupCollapsedFolders.add(folder.id);
+      if (setupOpenFolders.has(folder.id)) setupOpenFolders.delete(folder.id);
+      else setupOpenFolders.add(folder.id);
       renderExercisePicker();
     });
     picker.appendChild(header);
-    if (!isCollapsed) exList.forEach(ex => picker.appendChild(makePickerItem(ex, true)));
+    if (isOpen) exList.forEach(ex => picker.appendChild(makePickerItem(ex, true)));
   });
 
   const uncategorized = byFolder['__none__'] || [];

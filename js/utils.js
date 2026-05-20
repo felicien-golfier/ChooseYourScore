@@ -49,8 +49,11 @@ function getAudiosDuration(dataUrls) {
   return Promise.all(dataUrls.map(url => new Promise(resolve => {
     const blobUrl = _dataUrlToBlob(url);
     const a = document.createElement('audio');
-    a.addEventListener('loadedmetadata', () => { URL.revokeObjectURL(blobUrl); resolve((a.duration || 0) * 1000); });
-    a.addEventListener('error', () => { URL.revokeObjectURL(blobUrl); resolve(0); });
+    let done = false;
+    const finish = ms => { if (done) return; done = true; URL.revokeObjectURL(blobUrl); resolve(ms); };
+    const t = setTimeout(() => finish(0), 3000);
+    a.addEventListener('loadedmetadata', () => { clearTimeout(t); finish((a.duration || 0) * 1000); });
+    a.addEventListener('error',          () => { clearTimeout(t); finish(0); });
     a.preload = 'metadata';
     a.src = blobUrl;
   }))).then(durations => durations.reduce((s, d) => s + d, 0));

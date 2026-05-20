@@ -435,7 +435,7 @@ function finishExercise() {
   };
   sessions.push(newSession);
   currentSessionId = newSession.id;
-  saveSessions();
+  try { saveSessions(); } catch(e) {}
   document.getElementById('session-notes').value = '';
 
   document.getElementById('progress-fill').style.width = '100%';

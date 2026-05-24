@@ -324,71 +324,6 @@ document.getElementById('btn-duplicate-exercise').addEventListener('click', () =
   saveExercises(); renderSidebar(); renderExerciseEditor();
 });
 
-document.getElementById('btn-export-csv-pairs').addEventListener('click', () => {
-  const ex = getSelectedEx(); if (!ex) return;
-  const pairs = (ex.pairs || []).filter(p => p.type === 'sequence');
-  if (pairs.length === 0) { alert('Aucune paire à exporter.'); return; }
-  const itemText = item => {
-    if (!item || typeof item === 'string') return item || '';
-    if (item.type === 'arrow') return ARROW_CHARS[item.arrowDirection||'left'] || '';
-    return item.text || '';
-  };
-  const lines = pairs.map(p => {
-    const items = (p.items || []).map(itemText);
-    const q = (p.questions || [])[0];
-    // For 2-item choice pairs, append correct column for round-trip compat
-    if (items.length === 2 && q && q.type === 'choice') {
-      const correctIdx = (q.correctIndices || [0])[0];
-      items.push(correctIdx === 1 ? 'droite' : 'gauche');
-    }
-    return items.map(v => v.includes(',') ? '"' + v.replace(/"/g, '""') + '"' : v).join(',');
-  });
-  downloadBlob('\uFEFF' + lines.join('\n'), (ex.name||'paires').replace(/\s+/g,'-')+'-paires.csv', 'text/csv;charset=utf-8');
-});
-
-document.getElementById('btn-import-csv-pairs').addEventListener('click', () => {
-  const ex = getSelectedEx(); if (!ex) return;
-  document.getElementById('csv-pairs-input').click();
-});
-
-document.getElementById('csv-pairs-input').addEventListener('change', e => {
-  const ex = getSelectedEx();
-  const file = e.target.files[0]; if (!file || !ex) return;
-  const reader = new FileReader();
-  reader.onload = evt => {
-    const lines = evt.target.result.split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('#'));
-    let added = 0;
-    lines.forEach(line => {
-      // Simple CSV split (no quoted-field parser needed for basic text)
-      const parts = line.split(',').map(p => p.trim());
-      if (parts.every(p => !p)) return;
-      const last = parts[parts.length - 1].toLowerCase();
-      const isCorrectMarker = ['gauche','droite','left','right','g','d','l','r','0','1'].includes(last);
-      const itemTexts = isCorrectMarker ? parts.slice(0, -1) : parts;
-      if (itemTexts.every(t => !t)) return;
-      const makeItem = text => ({type:'text', text, color:'#1a1a1a', fontSize:32, fontFamily:'Arial', textTransform:'none', imageUrl:null, audioUrl:null});
-      const items = itemTexts.map(makeItem);
-      let questions;
-      if (isCorrectMarker && items.length === 2) {
-        const correctIdx = ['droite','right','d','r','1'].includes(last) ? 1 : 0;
-        questions = [{questionText:'', type:'choice',
-          choices: itemTexts, correctIndices:[correctIdx],
-          showOnRetry:true, allowRetry:true}];
-      } else {
-        questions = [{questionText:'', type:'choice',
-          choices: itemTexts, correctIndices:[0],
-          showOnRetry:true, allowRetry:true}];
-      }
-      ex.pairs.push({id:newId('pair'), type:'sequence', items,
-        displayDuration: isCorrectMarker && items.length === 2 ? 0 : 1000, questions});
-      added++;
-    });
-    saveExercises(); renderExerciseEditor();
-    alert(added + ' paire(s) importée(s).');
-  };
-  reader.readAsText(file); e.target.value = '';
-});
-
 document.getElementById('btn-delete-exercise').addEventListener('click', () => {
   const ex = getSelectedEx(); if (!ex) return;
   if (!confirm('Supprimer l\'exercice "' + ex.name + '" et toutes ses paires ?')) return;
@@ -1404,14 +1339,9 @@ document.getElementById('import-input').addEventListener('change', e => {
   reader.onload = evt => {
     try {
       const parsed = JSON.parse(evt.target.result);
-      let exList, folderList;
-      if (Array.isArray(parsed)) {
-        exList = parsed; folderList = [];
-      } else if (parsed && Array.isArray(parsed.exercises)) {
-        exList = parsed.exercises; folderList = parsed.folders || [];
-      } else {
-        throw new Error('Format invalide');
-      }
+      if (!parsed || !Array.isArray(parsed.exercises)) throw new Error('Format invalide');
+      const exList = parsed.exercises;
+      const folderList = parsed.folders || [];
       if (!confirm('Importer '+exList.length+' exercice(s)'+
         (folderList.length ? ' et '+folderList.length+' dossier(s)' : '')+
         ' et les ajouter aux existants ?')) return;

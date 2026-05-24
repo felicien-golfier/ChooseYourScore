@@ -149,6 +149,7 @@
     <div id="exercise-editor">
       <div class="editor-header">
         <input type="text" id="exercise-name" placeholder="Nom de l'exercice" maxlength="100">
+        <button type="button" class="btn-dup" id="btn-export-exercise">↓ JSON</button>
         <button type="button" class="btn-dup" id="btn-duplicate-exercise">Dupliquer</button>
         <button type="button" class="btn-danger" id="btn-delete-exercise">Supprimer</button>
       </div>
@@ -167,9 +168,6 @@
       </div>
       <div class="pairs-header">
         <span class="editor-section-label no-mb">Paires <span class="badge" id="pair-count-badge">0</span></span>
-        <button type="button" class="btn-dup" id="btn-export-csv-pairs">↓ CSV</button>
-        <button type="button" class="btn-dup" id="btn-import-csv-pairs">↑ CSV</button>
-        <input type="file" id="csv-pairs-input" accept=".csv,.txt">
       </div>
       <div class="pairs-list" id="pairs-list"></div>
       <button type="button" class="btn-add-pair" id="btn-add-pair">+ Ajouter une paire</button>

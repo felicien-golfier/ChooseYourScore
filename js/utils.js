@@ -26,19 +26,23 @@ function _dataUrlToBlob(dataUrl) {
   } catch(e) { return dataUrl; }
 }
 
-// Interrupt any current playback and play a single dataUrl; calls onDone when finished.
-function playAudioUrl(dataUrl, onDone) {
+// Stop any current playback immediately.
+function stopAudio() {
   _audioEl.pause();
   _audioQueue = [];
   if (_audioBlobUrl) { URL.revokeObjectURL(_audioBlobUrl); _audioBlobUrl = null; }
+}
+
+// Interrupt any current playback and play a single dataUrl; calls onDone when finished.
+function playAudioUrl(dataUrl, onDone) {
+  stopAudio();
   _audioQueue = [{ dataUrl, onDone }];
   _audioNext();
 }
 
 // Queue an array of dataUrls to play sequentially (interrupts current playback).
 function playAudioSequence(dataUrls) {
-  _audioEl.pause();
-  if (_audioBlobUrl) { URL.revokeObjectURL(_audioBlobUrl); _audioBlobUrl = null; }
+  stopAudio();
   _audioQueue = dataUrls.map(u => ({ dataUrl: u, onDone: null }));
   _audioNext();
 }

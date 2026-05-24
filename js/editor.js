@@ -235,7 +235,7 @@ function renderPairsList(ex) {
       soundBtn.textContent = '🔊';
       soundBtn.addEventListener('click', e => {
         e.stopPropagation();
-        if (soundBtn.classList.contains('playing')) { _audioEl.pause(); _audioQueue = []; soundBtn.classList.remove('playing'); soundBtn.textContent = '🔊'; return; }
+        if (soundBtn.classList.contains('playing')) { stopAudio(); soundBtn.classList.remove('playing'); soundBtn.textContent = '🔊'; return; }
         soundBtn.classList.add('playing'); soundBtn.textContent = '🔉';
         const remaining = [...audioUrls];
         function playNext() {

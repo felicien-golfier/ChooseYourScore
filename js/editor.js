@@ -264,6 +264,7 @@ function renderPairsList(ex) {
 
 function makePairBtn(icon, cls, title, handler) {
   const btn = document.createElement('button');
+  btn.type = 'button';
   btn.className = 'pair-action-btn'+(cls?' '+cls:''); btn.title = title; btn.textContent = icon;
   btn.addEventListener('click', handler); return btn;
 }
@@ -443,8 +444,8 @@ function pickOption(id, val) {
 }
 
 document.getElementById('btn-modal-save').addEventListener('click', () => {
-  const ex = getSelectedEx(); if (!ex) return;
-  const pair = ex.pairs.find(p => p.id === editingPairId); if (!pair) return;
+  const ex = getSelectedEx(); if (!ex) { closeModal(); return; }
+  const pair = ex.pairs.find(p => p.id === editingPairId); if (!pair) { closeModal(); return; }
   const seqData = readSequenceModal();
   pair.type                = 'sequence';
   pair.items               = seqData.items;
@@ -760,7 +761,7 @@ document.getElementById('sim-save').addEventListener('click', () => {
     closeSeqItemModal();
     refreshSequencePreview();
   } else {
-    if (editingItemIdx < 0) return;
+    if (editingItemIdx < 0) { closeSeqItemModal(); return; }
     seqItems[editingItemIdx] = item;
     closeSeqItemModal();
     refreshSequenceItemInputs();

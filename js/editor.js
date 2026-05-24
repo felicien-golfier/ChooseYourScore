@@ -6,6 +6,8 @@ let seqItems = [];
 let simModalImage = null;
 let simModalAudio = null;
 let editingItemIdx = -1;
+let _pairModalOpenedAt = 0;
+let _seqItemModalOpenedAt = 0;
 let pendingOverrideCallback = null;
 let simCharStyles = [];
 let simCharSel = new Set();
@@ -372,6 +374,7 @@ function openPairModal(pairId) {
   editingPairId = pairId;
   fillSequenceModal(pair);
   document.getElementById('pair-modal').style.display = 'flex';
+  _pairModalOpenedAt = Date.now();
 }
 
 function pickOption(id, val) {
@@ -589,6 +592,7 @@ function openSeqItemModal(idx) {
   editingItemIdx = idx;
   fillItemModal(seqItems[idx] || {type:'text',text:''});
   document.getElementById('seq-item-modal').style.display = 'flex';
+  _seqItemModalOpenedAt = Date.now();
 }
 
 function closeSeqItemModal() {
@@ -704,7 +708,7 @@ document.getElementById('sim-save').addEventListener('click', () => {
 });
 document.getElementById('sim-cancel').addEventListener('click', closeSeqItemModal);
 document.getElementById('seq-item-modal').addEventListener('click', e => {
-  if (e.target === document.getElementById('seq-item-modal')) closeSeqItemModal();
+  if (e.target === document.getElementById('seq-item-modal') && Date.now() - _seqItemModalOpenedAt > 350) closeSeqItemModal();
 });
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -1307,7 +1311,9 @@ document.getElementById('seq-add-question-btn').addEventListener('click', () => 
   updateSeqQuestionTitles(); refreshSequencePreview();
 });
 
-document.getElementById('pair-modal').addEventListener('click', e => { if (e.target===document.getElementById('pair-modal')) closeModal(); });
+document.getElementById('pair-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('pair-modal') && Date.now() - _pairModalOpenedAt > 350) closeModal();
+});
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
   if (document.getElementById('seq-item-modal').style.display === 'flex') closeSeqItemModal();

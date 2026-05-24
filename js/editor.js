@@ -1308,7 +1308,11 @@ document.getElementById('seq-add-question-btn').addEventListener('click', () => 
 });
 
 document.getElementById('pair-modal').addEventListener('click', e => { if (e.target===document.getElementById('pair-modal')) closeModal(); });
-document.addEventListener('keydown', e => { if (e.key==='Escape' && document.getElementById('pair-modal').style.display!=='none') closeModal(); });
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (document.getElementById('seq-item-modal').style.display === 'flex') closeSeqItemModal();
+  else if (document.getElementById('pair-modal').style.display === 'flex') closeModal();
+});
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // EXPORT / IMPORT

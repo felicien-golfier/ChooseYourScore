@@ -1378,8 +1378,22 @@ document.addEventListener('keydown', e => { if (e.key==='Escape' && document.get
 // ═══════════════════════════════════════════════════════════════════════════════
 // EXPORT / IMPORT
 // ═══════════════════════════════════════════════════════════════════════════════
+function exportExercisesJson(exList, folderList) {
+  const payload = { exercises: exList, folders: folderList || [] };
+  const date = new Date().toISOString().slice(0, 10);
+  const name = exList.length === 1
+    ? (exList[0].name || 'exercice').replace(/\s+/g, '-') + '-'
+    : 'exercices-';
+  downloadBlob(JSON.stringify(payload, null, 2), 'cys-' + name + date + '.json');
+}
+
 document.getElementById('btn-export').addEventListener('click', () => {
-  downloadBlob(JSON.stringify(exercises, null, 2), 'cys-exercices-'+new Date().toISOString().slice(0,10)+'.json');
+  exportExercisesJson(exercises, folders);
+});
+
+document.getElementById('btn-export-exercise').addEventListener('click', () => {
+  const ex = getSelectedEx(); if (!ex) return;
+  exportExercisesJson([ex], []);
 });
 
 document.getElementById('btn-import').addEventListener('click', () => document.getElementById('import-input').click());
@@ -1389,14 +1403,26 @@ document.getElementById('import-input').addEventListener('change', e => {
   const reader = new FileReader();
   reader.onload = evt => {
     try {
-      const imported = JSON.parse(evt.target.result);
-      if (!Array.isArray(imported)) throw new Error('Format invalide');
-      if (!confirm('Importer '+imported.length+' exercice(s) et les ajouter aux existants ?')) return;
-      const existing = new Set(exercises.map(ex=>ex.id));
-      let added = 0;
-      imported.forEach(ex => { if (!existing.has(ex.id)) { exercises.push(ex); added++; } });
-      saveExercises(); renderSidebar(); renderExerciseEditor();
-      alert(added+' exercice(s) importé(s).');
+      const parsed = JSON.parse(evt.target.result);
+      let exList, folderList;
+      if (Array.isArray(parsed)) {
+        exList = parsed; folderList = [];
+      } else if (parsed && Array.isArray(parsed.exercises)) {
+        exList = parsed.exercises; folderList = parsed.folders || [];
+      } else {
+        throw new Error('Format invalide');
+      }
+      if (!confirm('Importer '+exList.length+' exercice(s)'+
+        (folderList.length ? ' et '+folderList.length+' dossier(s)' : '')+
+        ' et les ajouter aux existants ?')) return;
+      const existingEx = new Set(exercises.map(ex => ex.id));
+      let addedEx = 0;
+      exList.forEach(ex => { if (!existingEx.has(ex.id)) { exercises.push(ex); addedEx++; } });
+      const existingFolders = new Set(folders.map(f => f.id));
+      let addedFolders = 0;
+      folderList.forEach(f => { if (!existingFolders.has(f.id)) { folders.push(f); addedFolders++; } });
+      saveExercises(); saveFolders(); renderSidebar(); renderExerciseEditor();
+      alert(addedEx+' exercice(s) importé(s)'+(addedFolders ? ' et '+addedFolders+' dossier(s).' : '.'));
     } catch(err) { alert('Fichier invalide : '+err.message); }
   };
   reader.readAsText(file); e.target.value='';

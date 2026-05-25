@@ -69,8 +69,11 @@ function startSequenceDisplay(pair, afterDisplayFn) {
       sndBtn.textContent = '🔊';
       sndBtn.addEventListener('click', e => {
         e.stopPropagation();
-        const isPlaying = sndBtn.classList.contains('playing');
-        if (isPlaying) { _audioEl.pause(); _audioQueue = []; sndBtn.classList.remove('playing'); sndBtn.textContent = '🔊'; return; }
+        if (sndBtn.classList.contains('playing') || !_audioEl.paused) {
+          stopAudio();
+          displayEl.querySelectorAll('.seq-item-sound-btn').forEach(b => { b.classList.remove('playing'); b.textContent = '🔊'; });
+          return;
+        }
         sndBtn.classList.add('playing'); sndBtn.textContent = '🔉';
         playAudioUrl(itemObj.audioUrl, () => { sndBtn.classList.remove('playing'); sndBtn.textContent = '🔊'; });
       });
@@ -474,6 +477,7 @@ function toggleFullscreen() {
 
 document.getElementById('btn-quit-exercise').addEventListener('click', () => {
   if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
+  stopAudio();
   if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   showView('setup');
 });

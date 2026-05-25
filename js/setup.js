@@ -128,7 +128,8 @@ document.getElementById('btn-start').addEventListener('click', () => {
     return;
   }
 
-  currentPairs = document.getElementById('shuffle-pairs').checked
+  currentShuffleEnabled = document.getElementById('shuffle-pairs').checked;
+  currentPairs = currentShuffleEnabled
     ? shuffleArray(currentExercise.pairs) : [...currentExercise.pairs];
 
   document.getElementById('instruction-text').textContent =

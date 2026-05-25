@@ -120,6 +120,56 @@
   color: var(--danger);
 }
 
+.btn-stop-exercise {
+  position: absolute;
+  top: 18px;
+  left: 58px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-3);
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.1s;
+}
+
+.btn-stop-exercise:hover {
+  background: var(--warn-bg);
+  border-color: var(--warn-border);
+  color: var(--warn-text);
+}
+
+.partial-note {
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-border);
+  color: var(--warn-text);
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  padding: 7px 14px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.partial-badge {
+  display: inline-block;
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-border);
+  color: var(--warn-text);
+  font-size: 0.68rem;
+  font-weight: 600;
+  border-radius: 4px;
+  padding: 1px 5px;
+  vertical-align: middle;
+  margin-left: 4px;
+  cursor: help;
+}
+
 /* ── FULLSCREEN BUTTON ───────────────────────────────────────────────────── */
 .btn-fullscreen {
   position: absolute;

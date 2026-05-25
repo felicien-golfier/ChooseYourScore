@@ -76,7 +76,8 @@
 <!-- ── Exercise view ───────────────────────────────────────────────────────── -->
 <div id="view-exercise" class="view centered">
   <div class="screen">
-    <button class="btn-quit-exercise" id="btn-quit-exercise" title="Quitter l'exercice">✕</button>
+    <button class="btn-quit-exercise" id="btn-quit-exercise" title="Quitter sans résultats">✕</button>
+    <button class="btn-stop-exercise" id="btn-stop-exercise" title="Arrêter et voir les résultats">⏹</button>
     <button class="btn-fullscreen" id="btn-fullscreen" title="Plein écran">⛶</button>
     <div class="progress-section">
       <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
@@ -114,6 +115,7 @@
       <label for="session-notes">Notes du clinicien</label>
       <textarea id="session-notes" placeholder="Observations, comportement, remarques…"></textarea>
     </div>
+    <div id="results-partial-note" class="partial-note" style="display:none"></div>
     <div class="btn-group">
       <button class="btn btn-primary"   id="btn-restart">Recommencer</button>
       <button class="btn btn-secondary" id="btn-see-progress">Voir la progression →</button>

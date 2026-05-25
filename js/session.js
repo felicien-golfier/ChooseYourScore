@@ -6,6 +6,7 @@ let pairIndex = 0, responses = [], exerciseStartTime = 0, pairStartTime = 0, isW
 let currentSessionId = null;
 let previousPairWasCorrect = null;
 let currentPairQuestions = [];
+let currentShuffleEnabled = false;
 
 document.getElementById('btn-ready').addEventListener('click', () => {
   pairIndex = 0; responses = []; previousPairWasCorrect = null;
@@ -407,13 +408,23 @@ document.addEventListener('keydown', e => {
 });
 
 // ── Fin de session ─────────────────────────────────────────────────────────
-function finishExercise() {
+function finishExercise(isPartial) {
+  if (isPartial && responses.length === 0 && pairIndex === 0) {
+    if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
+    stopAudio();
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    showView('setup');
+    return;
+  }
+
   const totalTimeMs = Date.now() - exerciseStartTime;
   let score = 0, totalReactionMs = 0, reactionCount = 0;
   let errorsLeft = 0, errorsRight = 0, hasDirectionQuestions = false;
 
-  const totalQuestions = currentPairs.reduce((sum, p) =>
+  const totalQuestionsInExercise = currentPairs.reduce((sum, p) =>
     sum + (p.questions || [{}]).length, 0);
+  const attemptedQuestions = responses.filter(r => !r.isRetry).length;
+  const effectiveTotalQuestions = isPartial ? (attemptedQuestions || 1) : totalQuestionsInExercise;
 
   responses.forEach(r => {
     if (r.isRetry) return;
@@ -433,7 +444,8 @@ function finishExercise() {
   const newSession = {
     id: newId('sess'), exerciseId: currentExercise.id, exerciseName: currentExercise.name,
     patientName: currentPatient, patientId: currentPatientId, date: new Date().toISOString(),
-    totalTimeMs, totalPairs: totalQuestions, score, responses, notes: '',
+    totalTimeMs, totalPairs: effectiveTotalQuestions, score, responses, notes: '',
+    ...(isPartial ? { partial: true, pairsAttempted: pairIndex, totalPairsInExercise: totalQuestionsInExercise } : {}),
     ...(hasDirectionQuestions ? { errorsLeft, errorsRight } : {}),
   };
   sessions.push(newSession);
@@ -441,9 +453,19 @@ function finishExercise() {
   try { saveSessions(); } catch(e) {}
   document.getElementById('session-notes').value = '';
 
-  document.getElementById('progress-fill').style.width = '100%';
+  const partialNote = document.getElementById('results-partial-note');
+  if (isPartial) {
+    partialNote.style.display = '';
+    partialNote.textContent = 'Résultats partiels — ' + pairIndex + ' paire' + (pairIndex > 1 ? 's' : '') + ' sur ' + currentPairs.length;
+  } else {
+    partialNote.style.display = 'none';
+  }
+
+  document.getElementById('progress-fill').style.width = isPartial
+    ? (pairIndex / currentPairs.length * 100) + '%'
+    : '100%';
   document.getElementById('results-meta').textContent  = 'Patient : ' + currentPatient + '  ·  ' + currentExercise.name;
-  document.getElementById('res-score').textContent = score + ' / ' + totalQuestions + ' (' + Math.round(score/totalQuestions*100) + '%)';
+  document.getElementById('res-score').textContent = score + ' / ' + effectiveTotalQuestions + ' (' + Math.round(score/effectiveTotalQuestions*100) + '%)';
   document.getElementById('res-time').textContent  = formatDuration(totalTimeMs);
   document.getElementById('card-avg-reaction').style.display = avgReactionMs !== null ? 'block' : 'none';
   if (avgReactionMs !== null) document.getElementById('res-avg-reaction').textContent = (avgReactionMs / 1000).toFixed(2) + ' s';
@@ -457,7 +479,12 @@ function finishExercise() {
   showView('session-result');
 }
 
-document.getElementById('btn-restart').addEventListener('click',      () => showView('setup'));
+document.getElementById('btn-restart').addEventListener('click', () => {
+  currentPairs = currentShuffleEnabled
+    ? shuffleArray([...currentExercise.pairs])
+    : [...currentExercise.pairs];
+  showView('instruction');
+});
 document.getElementById('btn-see-progress').addEventListener('click', () => showView('results'));
 
 document.getElementById('session-notes').addEventListener('input', () => {
@@ -480,6 +507,12 @@ document.getElementById('btn-quit-exercise').addEventListener('click', () => {
   stopAudio();
   if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   showView('setup');
+});
+
+document.getElementById('btn-stop-exercise').addEventListener('click', () => {
+  if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
+  stopAudio();
+  finishExercise(true);
 });
 
 document.getElementById('btn-fullscreen').addEventListener('click', toggleFullscreen);

@@ -124,7 +124,7 @@ function renderTable(filtered) {
       '<td>'+new Date(session.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+new Date(session.date).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})+'</td>'+
       '<td>'+escapeHtml(session.patientName)+'</td>'+
       '<td>'+escapeHtml(session.exerciseName)+'</td>'+
-      '<td><span class="'+scoreClass+'">'+session.score+'/'+session.totalPairs+'</span> <span class="score-pct">('+pct+'%)</span></td>'+
+      '<td><span class="'+scoreClass+'">'+session.score+'/'+session.totalPairs+'</span> <span class="score-pct">('+pct+'%)</span>'+(session.partial?' <span class="partial-badge" title="Résultats partiels — '+session.pairsAttempted+' paires sur '+session.totalPairsInExercise+'">partiel</span>':'')+'</td>'+
       '<td>'+formatDuration(session.totalTimeMs)+'</td>'+
       '<td>'+(session.errorsLeft != null ? session.errorsLeft : '–')+'</td>'+
       '<td>'+(session.errorsRight != null ? session.errorsRight : '–')+'</td>'+

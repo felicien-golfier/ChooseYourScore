@@ -17,6 +17,7 @@ document.getElementById('btn-ready').addEventListener('click', () => {
 
 let sequenceTimer = null;
 let currentQuestionIndex = 0;
+let _displayGen = 0;
 
 // ── Affichage des paires ───────────────────────────────────────────────────
 function renderPair() {
@@ -42,6 +43,7 @@ function renderPair() {
 }
 
 function startSequenceDisplay(pair, afterDisplayFn) {
+  const gen = ++_displayGen;
   const displayEl  = document.getElementById('sequence-display');
   const questionEl = document.getElementById('sequence-question');
   const choicesEl  = document.getElementById('sequence-choices');
@@ -107,6 +109,7 @@ function startSequenceDisplay(pair, afterDisplayFn) {
   displayEl.style.display = 'flex';
 
   getAudiosDuration(audioUrls).then(audioDurMs => {
+    if (gen !== _displayGen) return;
     const effectiveDur = Math.max(dur, audioDurMs);
 
     if (effectiveDur > 0) {
@@ -504,6 +507,7 @@ function toggleFullscreen() {
 
 document.getElementById('btn-quit-exercise').addEventListener('click', () => {
   if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
+  _displayGen++;
   stopAudio();
   if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   showView('setup');

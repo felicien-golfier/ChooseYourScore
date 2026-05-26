@@ -257,6 +257,20 @@
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
+.pair-num-badge {
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  color: var(--text-3);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  min-width: 22px;
+  text-align: center;
+  padding: 2px 5px;
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+
 .pair-row:hover {
   border-color: var(--accent-border);
   box-shadow: 0 1px 8px var(--accent-a06);

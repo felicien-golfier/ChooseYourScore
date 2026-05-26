@@ -182,6 +182,9 @@ function renderPairsList(ex) {
   (ex.pairs||[]).forEach((pair, i) => {
     const row = document.createElement('div');
     row.className = 'pair-row';
+    const numBadge = document.createElement('span');
+    numBadge.className = 'pair-num-badge';
+    numBadge.textContent = i + 1;
     const preview = document.createElement('div');
     preview.className = 'pair-preview';
 
@@ -259,7 +262,7 @@ function renderPairsList(ex) {
     downBtn.disabled = (i === ex.pairs.length - 1);
     const deleteBtn  = makePairBtn('✕','delete','Supprimer',  () => deletePair(pair.id));
     actions.append(editBtn, duplicateBtn, mvWrap, deleteBtn);
-    row.append(preview, actions);
+    row.append(numBadge, preview, actions);
     list.appendChild(row);
   });
 }
@@ -372,6 +375,8 @@ function openPairModal(pairId) {
   const ex = getSelectedEx(); if (!ex) return;
   const pair = ex.pairs.find(p => p.id === pairId); if (!pair) return;
   editingPairId = pairId;
+  const pairIndex = ex.pairs.findIndex(p => p.id === pairId);
+  document.querySelector('#pair-modal h3').textContent = 'Paire ' + (pairIndex + 1);
   fillSequenceModal(pair);
   document.getElementById('pair-modal').style.display = 'flex';
   _pairModalOpenedAt = Date.now();

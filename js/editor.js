@@ -1211,7 +1211,7 @@ function readSequenceModal() {
       const raw = (block.querySelector('.seq-q-write-answer')?.value || '').trim();
       base.writeAnswers = raw ? raw.split('|').map(s => s.trim()).filter(Boolean) : [];
       base.choices = base.writeAnswers;
-      base.correctIndices = [0];
+      base.correctIndices = base.writeAnswers.map((_, i) => i);
     } else if (type === 'click-item') {
       base.correctItemIndices = Array.from(block.querySelectorAll('.seq-item-toggle'))
         .filter(t => t.dataset.correct === '1').map(t => parseInt(t.dataset.itemIndex));

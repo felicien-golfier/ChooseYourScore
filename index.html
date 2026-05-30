@@ -83,6 +83,13 @@
       <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
       <div class="progress-label" id="progress-label"></div>
     </div>
+    <div id="seq-pause-screen" style="display:none">
+      <div class="seq-pause-next">Item suivant : <span id="seq-pause-label"></span></div>
+      <button class="btn btn-primary" id="seq-pause-continue">Continuer →</button>
+      <div class="seq-pause-countdown-wrap">
+        <div class="seq-pause-countdown-bar" id="seq-pause-countdown-bar"></div>
+      </div>
+    </div>
     <div class="sequence-container" id="sequence-container">
       <div class="sequence-timer-bar" id="sequence-timer-bar"><div class="sequence-timer-fill" id="sequence-timer-fill" style="width:100%"></div></div>
       <div class="sequence-display" id="sequence-display"></div>
@@ -167,6 +174,17 @@
         <label class="editor-section-label" for="exercise-default-duration">Durée d'affichage par défaut (secondes)</label>
         <input type="number" id="exercise-default-duration" min="0.1" step="0.1" placeholder="— non définie —">
         <small class="field-hint">Durée appliquée à toutes les paires sauf si une paire définit sa propre valeur.</small>
+      </div>
+      <div class="form-group">
+        <label class="checkbox-row">
+          <input type="checkbox" id="exercise-pause-between">
+          <span>Pause entre les items</span>
+        </label>
+        <div id="pause-duration-row" style="display:none;margin-top:10px">
+          <label class="editor-section-label" for="exercise-pause-duration">Durée du compte à rebours (secondes)</label>
+          <input type="number" id="exercise-pause-duration" min="1" max="30" step="1" value="5">
+          <small class="field-hint">L'exercice avance automatiquement après ce délai si l'utilisateur ne clique pas.</small>
+        </div>
       </div>
       <div class="pairs-header">
         <span class="editor-section-label no-mb">Paires <span class="badge" id="pair-count-badge">0</span></span>

@@ -171,6 +171,9 @@ function renderExerciseEditor() {
   document.getElementById('exercise-name').value        = ex.name;
   document.getElementById('exercise-instruction').value = ex.instruction || '';
   document.getElementById('exercise-default-duration').value = ex.defaultDisplayDuration != null ? (ex.defaultDisplayDuration / 1000) : '';
+  document.getElementById('exercise-pause-between').checked = !!ex.pauseBetweenPairs;
+  document.getElementById('exercise-pause-duration').value = ex.pauseDuration != null ? (ex.pauseDuration / 1000) : 5;
+  document.getElementById('pause-duration-row').style.display = ex.pauseBetweenPairs ? '' : 'none';
   document.getElementById('pair-count-badge').textContent = (ex.pairs||[]).length;
   renderFolderSelect();
   renderPairsList(ex);
@@ -315,6 +318,20 @@ document.getElementById('exercise-default-duration').addEventListener('input', (
   const ex = getSelectedEx(); if (!ex) return;
   const val = parseFloat(document.getElementById('exercise-default-duration').value);
   ex.defaultDisplayDuration = (!isNaN(val) && val > 0) ? Math.round(val * 1000) : null;
+  saveExercises();
+});
+
+document.getElementById('exercise-pause-between').addEventListener('change', function() {
+  const ex = getSelectedEx(); if (!ex) return;
+  ex.pauseBetweenPairs = this.checked;
+  document.getElementById('pause-duration-row').style.display = this.checked ? '' : 'none';
+  saveExercises();
+});
+
+document.getElementById('exercise-pause-duration').addEventListener('input', () => {
+  const ex = getSelectedEx(); if (!ex) return;
+  const val = parseFloat(document.getElementById('exercise-pause-duration').value);
+  ex.pauseDuration = (!isNaN(val) && val >= 1) ? Math.round(val * 1000) : 5000;
   saveExercises();
 });
 

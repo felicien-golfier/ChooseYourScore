@@ -658,3 +658,53 @@ body.is-fullscreen .dir-key-btn {
   font-family: var(--font);
   transition: all 0.15s;
 }
+
+/* ── PAUSE BETWEEN ITEMS ─────────────────────────────────────────────────── */
+#seq-pause-screen {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  width: 100%;
+  padding: 48px 0;
+}
+
+.seq-pause-next {
+  font-size: 0.82rem;
+  color: var(--text-3);
+  font-weight: 600;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+#seq-pause-continue {
+  font-size: 1.05rem;
+  padding: 16px 52px;
+}
+
+.seq-pause-countdown-wrap {
+  width: 100%;
+  max-width: 320px;
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.seq-pause-countdown-bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  width: 100%;
+}
+
+body.is-fullscreen #seq-pause-screen {
+  flex: 1;
+  justify-content: center;
+}
+
+body.is-fullscreen #seq-pause-continue {
+  font-size: 1.4rem;
+  padding: 22px 72px;
+}

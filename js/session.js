@@ -5,6 +5,7 @@ let currentExercise = null, currentPatient = '', currentPatientId = null, curren
 let pairIndex = 0, responses = [], exerciseStartTime = 0, pairStartTime = 0, isWaiting = false;
 let currentSessionId = null;
 let previousPairWasCorrect = null;
+let pauseTimer = null;
 let currentPairQuestions = [];
 let currentShuffleEnabled = false;
 
@@ -335,8 +336,38 @@ function advance(pair, questions, qIdx, isRetry) {
   } else {
     previousPairWasCorrect = responses.length > 0 ? responses[responses.length - 1].isCorrect : null;
     pairIndex++;
-    if (pairIndex >= currentPairs.length) finishExercise(); else renderPair();
+    if (pairIndex >= currentPairs.length) {
+      finishExercise();
+    } else if (currentExercise.pauseBetweenPairs) {
+      showPauseScreen();
+    } else {
+      renderPair();
+    }
   }
+}
+
+function showPauseScreen() {
+  if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
+  stopAudio();
+  const pauseDur = currentExercise.pauseDuration != null ? currentExercise.pauseDuration : 5000;
+  document.getElementById('sequence-container').style.display = 'none';
+  document.getElementById('keyboard-hint').textContent = '';
+  document.getElementById('seq-pause-label').textContent = (pairIndex + 1) + ' / ' + currentPairs.length;
+  const bar = document.getElementById('seq-pause-countdown-bar');
+  bar.style.transition = 'none';
+  bar.style.width = '100%';
+  bar.getBoundingClientRect();
+  bar.style.transition = 'width ' + pauseDur + 'ms linear';
+  bar.style.width = '0%';
+  document.getElementById('seq-pause-continue').onclick = resumeFromPause;
+  document.getElementById('seq-pause-screen').style.display = 'flex';
+  pauseTimer = setTimeout(resumeFromPause, pauseDur);
+}
+
+function resumeFromPause() {
+  if (pauseTimer) { clearTimeout(pauseTimer); pauseTimer = null; }
+  document.getElementById('seq-pause-screen').style.display = 'none';
+  renderPair();
 }
 
 function handleSequenceWrite(typed, correctAnswers, pair, questions, qIdx, isRetry) {
@@ -507,6 +538,8 @@ function toggleFullscreen() {
 
 document.getElementById('btn-quit-exercise').addEventListener('click', () => {
   if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
+  if (pauseTimer) { clearTimeout(pauseTimer); pauseTimer = null; }
+  document.getElementById('seq-pause-screen').style.display = 'none';
   _displayGen++;
   stopAudio();
   if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
@@ -515,6 +548,8 @@ document.getElementById('btn-quit-exercise').addEventListener('click', () => {
 
 document.getElementById('btn-stop-exercise').addEventListener('click', () => {
   if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
+  if (pauseTimer) { clearTimeout(pauseTimer); pauseTimer = null; }
+  document.getElementById('seq-pause-screen').style.display = 'none';
   stopAudio();
   finishExercise(true);
 });

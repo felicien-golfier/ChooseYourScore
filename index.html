@@ -6,7 +6,7 @@
   <title>ChooseYourScore</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Comic+Neue:wght@400;700&family=Oswald:wght@400;700&family=Playfair+Display:wght@400;700&family=Raleway:wght@400;700&family=Pacifico&family=Indie+Flower&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=Comic+Neue:wght@400;700&family=Oswald:wght@400;700&family=Playfair+Display:wght@400;700&family=Raleway:wght@400;700&family=Pacifico&family=Indie+Flower&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/base.css">
@@ -15,8 +15,10 @@
   <link rel="stylesheet" href="css/editor.css">
   <link rel="stylesheet" href="css/results.css">
   <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/playful.css">
 </head>
 <body>
+<canvas id="confetti-canvas"></canvas>
 <audio id="cys-audio-el" preload="none"></audio>
 
 <!-- ── Topbar ──────────────────────────────────────────────────────────────── -->
@@ -111,6 +113,13 @@
   <div class="screen">
     <h2>Résultats</h2>
     <p class="results-meta" id="results-meta"></p>
+    <div id="celebration">
+      <div class="cel-stars">
+        <span class="cel-star">⭐</span><span class="cel-star">⭐</span><span class="cel-star">⭐</span>
+      </div>
+      <div class="cel-title" id="cel-title">Bravo&nbsp;!</div>
+      <div class="cel-sub" id="cel-sub">Exercice terminé</div>
+    </div>
     <div class="results-grid">
       <div class="result-card"><div class="label">Score</div><div class="value good" id="res-score">–</div></div>
       <div class="result-card"><div class="label">Temps total</div><div class="value" id="res-time">–</div></div>
@@ -441,6 +450,7 @@
 </div>
 
 <script src="chart.umd.min.js"></script>
+<script src="js/celebration.js"></script>
 <script src="js/data.js"></script>
 <script src="js/utils.js"></script>
 <script src="js/ui.js"></script>

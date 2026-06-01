@@ -511,6 +511,7 @@ function finishExercise(isPartial) {
   }
   if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   showView('session-result');
+  if (typeof celebrateResult === 'function') celebrateResult(score, effectiveTotalQuestions);
 }
 
 document.getElementById('btn-restart').addEventListener('click', () => {

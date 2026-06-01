@@ -1,0 +1,220 @@
+/* ════════════════════════════════════════════════════════════════════════
+   PLAYFUL LAYER — warmth, character & reward (kid-friendly, still clinical)
+   Loaded last so it layers over base/session/results/editor.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* Rounded display font on the friendly, kid-visible moments */
+h1, h2,
+#topbar .logo,
+.instruction-box,
+.btn-primary,
+.sequence-choice-btn,
+.dir-key-btn,
+#celebration .cel-title,
+#celebration .cel-sub {
+  font-family: var(--font-display);
+  letter-spacing: -0.005em;
+}
+h1 { font-weight: 800; }
+h2 { font-weight: 700; }
+
+/* ── Soft atmospheric blobs behind the kid-facing centered screens ────────── */
+.view.centered { position: relative; }
+.view.centered::before,
+.view.centered::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(46px);
+  opacity: calc(0.5 + var(--fun) * 0.16);
+  pointer-events: none;
+  z-index: 0;
+}
+.view.centered::before {
+  width: 360px; height: 360px;
+  background: radial-gradient(circle at 30% 30%, var(--amber), transparent 70%);
+  top: -60px; left: -40px;
+}
+.view.centered::after {
+  width: 420px; height: 420px;
+  background: radial-gradient(circle at 70% 70%, var(--grape-bg), var(--teal) 120%);
+  bottom: -120px; right: -80px;
+  opacity: calc(0.32 + var(--fun) * 0.12);
+}
+.view.centered .screen { position: relative; z-index: 1; }
+
+/* ── Topbar: friendlier logo mark + playful nav ───────────────────────────── */
+#topbar { box-shadow: 0 1px 0 var(--border); }
+#topbar .logo { font-weight: 800; font-size: 1.02rem; }
+#topbar .logo-dot {
+  width: 22px; height: 22px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--coral), var(--amber));
+  box-shadow: 0 2px 6px oklch(66% 0.17 28 / 0.4);
+  position: relative;
+  transform: rotate(-6deg);
+}
+#topbar .logo-dot::after {
+  content: "";
+  position: absolute; inset: 0;
+  margin: auto;
+  width: 0; height: 0;
+  border-left: 7px solid white;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  transform: translateX(1px);
+}
+.nav-btn { border-radius: 999px; font-weight: 700; }
+.nav-btn.active { background: var(--accent); color: white; box-shadow: 0 3px 10px var(--accent-a28); }
+.nav-btn.active:hover { background: var(--accent-hover); color: white; }
+
+/* ── Screen cards: rounder + a hairline of warmth ─────────────────────────── */
+.screen { border-radius: 28px; }
+.subtitle { font-weight: 600; }
+
+/* ── Buttons: chunkier, bouncier ──────────────────────────────────────────── */
+.btn { border-radius: 999px; font-weight: 800; white-space: nowrap; }
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 5px 0 var(--accent-shadow), 0 8px 18px var(--accent-a28);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0 var(--accent-shadow), 0 12px 24px var(--accent-a28);
+}
+.btn-primary:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--accent-shadow), 0 4px 10px var(--accent-a28);
+}
+
+/* ── Instruction: the warm "here we go" moment ────────────────────────────── */
+.instruction-box {
+  background: linear-gradient(135deg, var(--amber-bg), var(--coral-bg));
+  border: 2px solid var(--amber);
+  border-radius: 26px;
+  font-weight: 600;
+  position: relative;
+  box-shadow: var(--shadow-sm);
+}
+#view-instruction.active .instruction-box {
+  animation: pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.instruction-box::before {
+  content: "👋";
+  position: absolute; top: -22px; left: 50%;
+  transform: translateX(-50%) rotate(-8deg);
+  font-size: 2.4rem;
+  filter: drop-shadow(0 4px 6px oklch(0% 0 0 / 0.12));
+  animation: wave 1.4s ease-in-out infinite;
+}
+
+/* ── Progress: chunky candy bar ───────────────────────────────────────────── */
+.progress-bar {
+  height: 12px; border-radius: 999px;
+  background: var(--surface-2);
+  box-shadow: inset 0 1px 3px oklch(0% 0 0 / 0.08);
+}
+.progress-fill {
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--teal), var(--sky), var(--grape));
+  box-shadow: 0 0 12px oklch(67% 0.14 238 / 0.5);
+}
+body.is-fullscreen .progress-bar { height: 14px; }
+.progress-label { font-weight: 700; color: var(--accent); }
+
+/* ── Sequence choice buttons: candy tiles ─────────────────────────────────── */
+.sequence-item-box { border-radius: 22px; border-width: 2.5px; }
+.sequence-choice-btn {
+  border-radius: 22px;
+  border-width: 3px;
+  box-shadow: 0 4px 0 var(--border);
+}
+@media (hover: hover) {
+  .sequence-choice-btn:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--accent-bg);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 0 var(--accent-border), 0 12px 24px var(--accent-a16);
+  }
+}
+.sequence-choice-btn:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--border);
+}
+.sequence-choice-btn.correct   { animation: bounce-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.sequence-choice-btn.incorrect { animation: shake 0.4s both; }
+.sequence-item-box.correct     { animation: bounce-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.sequence-item-box.incorrect   { animation: shake 0.4s both; }
+.dir-key-btn { border-radius: 20px; border-width: 3px; box-shadow: 0 4px 0 var(--border); }
+.dir-key-btn:active:not(:disabled) { transform: translateY(2px); box-shadow: 0 2px 0 var(--border); }
+
+/* ── Session result cards: color-coded & cheerful ─────────────────────────── */
+.result-card { border-radius: 20px; border-width: 2px; }
+.results-grid .result-card:nth-child(1) { background: var(--success-bg); border-color: var(--success-border); }
+.results-grid .result-card:nth-child(2) { background: var(--sky-bg); border-color: oklch(82% 0.10 238); }
+.results-grid .result-card:nth-child(3) { background: var(--grape-bg); border-color: oklch(82% 0.10 305); }
+.result-card .value { font-family: var(--font-display); }
+
+/* ── Celebration / reward moment (kid-facing) ─────────────────────────────── */
+#celebration { text-align: center; margin: 4px 0 28px; }
+#celebration .cel-stars {
+  display: flex; justify-content: center; gap: 8px; margin-bottom: 12px;
+  font-size: 2.6rem; line-height: 1;
+}
+#celebration .cel-star {
+  filter: grayscale(1) opacity(0.25);
+  transform: scale(0.8);
+}
+#celebration .cel-star.on {
+  filter: none;
+  transform: scale(1);
+  animation: star-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+#celebration .cel-star.on:nth-child(2) { animation-delay: 0.12s; }
+#celebration .cel-star.on:nth-child(3) { animation-delay: 0.24s; }
+#celebration .cel-title { font-size: 1.9rem; font-weight: 800; color: var(--text-1); margin-bottom: 2px; }
+#celebration .cel-sub { font-size: 1rem; font-weight: 600; color: var(--text-2); }
+
+/* confetti canvas overlays the whole viewport during the reward */
+#confetti-canvas {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 9999; display: none;
+}
+
+/* ── Results / admin: a gentle warm lift (kept calm & professional) ───────── */
+.btn-icon { border-radius: 10px; }
+.stat-card { border-radius: 18px; }
+.stat-card:nth-child(1) { background: var(--sky-bg); border-color: oklch(86% 0.06 238); }
+.stat-card:nth-child(2) { background: var(--success-bg); border-color: var(--success-border); }
+.stat-card:nth-child(3) { background: var(--amber-bg); border-color: oklch(88% 0.08 80); }
+.stat-card:nth-child(4) { background: var(--grape-bg); border-color: oklch(88% 0.06 305); }
+.stat-card:nth-child(5) { background: var(--coral-bg); border-color: oklch(88% 0.07 28); }
+.chart-card, .table-card, .filters, .r-empty-state { border-radius: 22px; }
+
+/* ── Keyframes ────────────────────────────────────────────────────────────── */
+@keyframes pop-in {
+  0%   { opacity: 0; transform: scale(0.92) translateY(10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes bounce-pop {
+  0% { transform: scale(1); } 40% { transform: scale(1.1); } 70% { transform: scale(0.97); } 100% { transform: scale(1); }
+}
+@keyframes shake {
+  0%,100% { transform: translateX(0); } 20% { transform: translateX(-7px); } 40% { transform: translateX(7px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); }
+}
+@keyframes star-pop {
+  0% { transform: scale(0) rotate(-30deg); } 60% { transform: scale(1.25) rotate(8deg); } 100% { transform: scale(1) rotate(0); }
+}
+@keyframes wave {
+  0%,100% { transform: translateX(-50%) rotate(-8deg); } 50% { transform: translateX(-50%) rotate(12deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .instruction-box::before,
+  #view-instruction.active .instruction-box,
+  .sequence-choice-btn.correct,
+  .sequence-choice-btn.incorrect,
+  .sequence-item-box.correct,
+  .sequence-item-box.incorrect,
+  #celebration .cel-star.on { animation: none !important; }
+}

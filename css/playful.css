@@ -218,3 +218,99 @@ body.is-fullscreen .progress-bar { height: 14px; }
   .sequence-item-box.incorrect,
   #celebration .cel-star.on { animation: none !important; }
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   RÉGLAGES — interrupteurs & règles de désactivation des effets
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* Bouton engrenage dans la barre du haut */
+.icon-btn-top {
+  margin-left: auto;
+  width: 36px; height: 36px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  border-radius: 999px;
+  font-size: 1.05rem;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.icon-btn-top:hover {
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
+  color: var(--accent);
+  transform: rotate(40deg);
+}
+
+/* Modale de réglages (réutilise .modal) */
+#settings-modal {
+  position: fixed; inset: 0;
+  background: var(--backdrop);
+  backdrop-filter: blur(3px);
+  display: none;
+  align-items: center; justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+}
+.settings-modal-box { max-width: 460px; width: 100%; }
+.settings-intro {
+  font-size: 0.9rem; color: var(--text-2); font-weight: 500;
+  margin: -10px 0 18px; line-height: 1.45;
+}
+
+.setting-row {
+  display: flex; align-items: center; gap: 16px;
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+  cursor: pointer;
+}
+.setting-row:last-child { border-bottom: 1px solid var(--border); }
+.setting-text { flex: 1; }
+.setting-label { font-weight: 700; color: var(--text-1); font-size: 0.97rem; }
+.setting-desc { font-size: 0.82rem; color: var(--text-3); margin-top: 2px; line-height: 1.4; }
+
+/* Interrupteur */
+.setting-switch { position: relative; flex: none; width: 50px; height: 30px; }
+.setting-switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.setting-knob {
+  position: absolute; inset: 0;
+  background: var(--surface-2);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  transition: background 0.18s, border-color 0.18s;
+  pointer-events: none;
+}
+.setting-knob::after {
+  content: ""; position: absolute;
+  top: 3px; left: 3px;
+  width: 21px; height: 21px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px oklch(0% 0 0 / 0.25);
+  transition: transform 0.18s;
+}
+.setting-switch input:checked + .setting-knob {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.setting-switch input:checked + .setting-knob::after { transform: translateX(20px); }
+.setting-switch input:focus-visible + .setting-knob { box-shadow: 0 0 0 3px var(--accent-a28); }
+
+/* ── Règles de désactivation pilotées par les réglages ────────────────────── */
+
+/* Décor coloré : halos en arrière-plan + emoji de la consigne */
+body.no-decor .view.centered::before,
+body.no-decor .view.centered::after,
+body.no-decor .instruction-box::before { display: none !important; }
+
+/* Animations de réponse : rebond / secousse / apparition de la consigne */
+body.no-answer-anim .instruction-box::before,
+body.no-answer-anim #view-instruction.active .instruction-box,
+body.no-answer-anim .sequence-choice-btn.correct,
+body.no-answer-anim .sequence-choice-btn.incorrect,
+body.no-answer-anim .sequence-item-box.correct,
+body.no-answer-anim .sequence-item-box.incorrect { animation: none !important; }
+
+/* Récompense de fin : masquée si désactivée (doublé par celebration.js) */
+body.no-celebration #celebration { display: none !important; }

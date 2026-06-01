@@ -16,18 +16,27 @@ function celebrateResult(score, total) {
   const pct = total > 0 ? score / total : 0;
   const stars = pct >= 0.85 ? 3 : pct >= 0.6 ? 2 : pct >= 0.3 ? 1 : 0;
 
-  const starEls = cel.querySelectorAll('.cel-star');
-  starEls.forEach(el => el.classList.remove('on'));
-  void cel.offsetWidth; // re-trigger entrance animation
-  starEls.forEach((el, i) => { if (i < stars) el.classList.add('on'); });
+  // Réglage : récompense de fin (étoiles + message) activable/désactivable
+  const showCelebration = typeof getSetting !== 'function' || getSetting('celebration');
+  if (!showCelebration) {
+    cel.style.display = 'none';
+  } else {
+    cel.style.display = '';
+    const starEls = cel.querySelectorAll('.cel-star');
+    starEls.forEach(el => el.classList.remove('on'));
+    void cel.offsetWidth; // re-trigger entrance animation
+    starEls.forEach((el, i) => { if (i < stars) el.classList.add('on'); });
 
-  const pool = CEL_MESSAGES[stars];
-  document.getElementById('cel-title').textContent = pool[Math.floor(Math.random() * pool.length)];
-  document.getElementById('cel-sub').textContent =
-    score + ' / ' + total + ' bonne' + (score > 1 ? 's' : '') + ' réponse' + (score > 1 ? 's' : '');
+    const pool = CEL_MESSAGES[stars];
+    document.getElementById('cel-title').textContent = pool[Math.floor(Math.random() * pool.length)];
+    document.getElementById('cel-sub').textContent =
+      score + ' / ' + total + ' bonne' + (score > 1 ? 's' : '') + ' réponse' + (score > 1 ? 's' : '');
+  }
 
+  // Réglage : confettis (indépendant de la récompense)
+  const allowConfetti = typeof getSetting !== 'function' || getSetting('confetti');
   const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!reduce && stars >= 2) fireConfetti(stars === 3 ? 160 : 90);
+  if (!reduce && allowConfetti && stars >= 2) fireConfetti(stars === 3 ? 160 : 90);
 }
 
 function fireConfetti(count) {

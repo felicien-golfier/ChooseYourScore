@@ -28,6 +28,7 @@
   <button class="nav-btn"        id="nav-editor"  >Éditeur</button>
   <button class="nav-btn"        id="nav-results" >Résultats</button>
   <button class="nav-btn"        id="nav-patients">Patients</button>
+  <button class="icon-btn-top" id="nav-settings" title="Réglages" aria-label="Réglages">⚙</button>
 </nav>
 
 <!-- ── Setup view ──────────────────────────────────────────────────────────── -->
@@ -449,7 +450,20 @@
   </div>
 </div>
 
+<!-- ── Settings modal ──────────────────────────────────────────────────────── -->
+<div id="settings-modal">
+  <div class="modal settings-modal-box">
+    <h3>Réglages</h3>
+    <p class="settings-intro">Activez ou désactivez les animations et récompenses présentées à l'enfant.</p>
+    <div id="settings-list"></div>
+    <div class="modal-actions">
+      <button type="button" class="btn-save" id="settings-close">Terminé</button>
+    </div>
+  </div>
+</div>
+
 <script src="chart.umd.min.js"></script>
+<script src="js/settings.js"></script>
 <script src="js/celebration.js"></script>
 <script src="js/data.js"></script>
 <script src="js/utils.js"></script>
@@ -460,6 +474,6 @@
 <script src="js/editor.js"></script>
 <script src="js/patients.js"></script>
 <script src="js/results.js"></script>
-<script>initSetup();</script>
+<script>initSetup(); initSettings();</script>
 </body>
 </html>

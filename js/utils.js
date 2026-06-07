@@ -165,6 +165,7 @@ function importSessionsJson(onDone) {
   input.addEventListener('change', e => {
     const file = e.target.files[0]; if (!file) return;
     const reader = new FileReader();
+    reader.onerror = () => alert('Impossible de lire le fichier.');
     reader.onload = evt => {
       try {
         const imported = JSON.parse(evt.target.result);
@@ -173,7 +174,7 @@ function importSessionsJson(onDone) {
         const existing = new Set(sessions.map(s => s.id));
         let added = 0;
         imported.forEach(s => { if (!existing.has(s.id)) { sessions.push(s); added++; } });
-        saveSessions();
+        try { saveSessions(); } catch(se) { sessions.splice(-added, added); return; }
         onDone(added);
       } catch(err) { alert('Fichier invalide : ' + err.message); }
     };

@@ -343,7 +343,8 @@ document.getElementById('btn-duplicate-exercise').addEventListener('click', () =
   copy.pairs.forEach(p => { p.id = newId('pair'); });
   exercises.push(copy);
   editorSelectedId = copy.id;
-  saveExercises(); renderSidebar(); renderExerciseEditor();
+  try { saveExercises(); } catch(e) { exercises.pop(); editorSelectedId = ex.id; return; }
+  renderSidebar(); renderExerciseEditor();
 });
 
 document.getElementById('btn-delete-exercise').addEventListener('click', () => {
@@ -369,7 +370,8 @@ function duplicatePair(pairId) {
   const copy = JSON.parse(JSON.stringify(ex.pairs[index]));
   copy.id = newId('pair');
   ex.pairs.splice(index + 1, 0, copy);
-  saveExercises(); renderExerciseEditor();
+  try { saveExercises(); } catch(e) { ex.pairs.splice(index + 1, 1); return; }
+  renderExerciseEditor();
 }
 
 function deletePair(pairId) {
@@ -1368,7 +1370,9 @@ document.getElementById('btn-import').addEventListener('click', () => document.g
 document.getElementById('import-input').addEventListener('change', e => {
   const file = e.target.files[0]; if (!file) return;
   const reader = new FileReader();
+  reader.onerror = () => { e.target.value = ''; alert('Impossible de lire le fichier.'); };
   reader.onload = evt => {
+    e.target.value = '';
     try {
       const parsed = JSON.parse(evt.target.result);
       if (!parsed || !Array.isArray(parsed.exercises)) throw new Error('Format invalide');
@@ -1383,9 +1387,16 @@ document.getElementById('import-input').addEventListener('change', e => {
       const existingFolders = new Set(folders.map(f => f.id));
       let addedFolders = 0;
       folderList.forEach(f => { if (!existingFolders.has(f.id)) { folders.push(f); addedFolders++; } });
-      saveExercises(); saveFolders(); renderSidebar(); renderExerciseEditor();
+      try {
+        saveExercises(); saveFolders();
+      } catch(se) {
+        exercises.splice(-addedEx, addedEx);
+        folderList.forEach(f => { folders = folders.filter(x => x.id !== f.id); });
+        return;
+      }
+      renderSidebar(); renderExerciseEditor();
       alert(addedEx+' exercice(s) importé(s)'+(addedFolders ? ' et '+addedFolders+' dossier(s).' : '.'));
     } catch(err) { alert('Fichier invalide : '+err.message); }
   };
-  reader.readAsText(file); e.target.value='';
+  reader.readAsText(file);
 });

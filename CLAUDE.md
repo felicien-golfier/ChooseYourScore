@@ -14,6 +14,17 @@ git rebase origin/main
 
 Ne jamais commencer à coder sans avoir d'abord aligné la branche sur le dernier état de main. Cela évite les conflits au moment du merge.
 
+### Toujours créer une PR et merger dans main quand la tâche est terminée
+
+Une fois les modifications commitées et poussées sur la branche de travail, créer une pull request et la merger dans main :
+
+```bash
+# Créer la PR via les outils GitHub MCP disponibles
+# Puis merger la PR dans main une fois créée
+```
+
+Ne jamais laisser une tâche terminée sans que le code soit mergé dans main.
+
 ## Principes de code
 
 ### Uniformité : deux choses qui font la même chose utilisent le même code

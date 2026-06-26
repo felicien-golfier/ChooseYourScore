@@ -708,3 +708,42 @@ body.is-fullscreen #seq-pause-continue {
   font-size: 1.4rem;
   padding: 22px 72px;
 }
+
+/* ── GO / NO-GO SESSION ──────────────────────────────────────────────────── */
+.gng-clickable {
+  cursor: pointer;
+  transition: box-shadow 0.1s;
+}
+.gng-clickable:hover {
+  box-shadow: 0 0 0 4px var(--accent-border);
+  border-radius: var(--radius);
+}
+
+@keyframes gng-flash-correct {
+  0%   { background-color: var(--success-bg); box-shadow: inset 0 0 0 4px var(--success); }
+  100% { background-color: transparent; box-shadow: none; }
+}
+@keyframes gng-flash-incorrect {
+  0%   { background-color: var(--danger-bg); box-shadow: inset 0 0 0 4px var(--danger); }
+  100% { background-color: transparent; box-shadow: none; }
+}
+.gng-feedback-correct   { animation: gng-flash-correct   0.35s ease-out forwards; border-radius: var(--radius); }
+.gng-feedback-incorrect { animation: gng-flash-incorrect 0.35s ease-out forwards; border-radius: var(--radius); }
+
+/* Go/No-Go result panel */
+.gonogo-metrics-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 12px;
+  margin-top: 4px;
+}
+.gonogo-metrics-grid {
+  grid-template-columns: 1fr 1fr;
+  margin-bottom: 24px;
+}
+.result-card .value.danger {
+  color: var(--danger);
+}

@@ -168,15 +168,33 @@ function renderExerciseEditor() {
   document.getElementById('editor-empty-state').style.display = ex ? 'none'  : 'block';
   document.getElementById('exercise-editor').style.display    = ex ? 'block' : 'none';
   if (!ex) return;
+
   document.getElementById('exercise-name').value        = ex.name;
   document.getElementById('exercise-instruction').value = ex.instruction || '';
-  document.getElementById('exercise-default-duration').value = ex.defaultDisplayDuration != null ? (ex.defaultDisplayDuration / 1000) : '';
-  document.getElementById('exercise-pause-between').checked = !!ex.pauseBetweenPairs;
-  document.getElementById('exercise-pause-duration').value = ex.pauseDuration != null ? (ex.pauseDuration / 1000) : 5;
-  document.getElementById('pause-duration-row').style.display = ex.pauseBetweenPairs ? '' : 'none';
-  document.getElementById('pair-count-badge').textContent = (ex.pairs||[]).length;
+  document.getElementById('exercise-type').value        = ex.type || 'sequence';
+
+  const isGoNoGo = (ex.type === 'gonogo');
+  document.getElementById('sequence-editor-section').style.display = isGoNoGo ? 'none' : '';
+  document.getElementById('gonogo-editor').style.display            = isGoNoGo ? ''     : 'none';
+
+  // Séquence-specific settings (hide in gonogo)
+  document.getElementById('exercise-default-duration').value       = ex.defaultDisplayDuration != null ? (ex.defaultDisplayDuration / 1000) : '';
+  document.getElementById('exercise-pause-between').checked        = !!ex.pauseBetweenPairs;
+  document.getElementById('exercise-pause-duration').value         = ex.pauseDuration != null ? (ex.pauseDuration / 1000) : 5;
+  document.getElementById('pause-duration-row').style.display      = ex.pauseBetweenPairs ? '' : 'none';
+
+  if (isGoNoGo) {
+    document.getElementById('gonogo-default-duration').value = ex.defaultTrialDuration != null ? (ex.defaultTrialDuration / 1000) : 1;
+    document.getElementById('gonogo-iti').value              = ex.iti != null ? (ex.iti / 1000) : 0.5;
+    document.getElementById('gonogo-show-feedback').checked  = ex.showFeedback !== false;
+    document.getElementById('gonogo-trial-count').textContent = (ex.trials || []).length;
+    renderGoNoGoTrialsList(ex);
+  } else {
+    document.getElementById('pair-count-badge').textContent = (ex.pairs || []).length;
+    renderFolderSelect();
+    renderPairsList(ex);
+  }
   renderFolderSelect();
-  renderPairsList(ex);
 }
 
 function renderPairsList(ex) {
@@ -293,6 +311,16 @@ document.getElementById('exercise-folder').addEventListener('change', () => {
   const ex = getSelectedEx(); if (!ex) return;
   ex.folderId = document.getElementById('exercise-folder').value || null;
   saveExercises(); renderSidebar();
+});
+
+document.getElementById('exercise-type').addEventListener('change', () => {
+  const ex = getSelectedEx(); if (!ex) return;
+  const newType = document.getElementById('exercise-type').value;
+  if (newType === ex.type) return;
+  if (newType === 'gonogo' && !ex.trials) ex.trials = [];
+  ex.type = newType;
+  saveExercises();
+  renderExerciseEditor();
 });
 
 document.getElementById('btn-new-exercise').addEventListener('click', () => {
@@ -1343,6 +1371,145 @@ document.addEventListener('keydown', e => {
   if (document.getElementById('seq-item-modal').style.display === 'flex') closeSeqItemModal();
   else if (document.getElementById('pair-modal').style.display === 'flex') closeModal();
 });
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// EDITOR – GO / NO-GO
+// ═══════════════════════════════════════════════════════════════════════════════
+
+document.getElementById('gonogo-default-duration').addEventListener('input', () => {
+  const ex = getSelectedEx(); if (!ex) return;
+  const val = parseFloat(document.getElementById('gonogo-default-duration').value);
+  ex.defaultTrialDuration = (!isNaN(val) && val > 0) ? Math.round(val * 1000) : 1000;
+  saveExercises();
+});
+
+document.getElementById('gonogo-iti').addEventListener('input', () => {
+  const ex = getSelectedEx(); if (!ex) return;
+  const val = parseFloat(document.getElementById('gonogo-iti').value);
+  ex.iti = (!isNaN(val) && val >= 0) ? Math.round(val * 1000) : 500;
+  saveExercises();
+});
+
+document.getElementById('gonogo-show-feedback').addEventListener('change', function() {
+  const ex = getSelectedEx(); if (!ex) return;
+  ex.showFeedback = this.checked;
+  saveExercises();
+});
+
+document.getElementById('btn-add-go-trial').addEventListener('click', () => {
+  addGoNoGoTrial(true);
+});
+
+document.getElementById('btn-add-nogo-trial').addEventListener('click', () => {
+  addGoNoGoTrial(false);
+});
+
+function addGoNoGoTrial(isGo) {
+  const ex = getSelectedEx(); if (!ex) return;
+  if (!ex.trials) ex.trials = [];
+  const trial = {
+    id: newId('trial'),
+    item: { type: 'text', text: isGo ? 'A' : 'B', color: '#1a1a1a', fontSize: 64, fontFamily: 'Arial', textTransform: 'none', fontWeight: 'bold', fontStyle: 'normal' },
+    isGo,
+    duration: null,
+  };
+  ex.trials.push(trial);
+  saveExercises();
+  renderExerciseEditor();
+  // Open item modal immediately for the new trial
+  openGoNoGoTrialItemModal(ex, trial.id);
+}
+
+function deleteGoNoGoTrial(trialId) {
+  const ex = getSelectedEx(); if (!ex) return;
+  if (!confirm('Supprimer cet essai ?')) return;
+  ex.trials = (ex.trials || []).filter(t => t.id !== trialId);
+  saveExercises(); renderExerciseEditor();
+}
+
+function moveGoNoGoTrial(trialId, dir) {
+  const ex = getSelectedEx(); if (!ex) return;
+  const arr = ex.trials || [];
+  const i = arr.findIndex(t => t.id === trialId), j = i + dir;
+  if (j < 0 || j >= arr.length) return;
+  [arr[i], arr[j]] = [arr[j], arr[i]];
+  saveExercises(); renderExerciseEditor();
+}
+
+function openGoNoGoTrialItemModal(ex, trialId) {
+  const trial = (ex.trials || []).find(t => t.id === trialId); if (!trial) return;
+  fillItemModal(trial.item || { type: 'text', text: '' });
+  pendingOverrideCallback = (newItem) => {
+    trial.item = newItem;
+    saveExercises(); renderExerciseEditor();
+  };
+  document.getElementById('seq-item-modal').style.display = 'flex';
+  _seqItemModalOpenedAt = Date.now();
+}
+
+function renderGoNoGoTrialsList(ex) {
+  const list = document.getElementById('gonogo-trials-list');
+  list.innerHTML = '';
+  const trials = ex.trials || [];
+  trials.forEach((trial, i) => {
+    const row = document.createElement('div');
+    row.className = 'pair-row';
+
+    const numBadge = document.createElement('span');
+    numBadge.className = 'pair-num-badge';
+    numBadge.textContent = i + 1;
+
+    const preview = document.createElement('div');
+    preview.className = 'pair-preview';
+
+    // Item chip
+    const chip = document.createElement('div');
+    chip.className = 'pair-item-preview';
+    chip.style.cssText = 'width:56px;height:38px;min-height:0;overflow:hidden;flex:none;display:flex;align-items:center;justify-content:center;white-space:nowrap';
+    const itemObj = trial.item || { type: 'text', text: '?' };
+    applyItemStyle(chip, itemObj);
+    if (itemObj.type !== 'arrow') chip.style.fontSize = Math.min(parseFloat(chip.style.fontSize) || 32, 24) + 'px';
+    preview.appendChild(chip);
+
+    // Go/No-Go badge
+    const badge = document.createElement('span');
+    badge.className = 'gonogo-trial-badge ' + (trial.isGo ? 'gonogo-badge-go' : 'gonogo-badge-nogo');
+    badge.textContent = trial.isGo ? 'GO' : 'NO-GO';
+    preview.appendChild(badge);
+
+    // Duration
+    const dur = trial.duration != null ? trial.duration : (ex.defaultTrialDuration != null ? ex.defaultTrialDuration : 1000);
+    const lbl = document.createElement('span');
+    lbl.style.cssText = 'font-size:0.76rem;color:var(--text-3);margin-left:6px;font-family:var(--font-mono)';
+    lbl.textContent = trial.duration != null ? (trial.duration / 1000) + ' s' : 'Défaut (' + (dur / 1000) + ' s)';
+    preview.appendChild(lbl);
+
+    const actions = document.createElement('div');
+    actions.className = 'pair-actions';
+
+    const editBtn = makePairBtn('✏', 'edit', 'Modifier l\'item', () => openGoNoGoTrialItemModal(ex, trial.id));
+
+    // Toggle Go/No-Go
+    const toggleBtn = makePairBtn(trial.isGo ? 'GO→NG' : 'NG→GO', '', 'Basculer Go/No-Go', () => {
+      trial.isGo = !trial.isGo;
+      saveExercises(); renderExerciseEditor();
+    });
+    toggleBtn.style.fontSize = '0.65rem';
+
+    const { wrap: mvWrap, up: upBtn, dn: downBtn } = makeReorderBtns(
+      () => moveGoNoGoTrial(trial.id, -1),
+      () => moveGoNoGoTrial(trial.id,  1)
+    );
+    upBtn.disabled   = (i === 0);
+    downBtn.disabled = (i === trials.length - 1);
+
+    const deleteBtn = makePairBtn('✕', 'delete', 'Supprimer', () => deleteGoNoGoTrial(trial.id));
+
+    actions.append(editBtn, toggleBtn, mvWrap, deleteBtn);
+    row.append(numBadge, preview, actions);
+    list.appendChild(row);
+  });
+}
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // EXPORT / IMPORT

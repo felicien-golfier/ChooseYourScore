@@ -74,7 +74,9 @@ function makePickerItem(ex, indented) {
   nameSpan.style.cssText = 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1';
   const countSpan = document.createElement('span');
   countSpan.className = 'pair-count';
-  countSpan.textContent = (ex.pairs||[]).length + ' paires';
+  countSpan.textContent = ex.type === 'gonogo'
+    ? (ex.trials||[]).length + ' essais'
+    : (ex.pairs||[]).length + ' paires';
   div.append(nameSpan, countSpan);
   div.addEventListener('click', () => { setupSelectedExId = ex.id; renderExercisePicker(); });
   return div;
@@ -123,14 +125,21 @@ document.getElementById('btn-start').addEventListener('click', () => {
   }
   patientSelectEl.style.borderColor = '';
 
-  if (!currentExercise.pairs || currentExercise.pairs.length === 0) {
-    alert("Cet exercice n'a pas de paires. Ajoutez des paires dans l'Éditeur.");
-    return;
+  if (currentExercise.type === 'gonogo') {
+    if (!currentExercise.trials || currentExercise.trials.length === 0) {
+      alert("Cet exercice Go/No-Go n'a pas d'essais. Ajoutez des essais dans l'Éditeur.");
+      return;
+    }
+    currentPairs = [];
+  } else {
+    if (!currentExercise.pairs || currentExercise.pairs.length === 0) {
+      alert("Cet exercice n'a pas de paires. Ajoutez des paires dans l'Éditeur.");
+      return;
+    }
+    currentShuffleEnabled = document.getElementById('shuffle-pairs').checked;
+    currentPairs = currentShuffleEnabled
+      ? shuffleArray(currentExercise.pairs) : [...currentExercise.pairs];
   }
-
-  currentShuffleEnabled = document.getElementById('shuffle-pairs').checked;
-  currentPairs = currentShuffleEnabled
-    ? shuffleArray(currentExercise.pairs) : [...currentExercise.pairs];
 
   document.getElementById('instruction-text').textContent =
     currentExercise.instruction || '(Aucune consigne définie)';

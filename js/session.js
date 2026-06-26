@@ -10,10 +10,14 @@ let currentPairQuestions = [];
 let currentShuffleEnabled = false;
 
 document.getElementById('btn-ready').addEventListener('click', () => {
-  pairIndex = 0; responses = []; previousPairWasCorrect = null;
-  exerciseStartTime = Date.now(); isWaiting = false;
+  exerciseStartTime = Date.now();
   showView('exercise');
-  renderPair();
+  if (currentExercise && currentExercise.type === 'gonogo') {
+    startGoNoGoSession();
+  } else {
+    pairIndex = 0; responses = []; previousPairWasCorrect = null; isWaiting = false;
+    renderPair();
+  }
 });
 
 let sequenceTimer = null;
@@ -509,15 +513,18 @@ function finishExercise(isPartial) {
     document.getElementById('res-errors-left').textContent = errorsLeft;
     document.getElementById('res-errors-right').textContent = errorsRight;
   }
+  document.getElementById('gonogo-result-panel').style.display = 'none';
   if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   showView('session-result');
   if (typeof celebrateResult === 'function') celebrateResult(score, effectiveTotalQuestions);
 }
 
 document.getElementById('btn-restart').addEventListener('click', () => {
-  currentPairs = currentShuffleEnabled
-    ? shuffleArray([...currentExercise.pairs])
-    : [...currentExercise.pairs];
+  if (currentExercise && currentExercise.type !== 'gonogo') {
+    currentPairs = currentShuffleEnabled
+      ? shuffleArray([...currentExercise.pairs])
+      : [...currentExercise.pairs];
+  }
   showView('instruction');
 });
 document.getElementById('btn-see-progress').addEventListener('click', () => showView('results'));
@@ -542,6 +549,7 @@ document.getElementById('btn-quit-exercise').addEventListener('click', () => {
   if (pauseTimer) { clearTimeout(pauseTimer); pauseTimer = null; }
   document.getElementById('seq-pause-screen').style.display = 'none';
   _displayGen++;
+  _gngCancelTimers();
   stopAudio();
   if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   showView('setup');
@@ -552,11 +560,206 @@ document.getElementById('btn-stop-exercise').addEventListener('click', () => {
   if (pauseTimer) { clearTimeout(pauseTimer); pauseTimer = null; }
   document.getElementById('seq-pause-screen').style.display = 'none';
   stopAudio();
-  finishExercise(true);
+  if (currentExercise && currentExercise.type === 'gonogo') {
+    _gngCancelTimers();
+    finishGoNoGo(true);
+  } else {
+    finishExercise(true);
+  }
 });
 
 document.getElementById('btn-fullscreen').addEventListener('click', toggleFullscreen);
 document.getElementById('btn-fullscreen-setup').addEventListener('click', toggleFullscreen);
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// GO / NO-GO SESSION
+// ═══════════════════════════════════════════════════════════════════════════════
+let _gng = { trials: [], index: 0, responses: [], timer: null, itiTimer: null, trialStart: 0, gen: 0 };
+
+function _gngCancelTimers() {
+  if (_gng.timer)    { clearTimeout(_gng.timer);    _gng.timer    = null; }
+  if (_gng.itiTimer) { clearTimeout(_gng.itiTimer); _gng.itiTimer = null; }
+  _gng.gen++;
+  const display = document.getElementById('sequence-display');
+  display.onclick = null;
+  display.classList.remove('gng-clickable', 'gng-feedback-correct', 'gng-feedback-incorrect');
+}
+
+function startGoNoGoSession() {
+  _gng.trials    = currentExercise.trials || [];
+  _gng.index     = 0;
+  _gng.responses = [];
+  _gng.gen       = 0;
+  document.getElementById('sequence-container').style.display = 'flex';
+  document.getElementById('keyboard-hint').textContent = 'Cliquez sur l\'item si c\'est un signal GO';
+  document.getElementById('sequence-question').style.display  = 'none';
+  document.getElementById('sequence-choices').style.display   = 'none';
+  document.getElementById('seq-show-again-btn').style.display = 'none';
+  document.getElementById('seq-write-zone').style.display     = 'none';
+  _gngRenderIti();
+}
+
+function _gngRenderIti() {
+  const trial = _gng.trials[_gng.index];
+  if (!trial) { finishGoNoGo(false); return; }
+
+  const iti = currentExercise.iti != null ? currentExercise.iti : 500;
+  const display  = document.getElementById('sequence-display');
+  const timerBar = document.getElementById('sequence-timer-bar');
+
+  _gngCancelTimers();
+  timerBar.style.display  = 'none';
+  display.style.display   = 'flex';
+  display.innerHTML       = '';
+  display.onclick         = null;
+  display.classList.remove('gng-clickable');
+
+  const fix = document.createElement('div');
+  fix.className   = 'sequence-text-display';
+  fix.textContent = '+';
+  fix.style.cssText = 'color:var(--border);font-size:56px;font-weight:300;user-select:none';
+  display.appendChild(fix);
+
+  document.getElementById('progress-fill').style.width  = (_gng.index / _gng.trials.length * 100) + '%';
+  document.getElementById('progress-label').textContent = (_gng.index + 1) + ' / ' + _gng.trials.length;
+
+  const gen = ++_gng.gen;
+  _gng.itiTimer = setTimeout(() => {
+    if (gen !== _gng.gen) return;
+    _gng.itiTimer = null;
+    _gngRenderTrial();
+  }, iti > 0 ? iti : 50);
+}
+
+function _gngRenderTrial() {
+  const trial = _gng.trials[_gng.index];
+  if (!trial) { finishGoNoGo(false); return; }
+
+  const dur = trial.duration != null ? trial.duration
+    : (currentExercise.defaultTrialDuration != null ? currentExercise.defaultTrialDuration : 1000);
+
+  const display   = document.getElementById('sequence-display');
+  const timerBar  = document.getElementById('sequence-timer-bar');
+  const timerFill = document.getElementById('sequence-timer-fill');
+
+  display.innerHTML = '';
+  display.style.display = 'flex';
+  const el = document.createElement('div');
+  el.className = 'sequence-text-display';
+  applyItemStyle(el, trial.item || { type: 'text', text: '?' });
+  display.appendChild(el);
+
+  timerBar.style.display    = '';
+  timerFill.style.transition = 'none';
+  timerFill.style.width      = '100%';
+  timerFill.getBoundingClientRect();
+  timerFill.style.transition = 'width ' + dur + 'ms linear';
+  timerFill.style.width      = '0%';
+
+  _gng.trialStart = Date.now();
+  const gen = ++_gng.gen;
+
+  display.classList.add('gng-clickable');
+  display.onclick = () => {
+    if (gen !== _gng.gen) return;
+    _gng.timer && clearTimeout(_gng.timer);
+    _gng.timer = null;
+    _gng.gen++;
+    display.onclick = null;
+    display.classList.remove('gng-clickable');
+
+    const rt       = Date.now() - _gng.trialStart;
+    const isCorrect = trial.isGo;
+    _gng.responses.push({ trialId: trial.id, type: 'gonogo', isGo: trial.isGo, reacted: true, isCorrect, reactionTimeMs: rt });
+    _gngShowFeedback(isCorrect, () => { _gng.index++; _gngRenderIti(); });
+  };
+
+  _gng.timer = setTimeout(() => {
+    if (gen !== _gng.gen) return;
+    _gng.gen++;
+    display.onclick = null;
+    display.classList.remove('gng-clickable');
+    _gng.timer = null;
+
+    const isCorrect = !trial.isGo;
+    _gng.responses.push({ trialId: trial.id, type: 'gonogo', isGo: trial.isGo, reacted: false, isCorrect, reactionTimeMs: null });
+    if (currentExercise.showFeedback !== false && !isCorrect) {
+      _gngShowFeedback(false, () => { _gng.index++; _gngRenderIti(); });
+    } else {
+      _gng.index++;
+      _gngRenderIti();
+    }
+  }, dur);
+}
+
+function _gngShowFeedback(isCorrect, onDone) {
+  if (currentExercise.showFeedback === false) { onDone(); return; }
+  const display = document.getElementById('sequence-display');
+  display.classList.add(isCorrect ? 'gng-feedback-correct' : 'gng-feedback-incorrect');
+  setTimeout(() => {
+    display.classList.remove('gng-feedback-correct', 'gng-feedback-incorrect');
+    onDone();
+  }, 350);
+}
+
+function finishGoNoGo(isPartial) {
+  _gngCancelTimers();
+
+  const resp    = _gng.responses;
+  const trials  = _gng.trials;
+  const total   = isPartial ? resp.length : trials.length;
+
+  const hits               = resp.filter(r =>  r.isGo &&  r.reacted).length;
+  const misses             = resp.filter(r =>  r.isGo && !r.reacted).length;
+  const falseAlarms        = resp.filter(r => !r.isGo &&  r.reacted).length;
+  const correctRejections  = resp.filter(r => !r.isGo && !r.reacted).length;
+  const rts                = resp.filter(r =>  r.isGo &&  r.reacted).map(r => r.reactionTimeMs);
+  const avgRt              = rts.length > 0 ? Math.round(rts.reduce((a, b) => a + b, 0) / rts.length) : null;
+  const totalCorrect       = hits + correctRejections;
+  const totalTimeMs        = Date.now() - exerciseStartTime;
+
+  const newSession = {
+    id: newId('sess'), exerciseId: currentExercise.id, exerciseName: currentExercise.name,
+    patientName: currentPatient, patientId: currentPatientId,
+    date: new Date().toISOString(), totalTimeMs,
+    totalPairs: total || 1, score: totalCorrect,
+    sessionType: 'gonogo',
+    gonogoMetrics: { hits, misses, falseAlarms, correctRejections, avgRt },
+    responses: resp, notes: '',
+    ...(isPartial ? { partial: true } : {}),
+  };
+  sessions.push(newSession);
+  currentSessionId = newSession.id;
+  try { saveSessions(); } catch(e) {}
+
+  document.getElementById('session-notes').value = '';
+  document.getElementById('results-partial-note').style.display = isPartial ? '' : 'none';
+  if (isPartial) document.getElementById('results-partial-note').textContent =
+    'Résultats partiels — ' + _gng.index + ' essai' + (_gng.index > 1 ? 's' : '') + ' sur ' + trials.length;
+
+  document.getElementById('progress-fill').style.width = isPartial
+    ? (_gng.index / Math.max(trials.length, 1) * 100) + '%' : '100%';
+  document.getElementById('results-meta').textContent = 'Patient : ' + currentPatient + '  ·  ' + currentExercise.name;
+
+  const pct = total > 0 ? Math.round(totalCorrect / total * 100) : 0;
+  document.getElementById('res-score').textContent = totalCorrect + ' / ' + total + ' (' + pct + '%)';
+  document.getElementById('res-time').textContent  = formatDuration(totalTimeMs);
+
+  document.getElementById('card-avg-reaction').style.display  = avgRt !== null ? 'block' : 'none';
+  if (avgRt !== null) document.getElementById('res-avg-reaction').textContent = (avgRt / 1000).toFixed(2) + ' s';
+  document.getElementById('card-errors-left').style.display  = 'none';
+  document.getElementById('card-errors-right').style.display = 'none';
+
+  document.getElementById('gonogo-result-panel').style.display     = 'block';
+  document.getElementById('gng-hits').textContent                  = hits;
+  document.getElementById('gng-misses').textContent                = misses;
+  document.getElementById('gng-false-alarms').textContent          = falseAlarms;
+  document.getElementById('gng-correct-rejections').textContent    = correctRejections;
+
+  if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+  showView('session-result');
+  if (typeof celebrateResult === 'function') celebrateResult(totalCorrect, total || 1);
+}
 
 document.addEventListener('fullscreenchange', () => {
   const isFullscreen = !!document.fullscreenElement;

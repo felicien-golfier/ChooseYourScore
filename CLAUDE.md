@@ -25,6 +25,54 @@ Une fois les modifications commitées et poussées sur la branche de travail, cr
 
 Ne jamais laisser une tâche terminée sans que le code soit mergé dans main.
 
+## Tests end-to-end obligatoires
+
+### Toujours vérifier visuellement dans un vrai navigateur avant de merger
+
+Chaque fonctionnalité doit être testée dans Chromium via Playwright avant la PR. Ce test simule un vrai utilisateur qui clique dans l'application — c'est la seule façon de confirmer que la feature fonctionne réellement, pas seulement que le code est syntaxiquement correct.
+
+**Procédure obligatoire :**
+
+1. Lancer un serveur web local :
+```bash
+python3 -m http.server 8080 &
+```
+
+2. Installer Playwright si nécessaire :
+```bash
+pip install playwright
+```
+
+3. Écrire un script Python qui :
+   - Ouvre `http://localhost:8080` dans Chromium headless
+   - Navigue jusqu'à la fonctionnalité modifiée
+   - Interagit avec elle (clics, saisies, attentes)
+   - Prend des screenshots aux moments clés
+   - Vérifie les états attendus (textes, classes CSS, visibilité des éléments)
+
+4. Lancer le script et vérifier les résultats :
+```bash
+python3 /tmp/verify_feature.py
+```
+
+5. Envoyer les screenshots à l'utilisateur comme preuve visuelle.
+
+**Chromium est disponible à `/opt/pw-browsers/chromium` — ne pas le réinstaller.**
+
+```python
+from playwright.sync_api import sync_playwright
+
+with sync_playwright() as p:
+    browser = p.chromium.launch(executable_path='/opt/pw-browsers/chromium', headless=True)
+    page = browser.new_page()
+    page.goto('http://localhost:8080/')
+    # ... interactions et assertions
+    page.screenshot(path='/tmp/feature.png')
+    browser.close()
+```
+
+Ne jamais considérer une tâche terminée sans avoir exécuté ce test et confirmé visuellement que la fonctionnalité marche de bout en bout.
+
 ## Principes de code
 
 ### Uniformité : deux choses qui font la même chose utilisent le même code

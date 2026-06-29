@@ -164,6 +164,7 @@
       <div class="import-export">
         <button type="button" id="btn-export">↓ Exporter</button>
         <button type="button" id="btn-import">↑ Importer</button>
+        <button type="button" id="btn-library">☁ Bibliothèque</button>
         <input type="file" id="import-input" accept=".json">
       </div>
     </div>
@@ -177,7 +178,7 @@
     <div id="exercise-editor">
       <div class="editor-header">
         <input type="text" id="exercise-name" placeholder="Nom de l'exercice" maxlength="100">
-        <button type="button" class="btn-dup" id="btn-export-exercise">↓ JSON</button>
+        <button type="button" class="btn-dup" id="btn-export-exercise">↓ Exporter</button>
         <button type="button" class="btn-dup" id="btn-duplicate-exercise">Dupliquer</button>
         <button type="button" class="btn-danger" id="btn-delete-exercise">Supprimer</button>
       </div>
@@ -321,8 +322,8 @@
     <div id="patient-detail">
       <div class="editor-header">
         <input type="text" id="patient-name-input" placeholder="Nom du patient" maxlength="100">
-        <button class="btn-dup" id="btn-export-patient-json">↓ JSON</button>
-        <button class="btn-dup" id="btn-import-patient-json">↑ JSON</button>
+        <button class="btn-dup" id="btn-export-patient-json">↓ Exporter</button>
+        <button class="btn-dup" id="btn-import-patient-json">↑ Importer</button>
         <button class="btn-dup" id="btn-export-patient-pdf">PDF</button>
         <button class="btn-danger" id="btn-delete-patient">Supprimer</button>
       </div>
@@ -509,6 +510,18 @@
   </div>
 </div>
 
+<!-- ── Library modal ───────────────────────────────────────────────────────── -->
+<div id="library-modal">
+  <div class="modal settings-modal-box">
+    <h3>☁ Bibliothèque</h3>
+    <p class="settings-intro">Exercices partagés en ligne. Cliquez sur un fichier pour l'ajouter à vos exercices locaux (modifiable et utilisable hors-ligne ensuite).</p>
+    <div id="library-list"></div>
+    <div class="modal-actions">
+      <button type="button" class="btn-save" id="library-close">Fermer</button>
+    </div>
+  </div>
+</div>
+
 <script src="chart.umd.min.js"></script>
 <script src="js/settings.js"></script>
 <script src="js/celebration.js"></script>
@@ -521,6 +534,6 @@
 <script src="js/editor.js"></script>
 <script src="js/patients.js"></script>
 <script src="js/results.js"></script>
-<script>initSetup(); initSettings();</script>
+<script>initData().then(() => { initSetup(); initSettings(); });</script>
 </body>
 </html>

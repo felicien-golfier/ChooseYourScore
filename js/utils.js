@@ -174,7 +174,7 @@ function importSessionsJson(onDone) {
         const existing = new Set(sessions.map(s => s.id));
         let added = 0;
         imported.forEach(s => { if (!existing.has(s.id)) { sessions.push(s); added++; } });
-        try { saveSessions(); } catch(se) { sessions.splice(-added, added); return; }
+        saveSessions();
         onDone(added);
       } catch(err) { alert('Fichier invalide : ' + err.message); }
     };

@@ -1,0 +1,56 @@
+{
+  "exercises": [
+    {
+      "id": "ex_lib_exemple_animaux",
+      "name": "Exemple — Les animaux",
+      "instruction": "Regarde bien, puis réponds à la question.",
+      "folderId": null,
+      "defaultDisplayDuration": 3000,
+      "pairs": [
+        {
+          "id": "pair_lib_animaux_1",
+          "type": "sequence",
+          "items": [
+            { "type": "text", "text": "CHAT", "color": "#1a1a1a", "fontSize": 32, "fontFamily": "Arial", "textTransform": "none", "imageUrl": null, "audioUrl": null }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Quel animal as-tu vu ?",
+              "type": "choice",
+              "choices": ["Un chat", "Un chien", "Un oiseau"],
+              "correctIndices": [0],
+              "showOnRetry": true,
+              "allowRetry": true,
+              "itemOverrides": []
+            }
+          ]
+        },
+        {
+          "id": "pair_lib_animaux_2",
+          "type": "sequence",
+          "items": [
+            { "type": "text", "text": "CHIEN", "color": "#1a1a1a", "fontSize": 32, "fontFamily": "Arial", "textTransform": "none", "imageUrl": null, "audioUrl": null }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Quel animal as-tu vu ?",
+              "type": "choice",
+              "choices": ["Un chat", "Un chien", "Un oiseau"],
+              "correctIndices": [1],
+              "showOnRetry": true,
+              "allowRetry": true,
+              "itemOverrides": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "folders": []
+}

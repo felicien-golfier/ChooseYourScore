@@ -243,8 +243,9 @@ body.is-fullscreen .progress-bar { height: 14px; }
   transform: rotate(40deg);
 }
 
-/* Modale de réglages (réutilise .modal) */
-#settings-modal {
+/* Modales de réglages et de bibliothèque (réutilisent .modal) */
+#settings-modal,
+#library-modal {
   position: fixed; inset: 0;
   background: var(--backdrop);
   backdrop-filter: blur(3px);
@@ -258,6 +259,18 @@ body.is-fullscreen .progress-bar { height: 14px; }
   font-size: 0.9rem; color: var(--text-2); font-weight: 500;
   margin: -10px 0 18px; line-height: 1.45;
 }
+
+.library-entry {
+  display: block; width: 100%; text-align: left;
+  padding: 14px 0;
+  border: none;
+  border-top: 1px solid var(--border);
+  font-weight: 700; color: var(--text-1); font-size: 0.97rem;
+  background: none; cursor: pointer;
+}
+.library-entry:last-child { border-bottom: 1px solid var(--border); }
+.library-entry:hover { color: var(--accent); }
+#library-list .library-status { font-size: 0.9rem; color: var(--text-3); padding: 10px 0; }
 
 .setting-row {
   display: flex; align-items: center; gap: 16px;

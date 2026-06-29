@@ -1,0 +1,171 @@
+{
+  "exercises": [
+    {
+      "id": "ex_1775406552491_snxk",
+      "name": "test",
+      "instruction": "sdrgfs",
+      "pairs": [
+        {
+          "id": "pair_1775420311805_nzib",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "dwad",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "skipDisplay": false,
+          "visibilityMode": "always_hide",
+          "replayOnError": false,
+          "useExerciseDefault": false,
+          "displayDuration": 1000,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "",
+                "[sq:uml]"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ]
+        }
+      ],
+      "folderId": "fold_1775423712922_8g5z",
+      "defaultDisplayDuration": 3000
+    },
+    {
+      "id": "ex_1775504168421_kqyg",
+      "name": "Arrows",
+      "instruction": "tatuvulesquenouilles ?!",
+      "pairs": [
+        {
+          "id": "pair_1775504205844_ncsb",
+          "type": "sequence",
+          "items": [
+            "w",
+            "e",
+            "r",
+            "t"
+          ],
+          "displayDuration": 1000,
+          "questionPosition": 3,
+          "questions": [
+            {
+              "questionText": "Quel est la mere de la terre ?",
+              "choices": [
+                "[sq:m][sq:um][sq:m]",
+                "[sq:m][sq:um][sq:ml]",
+                "[sq:m]",
+                "[sq:uml][sq:ml]"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "pair_1775507147026_o9pk",
+          "type": "sequence",
+          "items": [
+            "fasdf"
+          ],
+          "displayDuration": 4000,
+          "questionText": "g",
+          "choices": [
+            "g",
+            "h",
+            "j",
+            "k"
+          ]
+        }
+      ],
+      "folderId": "fold_1775423727649_be9j"
+    },
+    {
+      "id": "ex_1778504928051_lptv",
+      "name": "test",
+      "instruction": "",
+      "pairs": [],
+      "folderId": "fold_1775423712922_8g5z",
+      "defaultDisplayDuration": 3000
+    },
+    {
+      "id": "ex_1782719581111_05av",
+      "name": "BIBI test",
+      "instruction": "",
+      "pairs": [
+        {
+          "id": "pair_1782719611073_pu81",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "et55",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "",
+                ""
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": false
+        }
+      ],
+      "folderId": null,
+      "defaultDisplayDuration": 3000,
+      "trials": [],
+      "type": "sequence"
+    }
+  ],
+  "folders": [
+    {
+      "id": "fold_1775423712922_8g5z",
+      "name": "GROS COSTAUD"
+    },
+    {
+      "id": "fold_1775423727649_be9j",
+      "name": "Qui aime les efforts"
+    }
+  ]
+}

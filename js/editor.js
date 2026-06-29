@@ -1534,6 +1534,26 @@ document.getElementById('btn-export-exercise').addEventListener('click', () => {
 
 document.getElementById('btn-import').addEventListener('click', () => document.getElementById('import-input').click());
 
+// Fusionne un payload {exercises, folders} dans les données locales (import fichier
+// et import bibliothèque passent tous deux par ici).
+function importExercisePayload(parsed) {
+  if (!parsed || !Array.isArray(parsed.exercises)) throw new Error('Format invalide');
+  const exList = parsed.exercises;
+  const folderList = parsed.folders || [];
+  if (!confirm('Importer '+exList.length+' exercice(s)'+
+    (folderList.length ? ' et '+folderList.length+' dossier(s)' : '')+
+    ' et les ajouter aux existants ?')) return;
+  const existingEx = new Set(exercises.map(ex => ex.id));
+  let addedEx = 0;
+  exList.forEach(ex => { if (!existingEx.has(ex.id)) { exercises.push(ex); addedEx++; } });
+  const existingFolders = new Set(folders.map(f => f.id));
+  let addedFolders = 0;
+  folderList.forEach(f => { if (!existingFolders.has(f.id)) { folders.push(f); addedFolders++; } });
+  saveExercises(); saveFolders();
+  renderSidebar(); renderExerciseEditor();
+  alert(addedEx+' exercice(s) importé(s)'+(addedFolders ? ' et '+addedFolders+' dossier(s).' : '.'));
+}
+
 document.getElementById('import-input').addEventListener('change', e => {
   const file = e.target.files[0]; if (!file) return;
   const reader = new FileReader();
@@ -1541,29 +1561,57 @@ document.getElementById('import-input').addEventListener('change', e => {
   reader.onload = evt => {
     e.target.value = '';
     try {
-      const parsed = JSON.parse(evt.target.result);
-      if (!parsed || !Array.isArray(parsed.exercises)) throw new Error('Format invalide');
-      const exList = parsed.exercises;
-      const folderList = parsed.folders || [];
-      if (!confirm('Importer '+exList.length+' exercice(s)'+
-        (folderList.length ? ' et '+folderList.length+' dossier(s)' : '')+
-        ' et les ajouter aux existants ?')) return;
-      const existingEx = new Set(exercises.map(ex => ex.id));
-      let addedEx = 0;
-      exList.forEach(ex => { if (!existingEx.has(ex.id)) { exercises.push(ex); addedEx++; } });
-      const existingFolders = new Set(folders.map(f => f.id));
-      let addedFolders = 0;
-      folderList.forEach(f => { if (!existingFolders.has(f.id)) { folders.push(f); addedFolders++; } });
-      try {
-        saveExercises(); saveFolders();
-      } catch(se) {
-        exercises.splice(-addedEx, addedEx);
-        folderList.forEach(f => { folders = folders.filter(x => x.id !== f.id); });
-        return;
-      }
-      renderSidebar(); renderExerciseEditor();
-      alert(addedEx+' exercice(s) importé(s)'+(addedFolders ? ' et '+addedFolders+' dossier(s).' : '.'));
+      importExercisePayload(JSON.parse(evt.target.result));
     } catch(err) { alert('Fichier invalide : '+err.message); }
   };
   reader.readAsText(file);
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// BIBLIOTHÈQUE EN LIGNE — fichiers JSON partagés dans library/ du dépôt
+// ═══════════════════════════════════════════════════════════════════════════════
+function closeLibraryModal() { document.getElementById('library-modal').style.display = 'none'; }
+
+document.getElementById('btn-library').addEventListener('click', async () => {
+  const modal = document.getElementById('library-modal');
+  const list = document.getElementById('library-list');
+  list.innerHTML = '<div class="library-status">Chargement…</div>';
+  modal.style.display = 'flex';
+  try {
+    const res = await fetch('library/index.json', {cache: 'no-store'});
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    const manifest = await res.json();
+    list.innerHTML = '';
+    if (!Array.isArray(manifest.files) || !manifest.files.length) {
+      list.innerHTML = '<div class="library-status">Aucun exercice disponible.</div>';
+      return;
+    }
+    manifest.files.forEach(entry => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'library-entry';
+      btn.textContent = entry.name;
+      btn.addEventListener('click', async () => {
+        try {
+          const r = await fetch('library/'+entry.file, {cache: 'no-store'});
+          if (!r.ok) throw new Error('HTTP '+r.status);
+          const parsed = await r.json();
+          closeLibraryModal();
+          importExercisePayload(parsed);
+        } catch(err) { alert('Téléchargement impossible : '+err.message); }
+      });
+      list.appendChild(btn);
+    });
+  } catch(err) {
+    closeLibraryModal();
+    alert('Bibliothèque inaccessible — connexion requise pour parcourir la bibliothèque.');
+  }
+});
+
+document.getElementById('library-close').addEventListener('click', closeLibraryModal);
+document.getElementById('library-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('library-modal')) closeLibraryModal();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.getElementById('library-modal').style.display === 'flex') closeLibraryModal();
 });

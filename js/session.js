@@ -271,7 +271,7 @@ function handleSequenceResponse(chosen, correctAnswers, foundAnswers, pair, ques
   const clickedBtn = Array.from(choicesEl.querySelectorAll('.sequence-choice-btn'))
     .find(b => b.dataset.value === chosen);
   const isCorrect = correctAnswers.includes(chosen);
-  responses.push({ pairId: pair.id, type: 'sequence', items: pair.items, questionIndex: qIdx, chosen, isCorrect, correctAnswer: correctAnswers[0] || '', correctAnswers, isRetry: !!isRetry, timeMs: Date.now() - pairStartTime });
+  responses.push({ pairId: pair.id, type: 'sequence', questionIndex: qIdx, chosen, isCorrect, correctAnswer: correctAnswers[0] || '', correctAnswers, isRetry: !!isRetry, timeMs: Date.now() - pairStartTime });
 
   if (isCorrect) {
     foundAnswers.add(chosen);
@@ -301,7 +301,7 @@ function handleClickItemResponse(chosenIdx, correctItemIndices, foundItemIndices
   const allItemEls = Array.from(displayEl.querySelectorAll('.sequence-item-box, .sequence-text-display'));
   const clickedEl  = allItemEls.find(el => el.dataset.itemIndex === String(chosenIdx));
   const isCorrect  = correctItemIndices.includes(chosenIdx);
-  responses.push({ pairId: pair.id, type: 'sequence', items: pair.items, questionIndex: qIdx, chosen: String(chosenIdx), isCorrect, correctAnswer: String(correctItemIndices[0] ?? 0), correctAnswers: correctItemIndices.map(String), isRetry: !!isRetry, timeMs: Date.now() - pairStartTime });
+  responses.push({ pairId: pair.id, type: 'sequence', questionIndex: qIdx, chosen: String(chosenIdx), isCorrect, correctAnswer: String(correctItemIndices[0] ?? 0), correctAnswers: correctItemIndices.map(String), isRetry: !!isRetry, timeMs: Date.now() - pairStartTime });
 
   if (isCorrect) {
     foundItemIndices.add(chosenIdx);

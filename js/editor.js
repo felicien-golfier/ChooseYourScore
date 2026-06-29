@@ -1586,21 +1586,41 @@ document.getElementById('btn-library').addEventListener('click', async () => {
       list.innerHTML = '<div class="library-status">Aucun exercice disponible.</div>';
       return;
     }
-    manifest.files.forEach(entry => {
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'library-entry';
-      btn.textContent = entry.name;
-      btn.addEventListener('click', async () => {
-        try {
-          const r = await fetch('library/'+entry.file, {cache: 'no-store'});
-          if (!r.ok) throw new Error('HTTP '+r.status);
-          const parsed = await r.json();
+    const fetches = manifest.files.map(entry =>
+      fetch('library/'+entry.file, {cache: 'no-store'})
+        .then(r => { if (!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+        .then(parsed => ({ entry, parsed }))
+        .catch(() => null)
+    );
+    const results = await Promise.all(fetches);
+    results.forEach(item => {
+      if (!item) return;
+      const { entry, parsed } = item;
+      const exList = Array.isArray(parsed.exercises) ? parsed.exercises : [];
+
+      const header = document.createElement('div');
+      header.className = 'library-pack-header';
+      const title = document.createElement('span');
+      title.textContent = entry.name;
+      const importAll = document.createElement('button');
+      importAll.type = 'button';
+      importAll.className = 'library-import-all';
+      importAll.textContent = 'Importer tout';
+      importAll.addEventListener('click', () => { closeLibraryModal(); importExercisePayload(parsed); });
+      header.append(title, importAll);
+      list.appendChild(header);
+
+      exList.forEach(ex => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'library-entry';
+        btn.textContent = ex.name || '(sans nom)';
+        btn.addEventListener('click', () => {
           closeLibraryModal();
-          importExercisePayload(parsed);
-        } catch(err) { alert('Téléchargement impossible : '+err.message); }
+          importExercisePayload({ exercises: [ex], folders: parsed.folders || [] });
+        });
+        list.appendChild(btn);
       });
-      list.appendChild(btn);
     });
   } catch(err) {
     closeLibraryModal();

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -21,24 +21,24 @@
 <canvas id="confetti-canvas"></canvas>
 <audio id="cys-audio-el" preload="none"></audio>
 
-<!-- ── Topbar ──────────────────────────────────────────────────────────────── -->
+<!-- â”€â”€ Topbar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <nav id="topbar">
   <span class="logo"><span class="logo-dot"></span>ChooseYourScore</span>
   <button class="nav-btn active" id="nav-exercise">Exercice</button>
-  <button class="nav-btn"        id="nav-editor"  >Éditeur</button>
-  <button class="nav-btn"        id="nav-results" >Résultats</button>
+  <button class="nav-btn"        id="nav-editor"  >Ã‰diteur</button>
+  <button class="nav-btn"        id="nav-results" >RÃ©sultats</button>
   <button class="nav-btn"        id="nav-patients">Patients</button>
-  <button class="icon-btn-top" id="nav-settings" title="Réglages" aria-label="Réglages">⚙</button>
+  <button class="icon-btn-top" id="nav-settings" title="RÃ©glages" aria-label="RÃ©glages">âš™</button>
 </nav>
 
-<!-- ── Setup view ──────────────────────────────────────────────────────────── -->
+<!-- â”€â”€ Setup view â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <div id="view-setup" class="view centered active">
   <div class="screen">
     <h1>ChooseYourScore</h1>
-    <p class="subtitle">Outil d'évaluation clinique</p>
+    <p class="subtitle">Outil d'Ã©valuation clinique</p>
 
     <div id="no-exercises-msg" class="alert-box">
-      Aucun exercice disponible. Créez-en un dans l'onglet <strong>Éditeur</strong>.
+      Aucun exercice disponible. CrÃ©ez-en un dans l'onglet <strong>Ã‰diteur</strong>.
     </div>
     <div id="setup-form">
       <div class="form-group">
@@ -56,39 +56,39 @@
       <div class="form-group">
         <label class="checkbox-row">
           <input type="checkbox" id="shuffle-pairs">
-          <span>Mélanger l'ordre des paires</span>
+          <span>MÃ©langer l'ordre des paires</span>
         </label>
       </div>
       <div class="btn-start-row">
-        <button class="btn btn-primary" id="btn-start">Commencer l'exercice →</button>
-        <button class="btn btn-secondary" id="btn-fullscreen-setup" title="Plein écran">⛶</button>
+        <button class="btn btn-primary" id="btn-start">Commencer l'exercice â†’</button>
+        <button class="btn btn-secondary" id="btn-fullscreen-setup" title="Plein Ã©cran">â›¶</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ── Instruction view ────────────────────────────────────────────────────── -->
+<!-- â”€â”€ Instruction view â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <div id="view-instruction" class="view centered">
   <div class="screen">
     <h2>Consigne</h2>
     <div class="instruction-box" id="instruction-text"></div>
-    <button class="btn btn-primary" id="btn-ready">Je suis prêt(e) →</button>
+    <button class="btn btn-primary" id="btn-ready">Je suis prÃªt(e) â†’</button>
   </div>
 </div>
 
-<!-- ── Exercise view ───────────────────────────────────────────────────────── -->
+<!-- â”€â”€ Exercise view â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <div id="view-exercise" class="view centered">
   <div class="screen">
-    <button class="btn-quit-exercise" id="btn-quit-exercise" title="Quitter sans résultats">✕</button>
-    <button class="btn-stop-exercise" id="btn-stop-exercise" title="Arrêter et voir les résultats">⏹</button>
-    <button class="btn-fullscreen" id="btn-fullscreen" title="Plein écran">⛶</button>
+    <button class="btn-quit-exercise" id="btn-quit-exercise" title="Quitter sans rÃ©sultats">âœ•</button>
+    <button class="btn-stop-exercise" id="btn-stop-exercise" title="ArrÃªter et voir les rÃ©sultats">â¹</button>
+    <button class="btn-fullscreen" id="btn-fullscreen" title="Plein Ã©cran">â›¶</button>
     <div class="progress-section">
       <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
       <div class="progress-label" id="progress-label"></div>
     </div>
     <div id="seq-pause-screen" style="display:none">
       <div class="seq-pause-next">Item suivant : <span id="seq-pause-label"></span></div>
-      <button class="btn btn-primary" id="seq-pause-continue">Continuer →</button>
+      <button class="btn btn-primary" id="seq-pause-continue">Continuer â†’</button>
       <div class="seq-pause-countdown-wrap">
         <div class="seq-pause-countdown-bar" id="seq-pause-countdown-bar"></div>
       </div>
@@ -99,72 +99,72 @@
       <div class="sequence-question" id="sequence-question"></div>
       <div class="sequence-choices" id="sequence-choices"></div>
       <div id="seq-write-zone">
-        <input type="text" id="seq-write-input" placeholder="Écris ta réponse…" autocomplete="off" autocorrect="off" spellcheck="false">
+        <input type="text" id="seq-write-input" placeholder="Ã‰cris ta rÃ©ponseâ€¦" autocomplete="off" autocorrect="off" spellcheck="false">
         <button id="seq-write-validate">Valider</button>
         <div id="seq-write-feedback"></div>
       </div>
-      <button id="seq-show-again-btn">👁  Revoir</button>
+      <button id="seq-show-again-btn">ðŸ‘  Revoir</button>
     </div>
-    <div class="keyboard-hint" id="keyboard-hint">← Flèche gauche &nbsp;|&nbsp; Flèche droite →</div>
+    <div class="keyboard-hint" id="keyboard-hint">â† FlÃ¨che gauche &nbsp;|&nbsp; FlÃ¨che droite â†’</div>
   </div>
 </div>
 
-<!-- ── Session result view ─────────────────────────────────────────────────── -->
+<!-- â”€â”€ Session result view â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <div id="view-session-result" class="view centered">
   <div class="screen">
-    <h2>Résultats</h2>
+    <h2>RÃ©sultats</h2>
     <p class="results-meta" id="results-meta"></p>
     <div id="celebration">
       <div class="cel-stars">
-        <span class="cel-star">⭐</span><span class="cel-star">⭐</span><span class="cel-star">⭐</span>
+        <span class="cel-star">â­</span><span class="cel-star">â­</span><span class="cel-star">â­</span>
       </div>
       <div class="cel-title" id="cel-title">Bravo&nbsp;!</div>
-      <div class="cel-sub" id="cel-sub">Exercice terminé</div>
+      <div class="cel-sub" id="cel-sub">Exercice terminÃ©</div>
     </div>
     <div class="results-grid">
-      <div class="result-card"><div class="label">Score</div><div class="value good" id="res-score">–</div></div>
-      <div class="result-card"><div class="label">Temps total</div><div class="value" id="res-time">–</div></div>
-      <div class="result-card" id="card-avg-reaction"><div class="label">Réaction moyenne</div><div class="value" id="res-avg-reaction">–</div></div>
-      <div class="result-card" id="card-errors-left"><div class="label">Err. gauche (←)</div><div class="value" id="res-errors-left">–</div></div>
-      <div class="result-card" id="card-errors-right"><div class="label">Err. droite (→)</div><div class="value" id="res-errors-right">–</div></div>
+      <div class="result-card"><div class="label">Score</div><div class="value good" id="res-score">â€“</div></div>
+      <div class="result-card"><div class="label">Temps total</div><div class="value" id="res-time">â€“</div></div>
+      <div class="result-card" id="card-avg-reaction"><div class="label">RÃ©action moyenne</div><div class="value" id="res-avg-reaction">â€“</div></div>
+      <div class="result-card" id="card-errors-left"><div class="label">Err. gauche (â†)</div><div class="value" id="res-errors-left">â€“</div></div>
+      <div class="result-card" id="card-errors-right"><div class="label">Err. droite (â†’)</div><div class="value" id="res-errors-right">â€“</div></div>
     </div>
     <div id="gonogo-result-panel" style="display:none">
-      <div class="gonogo-metrics-label">Détail Go / No-Go</div>
+      <div class="gonogo-metrics-label">DÃ©tail Go / No-Go</div>
       <div class="results-grid gonogo-metrics-grid">
-        <div class="result-card"><div class="label">Hits ✓ (Go cliqué)</div><div class="value good" id="gng-hits">–</div></div>
-        <div class="result-card"><div class="label">Omissions ✗ (Go raté)</div><div class="value danger" id="gng-misses">–</div></div>
-        <div class="result-card"><div class="label">Fausses alarmes ✗ (No-Go cliqué)</div><div class="value danger" id="gng-false-alarms">–</div></div>
-        <div class="result-card"><div class="label">Rejections correctes ✓ (No-Go ignoré)</div><div class="value good" id="gng-correct-rejections">–</div></div>
+        <div class="result-card"><div class="label">Hits âœ“ (Go cliquÃ©)</div><div class="value good" id="gng-hits">â€“</div></div>
+        <div class="result-card"><div class="label">Omissions âœ— (Go ratÃ©)</div><div class="value danger" id="gng-misses">â€“</div></div>
+        <div class="result-card"><div class="label">Fausses alarmes âœ— (No-Go cliquÃ©)</div><div class="value danger" id="gng-false-alarms">â€“</div></div>
+        <div class="result-card"><div class="label">Rejections correctes âœ“ (No-Go ignorÃ©)</div><div class="value good" id="gng-correct-rejections">â€“</div></div>
       </div>
     </div>
     <div class="notes-section">
       <label for="session-notes">Notes du clinicien</label>
-      <textarea id="session-notes" placeholder="Observations, comportement, remarques…"></textarea>
+      <textarea id="session-notes" placeholder="Observations, comportement, remarquesâ€¦"></textarea>
     </div>
     <div id="results-partial-note" class="partial-note" style="display:none"></div>
     <div class="btn-group">
       <button class="btn btn-primary"   id="btn-restart">Recommencer</button>
-      <button class="btn btn-secondary" id="btn-see-progress">Voir la progression →</button>
+      <button class="btn btn-secondary" id="btn-see-progress">Voir la progression â†’</button>
     </div>
   </div>
 </div>
 
-<!-- ── Editor view ─────────────────────────────────────────────────────────── -->
+<!-- â”€â”€ Editor view â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <div id="view-editor" class="view">
   <div class="sidebar">
     <div class="sidebar-header">
       <h3>Exercices</h3>
       <div class="sidebar-header-actions">
-        <button type="button" class="btn-icon" id="btn-new-folder" title="Nouveau dossier">📁</button>
-        <button type="button" class="btn-icon" id="btn-new-exercise" title="Créer un exercice">+</button>
+        <button type="button" class="btn-icon" id="btn-new-folder" title="Nouveau dossier">ðŸ“</button>
+        <button type="button" class="btn-icon" id="btn-new-exercise" title="CrÃ©er un exercice">+</button>
       </div>
     </div>
     <div class="exercise-list" id="exercise-list"></div>
     <div class="sidebar-footer">
       <div class="import-export">
-        <button type="button" id="btn-export">↓ Exporter</button>
-        <button type="button" id="btn-import">↑ Importer</button>
-        <button type="button" id="btn-library">☁ Bibliothèque</button>
+        <button type="button" id="btn-export">â†“ Exporter</button>
+        <button type="button" id="btn-import">â†‘ Importer</button>
+        <button type="button" id="btn-library">â˜ BibliothÃ¨que</button>
         <input type="file" id="import-input" accept=".json">
       </div>
     </div>
@@ -172,13 +172,13 @@
 
   <div class="editor-main">
     <div id="editor-empty-state" class="empty-state">
-      <p>Aucun exercice sélectionné</p>
-      <small>Cliquez sur + pour créer votre premier exercice</small>
+      <p>Aucun exercice sÃ©lectionnÃ©</p>
+      <small>Cliquez sur + pour crÃ©er votre premier exercice</small>
     </div>
     <div id="exercise-editor">
       <div class="editor-header">
         <input type="text" id="exercise-name" placeholder="Nom de l'exercice" maxlength="100">
-        <button type="button" class="btn-dup" id="btn-export-exercise">↓ Exporter</button>
+        <button type="button" class="btn-dup" id="btn-export-exercise">â†“ Exporter</button>
         <button type="button" class="btn-dup" id="btn-duplicate-exercise">Dupliquer</button>
         <button type="button" class="btn-danger" id="btn-delete-exercise">Supprimer</button>
       </div>
@@ -189,18 +189,18 @@
       <div class="folder-select-row">
         <span class="folder-select-label">Type</span>
         <select id="exercise-type">
-          <option value="sequence">Séquence</option>
+          <option value="sequence">SÃ©quence</option>
           <option value="gonogo">Go / No-Go</option>
         </select>
       </div>
       <div class="form-group">
-        <label class="editor-section-label" for="exercise-instruction">Consigne affichée au patient</label>
+        <label class="editor-section-label" for="exercise-instruction">Consigne affichÃ©e au patient</label>
         <textarea id="exercise-instruction" rows="3" placeholder="ex. Cliquez uniquement sur les animaux"></textarea>
       </div>
       <div class="form-group">
-        <label class="editor-section-label" for="exercise-default-duration">Durée d'affichage par défaut (secondes)</label>
-        <input type="number" id="exercise-default-duration" min="0.1" step="0.1" placeholder="— non définie —">
-        <small class="field-hint">Durée appliquée à toutes les paires sauf si une paire définit sa propre valeur.</small>
+        <label class="editor-section-label" for="exercise-default-duration">DurÃ©e d'affichage par dÃ©faut (secondes)</label>
+        <input type="number" id="exercise-default-duration" min="0.1" step="0.1" placeholder="â€” non dÃ©finie â€”">
+        <small class="field-hint">DurÃ©e appliquÃ©e Ã  toutes les paires sauf si une paire dÃ©finit sa propre valeur.</small>
       </div>
       <div class="form-group">
         <label class="checkbox-row">
@@ -208,12 +208,12 @@
           <span>Pause entre les items</span>
         </label>
         <div id="pause-duration-row" style="display:none;margin-top:10px">
-          <label class="editor-section-label" for="exercise-pause-duration">Durée du compte à rebours (secondes)</label>
+          <label class="editor-section-label" for="exercise-pause-duration">DurÃ©e du compte Ã  rebours (secondes)</label>
           <input type="number" id="exercise-pause-duration" min="1" max="30" step="1" value="5">
-          <small class="field-hint">L'exercice avance automatiquement après ce délai si l'utilisateur ne clique pas.</small>
+          <small class="field-hint">L'exercice avance automatiquement aprÃ¨s ce dÃ©lai si l'utilisateur ne clique pas.</small>
         </div>
       </div>
-      <!-- Section séquence (cachée en mode Go/No-Go) -->
+      <!-- Section sÃ©quence (cachÃ©e en mode Go/No-Go) -->
       <div id="sequence-editor-section">
         <div class="pairs-header">
           <span class="editor-section-label no-mb">Paires <span class="badge" id="pair-count-badge">0</span></span>
@@ -222,22 +222,22 @@
         <button type="button" class="btn-add-pair" id="btn-add-pair">+ Ajouter une paire</button>
       </div>
 
-      <!-- Section Go/No-Go (cachée en mode séquence) -->
+      <!-- Section Go/No-Go (cachÃ©e en mode sÃ©quence) -->
       <div id="gonogo-editor" style="display:none">
         <div class="form-group">
-          <label class="editor-section-label" for="gonogo-default-duration">Durée d'affichage par défaut (secondes)</label>
+          <label class="editor-section-label" for="gonogo-default-duration">DurÃ©e d'affichage par dÃ©faut (secondes)</label>
           <input type="number" id="gonogo-default-duration" min="0.1" step="0.1" placeholder="1" value="1">
-          <small class="field-hint">Durée de présentation de chaque item.</small>
+          <small class="field-hint">DurÃ©e de prÃ©sentation de chaque item.</small>
         </div>
         <div class="form-group">
           <label class="editor-section-label" for="gonogo-iti">Intervalle inter-essais (secondes)</label>
           <input type="number" id="gonogo-iti" min="0" step="0.1" placeholder="0.5" value="0.5">
-          <small class="field-hint">Durée de la croix de fixation entre les essais.</small>
+          <small class="field-hint">DurÃ©e de la croix de fixation entre les essais.</small>
         </div>
         <div class="form-group">
           <label class="checkbox-row">
             <input type="checkbox" id="gonogo-show-feedback" checked>
-            <span>Feedback visuel après la réponse (vert / rouge)</span>
+            <span>Feedback visuel aprÃ¨s la rÃ©ponse (vert / rouge)</span>
           </label>
         </div>
         <div class="pairs-header">
@@ -253,43 +253,43 @@
   </div>
 </div>
 
-<!-- ── Results view ────────────────────────────────────────────────────────── -->
+<!-- â”€â”€ Results view â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <div id="view-results" class="view">
   <div class="results-page">
     <div class="filters">
       <div class="filter-group">
         <label for="patient-select">Patient</label>
-        <select id="patient-select"><option value="">— Tous les patients —</option></select>
+        <select id="patient-select"><option value="">â€” Tous les patients â€”</option></select>
       </div>
       <div class="filter-group">
         <label for="exercise-filter">Exercice</label>
-        <select id="exercise-filter"><option value="">— Tous les exercices —</option></select>
+        <select id="exercise-filter"><option value="">â€” Tous les exercices â€”</option></select>
       </div>
       <button class="btn-clear" id="btn-clear-filters">Effacer</button>
       <div class="filters-actions">
-        <button class="btn-clear" id="btn-export-results">↓ Exporter</button>
-        <button class="btn-clear" id="btn-import-results">↑ Importer</button>
+        <button class="btn-clear" id="btn-export-results">â†“ Exporter</button>
+        <button class="btn-clear" id="btn-import-results">â†‘ Importer</button>
       </div>
     </div>
 
     <div id="r-content">
       <div class="stats-grid">
-        <div class="stat-card"><div class="label">Sessions</div><div class="value blue"   id="stat-sessions">–</div></div>
-        <div class="stat-card"><div class="label">Score moyen</div><div class="value green"  id="stat-avg-score">–</div></div>
-        <div class="stat-card"><div class="label">Dernière session</div><div class="value"        id="stat-last-score">–</div></div>
-        <div class="stat-card"><div class="label">Temps moyen</div><div class="value purple" id="stat-avg-time">–</div></div>
-        <div class="stat-card"><div class="label">Réaction moy./paire</div><div class="value" id="stat-avg-reaction">–</div></div>
+        <div class="stat-card"><div class="label">Sessions</div><div class="value blue"   id="stat-sessions">â€“</div></div>
+        <div class="stat-card"><div class="label">Score moyen</div><div class="value green"  id="stat-avg-score">â€“</div></div>
+        <div class="stat-card"><div class="label">DerniÃ¨re session</div><div class="value"        id="stat-last-score">â€“</div></div>
+        <div class="stat-card"><div class="label">Temps moyen</div><div class="value purple" id="stat-avg-time">â€“</div></div>
+        <div class="stat-card"><div class="label">RÃ©action moy./paire</div><div class="value" id="stat-avg-reaction">â€“</div></div>
       </div>
       <div class="charts-row">
         <div class="chart-card"><h3>Score (%)</h3><canvas id="chart-score" height="180"></canvas></div>
         <div class="chart-card"><h3>Temps total (secondes)</h3><canvas id="chart-time" height="180"></canvas></div>
       </div>
       <div class="table-card">
-        <h3>Détail des sessions</h3>
+        <h3>DÃ©tail des sessions</h3>
         <table>
           <thead><tr>
             <th>Date</th><th>Patient</th><th>Exercice</th><th>Score</th>
-            <th>Temps</th><th>Err. gauche</th><th>Err. droite</th><th>Réaction moy.</th><th>Notes</th><th></th>
+            <th>Temps</th><th>Err. gauche</th><th>Err. droite</th><th>RÃ©action moy.</th><th>Notes</th><th></th>
           </tr></thead>
           <tbody id="sessions-tbody"></tbody>
         </table>
@@ -297,13 +297,13 @@
     </div>
 
     <div id="r-empty-state" class="r-empty-state">
-      <p>Aucune session enregistrée</p>
-      <small>Les résultats apparaîtront ici après chaque exercice</small>
+      <p>Aucune session enregistrÃ©e</p>
+      <small>Les rÃ©sultats apparaÃ®tront ici aprÃ¨s chaque exercice</small>
     </div>
   </div>
 </div>
 
-<!-- ── Patients view ───────────────────────────────────────────────────────── -->
+<!-- â”€â”€ Patients view â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <div id="view-patients" class="view">
   <div class="sidebar">
     <div class="sidebar-header">
@@ -316,14 +316,14 @@
   </div>
   <div class="editor-main">
     <div id="patient-empty-state" class="empty-state">
-      <p>Aucun patient sélectionné</p>
-      <small>Cliquez sur + pour créer votre premier patient</small>
+      <p>Aucun patient sÃ©lectionnÃ©</p>
+      <small>Cliquez sur + pour crÃ©er votre premier patient</small>
     </div>
     <div id="patient-detail">
       <div class="editor-header">
         <input type="text" id="patient-name-input" placeholder="Nom du patient" maxlength="100">
-        <button class="btn-dup" id="btn-export-patient-json">↓ Exporter</button>
-        <button class="btn-dup" id="btn-import-patient-json">↑ Importer</button>
+        <button class="btn-dup" id="btn-export-patient-json">â†“ Exporter</button>
+        <button class="btn-dup" id="btn-import-patient-json">â†‘ Importer</button>
         <button class="btn-dup" id="btn-export-patient-pdf">PDF</button>
         <button class="btn-danger" id="btn-delete-patient">Supprimer</button>
       </div>
@@ -333,7 +333,7 @@
       </div>
       <div class="form-group">
         <label class="editor-section-label" for="patient-notes-field">Notes</label>
-        <textarea id="patient-notes-field" rows="3" placeholder="Informations, antécédents, remarques…"></textarea>
+        <textarea id="patient-notes-field" rows="3" placeholder="Informations, antÃ©cÃ©dents, remarquesâ€¦"></textarea>
       </div>
       <div class="pairs-header pairs-header--mt">
         <span class="editor-section-label no-mb">Sessions <span class="badge" id="patient-session-count">0</span></span>
@@ -344,7 +344,7 @@
   </div>
 </div>
 
-<!-- ── Pair edit modal ─────────────────────────────────────────────────────── -->
+<!-- â”€â”€ Pair edit modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <div id="pair-modal">
   <div class="modal">
     <h3>Modifier la paire</h3>
@@ -357,7 +357,7 @@
           <input type="number" id="seq-num-items" min="1" step="1" value="4">
         </div>
         <div class="field-row" id="seq-duration-row">
-          <label>Durée d'affichage (secondes, 0 = direct)</label>
+          <label>DurÃ©e d'affichage (secondes, 0 = direct)</label>
           <input type="number" id="seq-duration" min="0" step="0.1" value="1">
         </div>
       </div>
@@ -365,29 +365,29 @@
         <div id="seq-exercise-default-row">
           <label class="checkbox-row">
             <input type="checkbox" id="seq-use-exercise-duration">
-            <span>Utiliser la durée de l'exercice (<span id="seq-exercise-default-value">1</span> s)</span>
+            <span>Utiliser la durÃ©e de l'exercice (<span id="seq-exercise-default-value">1</span> s)</span>
           </label>
         </div>
         <div class="field-row field-row--col">
-          <label>Visibilité par défaut</label>
+          <label>VisibilitÃ© par dÃ©faut</label>
           <select id="seq-visibility-mode">
-            <option value="always_show">Afficher par défaut</option>
-            <option value="always_hide">Masquer par défaut</option>
-            <option value="hide_if_prev_correct">Masquer si réponse précédente correcte</option>
-            <option value="hide_if_prev_incorrect">Masquer si réponse précédente incorrecte</option>
+            <option value="always_show">Afficher par dÃ©faut</option>
+            <option value="always_hide">Masquer par dÃ©faut</option>
+            <option value="hide_if_prev_correct">Masquer si rÃ©ponse prÃ©cÃ©dente correcte</option>
+            <option value="hide_if_prev_incorrect">Masquer si rÃ©ponse prÃ©cÃ©dente incorrecte</option>
           </select>
         </div>
       </div>
       <div class="seq-items-section">
-        <div class="field-row field-row--sm"><label>Items à afficher (un par case)</label></div>
+        <div class="field-row field-row--sm"><label>Items Ã  afficher (un par case)</label></div>
         <div id="seq-items-row"></div>
-        <div class="field-hint">Lettres, chiffres, mots… Un item par case.</div>
+        <div class="field-hint">Lettres, chiffres, motsâ€¦ Un item par case.</div>
       </div>
       <div id="seq-questions-container"></div>
       <button type="button" id="seq-add-question-btn">+ Ajouter une question</button>
       <!-- preview -->
       <div class="seq-preview-panel">
-        <div class="preview-label">Aperçu</div>
+        <div class="preview-label">AperÃ§u</div>
         <div id="seq-preview-items"></div>
         <div id="seq-preview-questions"></div>
       </div>
@@ -400,7 +400,7 @@
   </div>
 </div>
 
-<!-- ── Seq item edit modal ──────────────────────────────────────────────────── -->
+<!-- â”€â”€ Seq item edit modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <div id="seq-item-modal">
   <div class="modal">
     <h3>Modifier l'item</h3>
@@ -408,11 +408,11 @@
       <button class="item-type-btn active" data-type="text">Texte</button>
       <button class="item-type-btn" data-type="image">Image</button>
       <button class="item-type-btn" data-type="audio">Audio</button>
-      <button class="item-type-btn" data-type="arrow">Flèche</button>
+      <button class="item-type-btn" data-type="arrow">FlÃ¨che</button>
     </div>
     <!-- section : texte -->
     <div id="sim-sect-text">
-      <div class="field-row"><label>Texte</label><input type="text" id="sim-text" placeholder="Texte affiché"></div>
+      <div class="field-row"><label>Texte</label><input type="text" id="sim-text" placeholder="Texte affichÃ©"></div>
       <div id="sim-char-grid-section" style="display:none;margin:4px 0 6px">
         <div style="display:flex;align-items:center;gap:5px;margin-bottom:4px">
           <button type="button" id="sim-char-select-all" class="btn-char-action">Tout</button>
@@ -435,7 +435,7 @@
       <div class="field-row"><label>Casse</label>
         <select id="sim-transform">
           <option value="none">Normale</option><option value="uppercase">MAJUSCULES</option>
-          <option value="lowercase">minuscules</option><option value="capitalize">Capitalisé</option>
+          <option value="lowercase">minuscules</option><option value="capitalize">CapitalisÃ©</option>
         </select></div>
       <div class="field-row"><label>Style</label>
         <button type="button" id="sim-bold" class="btn-char-action btn-char-toggle" style="font-weight:bold;min-width:32px">G</button>
@@ -450,10 +450,10 @@
         <button type="button" class="btn-upload-img" id="sim-img-btn">Choisir une image</button>
         <div class="img-thumb-row" id="sim-img-thumb-row">
           <img id="sim-img-thumb" alt="">
-          <button type="button" class="btn-remove-img" id="sim-img-remove">✕ Supprimer</button>
+          <button type="button" class="btn-remove-img" id="sim-img-remove">âœ• Supprimer</button>
         </div>
       </div>
-      <div class="field-row"><label>Texte superposé (optionnel)</label><input type="text" id="sim-img-text" placeholder="Légende…"></div>
+      <div class="field-row"><label>Texte superposÃ© (optionnel)</label><input type="text" id="sim-img-text" placeholder="LÃ©gendeâ€¦"></div>
       <div class="field-row"><label>Couleur du texte</label><input type="color" id="sim-img-textcolor" value="#ffffff"></div>
     </div>
     <!-- section : audio -->
@@ -464,31 +464,31 @@
         <button type="button" class="btn-upload-audio" id="sim-audio-btn">Choisir un audio</button>
         <div class="audio-loaded-row" id="sim-audio-loaded">
           <span id="sim-audio-name"></span>
-          <button type="button" class="btn-play-audio" id="sim-audio-play">▶ Écouter</button>
-          <button type="button" class="btn-remove-img" id="sim-audio-remove">✕</button>
+          <button type="button" class="btn-play-audio" id="sim-audio-play">â–¶ Ã‰couter</button>
+          <button type="button" class="btn-remove-img" id="sim-audio-remove">âœ•</button>
         </div>
       </div>
-      <div class="field-row"><label>Étiquette (optionnel)</label><input type="text" id="sim-audio-label" placeholder="Nom affiché…"></div>
+      <div class="field-row"><label>Ã‰tiquette (optionnel)</label><input type="text" id="sim-audio-label" placeholder="Nom affichÃ©â€¦"></div>
       <div class="field-row">
         <label class="checkbox-row">
           <input type="checkbox" id="sim-audio-autoplay">
-          <span>Lancer automatiquement à l'affichage</span>
+          <span>Lancer automatiquement Ã  l'affichage</span>
         </label>
       </div>
     </div>
-    <!-- section : flèche -->
+    <!-- section : flÃ¨che -->
     <div id="sim-sect-arrow">
       <div class="field-row"><label>Direction</label>
         <select id="sim-arrow-dir">
-          <option value="left">← Gauche</option><option value="right">→ Droite</option>
-          <option value="up">↑ Haut</option><option value="down">↓ Bas</option>
+          <option value="left">â† Gauche</option><option value="right">â†’ Droite</option>
+          <option value="up">â†‘ Haut</option><option value="down">â†“ Bas</option>
         </select></div>
     </div>
-    <!-- couleur de fond commune à tous les types -->
+    <!-- couleur de fond commune Ã  tous les types -->
     <div class="field-row"><label>Couleur de fond</label>
       <input type="color" id="sim-bg-color" value="#ffffff"></div>
     <div class="sim-preview-wrap">
-      <div class="sim-preview-label">Aperçu</div>
+      <div class="sim-preview-label">AperÃ§u</div>
       <div id="sim-preview-box"></div>
     </div>
     <div class="modal-actions">
@@ -498,23 +498,23 @@
   </div>
 </div>
 
-<!-- ── Settings modal ──────────────────────────────────────────────────────── -->
+<!-- â”€â”€ Settings modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <div id="settings-modal">
   <div class="modal settings-modal-box">
-    <h3>Réglages</h3>
-    <p class="settings-intro">Activez ou désactivez les animations et récompenses présentées à l'enfant.</p>
+    <h3>RÃ©glages</h3>
+    <p class="settings-intro">Activez ou dÃ©sactivez les animations et rÃ©compenses prÃ©sentÃ©es Ã  l'enfant.</p>
     <div id="settings-list"></div>
     <div class="modal-actions">
-      <button type="button" class="btn-save" id="settings-close">Terminé</button>
+      <button type="button" class="btn-save" id="settings-close">TerminÃ©</button>
     </div>
   </div>
 </div>
 
-<!-- ── Library modal ───────────────────────────────────────────────────────── -->
+<!-- â”€â”€ Library modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
 <div id="library-modal">
   <div class="modal settings-modal-box">
-    <h3>☁ Bibliothèque</h3>
-    <p class="settings-intro">Exercices partagés en ligne. Cliquez sur un fichier pour l'ajouter à vos exercices locaux (modifiable et utilisable hors-ligne ensuite).</p>
+    <h3>â˜ BibliothÃ¨que</h3>
+    <p class="settings-intro">Exercices partagÃ©s en ligne. Cliquez sur un fichier pour l'ajouter Ã  vos exercices locaux (modifiable et utilisable hors-ligne ensuite).</p>
     <div id="library-list"></div>
     <div class="modal-actions">
       <button type="button" class="btn-save" id="library-close">Fermer</button>
@@ -523,17 +523,18 @@
 </div>
 
 <script src="chart.umd.min.js"></script>
-<script src="js/settings.js?v=37"></script>
-<script src="js/celebration.js?v=37"></script>
-<script src="js/data.js?v=37"></script>
-<script src="js/utils.js?v=37"></script>
-<script src="js/ui.js?v=37"></script>
-<script src="js/nav.js?v=37"></script>
-<script src="js/setup.js?v=37"></script>
-<script src="js/session.js?v=37"></script>
-<script src="js/editor.js?v=37"></script>
-<script src="js/patients.js?v=37"></script>
-<script src="js/results.js?v=37"></script>
+<script src="js/settings.js?v=38"></script>
+<script src="js/celebration.js?v=38"></script>
+<script src="js/data.js?v=38"></script>
+<script src="js/utils.js?v=38"></script>
+<script src="js/ui.js?v=38"></script>
+<script src="js/nav.js?v=38"></script>
+<script src="js/setup.js?v=38"></script>
+<script src="js/session.js?v=38"></script>
+<script src="js/editor.js?v=38"></script>
+<script src="js/patients.js?v=38"></script>
+<script src="js/results.js?v=38"></script>
 <script>initData().then(() => { initSetup(); initSettings(); });</script>
 </body>
 </html>
+

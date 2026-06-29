@@ -260,6 +260,22 @@ body.is-fullscreen .progress-bar { height: 14px; }
   margin: -10px 0 18px; line-height: 1.45;
 }
 
+.library-pack-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0 6px;
+  border-top: 2px solid var(--border);
+  font-weight: 800; font-size: 0.9rem; color: var(--text-2);
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.library-pack-header:first-child { border-top: none; }
+.library-import-all {
+  font-size: 0.8rem; font-weight: 700;
+  color: var(--accent); background: none; border: none;
+  cursor: pointer; padding: 2px 6px;
+  border-radius: 4px;
+}
+.library-import-all:hover { background: var(--accent-bg); }
+
 .library-entry {
   display: block; width: 100%; text-align: left;
   padding: 14px 0;

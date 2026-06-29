@@ -27,9 +27,10 @@ Ne jamais laisser une tâche terminée sans que le code soit mergé dans main.
 
 ## Tests end-to-end obligatoires
 
-### Toujours vérifier visuellement dans un vrai navigateur avant de merger
+### Toujours vérifier dans un vrai navigateur avant de merger
 
 Chaque fonctionnalité doit être testée dans Chromium via Playwright avant la PR. Ce test simule un vrai utilisateur qui clique dans l'application — c'est la seule façon de confirmer que la feature fonctionne réellement, pas seulement que le code est syntaxiquement correct.
+Ajouter des exercices si besoin, clicker sur les bouttons concerner, tester la totality du chemin !
 
 **Procédure obligatoire :**
 
@@ -55,7 +56,7 @@ pip install playwright
 python3 /tmp/verify_feature.py
 ```
 
-5. Envoyer les screenshots à l'utilisateur comme preuve visuelle.
+5. Envoyer les resultats (screenshots, etc...) à l'utilisateur.
 
 **Chromium est disponible à `/opt/pw-browsers/chromium` — ne pas le réinstaller.**
 

@@ -474,6 +474,7 @@ document.addEventListener('keydown', e => {
       const map = { ArrowLeft:'left', ArrowRight:'right', ArrowUp:'up', ArrowDown:'down' };
       const dir = map[e.key];
       if (dir) {
+        e.preventDefault();
         const btn = document.querySelector('#sequence-choices [data-dir="'+dir+'"]:not(:disabled)');
         if (btn && !isWaiting) btn.click();
       }

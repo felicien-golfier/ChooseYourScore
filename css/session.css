@@ -500,12 +500,14 @@ body.is-fullscreen .keyboard-hint {
 
 body.is-fullscreen .sequence-container {
   flex: 1;
+  min-height: 0;
   width: 100%;
   justify-content: center;
 }
 
 body.is-fullscreen #sequence-display {
   flex: 1;
+  min-height: 0;
   align-items: stretch;
   flex-wrap: nowrap;
   gap: 20px;
@@ -547,12 +549,14 @@ body.is-fullscreen .seq-item-sound-btn {
 
 body.is-fullscreen .sequence-text-display {
   flex: 1;
+  min-height: 0;
+  overflow: hidden;
   font-size: 2rem;
   padding: 40px 52px;
 }
 
 body.is-fullscreen .sequence-text-display.item-arrow-glyph {
-  font-size: min(24vw, 42vh);
+  font-size: min(14vw, 20vh);
 }
 
 body.is-fullscreen .sequence-choice-btn {

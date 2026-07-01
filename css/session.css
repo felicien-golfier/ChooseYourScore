@@ -682,6 +682,17 @@ body.is-fullscreen .dir-key-btn {
   padding: 48px 0;
 }
 
+/* ── TRANSITION EXEMPLES → EXERCICE NOTÉ ─────────────────────────────────── */
+#example-transition-screen {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  width: 100%;
+  padding: 48px 0;
+  text-align: center;
+}
+
 .seq-pause-next {
   font-size: 0.82rem;
   color: var(--text-3);

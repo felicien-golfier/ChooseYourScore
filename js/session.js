@@ -506,6 +506,10 @@ function finishExercise(isPartial) {
   const attemptedQuestions = responses.filter(r => !r.isRetry && !r.isExample).length;
   const effectiveTotalQuestions = isPartial ? (attemptedQuestions || 1) : totalQuestionsInExercise;
 
+  // Score par position de question, pour les exercices à plusieurs questions par paire
+  // (ex. rappel du mot + question d'interférence) : permet de distinguer d'où viennent les erreurs.
+  const questionIndexStats = {};
+
   responses.forEach(r => {
     if (r.isRetry || r.isExample) return;
     if (r.isCorrect) score++;
@@ -517,6 +521,9 @@ function finishExercise(isPartial) {
         else if (r.correctAnswer === 'right') errorsRight++;
       }
     }
+    const stats = questionIndexStats[r.questionIndex] || (questionIndexStats[r.questionIndex] = { score: 0, total: 0 });
+    stats.total++;
+    if (r.isCorrect) stats.score++;
   });
 
   const avgReactionMs = reactionCount > 0 ? Math.round(totalReactionMs / reactionCount) : null;
@@ -527,6 +534,7 @@ function finishExercise(isPartial) {
     totalTimeMs, totalPairs: effectiveTotalQuestions, score, responses, notes: '',
     ...(isPartial ? { partial: true, pairsAttempted: pairIndex, totalPairsInExercise: totalQuestionsInExercise } : {}),
     ...(hasDirectionQuestions ? { errorsLeft, errorsRight } : {}),
+    ...(Object.keys(questionIndexStats).length > 1 ? { questionIndexStats } : {}),
   };
   sessions.push(newSession);
   currentSessionId = newSession.id;
@@ -556,9 +564,29 @@ function finishExercise(isPartial) {
     document.getElementById('res-errors-right').textContent = errorsRight;
   }
   document.getElementById('gonogo-result-panel').style.display = 'none';
+  renderQuestionBreakdown(questionIndexStats);
   if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   showView('session-result');
   if (typeof celebrateResult === 'function') celebrateResult(score, effectiveTotalQuestions);
+}
+
+function renderQuestionBreakdown(questionIndexStats) {
+  const panel = document.getElementById('question-breakdown-panel');
+  const grid  = document.getElementById('question-breakdown-grid');
+  const indices = Object.keys(questionIndexStats).map(Number).sort((a, b) => a - b);
+  if (indices.length <= 1) { panel.style.display = 'none'; return; }
+
+  grid.innerHTML = '';
+  indices.forEach(idx => {
+    const { score: s, total: t } = questionIndexStats[idx];
+    const pct = t > 0 ? Math.round(s / t * 100) : 0;
+    const card = document.createElement('div');
+    card.className = 'result-card';
+    card.innerHTML = '<div class="label">Question ' + (idx + 1) + '</div>' +
+      '<div class="value good">' + s + ' / ' + t + ' (' + pct + '%)</div>';
+    grid.appendChild(card);
+  });
+  panel.style.display = 'block';
 }
 
 document.getElementById('btn-restart').addEventListener('click', () => {

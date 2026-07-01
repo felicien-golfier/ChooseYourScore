@@ -131,14 +131,14 @@ document.getElementById('btn-start').addEventListener('click', () => {
       return;
     }
     currentPairs = [];
+    currentExampleCount = 0;
   } else {
     if (!currentExercise.pairs || currentExercise.pairs.length === 0) {
       alert("Cet exercice n'a pas de paires. Ajoutez des paires dans l'Éditeur.");
       return;
     }
     currentShuffleEnabled = document.getElementById('shuffle-pairs').checked;
-    currentPairs = currentShuffleEnabled
-      ? shuffleArray(currentExercise.pairs) : [...currentExercise.pairs];
+    buildCurrentPairs(currentExercise, currentShuffleEnabled);
   }
 
   document.getElementById('instruction-text').textContent =

@@ -187,6 +187,7 @@ function renderExerciseEditor() {
     document.getElementById('gonogo-default-duration').value = ex.defaultTrialDuration != null ? (ex.defaultTrialDuration / 1000) : 1;
     document.getElementById('gonogo-iti').value              = ex.iti != null ? (ex.iti / 1000) : 0.5;
     document.getElementById('gonogo-show-feedback').checked  = ex.showFeedback !== false;
+    document.getElementById('gonogo-example-count').value    = ex.exampleTrialCount || 0;
     document.getElementById('gonogo-trial-count').textContent = (ex.trials || []).length;
     renderGoNoGoTrialsList(ex);
   } else {
@@ -1411,6 +1412,14 @@ document.getElementById('gonogo-show-feedback').addEventListener('change', funct
   saveExercises();
 });
 
+document.getElementById('gonogo-example-count').addEventListener('input', () => {
+  const ex = getSelectedEx(); if (!ex) return;
+  const val = parseInt(document.getElementById('gonogo-example-count').value, 10);
+  ex.exampleTrialCount = (!isNaN(val) && val >= 0) ? val : 0;
+  saveExercises();
+  renderGoNoGoTrialsList(ex);
+});
+
 document.getElementById('btn-add-go-trial').addEventListener('click', () => {
   addGoNoGoTrial(true);
 });
@@ -1466,13 +1475,20 @@ function renderGoNoGoTrialsList(ex) {
   const list = document.getElementById('gonogo-trials-list');
   list.innerHTML = '';
   const trials = ex.trials || [];
+  const exampleCount = Math.min(ex.exampleTrialCount || 0, trials.length);
   trials.forEach((trial, i) => {
+    const isExample = i < exampleCount;
     const row = document.createElement('div');
-    row.className = 'pair-row';
+    row.className = 'pair-row' + (isExample ? ' pair-row--example' : '');
 
     const numBadge = document.createElement('span');
     numBadge.className = 'pair-num-badge';
     numBadge.textContent = i + 1;
+
+    const exampleTag = document.createElement('span');
+    exampleTag.className = 'badge pair-example-tag';
+    exampleTag.textContent = 'Exemple';
+    exampleTag.style.display = isExample ? '' : 'none';
 
     const preview = document.createElement('div');
     preview.className = 'pair-preview';
@@ -1521,7 +1537,7 @@ function renderGoNoGoTrialsList(ex) {
     const deleteBtn = makePairBtn('✕', 'delete', 'Supprimer', () => deleteGoNoGoTrial(trial.id));
 
     actions.append(editBtn, toggleBtn, mvWrap, deleteBtn);
-    row.append(numBadge, preview, actions);
+    row.append(numBadge, exampleTag, preview, actions);
     list.appendChild(row);
   });
 }

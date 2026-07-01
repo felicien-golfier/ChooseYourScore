@@ -327,8 +327,11 @@ body.is-fullscreen .keyboard-hint {
   transition: box-shadow 0.15s, border-color 0.15s;
 }
 
-.item-arrow-glyph {
-  font-size: 72px;
+.item-arrow-svg {
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+  display: block;
 }
 
 .seq-sound-wrapper {
@@ -521,8 +524,9 @@ body.is-fullscreen .sequence-item-box {
   font-size: 3.5rem;
 }
 
-body.is-fullscreen .sequence-item-box.item-arrow-glyph {
-  font-size: 4.5rem;
+body.is-fullscreen .sequence-item-box.item-arrow-glyph .item-arrow-svg {
+  width: 4.5rem;
+  height: 4.5rem;
 }
 
 body.is-fullscreen .seq-sound-wrapper {
@@ -555,8 +559,9 @@ body.is-fullscreen .sequence-text-display {
   padding: 40px 52px;
 }
 
-body.is-fullscreen .sequence-text-display.item-arrow-glyph {
-  font-size: min(14vw, 20vh);
+body.is-fullscreen .sequence-text-display.item-arrow-glyph .item-arrow-svg {
+  width: min(14vw, 20vh);
+  height: min(14vw, 20vh);
 }
 
 body.is-fullscreen .sequence-choice-btn {

@@ -91,20 +91,36 @@ function getItemType(item) {
 const _FONT_COMPAT = { 'Comic Sans MS': 'Comic Neue', 'Impact': 'Oswald', 'Georgia': 'Playfair Display', 'Verdana': 'Raleway' };
 function _resolveFont(f) { return _FONT_COMPAT[f] || f || 'Arial'; }
 
+// Rotation appliquée à l'icône flèche (dessinée pointant vers la droite) selon la direction voulue.
+const ARROW_ROTATION = { right: 0, down: 90, left: 180, up: 270 };
+// Icône flèche en SVG plutôt qu'un glyphe Unicode : les glyphes de police ne sont pas centrés
+// optiquement dans leur boîte (empattements asymétriques), ce qui devient très visible aux
+// grandes tailles utilisées en plein écran. Le SVG garantit un centrage exact.
+const ARROW_SVG =
+  '<svg viewBox="0 0 100 100" class="item-arrow-svg" preserveAspectRatio="xMidYMid meet">' +
+  '<path d="M10,40 L58,40 L58,25 L90,50 L58,75 L58,60 L10,60 Z" fill="currentColor"/>' +
+  '</svg>';
+
+const FULLSCREEN_ITEM_TEXT_SCALE = 2;
+
 function applyItemStyle(el, item) {
   const itype = getItemType(item);
+  const isFullscreen = document.body.classList.contains('is-fullscreen');
   if (itype === 'arrow') {
     const ac = resolveArrowColor(item.bgColor || '#3b82f6');
     el.style.background = ac.bg; el.style.color = ac.fg;
     el.style.backgroundImage = '';
     el.style.fontFamily = 'inherit'; el.style.textTransform = 'none';
     el.classList.add('item-arrow-glyph');
-    el.textContent = ARROW_CHARS[item.arrowDirection || 'left'] || '←';
+    el.innerHTML = ARROW_SVG;
+    const rotation = ARROW_ROTATION[item.arrowDirection || 'left'] || 0;
+    el.querySelector('.item-arrow-svg').style.transform = 'rotate(' + rotation + 'deg)';
     return;
   }
   el.style.background    = item.bgColor || 'white';
   el.style.color         = item.color         || '#1a1a1a';
-  el.style.fontSize      = (item.fontSize || 32) + 'px';
+  const baseFontSize     = item.fontSize || 32;
+  el.style.fontSize      = (isFullscreen ? Math.round(baseFontSize * FULLSCREEN_ITEM_TEXT_SCALE) : baseFontSize) + 'px';
   el.style.fontFamily    = _resolveFont(item.fontFamily);
   el.style.textTransform = item.textTransform || 'none';
   el.style.fontWeight    = item.fontWeight    || 'normal';
@@ -123,7 +139,7 @@ function applyItemStyle(el, item) {
         const cs = _cs[i];
         let st = '';
         if (cs && cs.color)         st += 'color:' + cs.color + ';';
-        if (cs && cs.fontSize)      st += 'font-size:' + cs.fontSize + 'px;';
+        if (cs && cs.fontSize)      st += 'font-size:' + (isFullscreen ? Math.round(cs.fontSize * FULLSCREEN_ITEM_TEXT_SCALE) : cs.fontSize) + 'px;';
         if (cs && cs.fontFamily)    st += 'font-family:' + _resolveFont(cs.fontFamily) + ';';
         if (cs && cs.textTransform) st += 'text-transform:' + cs.textTransform + ';';
         if (cs && cs.fontWeight)    st += 'font-weight:' + cs.fontWeight + ';';

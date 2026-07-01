@@ -23,6 +23,7 @@ document.getElementById('btn-ready').addEventListener('click', () => {
 let sequenceTimer = null;
 let currentQuestionIndex = 0;
 let _displayGen = 0;
+const INTER_ITEM_PAUSE_MS = 200;
 
 // ── Affichage des paires ───────────────────────────────────────────────────
 function renderPair() {
@@ -44,7 +45,15 @@ function renderPair() {
   document.getElementById('progress-label').textContent = (pairIndex+1) + ' / ' + currentPairs.length;
   document.getElementById('sequence-container').style.display = 'flex';
   document.getElementById('keyboard-hint').textContent = '';
-  startSequenceDisplay(pair);
+
+  // Bref blanc entre chaque item pour que le changement soit perceptible
+  // même quand l'item suivant est visuellement identique au précédent.
+  document.getElementById('sequence-display').innerHTML = '';
+  const gen = ++_displayGen;
+  sequenceTimer = setTimeout(() => {
+    sequenceTimer = null;
+    if (gen === _displayGen) startSequenceDisplay(pair);
+  }, INTER_ITEM_PAUSE_MS);
 }
 
 function startSequenceDisplay(pair, afterDisplayFn) {

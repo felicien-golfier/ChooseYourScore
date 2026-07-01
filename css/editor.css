@@ -276,6 +276,17 @@
   box-shadow: 0 1px 8px var(--accent-a06);
 }
 
+.pair-row--example {
+  background: var(--accent-a06);
+  border-color: var(--accent-border);
+}
+
+.pair-example-tag {
+  background: var(--accent-bg);
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
 .pair-preview {
   flex: 1;
   display: flex;

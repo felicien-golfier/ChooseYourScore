@@ -149,6 +149,18 @@ function shuffleArray(arr) {
   return a;
 }
 
+// Construit currentPairs en gardant les paires d'exemple (non notées) fixes en tête,
+// même quand le mélange aléatoire est actif — seules les paires notées sont mélangées.
+function buildCurrentPairs(ex, shuffle) {
+  const allPairs = ex.pairs || [];
+  currentExampleCount = Math.min(ex.exampleCount || 0, allPairs.length);
+  const examplePairs = allPairs.slice(0, currentExampleCount);
+  const restPairs     = allPairs.slice(currentExampleCount);
+  currentPairs = shuffle
+    ? [...examplePairs, ...shuffleArray(restPairs)]
+    : [...examplePairs, ...restPairs];
+}
+
 // ── Helpers partagés export/import ───────────────────────────────────────────
 function downloadBlob(data, filename, mime) {
   const url = URL.createObjectURL(new Blob([data], {type: mime || 'application/json'}));

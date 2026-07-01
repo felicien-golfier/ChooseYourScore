@@ -41,6 +41,18 @@
   font-family: var(--font-mono);
 }
 
+.example-badge {
+  display: inline-block;
+  background: var(--accent-bg);
+  color: var(--accent);
+  border: 1px solid var(--accent-border);
+  border-radius: 20px;
+  padding: 3px 12px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
 .keyboard-hint {
   text-align: center;
   font-size: 0.78rem;

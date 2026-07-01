@@ -83,6 +83,7 @@
     <button class="btn-stop-exercise" id="btn-stop-exercise" title="Arrêter et voir les résultats">⏹</button>
     <button class="btn-fullscreen" id="btn-fullscreen" title="Plein écran">⛶</button>
     <div class="progress-section">
+      <div class="example-badge" id="example-badge" style="display:none">Exemple — non comptabilisé</div>
       <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
       <div class="progress-label" id="progress-label"></div>
     </div>
@@ -215,6 +216,11 @@
       </div>
       <!-- Section séquence (cachée en mode Go/No-Go) -->
       <div id="sequence-editor-section">
+        <div class="form-group">
+          <label class="editor-section-label" for="exercise-example-count">Paires d'exemple (non notées) au début</label>
+          <input type="number" id="exercise-example-count" min="0" step="1" value="0">
+          <small class="field-hint">Les N premières paires servent à montrer l'exercice au patient : elles ne comptent pas dans le score et ne sont jamais déplacées par le mélange aléatoire.</small>
+        </div>
         <div class="pairs-header">
           <span class="editor-section-label no-mb">Paires <span class="badge" id="pair-count-badge">0</span></span>
         </div>

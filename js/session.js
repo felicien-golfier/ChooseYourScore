@@ -8,6 +8,7 @@ let previousPairWasCorrect = null;
 let pauseTimer = null;
 let currentPairQuestions = [];
 let currentShuffleEnabled = false;
+let currentExampleCount = 0;
 
 document.getElementById('btn-ready').addEventListener('click', () => {
   exerciseStartTime = Date.now();
@@ -41,8 +42,17 @@ function renderPair() {
     if (pairIndex >= currentPairs.length) finishExercise(); else renderPair();
     return;
   }
-  document.getElementById('progress-fill').style.width  = (pairIndex / currentPairs.length * 100) + '%';
-  document.getElementById('progress-label').textContent = (pairIndex+1) + ' / ' + currentPairs.length;
+  const isExamplePair = pairIndex < currentExampleCount;
+  document.getElementById('example-badge').style.display = isExamplePair ? '' : 'none';
+  if (isExamplePair) {
+    document.getElementById('progress-fill').style.width  = '0%';
+    document.getElementById('progress-label').textContent = 'Exemple ' + (pairIndex + 1) + ' / ' + currentExampleCount;
+  } else {
+    const realIdx   = pairIndex - currentExampleCount;
+    const realTotal = currentPairs.length - currentExampleCount;
+    document.getElementById('progress-fill').style.width  = (realIdx / realTotal * 100) + '%';
+    document.getElementById('progress-label').textContent = (realIdx + 1) + ' / ' + realTotal;
+  }
   document.getElementById('sequence-container').style.display = 'flex';
   document.getElementById('keyboard-hint').textContent = '';
 
@@ -280,7 +290,7 @@ function handleSequenceResponse(chosen, correctAnswers, foundAnswers, pair, ques
   const clickedBtn = Array.from(choicesEl.querySelectorAll('.sequence-choice-btn'))
     .find(b => b.dataset.value === chosen);
   const isCorrect = correctAnswers.includes(chosen);
-  responses.push({ pairId: pair.id, type: 'sequence', questionIndex: qIdx, chosen, isCorrect, correctAnswer: correctAnswers[0] || '', correctAnswers, isRetry: !!isRetry, timeMs: Date.now() - pairStartTime });
+  responses.push({ pairId: pair.id, type: 'sequence', questionIndex: qIdx, chosen, isCorrect, correctAnswer: correctAnswers[0] || '', correctAnswers, isRetry: !!isRetry, isExample: pairIndex < currentExampleCount, timeMs: Date.now() - pairStartTime });
 
   if (isCorrect) {
     foundAnswers.add(chosen);
@@ -310,7 +320,7 @@ function handleClickItemResponse(chosenIdx, correctItemIndices, foundItemIndices
   const allItemEls = Array.from(displayEl.querySelectorAll('.sequence-item-box, .sequence-text-display'));
   const clickedEl  = allItemEls.find(el => el.dataset.itemIndex === String(chosenIdx));
   const isCorrect  = correctItemIndices.includes(chosenIdx);
-  responses.push({ pairId: pair.id, type: 'sequence', questionIndex: qIdx, chosen: String(chosenIdx), isCorrect, correctAnswer: String(correctItemIndices[0] ?? 0), correctAnswers: correctItemIndices.map(String), isRetry: !!isRetry, timeMs: Date.now() - pairStartTime });
+  responses.push({ pairId: pair.id, type: 'sequence', questionIndex: qIdx, chosen: String(chosenIdx), isCorrect, correctAnswer: String(correctItemIndices[0] ?? 0), correctAnswers: correctItemIndices.map(String), isRetry: !!isRetry, isExample: pairIndex < currentExampleCount, timeMs: Date.now() - pairStartTime });
 
   if (isCorrect) {
     foundItemIndices.add(chosenIdx);
@@ -389,7 +399,7 @@ function handleSequenceWrite(typed, correctAnswers, pair, questions, qIdx, isRet
   const q = questions[qIdx];
   const isCorrect = correctAnswers.some(a => a.trim().toLowerCase() === typed.toLowerCase());
   const correctAnswer = correctAnswers[0] || '';
-  responses.push({ pairId: pair.id, type: 'sequence', questionIndex: qIdx, chosen: typed, isCorrect, correctAnswer, correctAnswers, isRetry: !!isRetry, timeMs: Date.now() - pairStartTime });
+  responses.push({ pairId: pair.id, type: 'sequence', questionIndex: qIdx, chosen: typed, isCorrect, correctAnswer, correctAnswers, isRetry: !!isRetry, isExample: pairIndex < currentExampleCount, timeMs: Date.now() - pairStartTime });
   const writeInput    = document.getElementById('seq-write-input');
   const writeFeedback = document.getElementById('seq-write-feedback');
   writeInput.disabled = true;
@@ -421,7 +431,7 @@ function handleDirectionResponse(pressed, correctDir, activeDirs, pair, question
   if (!activeDirs.includes(pressed)) return;
   const q = questions[qIdx];
   const isCorrect = pressed === correctDir;
-  responses.push({ pairId: pair.id, type: 'direction', questionIndex: qIdx, pressed, isCorrect, correctAnswer: correctDir, isRetry: !!isRetry, timeMs: Date.now() - pairStartTime });
+  responses.push({ pairId: pair.id, type: 'direction', questionIndex: qIdx, pressed, isCorrect, correctAnswer: correctDir, isRetry: !!isRetry, isExample: pairIndex < currentExampleCount, timeMs: Date.now() - pairStartTime });
   isWaiting = true;
   const choicesEl = document.getElementById('sequence-choices');
   Array.from(choicesEl.querySelectorAll('[data-dir]')).forEach(btn => {
@@ -468,13 +478,13 @@ function finishExercise(isPartial) {
   let score = 0, totalReactionMs = 0, reactionCount = 0;
   let errorsLeft = 0, errorsRight = 0, hasDirectionQuestions = false;
 
-  const totalQuestionsInExercise = currentPairs.reduce((sum, p) =>
-    sum + (p.questions || [{}]).length, 0);
-  const attemptedQuestions = responses.filter(r => !r.isRetry).length;
+  const totalQuestionsInExercise = currentPairs.reduce((sum, p, idx) =>
+    idx < currentExampleCount ? sum : sum + (p.questions || [{}]).length, 0);
+  const attemptedQuestions = responses.filter(r => !r.isRetry && !r.isExample).length;
   const effectiveTotalQuestions = isPartial ? (attemptedQuestions || 1) : totalQuestionsInExercise;
 
   responses.forEach(r => {
-    if (r.isRetry) return;
+    if (r.isRetry || r.isExample) return;
     if (r.isCorrect) score++;
     totalReactionMs += r.timeMs; reactionCount++;
     if (r.type === 'direction') {
@@ -530,9 +540,7 @@ function finishExercise(isPartial) {
 
 document.getElementById('btn-restart').addEventListener('click', () => {
   if (currentExercise && currentExercise.type !== 'gonogo') {
-    currentPairs = currentShuffleEnabled
-      ? shuffleArray([...currentExercise.pairs])
-      : [...currentExercise.pairs];
+    buildCurrentPairs(currentExercise, currentShuffleEnabled);
   }
   showView('instruction');
 });

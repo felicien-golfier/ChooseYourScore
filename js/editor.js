@@ -190,6 +190,7 @@ function renderExerciseEditor() {
     document.getElementById('gonogo-trial-count').textContent = (ex.trials || []).length;
     renderGoNoGoTrialsList(ex);
   } else {
+    document.getElementById('exercise-example-count').value = ex.exampleCount || 0;
     document.getElementById('pair-count-badge').textContent = (ex.pairs || []).length;
     renderFolderSelect();
     renderPairsList(ex);
@@ -200,12 +201,18 @@ function renderExerciseEditor() {
 function renderPairsList(ex) {
   const list = document.getElementById('pairs-list');
   list.innerHTML = '';
+  const exampleCount = Math.min(ex.exampleCount || 0, (ex.pairs||[]).length);
   (ex.pairs||[]).forEach((pair, i) => {
+    const isExample = i < exampleCount;
     const row = document.createElement('div');
-    row.className = 'pair-row';
+    row.className = 'pair-row' + (isExample ? ' pair-row--example' : '');
     const numBadge = document.createElement('span');
     numBadge.className = 'pair-num-badge';
     numBadge.textContent = i + 1;
+    const exampleTag = document.createElement('span');
+    exampleTag.className = 'badge pair-example-tag';
+    exampleTag.textContent = 'Exemple';
+    exampleTag.style.display = isExample ? '' : 'none';
     const preview = document.createElement('div');
     preview.className = 'pair-preview';
 
@@ -283,7 +290,7 @@ function renderPairsList(ex) {
     downBtn.disabled = (i === ex.pairs.length - 1);
     const deleteBtn  = makePairBtn('✕','delete','Supprimer',  () => deletePair(pair.id));
     actions.append(editBtn, duplicateBtn, mvWrap, deleteBtn);
-    row.append(numBadge, preview, actions);
+    row.append(numBadge, exampleTag, preview, actions);
     list.appendChild(row);
   });
 }
@@ -361,6 +368,14 @@ document.getElementById('exercise-pause-duration').addEventListener('input', () 
   const val = parseFloat(document.getElementById('exercise-pause-duration').value);
   ex.pauseDuration = (!isNaN(val) && val >= 1) ? Math.round(val * 1000) : 5000;
   saveExercises();
+});
+
+document.getElementById('exercise-example-count').addEventListener('input', () => {
+  const ex = getSelectedEx(); if (!ex) return;
+  const val = parseInt(document.getElementById('exercise-example-count').value, 10);
+  ex.exampleCount = (!isNaN(val) && val >= 0) ? val : 0;
+  saveExercises();
+  renderPairsList(ex);
 });
 
 document.getElementById('btn-duplicate-exercise').addEventListener('click', () => {

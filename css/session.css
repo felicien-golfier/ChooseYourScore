@@ -212,6 +212,14 @@ body.is-fullscreen #topbar {
   display: none;
 }
 
+/* Les bulles décoratives débordent volontairement de la carte (cf. playful.css) ;
+   en plein écran la carte occupe tout le viewport, ce débordement crée alors une
+   zone de défilement fantôme qui décale tout le contenu vers la gauche. */
+body.is-fullscreen .view.centered::before,
+body.is-fullscreen .view.centered::after {
+  display: none;
+}
+
 body.is-fullscreen #view-exercise {
   padding: 0;
   justify-content: stretch;

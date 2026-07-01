@@ -332,6 +332,7 @@ body.is-fullscreen .keyboard-hint {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  font-size: var(--base-font-size, 32px);
   transition: box-shadow 0.15s, border-color 0.15s;
 }
 
@@ -408,13 +409,17 @@ body.is-fullscreen .keyboard-hint {
   border: 2px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--surface);
-  font-size: 1.5rem;
+  font-size: var(--base-font-size, 32px);
   line-height: 1.6;
   color: var(--text-1);
   text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.item-char-sized {
+  font-size: var(--base-font-size);
 }
 
 .sequence-choice-btn {
@@ -529,7 +534,7 @@ body.is-fullscreen .sequence-item-box {
   min-width: 120px;
   height: auto;
   min-height: 240px;
-  font-size: 3.5rem;
+  font-size: calc(var(--base-font-size, 32px) * 2);
 }
 
 body.is-fullscreen .sequence-item-box.item-arrow-glyph .item-arrow-svg {
@@ -563,8 +568,12 @@ body.is-fullscreen .sequence-text-display {
   flex: 1;
   min-height: 0;
   overflow: hidden;
-  font-size: 2rem;
+  font-size: calc(var(--base-font-size, 32px) * 2);
   padding: 40px 52px;
+}
+
+body.is-fullscreen .item-char-sized {
+  font-size: calc(var(--base-font-size) * 2) !important;
 }
 
 body.is-fullscreen .sequence-text-display.item-arrow-glyph .item-arrow-svg {

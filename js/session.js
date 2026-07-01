@@ -361,6 +361,8 @@ function advance(pair, questions, qIdx, isRetry) {
     pairIndex++;
     if (pairIndex >= currentPairs.length) {
       finishExercise();
+    } else if (currentExampleCount > 0 && pairIndex === currentExampleCount) {
+      showExampleTransitionScreen(renderPair);
     } else if (currentExercise.pauseBetweenPairs) {
       showPauseScreen();
     } else {
@@ -368,6 +370,27 @@ function advance(pair, questions, qIdx, isRetry) {
     }
   }
 }
+
+let _exampleTransitionResumeFn = null;
+
+// Écran manuel affiché une fois les paires/essais d'exemple terminés, pour marquer
+// clairement la fin de l'entraînement avant de démarrer la partie notée.
+function showExampleTransitionScreen(resumeFn) {
+  if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
+  stopAudio();
+  _exampleTransitionResumeFn = resumeFn;
+  document.getElementById('sequence-container').style.display = 'none';
+  document.getElementById('example-badge').style.display = 'none';
+  document.getElementById('keyboard-hint').textContent = '';
+  document.getElementById('example-transition-screen').style.display = 'flex';
+}
+
+document.getElementById('btn-start-real-exercise').addEventListener('click', () => {
+  document.getElementById('example-transition-screen').style.display = 'none';
+  const resumeFn = _exampleTransitionResumeFn;
+  _exampleTransitionResumeFn = null;
+  if (resumeFn) resumeFn();
+});
 
 function showPauseScreen() {
   if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
@@ -565,6 +588,7 @@ document.getElementById('btn-quit-exercise').addEventListener('click', () => {
   if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
   if (pauseTimer) { clearTimeout(pauseTimer); pauseTimer = null; }
   document.getElementById('seq-pause-screen').style.display = 'none';
+  document.getElementById('example-transition-screen').style.display = 'none';
   _displayGen++;
   _gngCancelTimers();
   stopAudio();
@@ -576,6 +600,7 @@ document.getElementById('btn-stop-exercise').addEventListener('click', () => {
   if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
   if (pauseTimer) { clearTimeout(pauseTimer); pauseTimer = null; }
   document.getElementById('seq-pause-screen').style.display = 'none';
+  document.getElementById('example-transition-screen').style.display = 'none';
   stopAudio();
   if (currentExercise && currentExercise.type === 'gonogo') {
     _gngCancelTimers();
@@ -698,7 +723,7 @@ function _gngRenderTrial() {
     const rt       = Date.now() - _gng.trialStart;
     const isCorrect = trial.isGo;
     _gng.responses.push({ trialId: trial.id, type: 'gonogo', isGo: trial.isGo, reacted: true, isCorrect, isExample: _gng.index < _gng.exampleCount, reactionTimeMs: rt });
-    _gngShowFeedback(isCorrect, () => { _gng.index++; _gngRenderIti(); });
+    _gngShowFeedback(isCorrect, _gngAdvance);
   };
 
   _gng.timer = setTimeout(() => {
@@ -711,12 +736,20 @@ function _gngRenderTrial() {
     const isCorrect = !trial.isGo;
     _gng.responses.push({ trialId: trial.id, type: 'gonogo', isGo: trial.isGo, reacted: false, isCorrect, isExample: _gng.index < _gng.exampleCount, reactionTimeMs: null });
     if (currentExercise.showFeedback !== false && !isCorrect) {
-      _gngShowFeedback(false, () => { _gng.index++; _gngRenderIti(); });
+      _gngShowFeedback(false, _gngAdvance);
     } else {
-      _gng.index++;
-      _gngRenderIti();
+      _gngAdvance();
     }
   }, dur);
+}
+
+function _gngAdvance() {
+  _gng.index++;
+  if (_gng.exampleCount > 0 && _gng.index === _gng.exampleCount) {
+    showExampleTransitionScreen(_gngRenderIti);
+  } else {
+    _gngRenderIti();
+  }
 }
 
 function _gngShowFeedback(isCorrect, onDone) {

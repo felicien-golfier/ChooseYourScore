@@ -327,6 +327,10 @@ body.is-fullscreen .keyboard-hint {
   transition: box-shadow 0.15s, border-color 0.15s;
 }
 
+.item-arrow-glyph {
+  font-size: 72px;
+}
+
 .seq-sound-wrapper {
   position: relative;
   flex: 1;
@@ -397,6 +401,9 @@ body.is-fullscreen .keyboard-hint {
   line-height: 1.6;
   color: var(--text-1);
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sequence-choice-btn {
@@ -512,6 +519,10 @@ body.is-fullscreen .sequence-item-box {
   font-size: 3.5rem;
 }
 
+body.is-fullscreen .sequence-item-box.item-arrow-glyph {
+  font-size: 4.5rem;
+}
+
 body.is-fullscreen .seq-sound-wrapper {
   flex: 1;
   display: flex;
@@ -538,6 +549,10 @@ body.is-fullscreen .sequence-text-display {
   flex: 1;
   font-size: 2rem;
   padding: 40px 52px;
+}
+
+body.is-fullscreen .sequence-text-display.item-arrow-glyph {
+  font-size: min(24vw, 42vh);
 }
 
 body.is-fullscreen .sequence-choice-btn {

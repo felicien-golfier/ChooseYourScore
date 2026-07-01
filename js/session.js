@@ -591,7 +591,7 @@ document.getElementById('btn-fullscreen-setup').addEventListener('click', toggle
 // ═══════════════════════════════════════════════════════════════════════════════
 // GO / NO-GO SESSION
 // ═══════════════════════════════════════════════════════════════════════════════
-let _gng = { trials: [], index: 0, responses: [], timer: null, itiTimer: null, trialStart: 0, gen: 0 };
+let _gng = { trials: [], index: 0, responses: [], timer: null, itiTimer: null, trialStart: 0, gen: 0, exampleCount: 0 };
 
 function _gngCancelTimers() {
   if (_gng.timer)    { clearTimeout(_gng.timer);    _gng.timer    = null; }
@@ -603,10 +603,11 @@ function _gngCancelTimers() {
 }
 
 function startGoNoGoSession() {
-  _gng.trials    = currentExercise.trials || [];
-  _gng.index     = 0;
-  _gng.responses = [];
-  _gng.gen       = 0;
+  _gng.trials       = currentExercise.trials || [];
+  _gng.index        = 0;
+  _gng.responses    = [];
+  _gng.gen          = 0;
+  _gng.exampleCount = Math.min(currentExercise.exampleTrialCount || 0, _gng.trials.length);
   document.getElementById('sequence-container').style.display = 'flex';
   document.getElementById('keyboard-hint').textContent = 'Cliquez sur l\'item si c\'est un signal GO';
   document.getElementById('sequence-question').style.display  = 'none';
@@ -637,8 +638,17 @@ function _gngRenderIti() {
   fix.style.cssText = 'color:var(--border);font-size:56px;font-weight:300;user-select:none';
   display.appendChild(fix);
 
-  document.getElementById('progress-fill').style.width  = (_gng.index / _gng.trials.length * 100) + '%';
-  document.getElementById('progress-label').textContent = (_gng.index + 1) + ' / ' + _gng.trials.length;
+  const isExampleTrial = _gng.index < _gng.exampleCount;
+  document.getElementById('example-badge').style.display = isExampleTrial ? '' : 'none';
+  if (isExampleTrial) {
+    document.getElementById('progress-fill').style.width  = '0%';
+    document.getElementById('progress-label').textContent = 'Exemple ' + (_gng.index + 1) + ' / ' + _gng.exampleCount;
+  } else {
+    const realIdx   = _gng.index - _gng.exampleCount;
+    const realTotal = _gng.trials.length - _gng.exampleCount;
+    document.getElementById('progress-fill').style.width  = (realIdx / realTotal * 100) + '%';
+    document.getElementById('progress-label').textContent = (realIdx + 1) + ' / ' + realTotal;
+  }
 
   const gen = ++_gng.gen;
   _gng.itiTimer = setTimeout(() => {
@@ -687,7 +697,7 @@ function _gngRenderTrial() {
 
     const rt       = Date.now() - _gng.trialStart;
     const isCorrect = trial.isGo;
-    _gng.responses.push({ trialId: trial.id, type: 'gonogo', isGo: trial.isGo, reacted: true, isCorrect, reactionTimeMs: rt });
+    _gng.responses.push({ trialId: trial.id, type: 'gonogo', isGo: trial.isGo, reacted: true, isCorrect, isExample: _gng.index < _gng.exampleCount, reactionTimeMs: rt });
     _gngShowFeedback(isCorrect, () => { _gng.index++; _gngRenderIti(); });
   };
 
@@ -699,7 +709,7 @@ function _gngRenderTrial() {
     _gng.timer = null;
 
     const isCorrect = !trial.isGo;
-    _gng.responses.push({ trialId: trial.id, type: 'gonogo', isGo: trial.isGo, reacted: false, isCorrect, reactionTimeMs: null });
+    _gng.responses.push({ trialId: trial.id, type: 'gonogo', isGo: trial.isGo, reacted: false, isCorrect, isExample: _gng.index < _gng.exampleCount, reactionTimeMs: null });
     if (currentExercise.showFeedback !== false && !isCorrect) {
       _gngShowFeedback(false, () => { _gng.index++; _gngRenderIti(); });
     } else {
@@ -722,9 +732,10 @@ function _gngShowFeedback(isCorrect, onDone) {
 function finishGoNoGo(isPartial) {
   _gngCancelTimers();
 
-  const resp    = _gng.responses;
+  const allResp = _gng.responses;
+  const resp    = allResp.filter(r => !r.isExample);
   const trials  = _gng.trials;
-  const total   = isPartial ? resp.length : trials.length;
+  const total   = isPartial ? resp.length : (trials.length - _gng.exampleCount);
 
   const hits               = resp.filter(r =>  r.isGo &&  r.reacted).length;
   const misses             = resp.filter(r =>  r.isGo && !r.reacted).length;
@@ -742,7 +753,7 @@ function finishGoNoGo(isPartial) {
     totalPairs: total || 1, score: totalCorrect,
     sessionType: 'gonogo',
     gonogoMetrics: { hits, misses, falseAlarms, correctRejections, avgRt },
-    responses: resp, notes: '',
+    responses: allResp, notes: '',
     ...(isPartial ? { partial: true } : {}),
   };
   sessions.push(newSession);

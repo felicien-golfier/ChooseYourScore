@@ -96,8 +96,9 @@ function applyItemStyle(el, item) {
   if (itype === 'arrow') {
     const ac = resolveArrowColor(item.bgColor || '#3b82f6');
     el.style.background = ac.bg; el.style.color = ac.fg;
-    el.style.backgroundImage = ''; el.style.fontSize = '72px';
+    el.style.backgroundImage = '';
     el.style.fontFamily = 'inherit'; el.style.textTransform = 'none';
+    el.classList.add('item-arrow-glyph');
     el.textContent = ARROW_CHARS[item.arrowDirection || 'left'] || '←';
     return;
   }

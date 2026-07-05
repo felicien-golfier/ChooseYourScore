@@ -1,0 +1,35 @@
+{
+  "exercises": [
+    {
+      "id": "ex_flex2_fleches",
+      "name": "Flex 2 flèches",
+      "instruction": "Flèche verte : cliquez sur la flèche identique\nFlèche rouge : cliquez sur la flèche inverse",
+      "folderId": "fold_flex_inhibition",
+      "defaultDisplayDuration": 1200,
+      "exampleCount": 2,
+      "pairs": [
+        { "id": "p_flex2_ex1", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
+        { "id": "p_flex2_ex2", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
+        { "id": "p_flex2_01", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
+        { "id": "p_flex2_02", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
+        { "id": "p_flex2_03", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
+        { "id": "p_flex2_04", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
+        { "id": "p_flex2_05", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
+        { "id": "p_flex2_06", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
+        { "id": "p_flex2_07", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
+        { "id": "p_flex2_08", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
+        { "id": "p_flex2_09", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
+        { "id": "p_flex2_10", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
+        { "id": "p_flex2_11", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
+        { "id": "p_flex2_12", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
+        { "id": "p_flex2_13", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
+        { "id": "p_flex2_14", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
+        { "id": "p_flex2_15", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
+        { "id": "p_flex2_16", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] }
+      ]
+    }
+  ],
+  "folders": [
+    { "id": "fold_flex_inhibition", "name": "flexibilité/inhibition" }
+  ]
+}

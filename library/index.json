@@ -1,6 +1,5 @@
-{ 
-  "files": [ 
-    { "name": "cys-exercices-2026-06-29", "file": "cys-exercices-2026-06-29.json" } 
-    ,{ "name": "exemple-animaux", "file": "exemple-animaux.json" } 
-  ] 
-} 
+{
+  "files": [
+    { "name": "fonctions exécutives", "file": "fonctions-executives.json" }
+  ]
+}

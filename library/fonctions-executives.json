@@ -4816,12 +4816,1786 @@
       "type": "gonogo",
       "defaultTrialDuration": 1200,
       "iti": 200
+    },
+    {
+      "id": "ex_1779606857371_up1r",
+      "name": "Mots en majuscule avec interférence",
+      "instruction": "Quel mot était en majuscule ?",
+      "pairs": [
+        {
+          "id": "pair_1779606857371_w8mu",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "endive",
+              "color": "#1bb6b3",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "fourmi",
+              "color": "#e74dea",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "parapluie",
+              "color": "#15c62a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Quel est le 1er jour de la semaine ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "lundi",
+                "mercredi",
+                "vendredi",
+                "dimanche"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Quel mot était en majuscule ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": true,
+              "choices": [
+                "parapluie",
+                "endive",
+                "fourmi"
+              ],
+              "correctIndices": [
+                0,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1780434238997_ro2r",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "carotte",
+              "color": "#e74dea",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "guêpe",
+              "color": "#15c62a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "frigo",
+              "color": "#1bb6b3",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "De quel couleur est le maïs ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "jaune",
+                "violet",
+                "rose",
+                "bleu"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Quel était le mot en majuscule ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": true,
+              "choices": [
+                "carotte",
+                "guêpe",
+                "frigo"
+              ],
+              "correctIndices": [
+                0,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779606857371_xjta",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "poireau",
+              "color": "#15c62a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "valise",
+              "color": "#e74dea",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "libellule",
+              "color": "#1bb6b3",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Combien avez-vous de doigts ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "10",
+                "3",
+                "5",
+                "9"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Quel était le mot en majuscule ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": true,
+              "choices": [
+                "libellule",
+                "valise",
+                "poireau"
+              ],
+              "correctIndices": [
+                0,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1780434203805_legu",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "scarabée",
+              "color": "#e74dea",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "aubergine",
+              "color": "#15c62a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "balance",
+              "color": "#1bb6b3",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Qui n'est pas un mammifère ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "requin",
+                "vache",
+                "dauphin",
+                "castor"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Quel était le mot en majuscule ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": true,
+              "choices": [
+                "scarabée",
+                "aubergine",
+                "balance"
+              ],
+              "correctIndices": [
+                0,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1781909842742_vrvc",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "nappe",
+              "color": "#1bb6b3",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "abeille",
+              "color": "#15c62a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "haricot",
+              "color": "#e74dea",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Quel animal chante le matin ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "le coq",
+                "le chat",
+                "l'âne",
+                "la poule"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Quel mot était en majuscule ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": true,
+              "choices": [
+                "haricot",
+                "nappe",
+                "abeille"
+              ],
+              "correctIndices": [
+                0,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779606857371_j10j",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "radis",
+              "color": "#e74dea",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "coccinelle",
+              "color": "#15c62a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "mallette",
+              "color": "#1bb6b3",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Lors de quel fête chasse-t-on les oeufs ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "Pâques",
+                "l'Ascension",
+                "Noël",
+                "fête des mères"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Quel était le mot en majuscule ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": true,
+              "choices": [
+                "coccinelle",
+                "radis",
+                "mallette"
+              ],
+              "correctIndices": [
+                0,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1781909151413_n3uo",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "PUCERON",
+              "color": "#15c62a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "tableau",
+              "color": "#e74dea",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "scarole",
+              "color": "#1bb6b3",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Quelle fleur pousse dans les champs ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "coquelicot",
+                "rose",
+                "jasmin",
+                "muguet"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Quel était le mot en majuscule ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": true,
+              "choices": [
+                "puceron",
+                "scarole",
+                "tableau"
+              ],
+              "correctIndices": [
+                2,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1781908873874_ierw",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "BROCOLi",
+              "color": "#e74dea",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "boîte",
+              "color": "#1bb6b3",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "mouche",
+              "color": "#15c62a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Qu'est-ce qui comporte une couverture et des pages ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "un livre",
+                "un tableau",
+                "un bouquet",
+                "une surprise"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Quel mot était en majuscule ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": true,
+              "choices": [
+                "boîte",
+                "mouche",
+                "brocoli"
+              ],
+              "correctIndices": [
+                2,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1781908652286_3h0l",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "blatte",
+              "color": "#15c62a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "chou",
+              "color": "#e74dea",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "ordinateur",
+              "color": "#1bb6b3",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Sur quoi pose-t-on sa tête pour dormir ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "oreiller",
+                "couette",
+                "coussin",
+                "drap"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Quel était le mot en majuscule ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": true,
+              "choices": [
+                "chou",
+                "blatte",
+                "ordinateur"
+              ],
+              "correctIndices": [
+                0,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1781909568574_ensv",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "moustique",
+              "color": "#e74dea",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "blette",
+              "color": "#1bb6b3",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "raquette",
+              "color": "#15c62a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Sur quoi s'assoit-on à plusieurs dans le salon ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "canapé",
+                "table",
+                "fauteuil",
+                "lit"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Quel était le mot en majuscule ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": true,
+              "choices": [
+                "raquette",
+                "moustique",
+                "blette"
+              ],
+              "correctIndices": [
+                0,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782472289334_bjyn",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "ARTICHAUT",
+              "color": "#1bb6b3",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "tiroir",
+              "color": "#15c62a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "Ver luisant",
+              "color": "#e74dea",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Quel animal ne pond pas d'œufs ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "le dindon",
+                "la mésange",
+                "la cane",
+                "l'oie"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Quel mot était en majuscule ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": true,
+              "choices": [
+                "artichaut",
+                "tiroir",
+                "ver luisant"
+              ],
+              "correctIndices": [
+                0,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782472540816_ccoo",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "SAUTERELLE",
+              "color": "#15c62a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "bac",
+              "color": "#1bb6b3",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "échalote",
+              "color": "#e74dea",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Quel fruit jaune fait partie de la famille des agrumes ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "citron",
+                "clémentine",
+                "avocat",
+                "banane"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Quel était le mot en majuscule ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": true,
+              "choices": [
+                "bac",
+                "échalote",
+                "sauterelle"
+              ],
+              "correctIndices": [
+                2,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782473167805_ppbc",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Sacoche",
+              "color": "#e74dea",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "fenouil",
+              "color": "#15c62a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "taon",
+              "color": "#1bb6b3",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Cochez les sports d'hiver :",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "le ski",
+                "l'escalade",
+                "le bobsleigh",
+                "le golf"
+              ],
+              "correctIndices": [
+                0,
+                2,
+                4
+              ]
+            },
+            {
+              "questionText": "Quel mot était en majuscule ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": true,
+              "choices": [
+                "taon",
+                "fenouil",
+                "sacoche"
+              ],
+              "correctIndices": [
+                2,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782472836193_ct0w",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "bocal",
+              "color": "#15c62a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "papillon",
+              "color": "#e74dea",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "citrouille",
+              "color": "#1bb6b3",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Quelle est la capitale de la Belgique ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "Bruxelles",
+                "Rome",
+                "Madrid",
+                "Paris"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Quel était le mot en majuscule ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": true,
+              "choices": [
+                "bocal",
+                "papillon",
+                "citrouille"
+              ],
+              "correctIndices": [
+                2,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782473412638_rv8n",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "toupie",
+              "color": "#1bb6b3",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "lucane",
+              "color": "#e74dea",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "épinard",
+              "color": "#15c62a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "De quel côté se lève le soleil ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "est",
+                "nord",
+                "ouest",
+                "sud"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Quel mot était en majuscule ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": true,
+              "choices": [
+                "lucane",
+                "épinard",
+                "toupie"
+              ],
+              "correctIndices": [
+                0,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782473775467_e4w6",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "phasme",
+              "color": "#1bb6b3",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "trousseau",
+              "color": "#15c62a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "chou-fleur",
+              "color": "#e74dea",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Qu'est-ce qui est froid et servi en cornet ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "une glace",
+                "un biscuit",
+                "une guimauve",
+                "une cacahuète"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Quel mot était en majuscule ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": true,
+              "choices": [
+                "trousseau",
+                "chou-fleur",
+                "phasme"
+              ],
+              "correctIndices": [
+                0,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782474479623_171r",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "punaise",
+              "color": "#15c62a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "courgette",
+              "color": "#1bb6b3",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "phare",
+              "color": "#e74dea",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Quel sport se joue avec une raquette et un volant ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "badminton",
+                "ping-pong",
+                "tennis",
+                "Formule 1"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Quel était le mot en majuscule ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": true,
+              "choices": [
+                "punaise",
+                "courgette",
+                "phare"
+              ],
+              "correctIndices": [
+                2,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782472029117_qsk9",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "scolopendre",
+              "color": "#e74dea",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "fève",
+              "color": "#1bb6b3",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "ventilateur",
+              "color": "#15c62a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Combien font 8x6 ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "48",
+                "42",
+                "64",
+                "36"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Quel mot était en majuscule ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": true,
+              "choices": [
+                "ventilateur",
+                "scolopendre",
+                "fève"
+              ],
+              "correctIndices": [
+                2,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782474727408_d54q",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "MILLEPATTE",
+              "color": "#1bb6b3",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "asperge",
+              "color": "#15c62a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "cadenas",
+              "color": "#e74dea",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Quel animal grogne ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "lion",
+                "vache",
+                "chat",
+                "cochon"
+              ],
+              "correctIndices": [
+                3,
+                4
+              ]
+            },
+            {
+              "questionText": "Quel mot était en majuscule ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": true,
+              "choices": [
+                "millepatte",
+                "cadenas",
+                "asperge"
+              ],
+              "correctIndices": [
+                0,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782475060703_8qz7",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "concombre",
+              "color": "#15c62a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "briquet",
+              "color": "#e74dea",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "grillon",
+              "color": "#1bb6b3",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Comment s'appelle le chien de Tintin ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "Milou",
+                "Rintintin",
+                "Rantanplan",
+                "Lassi"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Quel était le mot en majuscule ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": true,
+              "choices": [
+                "grillon",
+                "concombre",
+                "briquet"
+              ],
+              "correctIndices": [
+                2,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        }
+      ],
+      "folderId": "fold_memoire_travail",
+      "defaultDisplayDuration": 3000
     }
   ],
   "folders": [
     {
       "id": "fold_flex_inhibition",
       "name": "flexibilité/inhibition"
+    },
+    {
+      "id": "fold_memoire_travail",
+      "name": "mémoire de travail"
     }
   ]
 }

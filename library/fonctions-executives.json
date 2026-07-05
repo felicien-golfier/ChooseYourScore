@@ -1,32 +1,546 @@
 {
   "exercises": [
     {
-      "id": "ex_flex2_fleches",
-      "name": "Flex 2 flèches",
-      "instruction": "Flèche verte : cliquez sur la flèche identique\nFlèche rouge : cliquez sur la flèche inverse",
-      "folderId": "fold_flex_inhibition",
-      "defaultDisplayDuration": 1200,
-      "exampleCount": 2,
+      "id": "ex_1775502064795_7rkb",
+      "name": "Flex 2 Flèches ",
+      "instruction": "Flèche sur fond VERT : cliquer sur la flèche identique\n\nFlèche sur fond ROUGE : cliquer sur la flèche opposée",
       "pairs": [
-        { "id": "p_flex2_ex1", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
-        { "id": "p_flex2_ex2", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
-        { "id": "p_flex2_01", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
-        { "id": "p_flex2_02", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
-        { "id": "p_flex2_03", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
-        { "id": "p_flex2_04", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
-        { "id": "p_flex2_05", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
-        { "id": "p_flex2_06", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
-        { "id": "p_flex2_07", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
-        { "id": "p_flex2_08", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
-        { "id": "p_flex2_09", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
-        { "id": "p_flex2_10", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
-        { "id": "p_flex2_11", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
-        { "id": "p_flex2_12", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
-        { "id": "p_flex2_13", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
-        { "id": "p_flex2_14", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
-        { "id": "p_flex2_15", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
-        { "id": "p_flex2_16", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] }
-      ]
+        {
+          "id": "pair_1776628531408_uar8",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "same",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1775502285330_agro",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "inverse",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1775502270137_vc6m",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "inverse",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1775502293616_e5se",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "same",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1776628259581_wxkz",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "rule": "same",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false
+        },
+        {
+          "id": "pair_1776628542717_hfs4",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "inverse",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1776628549418_kjbp",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "rule": "same",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false
+        },
+        {
+          "id": "pair_1776628561143_9pny",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "inverse",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1776628569548_cwtu",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "inverse",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1776628571618_5vs6",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "same",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1776628579967_cod9",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "inverse",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1776628591107_3rkp",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "same",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1776628596428_g7mn",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "same",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1776628615717_aqsx",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "rule": "same",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false
+        },
+        {
+          "id": "pair_1776628623433_zkcr",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "rule": "inverse",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false
+        },
+        {
+          "id": "pair_1776628634218_xy5v",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "inverse",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1776628637259_j4sg",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "rule": "inverse",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false
+        },
+        {
+          "id": "pair_1776628643485_8ww9",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "same",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1776628654247_ya2j",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "inverse",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1776628662448_w4wb",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "same",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        }
+      ],
+      "folderId": "fold_flex_inhibition",
+      "pauseBetweenPairs": true,
+      "pauseDuration": 1000
     }
   ],
   "folders": [

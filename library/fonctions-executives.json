@@ -1,35 +1,4827 @@
 {
   "exercises": [
     {
-      "id": "ex_flex2_fleches",
-      "name": "Flex 2 flèches",
-      "instruction": "Flèche verte : cliquez sur la flèche identique\nFlèche rouge : cliquez sur la flèche inverse",
-      "folderId": "fold_flex_inhibition",
-      "defaultDisplayDuration": 1200,
-      "exampleCount": 2,
+      "id": "ex_1775502064795_7rkb",
+      "name": "Flex 2 Flèches ",
+      "instruction": "Flèche sur fond VERT : cliquer sur la flèche identique\n\nFlèche sur fond ROUGE : cliquer sur la flèche opposée",
       "pairs": [
-        { "id": "p_flex2_ex1", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
-        { "id": "p_flex2_ex2", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
-        { "id": "p_flex2_01", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
-        { "id": "p_flex2_02", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
-        { "id": "p_flex2_03", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
-        { "id": "p_flex2_04", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
-        { "id": "p_flex2_05", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
-        { "id": "p_flex2_06", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
-        { "id": "p_flex2_07", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
-        { "id": "p_flex2_08", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
-        { "id": "p_flex2_09", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
-        { "id": "p_flex2_10", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
-        { "id": "p_flex2_11", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
-        { "id": "p_flex2_12", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
-        { "id": "p_flex2_13", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] },
-        { "id": "p_flex2_14", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
-        { "id": "p_flex2_15", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "right", "bgColor": "#ef4444" } ], "questions": [ { "type": "direction", "rule": "inverse", "numOptions": 2 } ] },
-        { "id": "p_flex2_16", "useExerciseDefault": true, "items": [ { "type": "arrow", "arrowDirection": "left", "bgColor": "#22c55e" } ], "questions": [ { "type": "direction", "rule": "same", "numOptions": 2 } ] }
-      ]
+        {
+          "id": "pair_1776628531408_uar8",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "same",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1775502285330_agro",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "inverse",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1775502270137_vc6m",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "inverse",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1775502293616_e5se",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "same",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1776628259581_wxkz",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "rule": "same",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false
+        },
+        {
+          "id": "pair_1776628542717_hfs4",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "inverse",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1776628549418_kjbp",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "rule": "same",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false
+        },
+        {
+          "id": "pair_1776628561143_9pny",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "inverse",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1776628569548_cwtu",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "inverse",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1776628571618_5vs6",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "same",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1776628579967_cod9",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "inverse",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1776628591107_3rkp",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "same",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1776628596428_g7mn",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "same",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1776628615717_aqsx",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "rule": "same",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false
+        },
+        {
+          "id": "pair_1776628623433_zkcr",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "rule": "inverse",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false
+        },
+        {
+          "id": "pair_1776628634218_xy5v",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "inverse",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1776628637259_j4sg",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "rule": "inverse",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false
+        },
+        {
+          "id": "pair_1776628643485_8ww9",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "same",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1776628654247_ya2j",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "inverse",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1776628662448_w4wb",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "rule": "same",
+              "numOptions": 2
+            }
+          ],
+          "skipDisplay": true,
+          "hideItems": false,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        }
+      ],
+      "folderId": "fold_flex_inhibition",
+      "pauseBetweenPairs": true,
+      "pauseDuration": 1000
+    },
+    {
+      "id": "ex_1775763221047_nsft",
+      "name": "Flex 3 Flèches ",
+      "instruction": "Flèche sur fond VERT : cliquer sur la flèche identique\n\nFlèche sur fond ROUGE : cliquer sur la flèche opposée",
+      "pairs": [
+        {
+          "id": "pair_1777303499377_peac",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "inverse",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1775763221047_xg5m",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "same",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1775763221047_kh41",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "down",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "inverse",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1775763221047_dj3u",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "up",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "same",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1777303386593_znkh",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "up",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "same",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1777303390499_zdda",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "down",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "inverse",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1777303379811_mwlv",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "same",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1777303391040_qw5o",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "down",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "inverse",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1777303393832_x2nj",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "inverse",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1777303381732_9huq",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "same",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1777303460349_rf79",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "same",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1777303394050_7mhr",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "inverse",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1777303381306_k1qg",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "same",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1777303390814_yydk",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "down",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "inverse",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1777303485048_x7x8",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "inverse",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1777303387026_z2tn",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "up",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "same",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1777303475224_gq9j",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "same",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1775763221047_q1fk",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "inverse",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1777303474992_ryz0",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "same",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1777303499662_d1vi",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "inverse",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1777303393633_32dm",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "right",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "inverse",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1777303474600_ghgs",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "same",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1777303385931_webm",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "up",
+              "bgColor": "#00ff00"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "same",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1777303498914_6740",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "arrow",
+              "arrowDirection": "left",
+              "bgColor": "#ff0000"
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "direction",
+              "showOnRetry": false,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "rule": "inverse",
+              "numOptions": 3
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        }
+      ],
+      "folderId": "fold_flex_inhibition"
+    },
+    {
+      "id": "ex_1781907204315_vovn",
+      "name": "Alternance majuscule/minuscule",
+      "instruction": "Choisir en alternance sur le mot en majuscule et en minuscule.\nCommencer par le mot en minuscule.",
+      "pairs": [
+        {
+          "id": "pair_1781907204315_a4rw",
+          "type": "sequence",
+          "items": [
+            {
+              "text": "camion",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "text": "âne",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": false,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781907204315_57de",
+          "type": "sequence",
+          "items": [
+            {
+              "text": "hibou",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "text": "autocar",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781907204315_a9my",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "belette",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "text": "trottinette",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": false,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781907204315_u025",
+          "type": "sequence",
+          "items": [
+            {
+              "text": "train",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "tortue",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781907204315_gh9g",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "chat",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "scooter",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781907204315_2o6z",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "hélicoptère",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "veau",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781907204315_3yfb",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "mobylette",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "panthère",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781907204315_csne",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "lapin",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "fourgon",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781907204315_n41v",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "baleine",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "cargo",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781907204315_mmzo",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "paon",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "voilier",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781907204315_ghio",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "calèche",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "koala",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781907204315_wvy1",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "tracteur",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "requin",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781907204315_5ppc",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "tricycle",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "guêpe",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781907204315_oi73",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "paquebot",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "héron",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781907204315_bf69",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "poule",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "fusée",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781907204315_6gis",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "canoë",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "PUMA",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781907204315_zlou",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "toucan",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "PATINETTE",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781907204315_kafm",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "triporteur",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "blatte",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781907204315_9ltp",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "porte-avion",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "phoque",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781907204315_bjmu",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "marcassin",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "dirigeable",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        }
+      ],
+      "folderId": "fold_flex_inhibition",
+      "defaultDisplayDuration": 100
+    },
+    {
+      "id": "ex_1781908123868_yrmq",
+      "name": "Alternance vert/orange",
+      "instruction": "Choisir en alternance le mot écrit en orange et vert. \nCommencer par le mot écrit en vert.",
+      "pairs": [
+        {
+          "id": "pair_1781908123868_yyv4",
+          "type": "sequence",
+          "items": [
+            {
+              "text": "hibou",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "text": "autocar",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781908123868_md27",
+          "type": "sequence",
+          "items": [
+            {
+              "text": "camion",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "text": "âne",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": false,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781908123868_ibqo",
+          "type": "sequence",
+          "items": [
+            {
+              "text": "train",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "tortue",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781908123868_u0sr",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "belette",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "text": "trottinette",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": false,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781908123868_b1me",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "chat",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "scooter",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781908123868_f0dz",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "hélicoptère",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "veau",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781908123868_tyyg",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "mobylette",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "panthère",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781908123868_kf16",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "lapin",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "fourgon",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781908123868_n337",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "baleine",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "cargo",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781908123868_rk3d",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "calèche",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "koala",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781908123868_t3rr",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "paon",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "voilier",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781908123868_ailw",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "tracteur",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "requin",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781908123868_o16v",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "tricycle",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "guêpe",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781908123868_xut7",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "paquebot",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "héron",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781908123868_tcsu",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "poule",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "fusée",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781908123868_eml8",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "canoë",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "PUMA",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781908123868_n3uf",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "toucan",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "PATINETTE",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781908123868_zdhe",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "porte-avion",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "phoque",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781908123868_gdga",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "triporteur",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "blatte",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781908123868_yd4w",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "marcassin",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "dirigeable",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        }
+      ],
+      "folderId": "fold_flex_inhibition",
+      "defaultDisplayDuration": 100
+    },
+    {
+      "id": "ex_1777152792403_cly9",
+      "name": "Alternance véhicule / animal",
+      "instruction": "Choisir en alternance l'animal et le véhicule. \nCommencer par le véhicule.",
+      "pairs": [
+        {
+          "id": "pair_1777152792403_80r8",
+          "type": "sequence",
+          "items": [
+            {
+              "text": "camion",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "text": "âne",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": false,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1777152792403_98qg",
+          "type": "sequence",
+          "items": [
+            {
+              "text": "hibou",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "text": "autocar",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1777152792403_ofwq",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "belette",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "text": "trottinette",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": false,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1777152792403_0fwu",
+          "type": "sequence",
+          "items": [
+            {
+              "text": "train",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "tortue",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1779802742640_rfjy",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "chat",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "scooter",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1779802809476_pdcf",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "hélicoptère",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "veau",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1780070821008_ycck",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "mobylette",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "panthère",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1779803056203_0h3l",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "lapin",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "fourgon",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1779802874475_hb5c",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "baleine",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "cargo",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1780070945750_0m0v",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "paon",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "voilier",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1780090476629_r4pg",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "calèche",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "koala",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1780090526753_bm6h",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "tracteur",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "requin",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1780090582266_sfop",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "tricycle",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "guêpe",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1780090645100_yv3p",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "paquebot",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "héron",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1780090708566_ayiq",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "poule",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "fusée",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781906421546_0em9",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "canoë",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "PUMA",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781906532847_zk1i",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "toucan",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "PATINETTE",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781906733259_qr5m",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "triporteur",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "blatte",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                1,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781906938535_zvuq",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "porte-avion",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "phoque",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        },
+        {
+          "id": "pair_1781906980585_lg1d",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "marcassin",
+              "color": "#00ff00",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "lowercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            },
+            {
+              "type": "text",
+              "text": "dirigeable",
+              "color": "#ff8000",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "uppercase",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": 0,
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⟵",
+                "⟶"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            }
+          ],
+          "skipDisplay": true,
+          "visibilityMode": "always_show",
+          "useExerciseDefault": false
+        }
+      ],
+      "folderId": "fold_flex_inhibition",
+      "defaultDisplayDuration": 100
+    },
+    {
+      "id": "ex_1781621023462_cwpm",
+      "name": "Inhib lettres",
+      "instruction": "Cliquer uniquement sur la lettre.",
+      "pairs": [],
+      "folderId": "fold_flex_inhibition",
+      "defaultDisplayDuration": 2000,
+      "trials": [
+        {
+          "id": "trial_1782718701986_o9qg",
+          "item": {
+            "type": "text",
+            "text": "B",
+            "color": "#1a1a1a",
+            "fontSize": 64,
+            "fontFamily": "Arial",
+            "textTransform": "none",
+            "fontWeight": "bold",
+            "fontStyle": "normal"
+          },
+          "isGo": false,
+          "duration": null
+        },
+        {
+          "id": "trial_1782718731163_oks0",
+          "item": {
+            "type": "text",
+            "text": "A",
+            "color": "#1a1a1a",
+            "fontSize": 64,
+            "fontFamily": "Arial",
+            "textTransform": "none",
+            "fontWeight": "bold",
+            "fontStyle": "normal",
+            "bgColor": "#ffffff",
+            "imageUrl": null,
+            "audioUrl": null
+          },
+          "isGo": true,
+          "duration": null
+        },
+        {
+          "id": "trial_1782718740302_f8vf",
+          "item": {
+            "type": "text",
+            "text": "A",
+            "color": "#1a1a1a",
+            "fontSize": 64,
+            "fontFamily": "Arial",
+            "textTransform": "none",
+            "fontWeight": "bold",
+            "fontStyle": "normal",
+            "bgColor": "#ffffff",
+            "imageUrl": null,
+            "audioUrl": null
+          },
+          "isGo": true,
+          "duration": null
+        },
+        {
+          "id": "trial_1782718744911_w43o",
+          "item": {
+            "type": "text",
+            "text": "B",
+            "color": "#1a1a1a",
+            "fontSize": 64,
+            "fontFamily": "Arial",
+            "textTransform": "none",
+            "fontWeight": "bold",
+            "fontStyle": "normal",
+            "bgColor": "#ffffff",
+            "imageUrl": null,
+            "audioUrl": null
+          },
+          "isGo": false,
+          "duration": null
+        },
+        {
+          "id": "trial_1782718749625_41oe",
+          "item": {
+            "type": "text",
+            "text": "B",
+            "color": "#1a1a1a",
+            "fontSize": 64,
+            "fontFamily": "Arial",
+            "textTransform": "none",
+            "fontWeight": "bold",
+            "fontStyle": "normal",
+            "bgColor": "#ffffff",
+            "imageUrl": null,
+            "audioUrl": null
+          },
+          "isGo": false,
+          "duration": null
+        },
+        {
+          "id": "trial_1782718754854_7nzf",
+          "item": {
+            "type": "text",
+            "text": "A",
+            "color": "#1a1a1a",
+            "fontSize": 64,
+            "fontFamily": "Arial",
+            "textTransform": "none",
+            "fontWeight": "bold",
+            "fontStyle": "normal",
+            "bgColor": "#ffffff",
+            "imageUrl": null,
+            "audioUrl": null
+          },
+          "isGo": true,
+          "duration": null
+        },
+        {
+          "id": "trial_1782718770450_98iz",
+          "item": {
+            "type": "text",
+            "text": "B",
+            "color": "#1a1a1a",
+            "fontSize": 64,
+            "fontFamily": "Arial",
+            "textTransform": "none",
+            "fontWeight": "bold",
+            "fontStyle": "normal",
+            "bgColor": "#ffffff",
+            "imageUrl": null,
+            "audioUrl": null
+          },
+          "isGo": false,
+          "duration": null
+        },
+        {
+          "id": "trial_1782718775803_4s1c",
+          "item": {
+            "type": "text",
+            "text": "A",
+            "color": "#1a1a1a",
+            "fontSize": 64,
+            "fontFamily": "Arial",
+            "textTransform": "none",
+            "fontWeight": "bold",
+            "fontStyle": "normal",
+            "bgColor": "#ffffff",
+            "imageUrl": null,
+            "audioUrl": null
+          },
+          "isGo": true,
+          "duration": null
+        },
+        {
+          "id": "trial_1782718779784_ee5d",
+          "item": {
+            "type": "text",
+            "text": "A",
+            "color": "#1a1a1a",
+            "fontSize": 64,
+            "fontFamily": "Arial",
+            "textTransform": "none",
+            "fontWeight": "bold",
+            "fontStyle": "normal",
+            "bgColor": "#ffffff",
+            "imageUrl": null,
+            "audioUrl": null
+          },
+          "isGo": true,
+          "duration": null
+        },
+        {
+          "id": "trial_1782718784072_5ukb",
+          "item": {
+            "type": "text",
+            "text": "B",
+            "color": "#1a1a1a",
+            "fontSize": 64,
+            "fontFamily": "Arial",
+            "textTransform": "none",
+            "fontWeight": "bold",
+            "fontStyle": "normal",
+            "bgColor": "#ffffff",
+            "imageUrl": null,
+            "audioUrl": null
+          },
+          "isGo": false,
+          "duration": null
+        },
+        {
+          "id": "trial_1782924695991_25g7",
+          "item": {
+            "type": "text",
+            "text": "B",
+            "color": "#1a1a1a",
+            "fontSize": 64,
+            "fontFamily": "Arial",
+            "textTransform": "none",
+            "fontWeight": "bold",
+            "fontStyle": "normal",
+            "bgColor": "#ffffff",
+            "imageUrl": null,
+            "audioUrl": null
+          },
+          "isGo": false,
+          "duration": null
+        },
+        {
+          "id": "trial_1782924703035_17ks",
+          "item": {
+            "type": "text",
+            "text": "A",
+            "color": "#1a1a1a",
+            "fontSize": 64,
+            "fontFamily": "Arial",
+            "textTransform": "none",
+            "fontWeight": "bold",
+            "fontStyle": "normal",
+            "bgColor": "#ffffff",
+            "imageUrl": null,
+            "audioUrl": null
+          },
+          "isGo": true,
+          "duration": null
+        },
+        {
+          "id": "trial_1782924707916_iggc",
+          "item": {
+            "type": "text",
+            "text": "B",
+            "color": "#1a1a1a",
+            "fontSize": 64,
+            "fontFamily": "Arial",
+            "textTransform": "none",
+            "fontWeight": "bold",
+            "fontStyle": "normal",
+            "bgColor": "#ffffff",
+            "imageUrl": null,
+            "audioUrl": null
+          },
+          "isGo": false,
+          "duration": null
+        },
+        {
+          "id": "trial_1782924713815_xszq",
+          "item": {
+            "type": "text",
+            "text": "B",
+            "color": "#1a1a1a",
+            "fontSize": 64,
+            "fontFamily": "Arial",
+            "textTransform": "none",
+            "fontWeight": "bold",
+            "fontStyle": "normal",
+            "bgColor": "#ffffff",
+            "imageUrl": null,
+            "audioUrl": null
+          },
+          "isGo": false,
+          "duration": null
+        },
+        {
+          "id": "trial_1782924717848_05yb",
+          "item": {
+            "type": "text",
+            "text": "B",
+            "color": "#1a1a1a",
+            "fontSize": 64,
+            "fontFamily": "Arial",
+            "textTransform": "none",
+            "fontWeight": "bold",
+            "fontStyle": "normal",
+            "bgColor": "#ffffff",
+            "imageUrl": null,
+            "audioUrl": null
+          },
+          "isGo": false,
+          "duration": null
+        },
+        {
+          "id": "trial_1782924721949_6oi4",
+          "item": {
+            "type": "text",
+            "text": "B",
+            "color": "#1a1a1a",
+            "fontSize": 64,
+            "fontFamily": "Arial",
+            "textTransform": "none",
+            "fontWeight": "bold",
+            "fontStyle": "normal",
+            "bgColor": "#ffffff",
+            "imageUrl": null,
+            "audioUrl": null
+          },
+          "isGo": false,
+          "duration": null
+        },
+        {
+          "id": "trial_1782924725679_1dj2",
+          "item": {
+            "type": "text",
+            "text": "A",
+            "color": "#1a1a1a",
+            "fontSize": 64,
+            "fontFamily": "Arial",
+            "textTransform": "none",
+            "fontWeight": "bold",
+            "fontStyle": "normal",
+            "bgColor": "#ffffff",
+            "imageUrl": null,
+            "audioUrl": null
+          },
+          "isGo": true,
+          "duration": null
+        },
+        {
+          "id": "trial_1782924730846_soik",
+          "item": {
+            "type": "text",
+            "text": "A",
+            "color": "#1a1a1a",
+            "fontSize": 64,
+            "fontFamily": "Arial",
+            "textTransform": "none",
+            "fontWeight": "bold",
+            "fontStyle": "normal",
+            "bgColor": "#ffffff",
+            "imageUrl": null,
+            "audioUrl": null
+          },
+          "isGo": true,
+          "duration": null
+        },
+        {
+          "id": "trial_1782924734376_39j0",
+          "item": {
+            "type": "text",
+            "text": "B",
+            "color": "#1a1a1a",
+            "fontSize": 64,
+            "fontFamily": "Arial",
+            "textTransform": "none",
+            "fontWeight": "bold",
+            "fontStyle": "normal",
+            "bgColor": "#ffffff",
+            "imageUrl": null,
+            "audioUrl": null
+          },
+          "isGo": false,
+          "duration": null
+        },
+        {
+          "id": "trial_1782924825786_ydel",
+          "item": {
+            "type": "text",
+            "text": "A",
+            "color": "#1a1a1a",
+            "fontSize": 64,
+            "fontFamily": "Arial",
+            "textTransform": "none",
+            "fontWeight": "bold",
+            "fontStyle": "normal",
+            "bgColor": "#ffffff",
+            "imageUrl": null,
+            "audioUrl": null
+          },
+          "isGo": true,
+          "duration": null
+        }
+      ],
+      "type": "gonogo",
+      "defaultTrialDuration": 1200,
+      "iti": 200
     }
   ],
   "folders": [
-    { "id": "fold_flex_inhibition", "name": "flexibilité/inhibition" }
+    {
+      "id": "fold_flex_inhibition",
+      "name": "flexibilité/inhibition"
+    }
   ]
 }

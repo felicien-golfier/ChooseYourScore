@@ -1,0 +1,1157 @@
+{
+  "exercises": [
+    {
+      "id": "ex_1779003862961_nqnj",
+      "name": "Thème  : les énergies",
+      "instruction": "Regarde attentivement le mot pour répondre aux questions et savoir l'orthographier.",
+      "pairs": [
+        {
+          "id": "pair_1779003911246_9cqw",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "pétrole",
+              "color": "#1a1a1a",
+              "fontSize": 56,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null,
+              "charStyles": [
+                null,
+                {
+                  "color": "#ff0000"
+                },
+                null,
+                null,
+                null,
+                {
+                  "color": "#ff0000"
+                },
+                null
+              ]
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Combien de lettres au total dans ce mot ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "8",
+                "5",
+                "6",
+                "7"
+              ],
+              "correctIndices": [
+                3,
+                4
+              ]
+            },
+            {
+              "questionText": "Quelle lettre apparait plusieurs fois dans le mot ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "e",
+                "l",
+                "r",
+                "p"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "un des \"e\" est-il accentué ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "oui",
+                "non"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            },
+            {
+              "questionText": "Ecris uniquement les voyelles, dans l'ordre.",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "éoe"
+              ],
+              "choices": [
+                "éoe"
+              ],
+              "correctIndices": [
+                0
+              ]
+            },
+            {
+              "questionText": "Combien de lettres montent (ex : \"t\" ou \"d\") ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "2",
+                "1",
+                "3",
+                "0"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Combien de lettres descendent (ex : \"g\" ou \"y\") ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "1",
+                "0",
+                "2",
+                "3"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Dans quelle forme entre ce mot ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "[sq:ml][sq:m][sq:um][sq:m][sq:m][sq:um][sq:m]",
+                "[sq:ml][sq:m][sq:um][sq:m][sq:m][sq:um][sq:um][sq:m]",
+                "[sq:ml][sq:m][sq:um][sq:m][sq:um][sq:m]",
+                "[sq:um][sq:m][sq:ml][sq:m][sq:m][sq:um][sq:m]"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Ecris le mot :",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "pétrole"
+              ],
+              "choices": [
+                "pétrole"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779004404579_06wp",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "gaz",
+              "color": "#1a1a1a",
+              "fontSize": 56,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null,
+              "charStyles": [
+                null,
+                null,
+                {
+                  "color": "#ff0000"
+                }
+              ]
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Combien de lettres au total dans ce mot ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "3",
+                "5",
+                "4",
+                "2"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Des lettres apparaissent-elles plusieurs fois dans le mot ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "non",
+                "oui"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            },
+            {
+              "questionText": "Ecris uniquement les consonnes, dans l'ordre.",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "gz"
+              ],
+              "choices": [
+                "gz"
+              ],
+              "correctIndices": [
+                0
+              ]
+            },
+            {
+              "questionText": "Combien de lettres montent (ex : \"t\" ou \"d\") ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "2",
+                "1",
+                "3",
+                "0"
+              ],
+              "correctIndices": [
+                3,
+                4
+              ]
+            },
+            {
+              "questionText": "Combien de lettres descendent (ex : \"g\" ou \"y\") ?",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "1",
+                "2"
+              ],
+              "choices": [
+                "1",
+                "2"
+              ],
+              "correctIndices": [
+                0
+              ]
+            },
+            {
+              "questionText": "Dans quelle forme entre ce mot ? (2 réponses possibles selon le type d'écriture)",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "[sq:ml][sq:m][sq:ml]",
+                "[sq:ml][sq:m][sq:um]",
+                "[sq:ml][sq:m][sq:m]",
+                "[sq:m][sq:m][sq:m]"
+              ],
+              "correctIndices": [
+                0,
+                2,
+                4
+              ]
+            },
+            {
+              "questionText": "Ecris le mot :",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "gaz"
+              ],
+              "choices": [
+                "gaz"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779004649614_n6lw",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "uranium",
+              "color": "#1a1a1a",
+              "fontSize": 56,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null,
+              "charStyles": [
+                null,
+                null,
+                null,
+                null,
+                null,
+                {
+                  "color": "#ff0000"
+                },
+                {
+                  "color": "#ff0000"
+                }
+              ]
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Combien de lettres au total dans ce mot ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "7",
+                "5",
+                "4",
+                "6"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Quelles lettres apparaissent plusieurs fois dans le mot ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "u",
+                "r",
+                "n",
+                "i"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Ecris uniquement les voyelles, dans l'ordre.",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "uaiu"
+              ],
+              "choices": [
+                "uaiu"
+              ],
+              "correctIndices": [
+                0
+              ]
+            },
+            {
+              "questionText": "Combien de lettres montent (ex : \"t\" ou \"d\") ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "2",
+                "1",
+                "3",
+                "0"
+              ],
+              "correctIndices": [
+                3,
+                4
+              ]
+            },
+            {
+              "questionText": "Combien de lettres descendent (ex : \"g\" ou \"y\") ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "0",
+                "2",
+                "1",
+                "3"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Dans quelle forme entre ce mot ? (2 réponses possibles selon le type d'écriture)",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "[sq:m][sq:m][sq:m][sq:m][sq:m][sq:m][sq:m]",
+                "[sq:m][sq:m][sq:m][sq:m][sq:um][sq:m][sq:m]",
+                "[sq:m][sq:m][sq:m][sq:m][sq:m]",
+                "[sq:m][sq:m][sq:m][sq:m][sq:m][sq:m][sq:m][sq:m][sq:m][sq:m]"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Ecris le mot :",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "uranium"
+              ],
+              "choices": [
+                "uranium"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779004892228_9zok",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "nucléaire",
+              "color": "#1a1a1a",
+              "fontSize": 56,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null,
+              "charStyles": [
+                null,
+                null,
+                null,
+                null,
+                null,
+                {
+                  "color": "#ff0000"
+                },
+                {
+                  "color": "#ff0000"
+                },
+                {
+                  "color": "#ff0000"
+                },
+                {
+                  "color": "#ff0000"
+                }
+              ]
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Combien de lettres au total dans ce mot ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "11",
+                "8",
+                "9",
+                "10"
+              ],
+              "correctIndices": [
+                2,
+                4
+              ]
+            },
+            {
+              "questionText": "Quelles lettres apparaissent plusieurs fois dans le mot ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "e",
+                "l",
+                "n",
+                "i"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Ecris uniquement les voyelles, dans l'ordre.",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "uéaie"
+              ],
+              "choices": [
+                "uéaie"
+              ],
+              "correctIndices": [
+                0
+              ]
+            },
+            {
+              "questionText": "Combien de lettres montent (ex : \"t\" ou \"d\") ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "2",
+                "1",
+                "3",
+                "0"
+              ],
+              "correctIndices": [
+                1,
+                4
+              ]
+            },
+            {
+              "questionText": "Combien de lettres descendent (ex : \"g\" ou \"y\") ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "0",
+                "2",
+                "1",
+                "3"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Dans quelle forme entre ce mot ? (2 réponses possibles selon le type d'écriture)",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "[sq:m][sq:m][sq:m][sq:um][sq:m][sq:m][sq:m][sq:m][sq:m]",
+                "[sq:m][sq:m][sq:m][sq:um][sq:m][sq:m][sq:m][sq:m]",
+                "[sq:m][sq:m][sq:um][sq:m][sq:m][sq:m][sq:m][sq:m]",
+                "[sq:m][sq:m][sq:m][sq:m][sq:m][sq:um][sq:m][sq:m]"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Ecris le mot :",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "nucléaire"
+              ],
+              "choices": [
+                "nucléaire"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779005096372_4rto",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "thermique",
+              "color": "#1a1a1a",
+              "fontSize": 56,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null,
+              "charStyles": [
+                null,
+                {
+                  "color": "#ff0000"
+                },
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ]
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Combien de lettres au total dans ce mot ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "11",
+                "8",
+                "9",
+                "10"
+              ],
+              "correctIndices": [
+                2,
+                4
+              ]
+            },
+            {
+              "questionText": "Quelles lettres apparaissent plusieurs fois dans le mot ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "e",
+                "u",
+                "m",
+                "r"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Ecris uniquement les consonnes, dans l'ordre.",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "thrmq"
+              ],
+              "choices": [
+                "thrmq"
+              ],
+              "correctIndices": [
+                0
+              ]
+            },
+            {
+              "questionText": "Y a-t-il un accent sur le 1er \"e\" ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "non",
+                "oui"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            },
+            {
+              "questionText": "Combien de lettres montent (ex : \"t\" ou \"d\") ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "2",
+                "1",
+                "3",
+                "0"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Combien de lettres descendent (ex : \"g\" ou \"y\") ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "0",
+                "2",
+                "1",
+                "3"
+              ],
+              "correctIndices": [
+                2,
+                4
+              ]
+            },
+            {
+              "questionText": "Dans quelle forme entre ce mot ? (2 réponses possibles selon le type d'écriture)",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "[sq:um][sq:um][sq:m][sq:m][sq:m][sq:m][sq:ml][sq:m][sq:m]",
+                "[sq:m][sq:um][sq:m][sq:m][sq:m][sq:ml][sq:m][sq:m][sq:m]",
+                "[sq:um][sq:m][sq:m][sq:m][sq:m][sq:ml][sq:m][sq:m]",
+                "[sq:m][sq:m][sq:m][sq:m][sq:ml][sq:m][sq:m]"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Ecris le mot :",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "thermique"
+              ],
+              "choices": [
+                "thermique"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779005329290_fm6u",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "photovoltaïque",
+              "color": "#1a1a1a",
+              "fontSize": 56,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null,
+              "charStyles": [
+                {
+                  "color": "#0000ff"
+                },
+                {
+                  "color": "#0000ff",
+                  "fontWeight": "bold"
+                },
+                {
+                  "color": "#0000ff"
+                },
+                {
+                  "color": "#0000ff"
+                },
+                {
+                  "color": "#0000ff"
+                },
+                {
+                  "color": "#000000"
+                },
+                null,
+                null,
+                null,
+                null,
+                {
+                  "fontWeight": "bold",
+                  "color": "#ff0000"
+                },
+                null,
+                null,
+                null
+              ]
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Combien de lettres au total dans ce mot ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "14",
+                "16",
+                "10",
+                "12"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Quelle est la 2ème lettre ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "h",
+                "p",
+                "o",
+                "f"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Combien y a-t-il de ois la lettre \"o\" ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "3",
+                "5",
+                "2",
+                "4"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Ecris le \"i\" avec sa pafrticularité :",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "ï"
+              ],
+              "choices": [
+                "ï"
+              ],
+              "correctIndices": [
+                0
+              ]
+            },
+            {
+              "questionText": "Combien de lettres montent (ex : \"t\" ou \"d\") ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "2",
+                "1",
+                "3",
+                "4"
+              ],
+              "correctIndices": [
+                3,
+                4
+              ]
+            },
+            {
+              "questionText": "Combien de lettres descendent (ex : \"g\" ou \"y\") ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "0",
+                "2",
+                "1",
+                "3"
+              ],
+              "correctIndices": [
+                1,
+                4
+              ]
+            },
+            {
+              "questionText": "Y at-il plusieurs fois la lettre \"t\" ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "oui",
+                "non"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            },
+            {
+              "questionText": "Y at-il plusieurs fois la lettre \"l\" ?",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "non",
+                "oui"
+              ],
+              "correctIndices": [
+                0,
+                2
+              ]
+            },
+            {
+              "questionText": "Quelles sont les 3 dernières lettres ?",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "que"
+              ],
+              "choices": [
+                "que"
+              ],
+              "correctIndices": [
+                0
+              ]
+            },
+            {
+              "questionText": "Dans quelle forme entre ce mot ? (2 réponses possibles selon le type d'écriture)",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "[sq:ml][sq:um][sq:m][sq:um][sq:um][sq:m][sq:m][sq:ml][sq:m][sq:m]",
+                "[sq:ml][sq:um][sq:m][sq:um][sq:um][sq:m][sq:m][sq:m][sq:um][sq:um][sq:m][sq:m][sq:ml][sq:m][sq:m]",
+                "[sq:ml][sq:m][sq:m][sq:m][sq:m][sq:m][sq:m][sq:um][sq:um][sq:m][sq:m][sq:ml][sq:m][sq:m]",
+                "[sq:ml][sq:um][sq:m][sq:um][sq:m][sq:m][sq:m][sq:um][sq:m][sq:m][sq:ml][sq:m][sq:m]"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            },
+            {
+              "questionText": "Ecris le mot",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "photovoltaïque"
+              ],
+              "choices": [
+                "photovoltaïque"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        }
+      ],
+      "folderId": "fold_orthographe",
+      "defaultDisplayDuration": 10000
+    }
+  ],
+  "folders": [
+    {
+      "id": "fold_orthographe",
+      "name": "orthographe"
+    }
+  ]
+}

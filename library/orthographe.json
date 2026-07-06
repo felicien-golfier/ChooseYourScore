@@ -1144,14 +1144,8 @@
           "skipDisplay": false
         }
       ],
-      "folderId": "fold_orthographe",
       "defaultDisplayDuration": 10000
     }
   ],
-  "folders": [
-    {
-      "id": "fold_orthographe",
-      "name": "orthographe"
-    }
-  ]
+  "folders": []
 }

@@ -714,6 +714,11 @@
   opacity: 1;
 }
 
+.library-import-folder {
+  flex-shrink: 0;
+  font-size: 0.74rem;
+}
+
 .folder-del-btn:hover {
   background: var(--danger-bg);
   color: var(--danger);

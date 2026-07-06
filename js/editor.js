@@ -1659,7 +1659,16 @@ function renderLibraryResults(list, results) {
       const countSpan = document.createElement('span');
       countSpan.className = 'pair-count';
       countSpan.textContent = folderExList.length;
-      folderHeader.append(toggle, nameSpan, countSpan);
+      const importFolderBtn = document.createElement('button');
+      importFolderBtn.type = 'button';
+      importFolderBtn.className = 'library-import-all library-import-folder';
+      importFolderBtn.textContent = 'Importer';
+      importFolderBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        closeLibraryModal();
+        importExercisePayload({ exercises: folderExList, folders: [folder] });
+      });
+      folderHeader.append(toggle, nameSpan, countSpan, importFolderBtn);
       folderHeader.addEventListener('click', () => {
         if (libraryOpenFolders.has(folderKey)) libraryOpenFolders.delete(folderKey);
         else libraryOpenFolders.add(folderKey);

@@ -1,5 +1,6 @@
 {
   "files": [
-    { "name": "fonctions exécutives", "file": "fonctions-executives.json" }
+    { "name": "fonctions exécutives", "file": "fonctions-executives.json" },
+    { "name": "orthographe", "file": "orthographe.json" }
   ]
 }

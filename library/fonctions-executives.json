@@ -6586,6 +6586,2972 @@
       ],
       "folderId": "fold_memoire_travail",
       "defaultDisplayDuration": 3000
+    },
+    {
+      "id": "ex_1779655313588_7xjq",
+      "name": "Questions N-back -1 (QCM)",
+      "instruction": "Répondre à la question précédente.",
+      "pairs": [
+        {
+          "id": "pair_1779655346458_6uce",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Quel est le 3ème mois de l'année ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "question suivante"
+              ],
+              "correctIndices": [
+                0,
+                1
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779655508141_ei2a",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Combien font 10+2 ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "mars",
+                "avril",
+                "février",
+                "juin"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779655924750_a7od",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Quelle est la capitale de l'Italie",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "12",
+                "8",
+                "mars",
+                "juin"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779655964787_i7cb",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Quel jour de la semaine tombe toujours l'Ascension ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "Rome",
+                "12",
+                "mars",
+                "Madrid"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779656116363_dfn6",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Quel animal ronronne ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "jeudi",
+                "Rome",
+                "lundi",
+                "Orange"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779656308883_221x",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Dans quel sport utilise-t-on un club ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "chat",
+                "jeudi",
+                "12",
+                "janvier"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779656377296_tgpv",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Quel est le dernier plat d'un repas ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "golf",
+                "Londres",
+                "chat",
+                "mars"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779656463364_4hmv",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Où va-t-on voir un film ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "dessert",
+                "escrime",
+                "digestif",
+                "mardi"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779656544617_dka6",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Avec quoi verrouille-t-on la porte ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "cinéma",
+                "poule",
+                "salon",
+                "plat"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779656999897_gqz5",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Quel vêtement porte-on à la piscine ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "clé",
+                "serrure",
+                "Paris",
+                "crayon"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779657095831_h138",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Quel appareil sert à battre les oeufs ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "maillot de bain",
+                "écharpe",
+                "clé",
+                "chat"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779657185773_jytz",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Où achète-t-on les croissants ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "fouet",
+                "serrure",
+                "crayon",
+                "maillot de bain"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779657238333_txin",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Quel appareil sert à battre les oeufs ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "fouet",
+                "serrure",
+                "crayon",
+                "maillot de bain"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779657335364_j13q",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Qu'est-ce qui est en paille et qu'on met sur la tête ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "boulangerie",
+                "fouet",
+                "pharmacie",
+                "maillot de bain"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779657470906_cqq7",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Quel fruit n'a pas de noyau ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "chapeau",
+                "fouet",
+                "clé",
+                "boulangerie"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779657524063_rwtm",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Que mange l'écureuil ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "ananas",
+                "pêche",
+                "prune",
+                "abricot"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782926104766_3mz5",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Que touve-t-on dans les bibliothèques ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "noisettes",
+                "haricots verts",
+                "maïs",
+                "gingembre"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782926255077_5f7q",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Quel animal tond-on ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "livres",
+                "mouton",
+                "noix",
+                "voitures"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782926325885_xv6r",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "En quelle saison les jours sont-ils les plus courts ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "mouton",
+                "chat",
+                "automne",
+                "poux"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782926388142_afuk",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Quel animal a une corne sur le nez ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "hiver",
+                "été",
+                "pouce",
+                "poche"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782926486152_xdq8",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Où prépare-t-on le repas ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "rhinocéros",
+                "bouc",
+                "éléphant",
+                "cuisine"
+              ],
+              "correctIndices": [
+                0,
+                4
+              ]
+            }
+          ],
+          "skipDisplay": false
+        }
+      ],
+      "folderId": "fold_mise_a_jour",
+      "defaultDisplayDuration": 3000
+    },
+    {
+      "id": "ex_1779695053696_26ss",
+      "name": "Questions N-back -1  saisie libre",
+      "instruction": "Répondre à la question précédente.",
+      "pairs": [
+        {
+          "id": "pair_1779695053696_87p7",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Quel est le 3ème mois de l'année ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": true,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "choices": [
+                "question suivante"
+              ],
+              "correctIndices": [
+                0,
+                1
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779695053696_4isr",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Combien font 10+2 ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "mars"
+              ],
+              "choices": [
+                "mars"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779695053696_sx2v",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Quelle est la capitale de l'Italie",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "12"
+              ],
+              "choices": [
+                "12"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779695053696_16ge",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Quel jour de la semaine tombe toujours l'Ascension ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "Rome"
+              ],
+              "choices": [
+                "Rome"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779695053696_ww3q",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Quel animal ronronne ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "jeudi"
+              ],
+              "choices": [
+                "jeudi"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779695053696_tj5p",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Dans quel sport utilise-t-on un club ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "chat"
+              ],
+              "choices": [
+                "chat"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779695053696_nzuv",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Quel est le dernier plat d'un repas ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "golf"
+              ],
+              "choices": [
+                "golf"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779695053696_kcnv",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Où va-t-on voir un film ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "dessert"
+              ],
+              "choices": [
+                "dessert"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779695053696_ozo5",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Avec quoi verrouille-t-on la porte ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "cinéma"
+              ],
+              "choices": [
+                "cinéma"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779695053696_jg44",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Quel vêtement porte-on à la piscine ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "clé"
+              ],
+              "choices": [
+                "clé"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779695053696_oviy",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Quel appareil sert à battre les oeufs ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "maillot de bain"
+              ],
+              "choices": [
+                "maillot de bain"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779695053696_d6ej",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Où achète-t-on les croissants ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "fouet"
+              ],
+              "choices": [
+                "fouet"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779695053696_z0pq",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Quel appareil sert à battre les oeufs ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "fouet"
+              ],
+              "choices": [
+                "fouet"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779695053696_rg4f",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Qu'est-ce qui est en paille et qu'on met sur la tête ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "boulangerie"
+              ],
+              "choices": [
+                "boulangerie"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779695053696_szgn",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Quel fruit n'a pas de noyau ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "chapeau"
+              ],
+              "choices": [
+                "chapeau"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779695053696_zcld",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Que mange l'écureuil ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "ananas"
+              ],
+              "choices": [
+                "ananas"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782926794033_1vue",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Que trouve-t-on dans les bibliothèques ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "ananas"
+              ],
+              "choices": [
+                "ananas"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782926830270_cg8r",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Quel animal tond-on ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "ananas"
+              ],
+              "choices": [
+                "ananas"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782926851132_fr2e",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "En quelle saison les jours sont-ils les plus courts ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "ananas"
+              ],
+              "choices": [
+                "ananas"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782926929145_adzl",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Quel animal a une corne sur le nez ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "ananas"
+              ],
+              "choices": [
+                "ananas"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782926952784_xa3j",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "Où prepare-t-on les repas ?",
+              "color": "#1a1a1a",
+              "fontSize": 32,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "write",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": true,
+              "replayWithTimer": false,
+              "writeAnswers": [
+                "ananas"
+              ],
+              "choices": [
+                "ananas"
+              ],
+              "correctIndices": [
+                0
+              ]
+            }
+          ],
+          "skipDisplay": false
+        }
+      ],
+      "folderId": "fold_mise_a_jour",
+      "defaultDisplayDuration": 3000
+    },
+    {
+      "id": "ex_1779740333644_z4rp",
+      "name": "Images NBack-1  ",
+      "instruction": "Cliquer sur la figure identique à l'item vu juste avant.",
+      "pairs": [
+        {
+          "id": "pair_1779740333644_afwf",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "🍒",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "Commencer"
+              ],
+              "correctIndices": [
+                0,
+                1
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779740333644_vg7t",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "🎼",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "🍬",
+                "⚓",
+                "🍒"
+              ],
+              "correctIndices": [
+                2,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779740333644_r17m",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "⚡",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "🎼",
+                "🍑",
+                "🍒"
+              ],
+              "correctIndices": [
+                0,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782927280187_ejr7",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "🤖",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "⚡",
+                "🍪",
+                "🤖"
+              ],
+              "correctIndices": [
+                0,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779740333644_h22f",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "🐢",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "🎹",
+                "🤖",
+                "🌛"
+              ],
+              "correctIndices": [
+                1,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779740610221_xjhl",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "💧",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "👁",
+                "🐞",
+                "🐢"
+              ],
+              "correctIndices": [
+                2,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779740670140_slw7",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "📌",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "🍒",
+                "👖",
+                "💧"
+              ],
+              "correctIndices": [
+                2,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782927444016_aja3",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "🎻",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "🎻",
+                "👚",
+                "📌"
+              ],
+              "correctIndices": [
+                2,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779740729299_1qdw",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "📦",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "👚",
+                "⚡",
+                "🎻"
+              ],
+              "correctIndices": [
+                2,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779740853700_dy7o",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "🍕",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "☕",
+                "🎲",
+                "📦"
+              ],
+              "correctIndices": [
+                2,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779740898997_34eh",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "🔥",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "📜",
+                "🍕",
+                "📦"
+              ],
+              "correctIndices": [
+                1,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1779740999165_drx5",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "🔗",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "🔥",
+                "🌀",
+                "🔵"
+              ],
+              "correctIndices": [
+                1,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782927395580_qeki",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "🔵",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "☕",
+                "🔗",
+                "🔵"
+              ],
+              "correctIndices": [
+                1,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782927533383_7l79",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "🍹",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "🍷",
+                "🔵",
+                "🐩"
+              ],
+              "correctIndices": [
+                1,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782927577493_o9c9",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "😈",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "🍷",
+                "🍹",
+                "🍌"
+              ],
+              "correctIndices": [
+                1,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782927622715_anid",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "🎶",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "👿",
+                "😈",
+                "😼"
+              ],
+              "correctIndices": [
+                1,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782927770500_uupa",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "🐛",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "🎵",
+                "🎶",
+                "🐝"
+              ],
+              "correctIndices": [
+                1,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782927810240_9k77",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "🍉",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "🐌",
+                "🐛",
+                "🐍"
+              ],
+              "correctIndices": [
+                1,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782928055594_kkr1",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "🏁",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "🍓",
+                "🍉",
+                "🏁"
+              ],
+              "correctIndices": [
+                1,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782928087401_l0oi",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "🌰",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "📻",
+                "🏁",
+                "🚧"
+              ],
+              "correctIndices": [
+                1,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782928164273_1xfe",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "🎮",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "🍗",
+                "🌰",
+                "🍮"
+              ],
+              "correctIndices": [
+                1,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782928232613_jddv",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "🎲",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "🎲",
+                "🎮",
+                "🍇"
+              ],
+              "correctIndices": [
+                1,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782928318409_frox",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "🎣",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "🐣",
+                "🐥",
+                "🐤"
+              ],
+              "correctIndices": [
+                0,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782928495019_od2j",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "♛",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "🎣",
+                "💧",
+                "⚓"
+              ],
+              "correctIndices": [
+                0,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782928572559_gsp8",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "🔦",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "♛",
+                "♕",
+                "♚"
+              ],
+              "correctIndices": [
+                0,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        },
+        {
+          "id": "pair_1782928656747_cehk",
+          "type": "sequence",
+          "items": [
+            {
+              "type": "text",
+              "text": "🌟",
+              "color": "#1a1a1a",
+              "fontSize": 64,
+              "fontFamily": "Arial",
+              "textTransform": "none",
+              "fontWeight": "normal",
+              "fontStyle": "normal",
+              "bgColor": "#ffffff",
+              "imageUrl": null,
+              "audioUrl": null
+            }
+          ],
+          "displayDuration": null,
+          "useExerciseDefault": true,
+          "visibilityMode": "always_show",
+          "questions": [
+            {
+              "questionText": "Item précédent",
+              "type": "choice",
+              "showOnRetry": true,
+              "allowRetry": false,
+              "highlightCorrectOnRetry": true,
+              "shuffleAnswers": false,
+              "replayWithTimer": false,
+              "choices": [
+                "🔦",
+                "🔧",
+                "🔩"
+              ],
+              "correctIndices": [
+                0,
+                3
+              ]
+            }
+          ],
+          "skipDisplay": false
+        }
+      ],
+      "folderId": "fold_mise_a_jour",
+      "defaultDisplayDuration": 3000,
+      "exampleCount": 5
     }
   ],
   "folders": [
@@ -6596,6 +9562,10 @@
     {
       "id": "fold_memoire_travail",
       "name": "mémoire de travail"
+    },
+    {
+      "id": "fold_mise_a_jour",
+      "name": "Mise à jour"
     }
   ]
 }

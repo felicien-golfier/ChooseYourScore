@@ -1603,6 +1603,83 @@ document.getElementById('import-input').addEventListener('change', e => {
 // ═══════════════════════════════════════════════════════════════════════════════
 function closeLibraryModal() { document.getElementById('library-modal').style.display = 'none'; }
 
+const libraryOpenFolders = new Set();
+
+function makeLibraryEntryBtn(ex, folders, indented) {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'library-entry' + (indented ? ' in-folder' : '');
+  btn.textContent = ex.name || '(sans nom)';
+  btn.addEventListener('click', () => {
+    closeLibraryModal();
+    importExercisePayload({ exercises: [ex], folders });
+  });
+  return btn;
+}
+
+function renderLibraryResults(list, results) {
+  list.innerHTML = '';
+  results.forEach(item => {
+    if (!item) return;
+    const { entry, parsed } = item;
+    const exList = Array.isArray(parsed.exercises) ? parsed.exercises : [];
+    const folders = Array.isArray(parsed.folders) ? parsed.folders : [];
+
+    const header = document.createElement('div');
+    header.className = 'library-pack-header';
+    const title = document.createElement('span');
+    title.textContent = entry.name;
+    const importAll = document.createElement('button');
+    importAll.type = 'button';
+    importAll.className = 'library-import-all';
+    importAll.textContent = 'Importer tout';
+    importAll.addEventListener('click', () => { closeLibraryModal(); importExercisePayload(parsed); });
+    header.append(title, importAll);
+    list.appendChild(header);
+
+    const knownFolderIds = new Set(folders.map(f => f.id));
+    const byFolder = {};
+    exList.forEach(ex => {
+      const k = (ex.folderId && knownFolderIds.has(ex.folderId)) ? ex.folderId : '__none__';
+      (byFolder[k] || (byFolder[k] = [])).push(ex);
+    });
+
+    folders.forEach(folder => {
+      const folderExList = byFolder[folder.id] || [];
+      const folderKey = entry.file + '|' + folder.id;
+      const isOpen = libraryOpenFolders.has(folderKey);
+      const folderHeader = document.createElement('div');
+      folderHeader.className = 'folder-header';
+      const toggle = document.createElement('span');
+      toggle.className = 'folder-toggle' + (isOpen ? '' : ' collapsed');
+      toggle.textContent = '▾';
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'folder-name';
+      nameSpan.textContent = folder.name;
+      const countSpan = document.createElement('span');
+      countSpan.className = 'pair-count';
+      countSpan.textContent = folderExList.length;
+      folderHeader.append(toggle, nameSpan, countSpan);
+      folderHeader.addEventListener('click', () => {
+        if (libraryOpenFolders.has(folderKey)) libraryOpenFolders.delete(folderKey);
+        else libraryOpenFolders.add(folderKey);
+        renderLibraryResults(list, results);
+      });
+      list.appendChild(folderHeader);
+      if (isOpen) folderExList.forEach(ex => list.appendChild(makeLibraryEntryBtn(ex, folders, true)));
+    });
+
+    const uncategorized = byFolder['__none__'] || [];
+    if (folders.length > 0 && uncategorized.length > 0) {
+      const label = document.createElement('div');
+      label.className = 'no-folder-label';
+      label.textContent = 'Sans dossier';
+      list.appendChild(label);
+    }
+    uncategorized.forEach(ex => list.appendChild(makeLibraryEntryBtn(ex, folders, folders.length > 0)));
+  });
+}
+
 document.getElementById('btn-library').addEventListener('click', async () => {
   const modal = document.getElementById('library-modal');
   const list = document.getElementById('library-list');
@@ -1612,7 +1689,6 @@ document.getElementById('btn-library').addEventListener('click', async () => {
     const res = await fetch('library/index.json', {cache: 'no-store'});
     if (!res.ok) throw new Error('HTTP '+res.status);
     const manifest = await res.json();
-    list.innerHTML = '';
     if (!Array.isArray(manifest.files) || !manifest.files.length) {
       list.innerHTML = '<div class="library-status">Aucun exercice disponible.</div>';
       return;
@@ -1624,35 +1700,12 @@ document.getElementById('btn-library').addEventListener('click', async () => {
         .catch(() => null)
     );
     const results = await Promise.all(fetches);
+    libraryOpenFolders.clear();
     results.forEach(item => {
       if (!item) return;
-      const { entry, parsed } = item;
-      const exList = Array.isArray(parsed.exercises) ? parsed.exercises : [];
-
-      const header = document.createElement('div');
-      header.className = 'library-pack-header';
-      const title = document.createElement('span');
-      title.textContent = entry.name;
-      const importAll = document.createElement('button');
-      importAll.type = 'button';
-      importAll.className = 'library-import-all';
-      importAll.textContent = 'Importer tout';
-      importAll.addEventListener('click', () => { closeLibraryModal(); importExercisePayload(parsed); });
-      header.append(title, importAll);
-      list.appendChild(header);
-
-      exList.forEach(ex => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'library-entry';
-        btn.textContent = ex.name || '(sans nom)';
-        btn.addEventListener('click', () => {
-          closeLibraryModal();
-          importExercisePayload({ exercises: [ex], folders: parsed.folders || [] });
-        });
-        list.appendChild(btn);
-      });
+      (item.parsed.folders || []).forEach(folder => libraryOpenFolders.add(item.entry.file + '|' + folder.id));
     });
+    renderLibraryResults(list, results);
   } catch(err) {
     closeLibraryModal();
     alert('Bibliothèque inaccessible — connexion requise pour parcourir la bibliothèque.');

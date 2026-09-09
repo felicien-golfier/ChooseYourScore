@@ -84,6 +84,7 @@ function getItemType(item) {
   if (!item) return 'text';
   if (item.type) return item.type;
   if (item.imageUrl) return 'image';
+  if (item.videoUrl) return 'video';
   if (item.audioUrl) return 'audio';
   return 'text';
 }
@@ -129,6 +130,11 @@ function applyItemStyle(el, item) {
     el.style.backgroundSize     = 'cover';
     el.style.backgroundPosition = 'center';
     el.innerHTML = item.text ? '<span style="position:relative;text-shadow:0 1px 4px rgba(0,0,0,0.65)">' + escapeHtml(item.text) + '</span>' : '';
+  } else if (item.videoUrl) {
+    el.style.backgroundImage = '';
+    el.style.position = 'relative';
+    el.innerHTML = '<video class="item-video-bg" src="' + item.videoUrl + '" autoplay muted loop playsinline></video>' +
+      (item.text ? '<span style="position:relative;text-shadow:0 1px 4px rgba(0,0,0,0.65)">' + escapeHtml(item.text) + '</span>' : '');
   } else {
     el.style.backgroundImage = '';
     const _cs = item.charStyles;

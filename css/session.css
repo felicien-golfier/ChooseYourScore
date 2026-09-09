@@ -336,6 +336,14 @@ body.is-fullscreen .keyboard-hint {
   transition: box-shadow 0.15s, border-color 0.15s;
 }
 
+.item-video-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .item-arrow-svg {
   width: 72px;
   height: 72px;

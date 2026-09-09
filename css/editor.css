@@ -582,7 +582,7 @@
   margin-top: 6px;
 }
 
-.img-thumb-row img {
+.img-thumb-row img, .img-thumb-row video {
   width: 46px;
   height: 46px;
   object-fit: cover;

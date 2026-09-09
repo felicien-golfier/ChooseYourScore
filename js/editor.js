@@ -4,6 +4,7 @@
 let editorSelectedId = null, editingPairId = null;
 let seqItems = [];
 let simModalImage = null;
+let simModalVideo = null;
 let simModalAudio = null;
 let editingItemIdx = -1;
 let _pairModalOpenedAt = 0;
@@ -402,7 +403,7 @@ document.getElementById('btn-delete-exercise').addEventListener('click', () => {
 document.getElementById('btn-add-pair').addEventListener('click', () => {
   const ex = getSelectedEx(); if (!ex) return;
   const pair = { id: newId('pair'), type: 'sequence',
-    items: [{type:'text',text:'',color:'#1a1a1a',fontSize:32,fontFamily:'Arial',textTransform:'none',imageUrl:null,audioUrl:null}],
+    items: [{type:'text',text:'',color:'#1a1a1a',fontSize:32,fontFamily:'Arial',textTransform:'none',imageUrl:null,videoUrl:null,audioUrl:null}],
     displayDuration: null, useExerciseDefault: true, visibilityMode: 'always_show',
     questions: [{questionText:'',type:'choice',choices:['',''],correctIndices:[0],showOnRetry:true,allowRetry:true,itemOverrides:[]}] };
   ex.pairs.push(pair); saveExercises(); renderExerciseEditor(); openPairModal(pair.id);
@@ -470,7 +471,7 @@ document.getElementById('btn-modal-cancel').addEventListener('click', () => {
   const ex = getSelectedEx();
   if (ex) {
     const pair = ex.pairs.find(p => p.id === editingPairId);
-    const isEmpty = pair && (!pair.items || pair.items.every(i => !i || (!i.text && !i.imageUrl && !i.audioUrl && i.type === 'text')));
+    const isEmpty = pair && (!pair.items || pair.items.every(i => !i || (!i.text && !i.imageUrl && !i.videoUrl && !i.audioUrl && i.type === 'text')));
     if (isEmpty) { ex.pairs = ex.pairs.filter(p => p.id !== editingPairId); saveExercises(); renderExerciseEditor(); }
   }
   closeModal();
@@ -482,7 +483,7 @@ function closeModal() { document.getElementById('pair-modal').style.display='non
 // EDITOR – ITEM MODAL
 // ═══════════════════════════════════════════════════════════════════════════════
 function setSimSect(type) {
-  ['text','image','audio','arrow'].forEach(t => {
+  ['text','image','video','audio','arrow'].forEach(t => {
     const el = document.getElementById('sim-sect-'+t);
     if (el) el.style.display = t === type ? 'block' : 'none';
   });
@@ -498,6 +499,13 @@ function updateSimImageThumb() {
   const row = document.getElementById('sim-img-thumb-row');
   const thumb = document.getElementById('sim-img-thumb');
   if (simModalImage) { thumb.src = simModalImage; row.style.display = 'flex'; }
+  else { thumb.src = ''; row.style.display = 'none'; }
+}
+
+function updateSimVideoThumb() {
+  const row = document.getElementById('sim-vid-thumb-row');
+  const thumb = document.getElementById('sim-vid-thumb');
+  if (simModalVideo) { thumb.src = simModalVideo; row.style.display = 'flex'; }
   else { thumb.src = ''; row.style.display = 'none'; }
 }
 
@@ -589,16 +597,20 @@ function applyCharStyle(prop, value) {
 
 function fillItemModal(item) {
   // Migrate legacy 'color' type items to 'text' with bgColor
-  if (item && item.type === 'color') item = { type: 'text', text: item.text || '', color: item.color || '#1a1a1a', fontSize: item.fontSize || 32, fontFamily: item.fontFamily || 'Arial', textTransform: item.textTransform || 'none', bgColor: item.bgColor || '#3b82f6', imageUrl: null, audioUrl: null };
+  if (item && item.type === 'color') item = { type: 'text', text: item.text || '', color: item.color || '#1a1a1a', fontSize: item.fontSize || 32, fontFamily: item.fontFamily || 'Arial', textTransform: item.textTransform || 'none', bgColor: item.bgColor || '#3b82f6', imageUrl: null, videoUrl: null, audioUrl: null };
   const type = (item && item.type) || 'text';
   setSimSect(type);
-  simModalImage = null; simModalAudio = null;
+  simModalImage = null; simModalVideo = null; simModalAudio = null;
   const defaultBg = type === 'arrow' ? '#3b82f6' : '#ffffff';
   document.getElementById('sim-bg-color').value = item.bgColor || defaultBg;
   if (type === 'image') {
     simModalImage = item.imageUrl || null; updateSimImageThumb();
     document.getElementById('sim-img-text').value = item.text || '';
     document.getElementById('sim-img-textcolor').value = item.color || '#ffffff';
+  } else if (type === 'video') {
+    simModalVideo = item.videoUrl || null; updateSimVideoThumb();
+    document.getElementById('sim-vid-text').value = item.text || '';
+    document.getElementById('sim-vid-textcolor').value = item.color || '#ffffff';
   } else if (type === 'audio') {
     simModalAudio = item.audioUrl || null; updateSimAudioUI();
     document.getElementById('sim-audio-label').value = item.text || '';
@@ -634,11 +646,15 @@ function readItemModal() {
   if (type === 'image') return { type, imageUrl: simModalImage||null,
     text: document.getElementById('sim-img-text').value||'',
     color: document.getElementById('sim-img-textcolor').value,
-    bgColor, audioUrl: null };
+    bgColor, videoUrl: null, audioUrl: null };
+  if (type === 'video') return { type, videoUrl: simModalVideo||null,
+    text: document.getElementById('sim-vid-text').value||'',
+    color: document.getElementById('sim-vid-textcolor').value,
+    bgColor, imageUrl: null, audioUrl: null };
   if (type === 'audio') return { type, audioUrl: simModalAudio||null,
     text: document.getElementById('sim-audio-label').value||'',
     autoPlay: document.getElementById('sim-audio-autoplay').checked,
-    bgColor, imageUrl: null };
+    bgColor, imageUrl: null, videoUrl: null };
   if (type === 'arrow') return { type,
     arrowDirection: document.getElementById('sim-arrow-dir').value,
     bgColor };
@@ -652,7 +668,7 @@ function readItemModal() {
     textTransform: simItemLevel.textTransform,
     fontWeight:    simItemLevel.fontWeight,
     fontStyle:     simItemLevel.fontStyle,
-    bgColor, imageUrl: null, audioUrl: null,
+    bgColor, imageUrl: null, videoUrl: null, audioUrl: null,
     charStyles: _hasCharStyles ? _cleanCharStyles : undefined };
 }
 
@@ -674,7 +690,7 @@ document.querySelectorAll('#sim-type-tabs .item-type-btn').forEach(btn => {
 });
 
 ['sim-text','sim-bg-color',
- 'sim-img-text','sim-img-textcolor','sim-arrow-dir',
+ 'sim-img-text','sim-img-textcolor','sim-vid-text','sim-vid-textcolor','sim-arrow-dir',
  'sim-audio-label'].forEach(id => {
   const el = document.getElementById(id);
   if (el) { el.addEventListener('input', refreshSimPreview); el.addEventListener('change', refreshSimPreview); }
@@ -748,6 +764,15 @@ document.getElementById('sim-img-input').addEventListener('change', e => {
 });
 document.getElementById('sim-img-remove').addEventListener('click', () => { simModalImage = null; updateSimImageThumb(); refreshSimPreview(); });
 
+document.getElementById('sim-vid-btn').addEventListener('click', () => document.getElementById('sim-vid-input').click());
+document.getElementById('sim-vid-input').addEventListener('change', e => {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = evt => { simModalVideo = evt.target.result; updateSimVideoThumb(); refreshSimPreview(); };
+  reader.readAsDataURL(file); e.target.value = '';
+});
+document.getElementById('sim-vid-remove').addEventListener('click', () => { simModalVideo = null; updateSimVideoThumb(); refreshSimPreview(); });
+
 document.getElementById('sim-audio-btn').addEventListener('click', () => document.getElementById('sim-audio-input').click());
 document.getElementById('sim-audio-input').addEventListener('change', e => {
   const file = e.target.files[0]; if (!file) return;
@@ -785,7 +810,7 @@ document.getElementById('seq-item-modal').addEventListener('click', e => {
 function refreshSequenceItemInputs() {
   const numItems = Math.max(1, parseInt(document.getElementById('seq-num-items').value, 10) || 1);
   // Resize seqItems array: pad with blank text items, or trim from end
-  while (seqItems.length < numItems) seqItems.push({type:'text',text:'',color:'#1a1a1a',fontSize:32,fontFamily:'Arial',textTransform:'none',imageUrl:null,audioUrl:null});
+  while (seqItems.length < numItems) seqItems.push({type:'text',text:'',color:'#1a1a1a',fontSize:32,fontFamily:'Arial',textTransform:'none',imageUrl:null,videoUrl:null,audioUrl:null});
   seqItems = seqItems.slice(0, numItems);
   const row = document.getElementById('seq-items-row');
   row.innerHTML = '';
@@ -952,6 +977,7 @@ function getSeqItemLabels() {
     if (!item) return '';
     if (item.type === 'arrow') return ARROW_CHARS[item.arrowDirection||'left'] || '←';
     if (item.type === 'image') return '🖼';
+    if (item.type === 'video') return '🎬';
     if (item.type === 'audio') return '🔊';
     if (item.type === 'color') return item.text || '■';
     return item.text || '';
@@ -1235,8 +1261,8 @@ function updateSeqQuestionTitles() {
 
 function fillSequenceModal(pair) {
   const rawItems = pair.items || [];
-  seqItems = rawItems.map(i => typeof i === 'string' ? {type:'text',text:i,color:'#1a1a1a',fontSize:32,fontFamily:'Arial',textTransform:'none',imageUrl:null,audioUrl:null} : {...i});
-  if (seqItems.length === 0) seqItems = [{type:'text',text:'',color:'#1a1a1a',fontSize:32,fontFamily:'Arial',textTransform:'none',imageUrl:null,audioUrl:null}];
+  seqItems = rawItems.map(i => typeof i === 'string' ? {type:'text',text:i,color:'#1a1a1a',fontSize:32,fontFamily:'Arial',textTransform:'none',imageUrl:null,videoUrl:null,audioUrl:null} : {...i});
+  if (seqItems.length === 0) seqItems = [{type:'text',text:'',color:'#1a1a1a',fontSize:32,fontFamily:'Arial',textTransform:'none',imageUrl:null,videoUrl:null,audioUrl:null}];
   document.getElementById('seq-num-items').value = seqItems.length;
   const dur = pair.skipDisplay === true ? 0 : (pair.displayDuration != null ? pair.displayDuration : 1000);
   document.getElementById('seq-duration').value = (dur / 1000);

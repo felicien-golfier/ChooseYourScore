@@ -427,6 +427,7 @@
     <div class="item-type-tabs" id="sim-type-tabs">
       <button class="item-type-btn active" data-type="text">Texte</button>
       <button class="item-type-btn" data-type="image">Image</button>
+      <button class="item-type-btn" data-type="video">Vidéo</button>
       <button class="item-type-btn" data-type="audio">Audio</button>
       <button class="item-type-btn" data-type="arrow">Flèche</button>
     </div>
@@ -475,6 +476,20 @@
       </div>
       <div class="field-row"><label>Texte superposé (optionnel)</label><input type="text" id="sim-img-text" placeholder="Légende…"></div>
       <div class="field-row"><label>Couleur du texte</label><input type="color" id="sim-img-textcolor" value="#ffffff"></div>
+    </div>
+    <!-- section : vidéo -->
+    <div id="sim-sect-video">
+      <div class="field-row">
+        <label>Vidéo</label>
+        <input type="file" id="sim-vid-input" accept="video/*">
+        <button type="button" class="btn-upload-img" id="sim-vid-btn">Choisir une vidéo</button>
+        <div class="img-thumb-row" id="sim-vid-thumb-row">
+          <video id="sim-vid-thumb" muted loop autoplay playsinline></video>
+          <button type="button" class="btn-remove-img" id="sim-vid-remove">✕ Supprimer</button>
+        </div>
+      </div>
+      <div class="field-row"><label>Texte superposé (optionnel)</label><input type="text" id="sim-vid-text" placeholder="Légende…"></div>
+      <div class="field-row"><label>Couleur du texte</label><input type="color" id="sim-vid-textcolor" value="#ffffff"></div>
     </div>
     <!-- section : audio -->
     <div id="sim-sect-audio">

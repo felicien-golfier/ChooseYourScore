@@ -858,9 +858,9 @@ function finishGoNoGo(isPartial) {
 
 document.addEventListener('fullscreenchange', () => {
   const isFullscreen = !!document.fullscreenElement;
-  document.getElementById('btn-fullscreen').textContent        = isFullscreen ? '✕' : '⛶';
+  document.getElementById('btn-fullscreen').textContent        = isFullscreen ? '🗗' : '⛶';
   document.getElementById('btn-fullscreen').title              = isFullscreen ? 'Quitter le plein écran' : 'Plein écran';
-  document.getElementById('btn-fullscreen-setup').textContent  = isFullscreen ? '✕' : '⛶';
+  document.getElementById('btn-fullscreen-setup').textContent  = isFullscreen ? '🗗' : '⛶';
   document.getElementById('btn-fullscreen-setup').title        = isFullscreen ? 'Quitter le plein écran' : 'Plein écran';
   document.body.classList.toggle('is-fullscreen', isFullscreen);
 });

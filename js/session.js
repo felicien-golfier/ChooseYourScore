@@ -59,6 +59,11 @@ function renderPair() {
   // Bref blanc entre chaque item pour que le changement soit perceptible
   // même quand l'item suivant est visuellement identique au précédent.
   document.getElementById('sequence-display').innerHTML = '';
+  // Masquer immédiatement question/réponses (sinon le feedback coloré de la
+  // question précédente reste visible pendant la pause avant l'item suivant).
+  document.getElementById('sequence-question').style.display = 'none';
+  document.getElementById('sequence-choices').style.display = 'none';
+  document.getElementById('seq-show-again-btn').style.display = 'none';
   const gen = ++_displayGen;
   sequenceTimer = setTimeout(() => {
     sequenceTimer = null;

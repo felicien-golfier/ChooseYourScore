@@ -127,7 +127,8 @@ function applyItemStyle(el, item) {
   el.style.fontStyle     = item.fontStyle     || 'normal';
   if (item.imageUrl) {
     el.style.backgroundImage    = 'url(' + item.imageUrl + ')';
-    el.style.backgroundSize     = 'cover';
+    el.style.backgroundSize     = 'contain';
+    el.style.backgroundRepeat   = 'no-repeat';
     el.style.backgroundPosition = 'center';
     el.innerHTML = item.text ? '<span style="position:relative;text-shadow:0 1px 4px rgba(0,0,0,0.65)">' + escapeHtml(item.text) + '</span>' : '';
   } else if (item.videoUrl) {

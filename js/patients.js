@@ -39,7 +39,8 @@ function renderPatientDetail() {
   document.getElementById('patient-detail').style.display      = patient ? 'block' : 'none';
   if (!patient) return;
   document.getElementById('patient-name-input').value  = patient.name;
-  document.getElementById('patient-dob').value         = patient.birthDate || '';
+  document.getElementById('patient-dob').value         = isoDateToFr(patient.birthDate);
+  document.getElementById('patient-dob').classList.remove('input-invalid');
   document.getElementById('patient-notes-field').value = patient.notes || '';
 
   const patientSessions = sessions
@@ -116,9 +117,20 @@ document.getElementById('patient-name-input').addEventListener('input', () => {
   savePatients(); renderPatientSidebar();
 });
 
+document.getElementById('patient-dob').addEventListener('input', () => {
+  const dobInput = document.getElementById('patient-dob');
+  dobInput.value = formatDateDigitsAsTyped(dobInput.value);
+  dobInput.classList.remove('input-invalid');
+});
+
 document.getElementById('patient-dob').addEventListener('change', () => {
   const p = getSelectedPatient(); if (!p) return;
-  p.birthDate = document.getElementById('patient-dob').value;
+  const dobInput = document.getElementById('patient-dob');
+  if (dobInput.value === '') { p.birthDate = ''; savePatients(); return; }
+  const iso = frDateToIso(dobInput.value);
+  if (!iso) { dobInput.classList.add('input-invalid'); return; }
+  dobInput.classList.remove('input-invalid');
+  p.birthDate = iso;
   savePatients();
 });
 

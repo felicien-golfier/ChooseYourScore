@@ -4,6 +4,23 @@
 const _audioEl = document.getElementById('cys-audio-el');
 let _audioQueue = [], _audioBlobUrl = null;
 
+// Amplify playback beyond the browser's 100% cap (audio.volume maxes at 1) via a GainNode.
+const AUDIO_VOLUME_MULTIPLIER = 2;
+let _audioGainNode = null, _audioCtx = null;
+function _ensureAudioGain() {
+  if (!_audioGainNode) {
+    try {
+      const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+      _audioCtx = new AudioContextCtor();
+      const source = _audioCtx.createMediaElementSource(_audioEl);
+      _audioGainNode = _audioCtx.createGain();
+      _audioGainNode.gain.value = AUDIO_VOLUME_MULTIPLIER;
+      source.connect(_audioGainNode).connect(_audioCtx.destination);
+    } catch (e) { /* Web Audio unavailable: falls back to normal (unamplified) volume */ }
+  }
+  if (_audioCtx && _audioCtx.state === 'suspended') _audioCtx.resume();
+}
+
 function _audioNext() {
   if (_audioBlobUrl) { URL.revokeObjectURL(_audioBlobUrl); _audioBlobUrl = null; }
   if (_audioQueue.length === 0) return;
@@ -36,6 +53,7 @@ function stopAudio() {
 // Interrupt any current playback and play a single dataUrl; calls onDone when finished.
 function playAudioUrl(dataUrl, onDone) {
   stopAudio();
+  _ensureAudioGain();
   _audioQueue = [{ dataUrl, onDone }];
   _audioNext();
 }
@@ -43,6 +61,7 @@ function playAudioUrl(dataUrl, onDone) {
 // Queue an array of dataUrls to play sequentially (interrupts current playback).
 function playAudioSequence(dataUrls) {
   stopAudio();
+  _ensureAudioGain();
   _audioQueue = dataUrls.map(u => ({ dataUrl: u, onDone: null }));
   _audioNext();
 }

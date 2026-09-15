@@ -374,6 +374,7 @@ body.is-fullscreen .keyboard-hint {
   height: 56px;
   border-radius: 50%;
   border: 1.5px solid var(--accent-border);
+  background: rgba(255, 255, 255, 0.9);
   background: oklch(100% 0 0 / 0.9);
   color: var(--accent);
   font-size: 1.44rem;

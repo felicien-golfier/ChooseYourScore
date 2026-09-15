@@ -50,6 +50,7 @@ h2 { font-weight: 700; }
   width: 22px; height: 22px;
   border-radius: 8px;
   background: linear-gradient(135deg, var(--coral), var(--amber));
+  box-shadow: 0 2px 6px rgba(232, 97, 84, 0.4);
   box-shadow: 0 2px 6px oklch(66% 0.17 28 / 0.4);
   position: relative;
   transform: rotate(-6deg);
@@ -104,6 +105,7 @@ h2 { font-weight: 700; }
   position: absolute; top: -22px; left: 50%;
   transform: translateX(-50%) rotate(-8deg);
   font-size: 2.4rem;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.12));
   filter: drop-shadow(0 4px 6px oklch(0% 0 0 / 0.12));
   animation: wave 1.4s ease-in-out infinite;
 }
@@ -112,11 +114,13 @@ h2 { font-weight: 700; }
 .progress-bar {
   height: 12px; border-radius: 999px;
   background: var(--surface-2);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
   box-shadow: inset 0 1px 3px oklch(0% 0 0 / 0.08);
 }
 .progress-fill {
   border-radius: 999px;
   background: linear-gradient(90deg, var(--teal), var(--sky), var(--grape));
+  box-shadow: 0 0 12px rgba(33, 160, 224, 0.5);
   box-shadow: 0 0 12px oklch(67% 0.14 238 / 0.5);
 }
 body.is-fullscreen .progress-bar { height: 14px; }
@@ -151,8 +155,8 @@ body.is-fullscreen .progress-bar { height: 14px; }
 /* ── Session result cards: color-coded & cheerful ─────────────────────────── */
 .result-card { border-radius: 20px; border-width: 2px; }
 .results-grid .result-card:nth-child(1) { background: var(--success-bg); border-color: var(--success-border); }
-.results-grid .result-card:nth-child(2) { background: var(--sky-bg); border-color: oklch(82% 0.10 238); }
-.results-grid .result-card:nth-child(3) { background: var(--grape-bg); border-color: oklch(82% 0.10 305); }
+.results-grid .result-card:nth-child(2) { background: var(--sky-bg); border-color: #84cefe; border-color: oklch(82% 0.10 238); }
+.results-grid .result-card:nth-child(3) { background: var(--grape-bg); border-color: #d3b4f9; border-color: oklch(82% 0.10 305); }
 .result-card .value { font-family: var(--font-display); }
 
 /* ── Celebration / reward moment (kid-facing) ─────────────────────────────── */
@@ -184,11 +188,11 @@ body.is-fullscreen .progress-bar { height: 14px; }
 /* ── Results / admin: a gentle warm lift (kept calm & professional) ───────── */
 .btn-icon { border-radius: 10px; }
 .stat-card { border-radius: 18px; }
-.stat-card:nth-child(1) { background: var(--sky-bg); border-color: oklch(86% 0.06 238); }
+.stat-card:nth-child(1) { background: var(--sky-bg); border-color: #add7f4; border-color: oklch(86% 0.06 238); }
 .stat-card:nth-child(2) { background: var(--success-bg); border-color: var(--success-border); }
-.stat-card:nth-child(3) { background: var(--amber-bg); border-color: oklch(88% 0.08 80); }
-.stat-card:nth-child(4) { background: var(--grape-bg); border-color: oklch(88% 0.06 305); }
-.stat-card:nth-child(5) { background: var(--coral-bg); border-color: oklch(88% 0.07 28); }
+.stat-card:nth-child(3) { background: var(--amber-bg); border-color: #f4d29b; border-color: oklch(88% 0.08 80); }
+.stat-card:nth-child(4) { background: var(--grape-bg); border-color: #e0cef8; border-color: oklch(88% 0.06 305); }
+.stat-card:nth-child(5) { background: var(--coral-bg); border-color: #ffc7be; border-color: oklch(88% 0.07 28); }
 .chart-card, .table-card, .filters, .r-empty-state { border-radius: 22px; }
 
 /* ── Keyframes ────────────────────────────────────────────────────────────── */
@@ -316,6 +320,7 @@ body.is-fullscreen .progress-bar { height: 14px; }
   width: 21px; height: 21px;
   background: white;
   border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
   box-shadow: 0 1px 3px oklch(0% 0 0 / 0.25);
   transition: transform 0.18s;
 }

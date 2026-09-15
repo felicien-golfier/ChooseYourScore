@@ -1,52 +1,51 @@
 /* ── DESIGN TOKENS ───────────────────────────────────────────────────────── */
+/* Fallback palette (hex/rgba) for browsers without oklch() support (e.g. Chrome < 111,
+   still common on older Android tablets). Overridden below by the oklch() palette
+   on browsers that support it. Keep both in sync when changing a color. */
 :root {
-  /* warm off-white surfaces — kills the "too white" feel */
-  --bg: oklch(97% 0.022 82);
-  --surface: oklch(99.4% 0.006 82);
-  --surface-2: oklch(96% 0.024 82);
-  --border: oklch(89.5% 0.025 78);
-  --border-focus:oklch(60% 0.18 274);
-  --text-1: oklch(27% 0.035 280);
-  --text-2: oklch(47% 0.032 280);
-  --text-3: oklch(63% 0.028 280);
+  --bg: #fdf4e5;
+  --surface: #fffdf9;
+  --surface-2: #faf1e0;
+  --border: #e6dbca;
+  --border-focus: #6272e9;
+  --text-1: #232537;
+  --text-2: #57596d;
+  --text-3: #85889a;
 
-  /* periwinkle primary */
-  --accent: oklch(58% 0.185 274);
-  --accent-hover:oklch(52% 0.19 274);
-  --accent-bg: oklch(95% 0.045 274);
-  --accent-border:oklch(82% 0.10 274);
-  --accent-2: oklch(60% 0.19 296);     /* gradient partner */
-  --accent-shadow:oklch(46% 0.17 280); /* 3D button base */
+  --accent: #5c6ae5;
+  --accent-hover: #4c56d3;
+  --accent-bg: #e5edff;
+  --accent-border: #b0c0ff;
+  --accent-2: #8d60e2;
+  --accent-shadow: #4a44b3;
 
-  --success: oklch(60% 0.16 150);
-  --success-bg: oklch(95% 0.055 150);
-  --success-border:oklch(80% 0.13 150);
-  --danger: oklch(61% 0.19 25);
-  --danger-bg: oklch(96% 0.045 25);
-  --danger-border:oklch(81% 0.13 25);
-  --warn-bg: oklch(96% 0.065 82);
-  --warn-border: oklch(85% 0.14 82);
-  --warn-text: oklch(48% 0.13 62);
+  --success: #139948;
+  --success-bg: #d5fadb;
+  --success-border: #7cd591;
+  --danger: #de4544;
+  --danger-bg: #ffe7e3;
+  --danger-border: #ff9e96;
+  --warn-bg: #ffeec1;
+  --warn-border: #fbc456;
+  --warn-text: #8f4800;
 
-  /* ── joy palette: shared chroma, varied hue (kid-friendly accents) ── */
-  --coral: oklch(66% 0.17 28);
-  --coral-bg: oklch(95% 0.05 28);
-  --amber: oklch(75% 0.15 72);
-  --amber-bg: oklch(95% 0.06 80);
-  --teal: oklch(66% 0.13 192);
-  --teal-bg: oklch(95% 0.05 192);
-  --grape: oklch(60% 0.18 305);
-  --grape-bg: oklch(95% 0.05 305);
-  --sky: oklch(67% 0.14 238);
-  --sky-bg: oklch(95% 0.05 238);
+  --coral: #e86154;
+  --coral-bg: #ffe3dc;
+  --amber: #e79c27;
+  --amber-bg: #ffebc2;
+  --teal: #00aaa7;
+  --teal-bg: #c9faf7;
+  --grape: #9a5dd5;
+  --grape-bg: #f6e7ff;
+  --sky: #21a0e0;
+  --sky-bg: #d0f4ff;
 
-  /* rounder, friendlier */
   --radius-sm: 10px;
   --radius: 15px;
   --radius-lg: 24px;
-  --shadow-sm: 0 2px 8px oklch(50% 0.08 280 / 0.07);
-  --shadow: 0 6px 24px oklch(50% 0.10 280 / 0.10);
-  --shadow-lg: 0 16px 52px oklch(50% 0.12 280 / 0.18);
+  --shadow-sm: 0 2px 8px rgba(90, 94, 144, 0.07);
+  --shadow: 0 6px 24px rgba(89, 92, 155, 0.10);
+  --shadow-lg: 0 16px 52px rgba(87, 89, 166, 0.18);
 
   --font: 'Nunito', system-ui, sans-serif;
   --font-display: 'Baloo 2', 'Nunito', system-ui, sans-serif;
@@ -54,15 +53,72 @@
   --topbar-h: 54px;
   --fun: 1; /* 0 = calme, 1 = joyeux, 2 = fête */
 
-  /* accent alpha variants (for box-shadow glows) */
-  --accent-a06: oklch(58% 0.185 274 / 0.06);
-  --accent-a10: oklch(58% 0.185 274 / 0.10);
-  --accent-a12: oklch(58% 0.185 274 / 0.12);
-  --accent-a14: oklch(58% 0.185 274 / 0.14);
-  --accent-a16: oklch(58% 0.185 274 / 0.16);
-  --accent-a28: oklch(58% 0.185 274 / 0.28);
+  --accent-a06: rgba(92, 106, 229, 0.06);
+  --accent-a10: rgba(92, 106, 229, 0.10);
+  --accent-a12: rgba(92, 106, 229, 0.12);
+  --accent-a14: rgba(92, 106, 229, 0.14);
+  --accent-a16: rgba(92, 106, 229, 0.16);
+  --accent-a28: rgba(92, 106, 229, 0.28);
 
-  /* extended palette */
-  --backdrop: oklch(0% 0 0 / 0.42);
-  --purple:   var(--grape);
+  --backdrop: rgba(0, 0, 0, 0.42);
+  --purple: var(--grape);
+}
+
+@supports (color: oklch(0% 0 0)) {
+  :root {
+    /* warm off-white surfaces — kills the "too white" feel */
+    --bg: oklch(97% 0.022 82);
+    --surface: oklch(99.4% 0.006 82);
+    --surface-2: oklch(96% 0.024 82);
+    --border: oklch(89.5% 0.025 78);
+    --border-focus:oklch(60% 0.18 274);
+    --text-1: oklch(27% 0.035 280);
+    --text-2: oklch(47% 0.032 280);
+    --text-3: oklch(63% 0.028 280);
+
+    /* periwinkle primary */
+    --accent: oklch(58% 0.185 274);
+    --accent-hover:oklch(52% 0.19 274);
+    --accent-bg: oklch(95% 0.045 274);
+    --accent-border:oklch(82% 0.10 274);
+    --accent-2: oklch(60% 0.19 296);     /* gradient partner */
+    --accent-shadow:oklch(46% 0.17 280); /* 3D button base */
+
+    --success: oklch(60% 0.16 150);
+    --success-bg: oklch(95% 0.055 150);
+    --success-border:oklch(80% 0.13 150);
+    --danger: oklch(61% 0.19 25);
+    --danger-bg: oklch(96% 0.045 25);
+    --danger-border:oklch(81% 0.13 25);
+    --warn-bg: oklch(96% 0.065 82);
+    --warn-border: oklch(85% 0.14 82);
+    --warn-text: oklch(48% 0.13 62);
+
+    /* ── joy palette: shared chroma, varied hue (kid-friendly accents) ── */
+    --coral: oklch(66% 0.17 28);
+    --coral-bg: oklch(95% 0.05 28);
+    --amber: oklch(75% 0.15 72);
+    --amber-bg: oklch(95% 0.06 80);
+    --teal: oklch(66% 0.13 192);
+    --teal-bg: oklch(95% 0.05 192);
+    --grape: oklch(60% 0.18 305);
+    --grape-bg: oklch(95% 0.05 305);
+    --sky: oklch(67% 0.14 238);
+    --sky-bg: oklch(95% 0.05 238);
+
+    --shadow-sm: 0 2px 8px oklch(50% 0.08 280 / 0.07);
+    --shadow: 0 6px 24px oklch(50% 0.10 280 / 0.10);
+    --shadow-lg: 0 16px 52px oklch(50% 0.12 280 / 0.18);
+
+    /* accent alpha variants (for box-shadow glows) */
+    --accent-a06: oklch(58% 0.185 274 / 0.06);
+    --accent-a10: oklch(58% 0.185 274 / 0.10);
+    --accent-a12: oklch(58% 0.185 274 / 0.12);
+    --accent-a14: oklch(58% 0.185 274 / 0.14);
+    --accent-a16: oklch(58% 0.185 274 / 0.16);
+    --accent-a28: oklch(58% 0.185 274 / 0.28);
+
+    /* extended palette */
+    --backdrop: oklch(0% 0 0 / 0.42);
+  }
 }

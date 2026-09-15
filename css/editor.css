@@ -810,6 +810,7 @@ tbody td[contenteditable]:hover {
 
 tbody td[contenteditable]:focus {
   background: var(--warn-bg);
+  border-bottom: 2px solid #d29000;
   border-bottom: 2px solid oklch(70% 0.16 80);
   padding-bottom: 9px;
   outline: none;
@@ -838,6 +839,7 @@ tbody td[contenteditable]:focus {
   font-size: 0.68rem;
   border-radius: 5px;
   border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.88);
   background: oklch(100% 0 0 / 0.88);
   cursor: pointer;
   backdrop-filter: blur(2px);
@@ -916,6 +918,7 @@ tbody td[contenteditable]:focus {
 }
 
 #btn-new-folder {
+  background: #7b47bf;
   background: oklch(52% 0.18 300);
   font-size: 0.8rem;
 }

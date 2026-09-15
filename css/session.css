@@ -544,6 +544,10 @@ body.is-fullscreen #sequence-display {
   gap: 20px;
 }
 
+body.is-fullscreen #sequence-display.has-layout-break {
+  flex-wrap: wrap;
+}
+
 body.is-fullscreen .sequence-item-box {
   flex: 1;
   min-width: 120px;

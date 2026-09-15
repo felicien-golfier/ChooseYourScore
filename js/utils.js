@@ -203,6 +203,21 @@ function isoDateToFr(iso) {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || '');
   return m ? m[3] + '/' + m[2] + '/' + m[1] : '';
 }
+
+// Number of items to force onto the first row of a sequence pair's display (e.g. "2"
+// means 2 items then a hard line break), or null for the default single-row auto-wrap.
+function seqLayoutBreakAfter(displayLayout) {
+  const n = parseInt(displayLayout, 10);
+  return n > 0 ? n : null;
+}
+
+// Appends a hard line-break spacer to a flex-wrap sequence item container, forcing
+// items added after it onto a new row regardless of the container's width.
+function appendSeqLayoutBreak(container) {
+  const brk = document.createElement('div');
+  brk.className = 'seq-layout-break';
+  container.appendChild(brk);
+}
 function newId(p) { return p + '_' + Date.now() + '_' + Math.random().toString(36).slice(2,6); }
 function escapeHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function getPairQuestions(pair) {

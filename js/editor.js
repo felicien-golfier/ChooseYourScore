@@ -404,7 +404,7 @@ document.getElementById('btn-add-pair').addEventListener('click', () => {
   const ex = getSelectedEx(); if (!ex) return;
   const pair = { id: newId('pair'), type: 'sequence',
     items: [{type:'text',text:'',color:'#1a1a1a',fontSize:32,fontFamily:'Arial',textTransform:'none',imageUrl:null,videoUrl:null,audioUrl:null}],
-    displayDuration: null, useExerciseDefault: true, visibilityMode: 'always_show',
+    displayDuration: null, useExerciseDefault: true, visibilityMode: 'always_show', displayLayout: 'row',
     questions: [{questionText:'',type:'choice',choices:['',''],correctIndices:[0],showOnRetry:true,allowRetry:true,itemOverrides:[]}] };
   ex.pairs.push(pair); saveExercises(); renderExerciseEditor(); openPairModal(pair.id);
 });
@@ -460,6 +460,7 @@ document.getElementById('btn-modal-save').addEventListener('click', () => {
   pair.visibilityMode      = seqData.visibilityMode;
   pair.useExerciseDefault  = seqData.useExerciseDefault;
   pair.displayDuration     = seqData.displayDuration;
+  pair.displayLayout       = seqData.displayLayout;
   pair.questions           = seqData.questions;
   delete pair.questionText; delete pair.choices;
   delete pair.left; delete pair.right; delete pair.correct;
@@ -1275,6 +1276,7 @@ function fillSequenceModal(pair) {
   document.getElementById('seq-duration-row').style.display = useExDefault ? 'none' : '';
   const visMode = pair.visibilityMode || (pair.hideItems !== false ? 'always_hide' : 'always_show');
   document.getElementById('seq-visibility-mode').value = visMode;
+  document.getElementById('seq-display-layout').value = pair.displayLayout || 'row';
   refreshSequenceItemInputs();
   const questions = getPairQuestions(pair);
   const container = document.getElementById('seq-questions-container');
@@ -1315,12 +1317,14 @@ function readSequenceModal() {
   const rawDur = useExerciseDefault ? null : Math.round((parseFloat(document.getElementById('seq-duration').value) || 0) * 1000);
   const skipDisplay = !useExerciseDefault && rawDur === 0;
   const visibilityMode = document.getElementById('seq-visibility-mode').value || 'always_show';
+  const displayLayout = document.getElementById('seq-display-layout').value || 'row';
   return {
     items:            getSequenceItemValues(),
     skipDisplay,
     visibilityMode,
     useExerciseDefault,
     displayDuration:  skipDisplay ? 0 : rawDur,
+    displayLayout,
     questions,
   };
 }
@@ -1329,7 +1333,8 @@ function refreshSequencePreview() {
   const items = getSequenceItemValues();
   const previewItems = document.getElementById('seq-preview-items');
   previewItems.innerHTML = '';
-  items.forEach(item => {
+  const breakAfter = seqLayoutBreakAfter(document.getElementById('seq-display-layout').value);
+  items.forEach((item, idx) => {
     const box = document.createElement('div');
     box.className = 'sequence-item-box';
     box.style.cssText = 'width:52px;height:52px;min-width:52px;min-height:52px;border:2px solid var(--border);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:1.2rem;background:white;flex:none';
@@ -1342,6 +1347,7 @@ function refreshSequencePreview() {
       box.textContent = item || '?';
     }
     previewItems.appendChild(box);
+    if (breakAfter && idx === breakAfter - 1 && idx < items.length - 1) appendSeqLayoutBreak(previewItems);
   });
   const previewQs = document.getElementById('seq-preview-questions');
   previewQs.innerHTML = '';
@@ -1397,6 +1403,7 @@ document.getElementById('seq-num-items').addEventListener('change', () => { refr
   );
   if (next) parent.insertBefore(wrap, next); else parent.appendChild(wrap);
 })();
+document.getElementById('seq-display-layout').addEventListener('change', () => { refreshSequencePreview(); });
 document.getElementById('seq-use-exercise-duration').addEventListener('change', function() {
   document.getElementById('seq-duration-row').style.display = this.checked ? 'none' : '';
 });

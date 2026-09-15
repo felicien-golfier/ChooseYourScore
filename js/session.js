@@ -85,7 +85,8 @@ function startSequenceDisplay(pair, afterDisplayFn) {
   displayEl.innerHTML = '';
   const isSingle = (pair.items || []).length === 1;
   const audioUrls = [];
-  (pair.items || []).forEach(item => {
+  const breakAfter = seqLayoutBreakAfter(pair.displayLayout);
+  (pair.items || []).forEach((item, idx) => {
     const itemObj = typeof item === 'string' ? {type:'text', text:item} : item;
     const el = document.createElement('div');
     el.className = isSingle ? 'sequence-text-display' : 'sequence-item-box';
@@ -114,6 +115,7 @@ function startSequenceDisplay(pair, afterDisplayFn) {
     } else {
       displayEl.appendChild(el);
     }
+    if (breakAfter && idx === breakAfter - 1 && idx < pair.items.length - 1) appendSeqLayoutBreak(displayEl);
   });
   questionEl.style.display = 'none';
   choicesEl.style.display  = 'none';

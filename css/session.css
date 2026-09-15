@@ -370,13 +370,13 @@ body.is-fullscreen .keyboard-hint {
   position: absolute;
   bottom: 8px;
   right: 8px;
-  width: 28px;
-  height: 28px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   border: 1.5px solid var(--accent-border);
   background: oklch(100% 0 0 / 0.9);
   color: var(--accent);
-  font-size: 0.72rem;
+  font-size: 1.44rem;
   cursor: pointer;
   padding: 0;
   display: flex;
@@ -565,9 +565,9 @@ body.is-fullscreen .seq-sound-wrapper .sequence-item-box {
 }
 
 body.is-fullscreen .seq-item-sound-btn {
-  width: 48px;
-  height: 48px;
-  font-size: 1.3rem;
+  width: 96px;
+  height: 96px;
+  font-size: 2.6rem;
   bottom: 14px;
   right: 14px;
 }

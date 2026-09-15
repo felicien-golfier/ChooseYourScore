@@ -15,11 +15,18 @@ let simCharSel = new Set();
 let _simTextPrev = '';
 let simItemLevel = { color: '#1a1a1a', fontSize: 32, fontFamily: 'Arial', textTransform: 'none', fontWeight: 'normal', fontStyle: 'normal' };
 const collapsedFolders = new Set();
+let _editorFoldersInitialized = false;
 function getSelectedEx() { return exercises.find(e => e.id === editorSelectedId) || null; }
 
 
 function initEditor() {
   if (editorSelectedId === null && exercises.length > 0) editorSelectedId = exercises[0].id;
+  // Dossiers repliés par défaut à l'ouverture de l'éditeur (une seule fois par session),
+  // pour garder la liste lisible ; l'utilisateur reste libre de les déplier ensuite.
+  if (!_editorFoldersInitialized) {
+    _editorFoldersInitialized = true;
+    folders.forEach(f => collapsedFolders.add(f.id));
+  }
   renderSidebar();
   renderExerciseEditor();
 }

@@ -86,6 +86,7 @@ function startSequenceDisplay(pair, afterDisplayFn) {
   const isSingle = (pair.items || []).length === 1;
   const audioUrls = [];
   const breakAfter = seqLayoutBreakAfter(pair.displayLayout);
+  displayEl.classList.toggle('has-layout-break', !!breakAfter);
   (pair.items || []).forEach((item, idx) => {
     const itemObj = typeof item === 'string' ? {type:'text', text:item} : item;
     const el = document.createElement('div');

@@ -181,6 +181,28 @@ function formatDuration(ms) {
   const s = Math.floor(ms / 1000), m = Math.floor(s / 60);
   return m > 0 ? m + ' min ' + (s % 60) + ' s' : s + ' s';
 }
+
+// Reformats a date input's raw value into "JJ/MM/AAAA" as the user types digits.
+function formatDateDigitsAsTyped(raw) {
+  const digits = raw.replace(/\D/g, '').slice(0, 8);
+  return [digits.slice(0, 2), digits.slice(2, 4), digits.slice(4, 8)].filter(Boolean).join('/');
+}
+
+// Converts a complete "JJ/MM/AAAA" string to an ISO "AAAA-MM-JJ" date, or null if invalid/incomplete.
+function frDateToIso(frDate) {
+  const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(frDate);
+  if (!m) return null;
+  const day = +m[1], month = +m[2], year = +m[3];
+  const d = new Date(year, month - 1, day);
+  if (d.getFullYear() !== year || d.getMonth() !== month - 1 || d.getDate() !== day) return null;
+  return String(year).padStart(4, '0') + '-' + String(month).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+}
+
+// Converts an ISO "AAAA-MM-JJ" date to "JJ/MM/AAAA" for display, or '' if empty/invalid.
+function isoDateToFr(iso) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || '');
+  return m ? m[3] + '/' + m[2] + '/' + m[1] : '';
+}
 function newId(p) { return p + '_' + Date.now() + '_' + Math.random().toString(36).slice(2,6); }
 function escapeHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function getPairQuestions(pair) {

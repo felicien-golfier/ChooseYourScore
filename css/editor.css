@@ -1079,6 +1079,11 @@ tbody td[contenteditable]:focus {
   max-width: 220px;
 }
 
+#patient-dob.input-invalid {
+  border-color: var(--danger-border);
+  background: var(--danger-bg);
+}
+
 #patient-mini-stats {
   display: flex;
   gap: 20px;

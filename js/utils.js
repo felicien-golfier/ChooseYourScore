@@ -232,6 +232,11 @@ function makeNamingHint(word) {
   toMask.forEach(i => { chars[i] = '_'; });
   return chars.join('');
 }
+// « 3 / 4 (75%) » : bonnes réponses parmi les mots que le patient a tenté de dire.
+function formatNamingCorrect(stats) {
+  if (!stats.attempted) return '0 / 0';
+  return stats.correct + ' / ' + stats.attempted + ' (' + Math.round(stats.correct / stats.attempted * 100) + '%)';
+}
 function shuffleArray(arr) {
   const a = [...arr];
   for (let i = a.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }

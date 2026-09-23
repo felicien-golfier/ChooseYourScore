@@ -755,7 +755,8 @@ body.is-fullscreen .dir-key-btn {
   cursor: pointer;
 }
 
-#seq-naming-actions {
+/* Étape 1 (je ne sais pas / vérifier) puis étape 2 (correct / incorrect) */
+.seq-naming-actions {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
@@ -774,10 +775,14 @@ body.is-fullscreen .dir-key-btn {
   transition: all 0.15s;
 }
 
-#seq-naming-success { color: var(--success); border-color: var(--success-border); }
-#seq-naming-fail    { color: var(--danger);  border-color: var(--danger-border); }
-#seq-naming-success:hover:not(:disabled) { background: var(--success-bg); }
-#seq-naming-fail:hover:not(:disabled)    { background: var(--danger-bg); }
+#seq-naming-check   { color: var(--accent);  border-color: var(--accent-border); }
+#seq-naming-unknown { color: var(--text-2); }
+#seq-naming-correct   { color: var(--success); border-color: var(--success-border); }
+#seq-naming-incorrect { color: var(--danger);  border-color: var(--danger-border); }
+#seq-naming-check:hover:not(:disabled)     { background: var(--accent-bg); }
+#seq-naming-unknown:hover:not(:disabled)   { background: var(--surface-2); }
+#seq-naming-correct:hover:not(:disabled)   { background: var(--success-bg); }
+#seq-naming-incorrect:hover:not(:disabled) { background: var(--danger-bg); }
 .seq-naming-btn:disabled { opacity: 0.5; cursor: default; }
 
 #seq-show-again-btn {

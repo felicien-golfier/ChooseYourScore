@@ -1054,10 +1054,13 @@ function buildSequenceQuestionBlock(q) {
   replayTimerChk.style.cssText = 'accent-color:var(--accent)';
   replayTimerLabel.append(replayTimerChk, document.createTextNode('Rejouer avec le temps'));
   // Hide retry options when allowRetry is off
+  // Pas de 2ᵉ essai en dénomination : le mot complet est déjà montré
   const syncRetryVis = () => {
-    retryLabel.style.display       = allowRetryChk.checked ? '' : 'none';
-    highlightLabel.style.display   = allowRetryChk.checked ? '' : 'none';
-    replayTimerLabel.style.display = (allowRetryChk.checked && retryChk.checked) ? '' : 'none';
+    const retryAllowed = typeSelect.value !== 'naming';
+    allowRetryLabel.style.display  = retryAllowed ? '' : 'none';
+    retryLabel.style.display       = (retryAllowed && allowRetryChk.checked) ? '' : 'none';
+    highlightLabel.style.display   = (retryAllowed && allowRetryChk.checked) ? '' : 'none';
+    replayTimerLabel.style.display = (retryAllowed && allowRetryChk.checked && retryChk.checked) ? '' : 'none';
   };
   retryChk.addEventListener('change', syncRetryVis);
   allowRetryChk.addEventListener('change', syncRetryVis); syncRetryVis();
@@ -1278,7 +1281,7 @@ function buildSequenceQuestionBlock(q) {
   namingHintRow.appendChild(namingHintWrap);
   const namingHelp = document.createElement('div');
   namingHelp.style.cssText = 'font-size:0.75rem;color:var(--text-3);margin-top:4px';
-  namingHelp.textContent = 'En séance, le mot à trous s\'affiche sous l\'image. Un clic sur l\'image ou le mot révèle le mot complet. Vous notez ensuite la réponse (✓ Dénommé / ✗ Non dénommé).';
+  namingHelp.textContent = 'En séance, le mot à trous s\'affiche sous l\'image. Le patient choisit « Je ne sais pas » ou « Vérifier ma réponse » (ou clique sur l\'image / le mot) : le mot complet apparaît et vous notez « Correct » ou « Incorrect ».';
   namingSection.append(namingWordRow, namingHintRow, namingHelp);
 
   // Show/hide sections based on type
@@ -1288,6 +1291,7 @@ function buildSequenceQuestionBlock(q) {
     dirSection.style.display       = type === 'direction'  ? 'block' : 'none';
     clickItemSection.style.display = type === 'click-item' ? 'block' : 'none';
     namingSection.style.display    = type === 'naming'     ? 'block' : 'none';
+    syncRetryVis();
     shuffleAnswersLabel.style.display = type === 'choice'  ? ''      : 'none';
     if (type === 'click-item') {
       const saved = Array.from(block.querySelectorAll('.seq-item-toggle'))

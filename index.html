@@ -111,9 +111,13 @@
       </div>
       <div id="seq-naming-zone">
         <div id="seq-naming-word" title="Cliquer pour afficher le mot complet"></div>
-        <div id="seq-naming-actions">
-          <button id="seq-naming-fail" class="seq-naming-btn">✗ Non dénommé</button>
-          <button id="seq-naming-success" class="seq-naming-btn">✓ Dénommé</button>
+        <div class="seq-naming-actions" id="seq-naming-ask">
+          <button id="seq-naming-unknown" class="seq-naming-btn">🤷 Je ne sais pas</button>
+          <button id="seq-naming-check" class="seq-naming-btn">🔍 Vérifier ma réponse</button>
+        </div>
+        <div class="seq-naming-actions" id="seq-naming-judge">
+          <button id="seq-naming-incorrect" class="seq-naming-btn">✗ Incorrect</button>
+          <button id="seq-naming-correct" class="seq-naming-btn">✓ Correct</button>
         </div>
       </div>
       <button id="seq-show-again-btn">👁  Revoir</button>
@@ -148,6 +152,14 @@
         <div class="result-card"><div class="label">Omissions ✗ (Go raté)</div><div class="value danger" id="gng-misses">–</div></div>
         <div class="result-card"><div class="label">Fausses alarmes ✗ (No-Go cliqué)</div><div class="value danger" id="gng-false-alarms">–</div></div>
         <div class="result-card"><div class="label">Rejections correctes ✓ (No-Go ignoré)</div><div class="value good" id="gng-correct-rejections">–</div></div>
+      </div>
+    </div>
+    <div id="naming-result-panel" style="display:none">
+      <div class="gonogo-metrics-label">Détail dénomination</div>
+      <div class="results-grid gonogo-metrics-grid">
+        <div class="result-card"><div class="label">Je ne sais pas</div><div class="value danger" id="naming-res-unknown">–</div></div>
+        <div class="result-card"><div class="label">Réponses vérifiées</div><div class="value" id="naming-res-checked">–</div></div>
+        <div class="result-card"><div class="label">Correctes (sur vérifiées)</div><div class="value good" id="naming-res-correct">–</div></div>
       </div>
     </div>
     <div id="question-breakdown-panel" style="display:none">

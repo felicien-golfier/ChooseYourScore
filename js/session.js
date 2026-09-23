@@ -281,24 +281,30 @@ function startSequenceQuestion(pair, qIdx, isRetry, isAfterReplay) {
     const fullWord = q.namingWord || correctAnswers[0] || '';
     const hint     = q.namingHint || makeNamingHint(fullWord);
     const wordEl   = document.getElementById('seq-naming-word');
-    let revealed   = false;
-    const setRevealed = r => {
-      revealed = r;
-      wordEl.textContent = revealed ? fullWord : hint;
-      wordEl.classList.toggle('revealed', revealed);
+    const askEl    = document.getElementById('seq-naming-ask');
+    const judgeEl  = document.getElementById('seq-naming-judge');
+    wordEl.textContent = hint;
+    wordEl.classList.remove('revealed');
+    askEl.style.display   = 'flex';
+    judgeEl.style.display = 'none';
+    document.querySelectorAll('#seq-naming-zone .seq-naming-btn').forEach(btn => { btn.disabled = false; });
+    // Étape 2 : le mot complet apparaît, le thérapeute juge la réponse donnée
+    const checkAnswer = () => {
+      if (isWaiting || judgeEl.style.display !== 'none') return;
+      wordEl.textContent = fullWord;
+      wordEl.classList.add('revealed');
+      askEl.style.display   = 'none';
+      judgeEl.style.display = 'flex';
     };
-    const toggleReveal = () => { if (!isWaiting) setRevealed(!revealed); };
-    setRevealed(false);
-    wordEl.onclick = toggleReveal;
+    wordEl.onclick = checkAnswer;
     Array.from(displayEl.querySelectorAll('.sequence-item-box, .sequence-text-display')).forEach(el => {
       el.classList.add('naming-clickable');
-      el.onclick = toggleReveal;
+      el.onclick = checkAnswer;
     });
-    const successBtn = document.getElementById('seq-naming-success');
-    const failBtn    = document.getElementById('seq-naming-fail');
-    successBtn.disabled = failBtn.disabled = false;
-    successBtn.onclick = () => handleNamingResponse(true,  revealed, fullWord, pair, questions, qIdx, isRetry);
-    failBtn.onclick    = () => handleNamingResponse(false, revealed, fullWord, pair, questions, qIdx, isRetry);
+    document.getElementById('seq-naming-check').onclick     = checkAnswer;
+    document.getElementById('seq-naming-unknown').onclick   = () => handleNamingResponse(false, false, fullWord, pair, questions, qIdx);
+    document.getElementById('seq-naming-correct').onclick   = () => handleNamingResponse(true,  true,  fullWord, pair, questions, qIdx);
+    document.getElementById('seq-naming-incorrect').onclick = () => handleNamingResponse(false, true,  fullWord, pair, questions, qIdx);
     document.getElementById('seq-naming-zone').style.display = 'flex';
 
   // ── Choix multiples ────────────────────────────────────────────────────────
@@ -381,18 +387,18 @@ function handleClickItemResponse(chosenIdx, correctItemIndices, foundItemIndices
   }
 }
 
-// Le thérapeute juge la dénomination orale ; on note si le mot complet a été dévoilé.
-function handleNamingResponse(isCorrect, revealed, fullWord, pair, questions, qIdx, isRetry) {
+// attempted = le patient a proposé un mot (« Vérifier ma réponse ») ; false = « Je ne sais pas ».
+// Pas de 2ᵉ essai : le mot complet a déjà été montré.
+function handleNamingResponse(isCorrect, attempted, fullWord, pair, questions, qIdx) {
   if (isWaiting) return;
   isWaiting = true;
-  const q = questions[qIdx];
-  responses.push({ pairId: pair.id, type: 'sequence', questionIndex: qIdx, chosen: isCorrect ? fullWord : '', isCorrect, revealed, correctAnswer: fullWord, correctAnswers: [fullWord], isRetry: !!isRetry, isExample: pairIndex < currentExampleCount, timeMs: Date.now() - pairStartTime });
-  document.getElementById('seq-naming-success').disabled = true;
-  document.getElementById('seq-naming-fail').disabled    = true;
+  responses.push({ pairId: pair.id, type: 'naming', questionIndex: qIdx, chosen: isCorrect ? fullWord : '', isCorrect, attempted, correctAnswer: fullWord, correctAnswers: [fullWord], isRetry: false, isExample: pairIndex < currentExampleCount, timeMs: Date.now() - pairStartTime });
+  document.querySelectorAll('#seq-naming-zone .seq-naming-btn').forEach(btn => { btn.disabled = true; });
   const wordEl = document.getElementById('seq-naming-word');
   wordEl.textContent = fullWord;
   wordEl.classList.add('revealed');
-  setTimeout(() => resolveQuestion(isCorrect, q, pair, questions, qIdx, isRetry), isCorrect ? 700 : 1200);
+  // « Je ne sais pas » : on laisse le temps de lire le mot complet
+  setTimeout(() => advance(pair, questions, qIdx, false), attempted ? 700 : 2000);
 }
 
 function resolveQuestion(isCorrect, q, pair, questions, qIdx, isRetry) {
@@ -555,6 +561,8 @@ function finishExercise(isPartial) {
   const totalTimeMs = Date.now() - exerciseStartTime;
   let score = 0, totalReactionMs = 0, reactionCount = 0;
   let errorsLeft = 0, errorsRight = 0, hasDirectionQuestions = false;
+  const namingStats = { unknown: 0, attempted: 0, correct: 0 };
+  let hasNamingQuestions = false;
 
   const totalQuestionsInExercise = currentPairs.reduce((sum, p, idx) =>
     idx < currentExampleCount ? sum : sum + (p.questions || [{}]).length, 0);
@@ -576,6 +584,11 @@ function finishExercise(isPartial) {
         else if (r.correctAnswer === 'right') errorsRight++;
       }
     }
+    if (r.type === 'naming') {
+      hasNamingQuestions = true;
+      if (!r.attempted) namingStats.unknown++;
+      else { namingStats.attempted++; if (r.isCorrect) namingStats.correct++; }
+    }
     const stats = questionIndexStats[r.questionIndex] || (questionIndexStats[r.questionIndex] = { score: 0, total: 0 });
     stats.total++;
     if (r.isCorrect) stats.score++;
@@ -589,6 +602,7 @@ function finishExercise(isPartial) {
     totalTimeMs, totalPairs: effectiveTotalQuestions, score, responses, notes: '',
     ...(isPartial ? { partial: true, pairsAttempted: pairIndex, totalPairsInExercise: totalQuestionsInExercise } : {}),
     ...(hasDirectionQuestions ? { errorsLeft, errorsRight } : {}),
+    ...(hasNamingQuestions ? { namingStats } : {}),
     ...(Object.keys(questionIndexStats).length > 1 ? { questionIndexStats } : {}),
   };
   sessions.push(newSession);
@@ -619,6 +633,12 @@ function finishExercise(isPartial) {
     document.getElementById('res-errors-right').textContent = errorsRight;
   }
   document.getElementById('gonogo-result-panel').style.display = 'none';
+  document.getElementById('naming-result-panel').style.display = hasNamingQuestions ? 'block' : 'none';
+  if (hasNamingQuestions) {
+    document.getElementById('naming-res-unknown').textContent = namingStats.unknown;
+    document.getElementById('naming-res-checked').textContent = namingStats.attempted;
+    document.getElementById('naming-res-correct').textContent = formatNamingCorrect(namingStats);
+  }
   renderQuestionBreakdown(questionIndexStats);
   if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   showView('session-result');
@@ -896,6 +916,7 @@ function finishGoNoGo(isPartial) {
   document.getElementById('card-errors-right').style.display = 'none';
 
   document.getElementById('gonogo-result-panel').style.display     = 'block';
+  document.getElementById('naming-result-panel').style.display     = 'none';
   document.getElementById('gng-hits').textContent                  = hits;
   document.getElementById('gng-misses').textContent                = misses;
   document.getElementById('gng-false-alarms').textContent          = falseAlarms;

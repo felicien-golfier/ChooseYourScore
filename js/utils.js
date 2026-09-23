@@ -223,6 +223,15 @@ function escapeHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&l
 function getPairQuestions(pair) {
   return (pair.questions && pair.questions.length) ? pair.questions : [{questionText: pair.questionText || '', choices: pair.choices || []}];
 }
+// Mot à trous pour la dénomination (ex : BICYCLETTE → B_CY___T_E) : garde la 1re lettre
+// et la ponctuation, masque aléatoirement environ la moitié des autres lettres.
+function makeNamingHint(word) {
+  const chars = Array.from(word || '');
+  const letterIdx = chars.map((c, i) => /\p{L}/u.test(c) && i > 0 ? i : -1).filter(i => i >= 0);
+  const toMask = shuffleArray(letterIdx).slice(0, Math.ceil(letterIdx.length / 2));
+  toMask.forEach(i => { chars[i] = '_'; });
+  return chars.join('');
+}
 function shuffleArray(arr) {
   const a = [...arr];
   for (let i = a.length-1; i > 0; i--) { const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }

@@ -99,7 +99,7 @@ function populateSetupPatientSelect() {
 
 document.getElementById('patient-select-setup').addEventListener('change', () => {
   document.getElementById('new-patient-row').style.display =
-    document.getElementById('patient-select-setup').value === '__new__' ? '' : 'none';
+    document.getElementById('patient-select-setup').value === '__new__' ? 'block' : 'none';
 });
 
 document.getElementById('btn-start').addEventListener('click', () => {

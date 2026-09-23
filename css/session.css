@@ -719,6 +719,67 @@ body.is-fullscreen .dir-key-btn {
   text-align: center;
 }
 
+/* ── DÉNOMINATION (mot à trous) ──────────────────────────────────────────── */
+#seq-naming-zone {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+#seq-naming-word {
+  font-size: clamp(1.8rem, 6vw, 3.2rem);
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  padding: 10px 18px 10px calc(18px + 0.35em);
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--text-1);
+  background: var(--surface);
+  cursor: pointer;
+  user-select: none;
+  text-align: center;
+  word-break: break-all;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+#seq-naming-word.revealed {
+  border-style: solid;
+  border-color: var(--success-border);
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+.naming-clickable {
+  cursor: pointer;
+}
+
+#seq-naming-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.seq-naming-btn {
+  padding: 10px 20px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+#seq-naming-success { color: var(--success); border-color: var(--success-border); }
+#seq-naming-fail    { color: var(--danger);  border-color: var(--danger-border); }
+#seq-naming-success:hover:not(:disabled) { background: var(--success-bg); }
+#seq-naming-fail:hover:not(:disabled)    { background: var(--danger-bg); }
+.seq-naming-btn:disabled { opacity: 0.5; cursor: default; }
+
 #seq-show-again-btn {
   display: none;
   padding: 7px 16px;

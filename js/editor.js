@@ -1007,7 +1007,7 @@ function buildSequenceQuestionBlock(q) {
   const typeSelect = document.createElement('select');
   typeSelect.className = 'seq-q-type';
   typeSelect.style.cssText = 'padding:3px 8px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.8rem;font-family:var(--font);outline:none;color:var(--text-1);background:var(--surface);cursor:pointer';
-  [['choice','Choix multiples'],['write','Saisie libre'],['direction','Direction (flèche)'],['click-item','Cliquer sur l\'item']].forEach(([v,l]) => {
+  [['choice','Choix multiples'],['write','Saisie libre'],['direction','Direction (flèche)'],['click-item','Cliquer sur l\'item'],['naming','Dénomination (mot à trous)']].forEach(([v,l]) => {
     const opt = document.createElement('option'); opt.value = v; opt.textContent = l;
     if ((q.type || 'choice') === v) opt.selected = true;
     typeSelect.appendChild(opt);
@@ -1237,12 +1237,57 @@ function buildSequenceQuestionBlock(q) {
   };
   buildClickItemToggles(q.correctItemIndices);
 
+  // ── Naming section (mot à trous) ────────────────────────────────────────────
+  const namingSection = document.createElement('div');
+  namingSection.className = 'seq-q-naming-section';
+  const fieldCss = 'width:100%;padding:7px 10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.9rem;outline:none;font-family:var(--font);color:var(--text-1);background:var(--surface)';
+  const namingWordRow = document.createElement('div');
+  namingWordRow.className = 'field-row';
+  namingWordRow.innerHTML = '<label>Mot complet</label>';
+  const namingWordInput = document.createElement('input');
+  namingWordInput.type = 'text'; namingWordInput.className = 'seq-q-naming-word';
+  namingWordInput.placeholder = 'ex : BICYCLETTE';
+  namingWordInput.value = q.namingWord || '';
+  namingWordInput.style.cssText = fieldCss + ';border-color:var(--success-border);background:var(--success-bg)';
+  namingWordRow.appendChild(namingWordInput);
+  const namingHintRow = document.createElement('div');
+  namingHintRow.className = 'field-row';
+  namingHintRow.innerHTML = '<label>Mot à trous (indice)</label>';
+  const namingHintWrap = document.createElement('div');
+  namingHintWrap.style.cssText = 'display:flex;gap:6px;width:100%';
+  const namingHintInput = document.createElement('input');
+  namingHintInput.type = 'text'; namingHintInput.className = 'seq-q-naming-hint';
+  namingHintInput.placeholder = 'ex : B_CY___T_E';
+  namingHintInput.value = q.namingHint || '';
+  namingHintInput.style.cssText = fieldCss + ';letter-spacing:.15em';
+  const namingGenBtn = document.createElement('button');
+  namingGenBtn.type = 'button'; namingGenBtn.className = 'seq-q-naming-gen';
+  namingGenBtn.textContent = '🎲 Générer';
+  namingGenBtn.title = 'Générer un mot à trous aléatoire à partir du mot complet';
+  namingGenBtn.style.cssText = 'padding:4px 10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text-1);font-size:0.8rem;cursor:pointer;font-family:var(--font);white-space:nowrap';
+  namingGenBtn.addEventListener('click', () => {
+    namingHintInput.value = makeNamingHint(namingWordInput.value.trim());
+    refreshSequencePreview();
+  });
+  namingWordInput.addEventListener('input', refreshSequencePreview);
+  namingWordInput.addEventListener('change', () => {
+    if (!namingHintInput.value.trim()) namingGenBtn.click();
+  });
+  namingHintInput.addEventListener('input', refreshSequencePreview);
+  namingHintWrap.append(namingHintInput, namingGenBtn);
+  namingHintRow.appendChild(namingHintWrap);
+  const namingHelp = document.createElement('div');
+  namingHelp.style.cssText = 'font-size:0.75rem;color:var(--text-3);margin-top:4px';
+  namingHelp.textContent = 'En séance, le mot à trous s\'affiche sous l\'image. Un clic sur l\'image ou le mot révèle le mot complet. Vous notez ensuite la réponse (✓ Dénommé / ✗ Non dénommé).';
+  namingSection.append(namingWordRow, namingHintRow, namingHelp);
+
   // Show/hide sections based on type
   const applyType = (type) => {
     choiceSection.style.display    = type === 'choice'     ? 'block' : 'none';
     writeSection.style.display     = type === 'write'      ? 'block' : 'none';
     dirSection.style.display       = type === 'direction'  ? 'block' : 'none';
     clickItemSection.style.display = type === 'click-item' ? 'block' : 'none';
+    namingSection.style.display    = type === 'naming'     ? 'block' : 'none';
     shuffleAnswersLabel.style.display = type === 'choice'  ? ''      : 'none';
     if (type === 'click-item') {
       const saved = Array.from(block.querySelectorAll('.seq-item-toggle'))
@@ -1253,7 +1298,7 @@ function buildSequenceQuestionBlock(q) {
   applyType(q.type || 'choice');
   typeSelect.addEventListener('change', () => { applyType(typeSelect.value); refreshSequencePreview(); });
 
-  block.append(choiceSection, writeSection, dirSection, clickItemSection);
+  block.append(choiceSection, writeSection, dirSection, clickItemSection, namingSection);
 
   return block;
 }
@@ -1314,6 +1359,11 @@ function readSequenceModal() {
       base.correctItemIndices = Array.from(block.querySelectorAll('.seq-item-toggle'))
         .filter(t => t.dataset.correct === '1').map(t => parseInt(t.dataset.itemIndex));
       if (!base.correctItemIndices.length) base.correctItemIndices = [0];
+    } else if (type === 'naming') {
+      base.namingWord = (block.querySelector('.seq-q-naming-word')?.value || '').trim();
+      base.namingHint = (block.querySelector('.seq-q-naming-hint')?.value || '').trim() || makeNamingHint(base.namingWord);
+      base.choices = [base.namingWord];
+      base.correctIndices = [0];
     } else {
       base.choices = Array.from(block.querySelectorAll('.seq-q-choice')).map(i => i.value.trim());
       base.correctIndices = getCorrectIndicesFromBlock(block);
@@ -1371,6 +1421,10 @@ function refreshSequencePreview() {
       const rule = block.querySelector('.seq-q-direction-rule')?.value || 'same';
       const opts = block.querySelector('.seq-q-direction-opts')?.value || '4';
       choicesHtml = '<span style="padding:1px 8px;border-radius:4px;background:var(--accent-bg);border:1px solid var(--accent-border)">↕ ' + (rule === 'inverse' ? 'sens inverse' : 'même sens') + ' · ' + opts + ' options</span>';
+    } else if (qType === 'naming') {
+      const word = (block.querySelector('.seq-q-naming-word')?.value || '').trim();
+      const hint = (block.querySelector('.seq-q-naming-hint')?.value || '').trim();
+      choicesHtml = '<span style="padding:1px 8px;border-radius:4px;background:var(--success-bg);border:1px solid var(--success-border);letter-spacing:.1em">🖼 ' + escapeHtml(hint || '?') + ' → ' + escapeHtml(word || '?') + '</span>';
     } else if (qType === 'click-item') {
       const corrects = new Set(Array.from(block.querySelectorAll('.seq-item-toggle'))
         .filter(t => t.dataset.correct === '1').map(t => parseInt(t.dataset.itemIndex)));

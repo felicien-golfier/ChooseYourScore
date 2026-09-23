@@ -64,6 +64,7 @@ function renderPair() {
   document.getElementById('sequence-question').style.display = 'none';
   document.getElementById('sequence-choices').style.display = 'none';
   document.getElementById('seq-show-again-btn').style.display = 'none';
+  document.getElementById('seq-naming-zone').style.display = 'none';
   const gen = ++_displayGen;
   sequenceTimer = setTimeout(() => {
     sequenceTimer = null;
@@ -122,6 +123,7 @@ function startSequenceDisplay(pair, afterDisplayFn) {
   choicesEl.style.display  = 'none';
   document.getElementById('seq-show-again-btn').style.display = 'none';
   document.getElementById('seq-write-zone').style.display = 'none';
+  document.getElementById('seq-naming-zone').style.display = 'none';
 
   const _visMode = pair.visibilityMode || 'always_show';
   let _hideItems;
@@ -130,7 +132,8 @@ function startSequenceDisplay(pair, afterDisplayFn) {
   else if (_visMode === 'hide_if_prev_incorrect') _hideItems = previousPairWasCorrect === false;
   else _hideItems = true;
 
-  if (pair.skipDisplay || _hideItems || currentPairQuestions[0]?.type === 'click-item') {
+  const firstQType = currentPairQuestions[0]?.type;
+  if (pair.skipDisplay || _hideItems || firstQType === 'click-item' || firstQType === 'naming') {
     timerBar.style.display = 'none';
     displayEl.style.display = _hideItems ? 'none' : 'flex';
     (afterDisplayFn || (() => startSequenceQuestion(pair, 0)))();
@@ -197,6 +200,8 @@ function startSequenceQuestion(pair, qIdx, isRetry, isAfterReplay) {
 
   // Réinitialisation des conteneurs + suppression du flash au survol
   writeZone.style.display   = 'none';
+  document.getElementById('seq-naming-zone').style.display = 'none';
+  displayEl.querySelectorAll('.naming-clickable').forEach(el => { el.classList.remove('naming-clickable'); el.onclick = null; });
   choicesEl.innerHTML       = '';
   choicesEl.style.display   = 'none';
   choicesEl.classList.add('no-hover-flash');
@@ -268,6 +273,33 @@ function startSequenceQuestion(pair, qIdx, isRetry, isAfterReplay) {
       el.classList.add('item-clickable');
       el.onclick = () => handleClickItemResponse(i, correctItemIndices, foundItemIndices, pair, questions, qIdx, isRetry);
     });
+
+  // ── Dénomination : mot à trous, clic sur l'image ou le mot → mot complet ───
+  } else if (q.type === 'naming') {
+    displayEl.style.display    = 'flex';
+    showAgainBtn.style.display = 'none';
+    const fullWord = q.namingWord || correctAnswers[0] || '';
+    const hint     = q.namingHint || makeNamingHint(fullWord);
+    const wordEl   = document.getElementById('seq-naming-word');
+    let revealed   = false;
+    const setRevealed = r => {
+      revealed = r;
+      wordEl.textContent = revealed ? fullWord : hint;
+      wordEl.classList.toggle('revealed', revealed);
+    };
+    const toggleReveal = () => { if (!isWaiting) setRevealed(!revealed); };
+    setRevealed(false);
+    wordEl.onclick = toggleReveal;
+    Array.from(displayEl.querySelectorAll('.sequence-item-box, .sequence-text-display')).forEach(el => {
+      el.classList.add('naming-clickable');
+      el.onclick = toggleReveal;
+    });
+    const successBtn = document.getElementById('seq-naming-success');
+    const failBtn    = document.getElementById('seq-naming-fail');
+    successBtn.disabled = failBtn.disabled = false;
+    successBtn.onclick = () => handleNamingResponse(true,  revealed, fullWord, pair, questions, qIdx, isRetry);
+    failBtn.onclick    = () => handleNamingResponse(false, revealed, fullWord, pair, questions, qIdx, isRetry);
+    document.getElementById('seq-naming-zone').style.display = 'flex';
 
   // ── Choix multiples ────────────────────────────────────────────────────────
   } else {
@@ -347,6 +379,20 @@ function handleClickItemResponse(chosenIdx, correctItemIndices, foundItemIndices
     });
     setTimeout(() => resolveQuestion(false, q, pair, questions, qIdx, isRetry), 1200);
   }
+}
+
+// Le thérapeute juge la dénomination orale ; on note si le mot complet a été dévoilé.
+function handleNamingResponse(isCorrect, revealed, fullWord, pair, questions, qIdx, isRetry) {
+  if (isWaiting) return;
+  isWaiting = true;
+  const q = questions[qIdx];
+  responses.push({ pairId: pair.id, type: 'sequence', questionIndex: qIdx, chosen: isCorrect ? fullWord : '', isCorrect, revealed, correctAnswer: fullWord, correctAnswers: [fullWord], isRetry: !!isRetry, isExample: pairIndex < currentExampleCount, timeMs: Date.now() - pairStartTime });
+  document.getElementById('seq-naming-success').disabled = true;
+  document.getElementById('seq-naming-fail').disabled    = true;
+  const wordEl = document.getElementById('seq-naming-word');
+  wordEl.textContent = fullWord;
+  wordEl.classList.add('revealed');
+  setTimeout(() => resolveQuestion(isCorrect, q, pair, questions, qIdx, isRetry), isCorrect ? 700 : 1200);
 }
 
 function resolveQuestion(isCorrect, q, pair, questions, qIdx, isRetry) {
@@ -676,6 +722,7 @@ function startGoNoGoSession() {
   document.getElementById('sequence-choices').style.display   = 'none';
   document.getElementById('seq-show-again-btn').style.display = 'none';
   document.getElementById('seq-write-zone').style.display     = 'none';
+  document.getElementById('seq-naming-zone').style.display    = 'none';
   _gngRenderIti();
 }
 

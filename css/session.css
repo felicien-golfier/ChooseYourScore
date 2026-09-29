@@ -109,10 +109,11 @@
 }
 
 /* ── QUIT EXERCISE BUTTON ────────────────────────────────────────────────── */
-.btn-quit-exercise {
+.btn-quit-exercise,
+.btn-stop-exercise,
+.btn-prev-item {
   position: absolute;
   top: 18px;
-  left: 18px;
   width: 32px;
   height: 32px;
   border: 1px solid var(--border);
@@ -126,6 +127,10 @@
   justify-content: center;
   transition: all 0.1s;
 }
+
+.btn-quit-exercise { left: 18px; }
+.btn-stop-exercise { left: 58px; }
+.btn-prev-item     { left: 98px; }
 
 .btn-quit-exercise:hover {
   background: var(--danger-bg);
@@ -133,28 +138,20 @@
   color: var(--danger);
 }
 
-.btn-stop-exercise {
-  position: absolute;
-  top: 18px;
-  left: 58px;
-  width: 32px;
-  height: 32px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--surface);
-  color: var(--text-3);
-  font-size: 0.9rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.1s;
-}
-
 .btn-stop-exercise:hover {
   background: var(--warn-bg);
   border-color: var(--warn-border);
   color: var(--warn-text);
+}
+
+.btn-prev-item:hover:not(:disabled) {
+  background: var(--surface-2);
+  color: var(--text-1);
+}
+
+.btn-prev-item:disabled {
+  opacity: 0.35;
+  cursor: default;
 }
 
 .partial-note {

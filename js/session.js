@@ -9,10 +9,18 @@ let pauseTimer = null;
 let currentPairQuestions = [];
 let currentShuffleEnabled = false;
 let currentExampleCount = 0;
+// Items effectivement affichés, dans l'ordre : permet de revenir à l'item précédent
+// en effaçant les réponses données depuis (responseStart = index dans `responses`).
+let pairHistory = [];
+// Incrémenté à chaque navigation (retour, quitter, arrêter) pour annuler les
+// enchaînements différés après un feedback de réponse.
+let _navGen = 0;
 
 document.getElementById('btn-ready').addEventListener('click', () => {
   exerciseStartTime = Date.now();
   showView('exercise');
+  pairHistory = [];
+  document.getElementById('btn-prev-item').style.display = currentExercise && currentExercise.type === 'gonogo' ? 'none' : '';
   if (currentExercise && currentExercise.type === 'gonogo') {
     startGoNoGoSession();
   } else {
@@ -42,6 +50,9 @@ function renderPair() {
     if (pairIndex >= currentPairs.length) finishExercise(); else renderPair();
     return;
   }
+  if (!pairHistory.length || pairHistory[pairHistory.length - 1].pairIndex !== pairIndex)
+    pairHistory.push({ pairIndex, responseStart: responses.length });
+  updatePrevItemBtn();
   const isExamplePair = pairIndex < currentExampleCount;
   document.getElementById('example-badge').style.display = isExamplePair ? '' : 'none';
   if (isExamplePair) {
@@ -345,7 +356,7 @@ function handleSequenceResponse(chosen, correctAnswers, foundAnswers, pair, ques
     // All correct answers found → advance
     isWaiting = true;
     Array.from(choicesEl.querySelectorAll('.sequence-choice-btn')).forEach(b => { b.disabled = true; });
-    setTimeout(() => advance(pair, questions, qIdx, isRetry), 700);
+    afterFeedback(() => advance(pair, questions, qIdx, isRetry), 700);
   } else {
     // Wrong answer → disable all, show missed, handle retry
     isWaiting = true;
@@ -355,7 +366,7 @@ function handleSequenceResponse(chosen, correctAnswers, foundAnswers, pair, ques
       // Only reveal correct answers on the final attempt (retry or no-retry-allowed), not the first wrong attempt when retry is available
       else if ((isRetry || q.allowRetry === false) && q.highlightCorrectOnRetry !== false && correctAnswers.includes(b.dataset.value) && !foundAnswers.has(b.dataset.value)) b.classList.add('missed');
     });
-    setTimeout(() => resolveQuestion(false, q, pair, questions, qIdx, isRetry), 1200);
+    afterFeedback(() => resolveQuestion(false, q, pair, questions, qIdx, isRetry), 1200);
   }
 }
 
@@ -374,7 +385,7 @@ function handleClickItemResponse(chosenIdx, correctItemIndices, foundItemIndices
     if (foundItemIndices.size < correctItemIndices.length) return;
     isWaiting = true;
     allItemEls.forEach(el => el.classList.add('item-done'));
-    setTimeout(() => advance(pair, questions, qIdx, isRetry), 700);
+    afterFeedback(() => advance(pair, questions, qIdx, isRetry), 700);
   } else {
     isWaiting = true;
     allItemEls.forEach(el => {
@@ -383,7 +394,7 @@ function handleClickItemResponse(chosenIdx, correctItemIndices, foundItemIndices
       if (idx === chosenIdx) el.classList.add('incorrect');
       else if ((isRetry || q.allowRetry === false) && q.highlightCorrectOnRetry !== false && correctItemIndices.includes(idx) && !foundItemIndices.has(idx)) el.classList.add('missed');
     });
-    setTimeout(() => resolveQuestion(false, q, pair, questions, qIdx, isRetry), 1200);
+    afterFeedback(() => resolveQuestion(false, q, pair, questions, qIdx, isRetry), 1200);
   }
 }
 
@@ -398,7 +409,13 @@ function handleNamingResponse(isCorrect, attempted, fullWord, pair, questions, q
   wordEl.textContent = fullWord;
   wordEl.classList.add('revealed');
   // « Je ne sais pas » : on laisse le temps de lire le mot complet
-  setTimeout(() => advance(pair, questions, qIdx, false), attempted ? 700 : 2000);
+  afterFeedback(() => advance(pair, questions, qIdx, false), attempted ? 700 : 2000);
+}
+
+// Enchaînement différé après le feedback d'une réponse, annulé si l'on a navigué entre-temps.
+function afterFeedback(fn, ms) {
+  const gen = _navGen;
+  setTimeout(() => { if (gen === _navGen) fn(); }, ms);
 }
 
 function resolveQuestion(isCorrect, q, pair, questions, qIdx, isRetry) {
@@ -439,6 +456,7 @@ function showExampleTransitionScreen(resumeFn) {
   if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
   stopAudio();
   _exampleTransitionResumeFn = resumeFn;
+  updatePrevItemBtn();
   document.getElementById('sequence-container').style.display = 'none';
   document.getElementById('example-badge').style.display = 'none';
   document.getElementById('keyboard-hint').textContent = '';
@@ -467,6 +485,7 @@ function showPauseScreen() {
   bar.style.width = '0%';
   document.getElementById('seq-pause-continue').onclick = resumeFromPause;
   document.getElementById('seq-pause-screen').style.display = 'flex';
+  updatePrevItemBtn();
   pauseTimer = setTimeout(resumeFromPause, pauseDur);
 }
 
@@ -475,6 +494,32 @@ function resumeFromPause() {
   document.getElementById('seq-pause-screen').style.display = 'none';
   renderPair();
 }
+
+// ── Retour à l'item précédent ──────────────────────────────────────────────
+// Depuis un item : revient à l'item affiché avant. Depuis l'écran de pause ou
+// de fin des exemples : revient à l'item qui vient d'être répondu.
+function updatePrevItemBtn() {
+  document.getElementById('btn-prev-item').disabled = !pairHistory.some(h => h.pairIndex < pairIndex);
+}
+
+function goToPreviousItem() {
+  while (pairHistory.length && pairHistory[pairHistory.length - 1].pairIndex >= pairIndex) pairHistory.pop();
+  const target = pairHistory.pop();
+  if (!target) return;
+  _navGen++;
+  if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
+  if (pauseTimer) { clearTimeout(pauseTimer); pauseTimer = null; }
+  document.getElementById('seq-pause-screen').style.display = 'none';
+  document.getElementById('example-transition-screen').style.display = 'none';
+  _exampleTransitionResumeFn = null;
+  stopAudio();
+  responses.length = target.responseStart;
+  previousPairWasCorrect = responses.length > 0 ? responses[responses.length - 1].isCorrect : null;
+  pairIndex = target.pairIndex;
+  renderPair();
+}
+
+document.getElementById('btn-prev-item').addEventListener('click', goToPreviousItem);
 
 function handleSequenceWrite(typed, correctAnswers, pair, questions, qIdx, isRetry) {
   if (isWaiting) return;
@@ -493,7 +538,7 @@ function handleSequenceWrite(typed, correctAnswers, pair, questions, qIdx, isRet
     writeFeedback.innerHTML = 'Réponse correcte : <strong>' + escapeHtml(correctAnswers.join(' / ')) + '</strong>';
   }
   const delay = isCorrect ? 700 : 1800;
-  setTimeout(() => {
+  afterFeedback(() => {
     writeInput.disabled = false;
     document.getElementById('seq-write-validate').disabled = false;
     resolveQuestion(isCorrect, q, pair, questions, qIdx, isRetry);
@@ -522,7 +567,7 @@ function handleDirectionResponse(pressed, correctDir, activeDirs, pair, question
     if (btn.dataset.dir === pressed) { btn.style.borderColor = isCorrect ? 'var(--success)' : 'var(--danger)'; btn.style.background = isCorrect ? 'var(--success-bg)' : 'var(--danger-bg)'; }
     else if (!isCorrect && btn.dataset.dir === correctDir && q.highlightCorrectOnRetry !== false && (isRetry || q.allowRetry === false)) { btn.style.borderColor = 'var(--success)'; btn.style.background = 'var(--success-bg)'; btn.style.opacity = '0.6'; }
   });
-  setTimeout(() => resolveQuestion(isCorrect, q, pair, questions, qIdx, isRetry), 700);
+  afterFeedback(() => resolveQuestion(isCorrect, q, pair, questions, qIdx, isRetry), 700);
 }
 
 document.addEventListener('keydown', e => {
@@ -693,6 +738,7 @@ document.getElementById('btn-quit-exercise').addEventListener('click', () => {
   document.getElementById('seq-pause-screen').style.display = 'none';
   document.getElementById('example-transition-screen').style.display = 'none';
   _displayGen++;
+  _navGen++;
   _gngCancelTimers();
   stopAudio();
   if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
@@ -704,6 +750,7 @@ document.getElementById('btn-stop-exercise').addEventListener('click', () => {
   if (pauseTimer) { clearTimeout(pauseTimer); pauseTimer = null; }
   document.getElementById('seq-pause-screen').style.display = 'none';
   document.getElementById('example-transition-screen').style.display = 'none';
+  _navGen++;
   stopAudio();
   if (currentExercise && currentExercise.type === 'gonogo') {
     _gngCancelTimers();

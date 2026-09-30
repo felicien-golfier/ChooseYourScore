@@ -20,7 +20,7 @@ function initResults() {
 
 function populatePatientSelect() {
   const select = document.getElementById('patient-select'), current = select.value;
-  const pts = [...new Set(sessions.map(s=>s.patientName))].sort();
+  const pts = [...new Set(sessions.map(sessionPatientName))].sort();
   select.innerHTML = '<option value="">— Tous les patients —</option>';
   pts.forEach(name => {
     const opt = document.createElement('option');
@@ -31,7 +31,7 @@ function populatePatientSelect() {
 function populateExerciseFilter() {
   const patient = document.getElementById('patient-select').value;
   const select  = document.getElementById('exercise-filter'), current = select.value;
-  const names = [...new Set(sessions.filter(s=>!patient||s.patientName===patient).map(s=>s.exerciseName))].sort();
+  const names = [...new Set(sessions.filter(s=>!patient||sessionPatientName(s)===patient).map(s=>s.exerciseName))].sort();
   select.innerHTML = '<option value="">— Tous les exercices —</option>';
   names.forEach(name => {
     const opt = document.createElement('option');
@@ -43,7 +43,7 @@ function getFilteredSessions() {
   const patient  = document.getElementById('patient-select').value;
   const exercise = document.getElementById('exercise-filter').value;
   return sessions
-    .filter(s => (!patient||s.patientName===patient) && (!exercise||s.exerciseName===exercise))
+    .filter(s => (!patient||sessionPatientName(s)===patient) && (!exercise||s.exerciseName===exercise))
     .sort((a,b) => new Date(a.date)-new Date(b.date));
 }
 
@@ -61,20 +61,14 @@ function renderResults() {
   renderStats(filtered); renderCharts(filtered); renderTable(filtered);
 }
 
-function avgReactionMs(session) {
-  if (!session.responses || session.responses.length === 0) return null;
-  return session.responses.reduce((s, r) => s + r.timeMs, 0) / session.responses.length;
-}
-
 function renderStats(filtered) {
-  const avgPct  = filtered.reduce((s,r)=>s+r.score/r.totalPairs*100,0)/filtered.length;
+  const avgPct  = averageOf(filtered.map(sessionPct));
   const avgTime = filtered.reduce((s,r)=>s+r.totalTimeMs,0)/filtered.length;
   const last    = filtered[filtered.length-1];
-  const allReactions = filtered.flatMap(s => (s.responses||[]).map(r => r.timeMs));
-  const avgReaction  = allReactions.length > 0 ? allReactions.reduce((a,b)=>a+b,0)/allReactions.length : null;
+  const avgReaction = averageOf(filtered.flatMap(sessionReactionTimes));
   document.getElementById('stat-sessions').textContent      = filtered.length;
   document.getElementById('stat-avg-score').textContent     = Math.round(avgPct)+'%';
-  document.getElementById('stat-last-score').textContent    = last.score+'/'+last.totalPairs+' ('+Math.round(last.score/last.totalPairs*100)+'%)';
+  document.getElementById('stat-last-score').textContent    = last.score+'/'+last.totalPairs+' ('+sessionPct(last)+'%)';
   document.getElementById('stat-avg-time').textContent      = formatDuration(avgTime);
   document.getElementById('stat-avg-reaction').textContent  = avgReaction !== null ? Math.round(avgReaction)+' ms' : '–';
 }
@@ -92,7 +86,7 @@ function renderCharts(filtered) {
     return;
   }
   const labels    = filtered.map(s => new Date(s.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'}));
-  const scoreData = filtered.map(s => Math.round(s.score/s.totalPairs*100));
+  const scoreData = filtered.map(sessionPct);
   const timeData  = filtered.map(s => Math.round(s.totalTimeMs/1000));
   const base = {
     responsive: true, plugins:{legend:{display:false}},
@@ -109,22 +103,22 @@ function renderCharts(filtered) {
   if (rTimeChart) rTimeChart.destroy();
   rTimeChart = new Chart(document.getElementById('chart-time'),{
     type:'line', data:{labels,datasets:[{data:timeData,borderColor:'oklch(52% 0.22 300)',backgroundColor:'oklch(52% 0.22 300 / 0.08)',borderWidth:2,pointRadius:4,pointBackgroundColor:'oklch(52% 0.22 300)',fill:true,tension:0.3}]},
-    options:{...base,scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>v+'s'}}}},
+    options:{...base,scales:{...base.scales,y:{...base.scales.y,min:0,ticks:{...base.scales.y.ticks,callback:v=>v+'s'}}}},
   });
 }
 
 function renderTable(filtered) {
   const tbody = document.getElementById('sessions-tbody'); tbody.innerHTML='';
   [...filtered].reverse().forEach(session => {
-    const pct = Math.round(session.score/session.totalPairs*100);
+    const pct = sessionPct(session);
     const scoreClass = pct>=80?'good-score':pct<50?'low-score':'';
     const tr = document.createElement('tr');
     const reaction = avgReactionMs(session);
     tr.innerHTML =
       '<td>'+new Date(session.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+new Date(session.date).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})+'</td>'+
-      '<td>'+escapeHtml(session.patientName)+'</td>'+
+      '<td>'+escapeHtml(sessionPatientName(session))+'</td>'+
       '<td>'+escapeHtml(session.exerciseName)+'</td>'+
-      '<td><span class="'+scoreClass+'">'+session.score+'/'+session.totalPairs+'</span> <span class="score-pct">('+pct+'%)</span>'+(session.namingStats?'<div class="score-pct" title="Dénomination : ne sait pas · correctes sur réponses vérifiées">🤷 '+session.namingStats.unknown+' · ✓ '+formatNamingCorrect(session.namingStats)+'</div>':'')+(session.partial?' <span class="partial-badge" title="Résultats partiels — '+session.pairsAttempted+' paires sur '+session.totalPairsInExercise+'">partiel</span>':'')+'</td>'+
+      '<td><span class="'+scoreClass+'">'+session.score+'/'+session.totalPairs+'</span> <span class="score-pct">('+pct+'%)</span>'+(session.namingStats?'<div class="score-pct" title="Dénomination : ne sait pas · correctes sur réponses vérifiées">🤷 '+session.namingStats.unknown+' · ✓ '+formatNamingCorrect(session.namingStats)+'</div>':'')+(session.partial?' <span class="partial-badge" title="Résultats partiels'+(session.pairsAttempted != null ? ' — '+session.pairsAttempted+' paires sur '+session.totalPairsInExercise : '')+'">partiel</span>':'')+'</td>'+
       '<td>'+formatDuration(session.totalTimeMs)+'</td>'+
       '<td>'+(session.errorsLeft != null ? session.errorsLeft : '–')+'</td>'+
       '<td>'+(session.errorsRight != null ? session.errorsRight : '–')+'</td>'+

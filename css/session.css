@@ -18,6 +18,12 @@
   margin-bottom: 40px;
 }
 
+/* Laisse la place aux boutons ✕ ⏹ ↶ ⛶ au-dessus de la barre de progression
+   (sur toutes les tailles d'écran, plein écran compris) */
+#view-exercise .progress-section {
+  padding-top: 30px;
+}
+
 .progress-bar {
   height: 4px;
   background: var(--border);

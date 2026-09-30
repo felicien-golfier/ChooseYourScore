@@ -10,7 +10,12 @@ const SETTINGS_DEFAULTS = {
   decor:       true, // halos colorés en arrière-plan + emoji de la consigne
 };
 
-let settings = { ...SETTINGS_DEFAULTS, ...JSON.parse(localStorage.getItem('cys_settings') || '{}') };
+function loadSettings() {
+  try { return { ...SETTINGS_DEFAULTS, ...JSON.parse(localStorage.getItem('cys_settings') || '{}') }; }
+  catch (e) { return { ...SETTINGS_DEFAULTS }; }
+}
+
+let settings = loadSettings();
 
 function saveSettings() { localStorage.setItem('cys_settings', JSON.stringify(settings)); }
 

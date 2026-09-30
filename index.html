@@ -7,15 +7,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=Comic+Neue:wght@400;700&family=Oswald:wght@400;700&family=Playfair+Display:wght@400;700&family=Raleway:wght@400;700&family=Pacifico&family=Indie+Flower&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/reset.css?v=46">
-  <link rel="stylesheet" href="css/variables.css?v=46">
-  <link rel="stylesheet" href="css/base.css?v=46">
-  <link rel="stylesheet" href="css/layout.css?v=46">
-  <link rel="stylesheet" href="css/session.css?v=46">
-  <link rel="stylesheet" href="css/editor.css?v=46">
-  <link rel="stylesheet" href="css/results.css?v=46">
-  <link rel="stylesheet" href="css/responsive.css?v=46">
-  <link rel="stylesheet" href="css/playful.css?v=46">
+  <link rel="stylesheet" href="css/reset.css?v=47">
+  <link rel="stylesheet" href="css/variables.css?v=47">
+  <link rel="stylesheet" href="css/base.css?v=47">
+  <link rel="stylesheet" href="css/layout.css?v=47">
+  <link rel="stylesheet" href="css/session.css?v=47">
+  <link rel="stylesheet" href="css/editor.css?v=47">
+  <link rel="stylesheet" href="css/results.css?v=47">
+  <link rel="stylesheet" href="css/responsive.css?v=47">
+  <link rel="stylesheet" href="css/playful.css?v=47">
 </head>
 <body>
 <canvas id="confetti-canvas"></canvas>
@@ -81,7 +81,7 @@
   <div class="screen">
     <button class="btn-quit-exercise" id="btn-quit-exercise" title="Quitter sans résultats">✕</button>
     <button class="btn-stop-exercise" id="btn-stop-exercise" title="Arrêter et voir les résultats">⏹</button>
-    <button class="btn-prev-item" id="btn-prev-item" title="Revenir à l'item précédent">↶</button>
+    <button class="btn-prev-item" id="btn-prev-item" title="Revenir à l'item précédent" aria-label="Revenir à l'item précédent"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
     <button class="btn-fullscreen" id="btn-fullscreen" title="Plein écran">⛶</button>
     <div class="progress-section">
       <div class="example-badge" id="example-badge" style="display:none">Exemple — non comptabilisé</div>
@@ -586,17 +586,18 @@
 </div>
 
 <script src="chart.umd.min.js"></script>
-<script src="js/settings.js?v=46"></script>
-<script src="js/celebration.js?v=46"></script>
-<script src="js/data.js?v=46"></script>
-<script src="js/utils.js?v=46"></script>
-<script src="js/ui.js?v=46"></script>
-<script src="js/nav.js?v=46"></script>
-<script src="js/setup.js?v=46"></script>
-<script src="js/session.js?v=46"></script>
-<script src="js/editor.js?v=46"></script>
-<script src="js/patients.js?v=46"></script>
-<script src="js/results.js?v=46"></script>
-<script>initData().then(() => { initSetup(); initSettings(); });</script>
+<script src="js/settings.js?v=47"></script>
+<script src="js/celebration.js?v=47"></script>
+<script src="js/data.js?v=47"></script>
+<script src="js/utils.js?v=47"></script>
+<script src="js/ui.js?v=47"></script>
+<script src="js/nav.js?v=47"></script>
+<script src="js/setup.js?v=47"></script>
+<script src="js/session.js?v=47"></script>
+<script src="js/editor.js?v=47"></script>
+<script src="js/patients.js?v=47"></script>
+<script src="js/results.js?v=47"></script>
+<script>initData().then(() => { initSetup(); initSettings(); },
+  () => alert('Impossible d\'ouvrir le stockage local du navigateur (navigation privée ?). Les exercices ne peuvent pas être chargés.'));</script>
 </body>
 </html>

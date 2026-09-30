@@ -94,13 +94,17 @@ function populateSetupPatientSelect() {
   });
   const newOpt = document.createElement('option');
   newOpt.value = '__new__'; newOpt.textContent = '+ Nouveau patient…';
+  if (current === '__new__') newOpt.selected = true;
   select.appendChild(newOpt);
+  syncNewPatientRow();
 }
 
-document.getElementById('patient-select-setup').addEventListener('change', () => {
+function syncNewPatientRow() {
   document.getElementById('new-patient-row').style.display =
     document.getElementById('patient-select-setup').value === '__new__' ? 'block' : 'none';
-});
+}
+
+document.getElementById('patient-select-setup').addEventListener('change', syncNewPatientRow);
 
 document.getElementById('btn-start').addEventListener('click', () => {
   currentExercise = exercises.find(ex => ex.id === setupSelectedExId);
@@ -116,6 +120,10 @@ document.getElementById('btn-start').addEventListener('click', () => {
     const newPatient = { id: newId('pat'), name, birthDate: '', notes: '', createdAt: new Date().toISOString() };
     patients.push(newPatient); savePatients();
     currentPatientId = newPatient.id; currentPatient = newPatient.name;
+    nameInput.value = '';
+    populateSetupPatientSelect();
+    patientSelectEl.value = newPatient.id;
+    syncNewPatientRow();
   } else if (patientVal) {
     const patient = patients.find(p => p.id === patientVal);
     if (!patient) { patientSelectEl.style.borderColor = 'var(--danger)'; return; }

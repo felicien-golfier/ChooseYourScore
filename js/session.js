@@ -53,17 +53,10 @@ function renderPair() {
   if (!pairHistory.length || pairHistory[pairHistory.length - 1].pairIndex !== pairIndex)
     pairHistory.push({ pairIndex, responseStart: responses.length });
   updatePrevItemBtn();
-  const isExamplePair = pairIndex < currentExampleCount;
-  document.getElementById('example-badge').style.display = isExamplePair ? '' : 'none';
-  if (isExamplePair) {
-    document.getElementById('progress-fill').style.width  = '0%';
-    document.getElementById('progress-label').textContent = 'Exemple ' + (pairIndex + 1) + ' / ' + currentExampleCount;
-  } else {
-    const realIdx   = pairIndex - currentExampleCount;
-    const realTotal = currentPairs.length - currentExampleCount;
-    document.getElementById('progress-fill').style.width  = (realIdx / realTotal * 100) + '%';
-    document.getElementById('progress-label').textContent = (realIdx + 1) + ' / ' + realTotal;
-  }
+  document.getElementById('example-badge').style.display = pairIndex < currentExampleCount ? '' : 'none';
+  const progress = pairProgress(pairIndex);
+  document.getElementById('progress-fill').style.width  = progress.pct + '%';
+  document.getElementById('progress-label').textContent = progress.label;
   document.getElementById('sequence-container').style.display = 'flex';
   document.getElementById('keyboard-hint').textContent = '';
 
@@ -81,6 +74,14 @@ function renderPair() {
     sequenceTimer = null;
     if (gen === _displayGen) startSequenceDisplay(pair);
   }, INTER_ITEM_PAUSE_MS);
+}
+
+// Libellé « Exemple 1 / 2 » ou « 3 / 10 » (items notés seulement) et remplissage de la barre.
+function pairProgress(idx) {
+  if (idx < currentExampleCount) return { pct: 0, label: 'Exemple ' + (idx + 1) + ' / ' + currentExampleCount };
+  const realIdx   = idx - currentExampleCount;
+  const realTotal = currentPairs.length - currentExampleCount;
+  return { pct: realIdx / realTotal * 100, label: (realIdx + 1) + ' / ' + realTotal };
 }
 
 function startSequenceDisplay(pair, afterDisplayFn) {
@@ -412,6 +413,20 @@ function handleNamingResponse(isCorrect, attempted, fullWord, pair, questions, q
   afterFeedback(() => advance(pair, questions, qIdx, false), attempted ? 700 : 2000);
 }
 
+// Annule tout ce qui est en attente dans l'exercice (affichage, pause, feedback,
+// Go/No-Go, audio) : partagé par quitter, arrêter et revenir à l'item précédent.
+function cancelPendingExercise() {
+  if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
+  if (pauseTimer) { clearTimeout(pauseTimer); pauseTimer = null; }
+  document.getElementById('seq-pause-screen').style.display = 'none';
+  document.getElementById('example-transition-screen').style.display = 'none';
+  _exampleTransitionResumeFn = null;
+  _displayGen++;
+  _navGen++;
+  _gngCancelTimers();
+  stopAudio();
+}
+
 // Enchaînement différé après le feedback d'une réponse, annulé si l'on a navigué entre-temps.
 function afterFeedback(fn, ms) {
   const gen = _navGen;
@@ -476,7 +491,7 @@ function showPauseScreen() {
   const pauseDur = currentExercise.pauseDuration != null ? currentExercise.pauseDuration : 5000;
   document.getElementById('sequence-container').style.display = 'none';
   document.getElementById('keyboard-hint').textContent = '';
-  document.getElementById('seq-pause-label').textContent = (pairIndex + 1) + ' / ' + currentPairs.length;
+  document.getElementById('seq-pause-label').textContent = pairProgress(pairIndex).label;
   const bar = document.getElementById('seq-pause-countdown-bar');
   bar.style.transition = 'none';
   bar.style.width = '100%';
@@ -506,13 +521,7 @@ function goToPreviousItem() {
   while (pairHistory.length && pairHistory[pairHistory.length - 1].pairIndex >= pairIndex) pairHistory.pop();
   const target = pairHistory.pop();
   if (!target) return;
-  _navGen++;
-  if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
-  if (pauseTimer) { clearTimeout(pauseTimer); pauseTimer = null; }
-  document.getElementById('seq-pause-screen').style.display = 'none';
-  document.getElementById('example-transition-screen').style.display = 'none';
-  _exampleTransitionResumeFn = null;
-  stopAudio();
+  cancelPendingExercise();
   responses.length = target.responseStart;
   previousPairWasCorrect = responses.length > 0 ? responses[responses.length - 1].isCorrect : null;
   pairIndex = target.pairIndex;
@@ -571,10 +580,9 @@ function handleDirectionResponse(pressed, correctDir, activeDirs, pair, question
 }
 
 document.addEventListener('keydown', e => {
-  if (document.getElementById('view-exercise').style.display !== 'none') {
-    const pair = currentPairs[pairIndex];
-    if (!pair) return;
-    const q = (pair.questions || [])[currentQuestionIndex];
+  if (document.getElementById('view-exercise').style.display === 'flex') {
+    if (!currentPairs[pairIndex]) return;
+    const q = currentPairQuestions[currentQuestionIndex];
     if (q && q.type === 'direction') {
       const map = { ArrowLeft:'left', ArrowRight:'right', ArrowUp:'up', ArrowDown:'down' };
       const dir = map[e.key];
@@ -583,7 +591,7 @@ document.addEventListener('keydown', e => {
         const btn = document.querySelector('#sequence-choices [data-dir="'+dir+'"]:not(:disabled)');
         if (btn && !isWaiting) btn.click();
       }
-    } else if (q && q.type === 'choice') {
+    } else if (q && (q.type || 'choice') === 'choice') {
       const choiceBtns = Array.from(document.querySelectorAll('#sequence-choices .sequence-choice-btn:not(:disabled)'));
       if (!isWaiting && choiceBtns.length > 0) {
         if (e.key === 'ArrowLeft') { e.preventDefault(); choiceBtns[0].click(); }
@@ -733,27 +741,14 @@ function toggleFullscreen() {
 }
 
 document.getElementById('btn-quit-exercise').addEventListener('click', () => {
-  if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
-  if (pauseTimer) { clearTimeout(pauseTimer); pauseTimer = null; }
-  document.getElementById('seq-pause-screen').style.display = 'none';
-  document.getElementById('example-transition-screen').style.display = 'none';
-  _displayGen++;
-  _navGen++;
-  _gngCancelTimers();
-  stopAudio();
+  cancelPendingExercise();
   if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   showView('setup');
 });
 
 document.getElementById('btn-stop-exercise').addEventListener('click', () => {
-  if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
-  if (pauseTimer) { clearTimeout(pauseTimer); pauseTimer = null; }
-  document.getElementById('seq-pause-screen').style.display = 'none';
-  document.getElementById('example-transition-screen').style.display = 'none';
-  _navGen++;
-  stopAudio();
+  cancelPendingExercise();
   if (currentExercise && currentExercise.type === 'gonogo') {
-    _gngCancelTimers();
     finishGoNoGo(true);
   } else {
     finishExercise(true);
@@ -907,7 +902,10 @@ function _gngShowFeedback(isCorrect, onDone) {
   if (currentExercise.showFeedback === false) { onDone(); return; }
   const display = document.getElementById('sequence-display');
   display.classList.add(isCorrect ? 'gng-feedback-correct' : 'gng-feedback-incorrect');
-  setTimeout(() => {
+  const gen = _gng.gen;
+  _gng.timer = setTimeout(() => {
+    _gng.timer = null;
+    if (gen !== _gng.gen) return;
     display.classList.remove('gng-feedback-correct', 'gng-feedback-incorrect');
     onDone();
   }, 350);

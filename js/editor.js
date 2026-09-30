@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // EDITOR
 // ═══════════════════════════════════════════════════════════════════════════════
-let editorSelectedId = null, editingPairId = null;
+let editorSelectedId = null, editingPairId = null, editingPairIsNew = false;
 let seqItems = [];
 let simModalImage = null;
 let simModalVideo = null;
@@ -133,7 +133,7 @@ function makeExerciseItem(ex, indented) {
   dn.disabled = (pi === peers.length - 1);
   const countSpan = document.createElement('span');
   countSpan.className = 'pair-count';
-  countSpan.textContent = (ex.pairs||[]).length;
+  countSpan.textContent = ex.type === 'gonogo' ? (ex.trials||[]).length : (ex.pairs||[]).length;
   div.append(nameSpan, wrap, countSpan);
   div.addEventListener('click', () => { editorSelectedId = ex.id; renderSidebar(); renderExerciseEditor(); });
   return div;
@@ -334,6 +334,7 @@ document.getElementById('exercise-type').addEventListener('change', () => {
   const newType = document.getElementById('exercise-type').value;
   if (newType === ex.type) return;
   if (newType === 'gonogo' && !ex.trials) ex.trials = [];
+  if (newType !== 'gonogo' && !ex.pairs) ex.pairs = [];
   ex.type = newType;
   saveExercises();
   renderExerciseEditor();
@@ -392,7 +393,8 @@ document.getElementById('btn-duplicate-exercise').addEventListener('click', () =
   const copy = JSON.parse(JSON.stringify(ex));
   copy.id = newId('ex');
   copy.name = copy.name + ' (copie)';
-  copy.pairs.forEach(p => { p.id = newId('pair'); });
+  (copy.pairs  || []).forEach(p => { p.id = newId('pair'); });
+  (copy.trials || []).forEach(t => { t.id = newId('trial'); });
   exercises.push(copy);
   editorSelectedId = copy.id;
   try { saveExercises(); } catch(e) { exercises.pop(); editorSelectedId = ex.id; return; }
@@ -413,7 +415,8 @@ document.getElementById('btn-add-pair').addEventListener('click', () => {
     items: [{type:'text',text:'',color:'#1a1a1a',fontSize:32,fontFamily:'Arial',textTransform:'none',imageUrl:null,videoUrl:null,audioUrl:null}],
     displayDuration: null, useExerciseDefault: true, visibilityMode: 'always_show', displayLayout: 'row',
     questions: [{questionText:'',type:'choice',choices:['',''],correctIndices:[0],showOnRetry:true,allowRetry:true,itemOverrides:[]}] };
-  ex.pairs.push(pair); saveExercises(); renderExerciseEditor(); openPairModal(pair.id);
+  if (!ex.pairs) ex.pairs = [];
+  ex.pairs.push(pair); saveExercises(); renderExerciseEditor(); openPairModal(pair.id, true);
 });
 
 function duplicatePair(pairId) {
@@ -442,10 +445,12 @@ function movePair(pairId, dir) {
 // ═══════════════════════════════════════════════════════════════════════════════
 // EDITOR – PAIR MODAL
 // ═══════════════════════════════════════════════════════════════════════════════
-function openPairModal(pairId) {
+// isNew : paire tout juste créée par « + Ajouter », retirée si on annule sans rien y mettre.
+function openPairModal(pairId, isNew) {
   const ex = getSelectedEx(); if (!ex) return;
   const pair = ex.pairs.find(p => p.id === pairId); if (!pair) return;
   editingPairId = pairId;
+  editingPairIsNew = !!isNew;
   const pairIndex = ex.pairs.findIndex(p => p.id === pairId);
   document.querySelector('#pair-modal h3').textContent = 'Paire ' + (pairIndex + 1);
   fillSequenceModal(pair);
@@ -475,17 +480,20 @@ document.getElementById('btn-modal-save').addEventListener('click', () => {
   saveExercises(); renderExerciseEditor(); closeModal();
 });
 
-document.getElementById('btn-modal-cancel').addEventListener('click', () => {
+// Annuler, Échap et clic sur le fond passent tous par ici.
+function cancelPairModal() {
   const ex = getSelectedEx();
-  if (ex) {
+  if (ex && editingPairIsNew) {
     const pair = ex.pairs.find(p => p.id === editingPairId);
     const isEmpty = pair && (!pair.items || pair.items.every(i => !i || (!i.text && !i.imageUrl && !i.videoUrl && !i.audioUrl && i.type === 'text')));
     if (isEmpty) { ex.pairs = ex.pairs.filter(p => p.id !== editingPairId); saveExercises(); renderExerciseEditor(); }
   }
   closeModal();
-});
+}
 
-function closeModal() { document.getElementById('pair-modal').style.display='none'; editingPairId=null; }
+document.getElementById('btn-modal-cancel').addEventListener('click', cancelPairModal);
+
+function closeModal() { document.getElementById('pair-modal').style.display='none'; editingPairId=null; editingPairIsNew=false; }
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // EDITOR – ITEM MODAL
@@ -728,6 +736,7 @@ document.getElementById('sim-text').addEventListener('input', e => {
   }
   _simTextPrev = newText;
   buildSimCharGrid();
+  refreshSimPreview();
 });
 document.getElementById('sim-text').addEventListener('change', e => {
   syncSimCharStyles(e.target.value.length);
@@ -1478,12 +1487,12 @@ document.getElementById('seq-add-question-btn').addEventListener('click', () => 
 });
 
 document.getElementById('pair-modal').addEventListener('click', e => {
-  if (e.target === document.getElementById('pair-modal') && Date.now() - _pairModalOpenedAt > 350) closeModal();
+  if (e.target === document.getElementById('pair-modal') && Date.now() - _pairModalOpenedAt > 350) cancelPairModal();
 });
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
   if (document.getElementById('seq-item-modal').style.display === 'flex') closeSeqItemModal();
-  else if (document.getElementById('pair-modal').style.display === 'flex') closeModal();
+  else if (document.getElementById('pair-modal').style.display === 'flex') cancelPairModal();
 });
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -1679,6 +1688,7 @@ function importExercisePayload(parsed) {
   let addedFolders = 0;
   folderList.forEach(f => { if (!existingFolders.has(f.id)) { folders.push(f); addedFolders++; } });
   saveExercises(); saveFolders();
+  if (!getSelectedEx() && exercises.length > 0) editorSelectedId = exercises[0].id;
   renderSidebar(); renderExerciseEditor();
   alert(addedEx+' exercice(s) importé(s)'+(addedFolders ? ' et '+addedFolders+' dossier(s).' : '.'));
 }

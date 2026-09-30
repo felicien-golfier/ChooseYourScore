@@ -145,7 +145,7 @@ function applyItemStyle(el, item) {
   el.style.fontWeight    = item.fontWeight    || 'normal';
   el.style.fontStyle     = item.fontStyle     || 'normal';
   if (item.imageUrl) {
-    el.style.backgroundImage    = 'url(' + item.imageUrl + ')';
+    el.style.backgroundImage    = 'url("' + item.imageUrl + '")';
     el.style.backgroundSize     = 'contain';
     el.style.backgroundRepeat   = 'no-repeat';
     el.style.backgroundPosition = 'center';
@@ -255,11 +255,39 @@ function buildCurrentPairs(ex, shuffle) {
     : [...examplePairs, ...restPairs];
 }
 
+// ── Helpers partagés résultats (vue Résultats, fiche patient, export PDF) ────
+function sessionPct(session) {
+  return session.totalPairs > 0 ? Math.round(session.score / session.totalPairs * 100) : 0;
+}
+
+// Temps de réaction d'une session, comptés comme sur l'écran de fin d'exercice :
+// réponses notées seulement (hors exemples et 2ᵉ essais). En Go/No-Go le temps est
+// dans reactionTimeMs, et seuls les clics en ont un.
+function sessionReactionTimes(session) {
+  return (session.responses || [])
+    .filter(r => !r.isExample && !r.isRetry)
+    .map(r => r.type === 'gonogo' ? r.reactionTimeMs : r.timeMs)
+    .filter(t => typeof t === 'number' && isFinite(t));
+}
+
+function averageOf(values) {
+  return values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : null;
+}
+
+function avgReactionMs(session) { return averageOf(sessionReactionTimes(session)); }
+
+// Nom actuel du patient (suit les renommages), sinon celui enregistré avec la session.
+function sessionPatientName(session) {
+  const patient = session.patientId && patients.find(p => p.id === session.patientId);
+  return patient ? patient.name : session.patientName;
+}
+
 // ── Helpers partagés export/import ───────────────────────────────────────────
 function downloadBlob(data, filename, mime) {
   const url = URL.createObjectURL(new Blob([data], {type: mime || 'application/json'}));
   Object.assign(document.createElement('a'), {href:url, download:filename}).click();
-  URL.revokeObjectURL(url);
+  // Révocation différée : Safari (iPad) annule le téléchargement si elle est immédiate.
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
 }
 
 function exportSessionsJson(data, filename) {

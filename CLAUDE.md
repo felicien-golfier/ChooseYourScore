@@ -25,6 +25,14 @@ Une fois les modifications commitées et poussées sur la branche de travail, cr
 
 Ne jamais laisser une tâche terminée sans que le code soit mergé dans main.
 
+## Cache des fichiers CSS/JS : toujours incrémenter `?v=`
+
+Dans `index.html`, tous les `<link rel="stylesheet">` et `<script src>` portent un paramètre `?v=N`. **À chaque modification d'un fichier de `css/` ou `js/`, incrémenter N partout (même numéro pour tous les fichiers).** Sinon les appareils qui ont déjà ouvert l'application (tablette notamment) gardent les anciens fichiers en cache : une nouvelle fonctionnalité peut alors fonctionner sur un appareil et être absente sur un autre.
+
+```bash
+sed -i 's/?v=47/?v=48/g' index.html   # adapter les numéros
+```
+
 ## Tests end-to-end obligatoires
 
 ### Toujours vérifier dans un vrai navigateur avant de merger

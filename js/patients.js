@@ -51,12 +51,11 @@ function renderPatientDetail() {
 
   const miniStats = document.getElementById('patient-mini-stats');
   if (patientSessions.length > 0) {
-    const avgPct = patientSessions.reduce((s,r) => s + r.score/r.totalPairs*100, 0) / patientSessions.length;
-    const allReactions = patientSessions.flatMap(s => (s.responses||[]).map(r => r.timeMs));
-    const avgReaction  = allReactions.length > 0 ? Math.round(allReactions.reduce((a,b)=>a+b,0)/allReactions.length) : null;
+    const avgPct = averageOf(patientSessions.map(sessionPct));
+    const avgReaction = averageOf(patientSessions.flatMap(sessionReactionTimes));
     miniStats.innerHTML =
       '<span>Score moy. : <strong>' + Math.round(avgPct) + '%</strong></span>' +
-      (avgReaction !== null ? '<span>Réaction moy. : <strong>' + avgReaction + ' ms</strong></span>' : '');
+      (avgReaction !== null ? '<span>Réaction moy. : <strong>' + Math.round(avgReaction) + ' ms</strong></span>' : '');
   } else {
     miniStats.innerHTML = '';
   }
@@ -73,7 +72,7 @@ function renderPatientSessionsTable(patientSessions) {
   table.innerHTML = '<thead><tr><th>Date</th><th>Exercice</th><th>Score</th><th>Temps</th><th>Réaction moy.</th><th>Notes</th><th></th></tr></thead>';
   const tbody = document.createElement('tbody');
   patientSessions.forEach(session => {
-    const pct = Math.round(session.score/session.totalPairs*100);
+    const pct = sessionPct(session);
     const scoreClass = pct>=80?'good-score':pct<50?'low-score':'';
     const reaction = avgReactionMs(session);
     const tr = document.createElement('tr');
@@ -161,13 +160,13 @@ function exportPatientPDF(patient) {
   const patientSessions = sessions
     .filter(s => s.patientId === patient.id)
     .sort((a,b) => new Date(a.date) - new Date(b.date));
-  const avgPct = patientSessions.length > 0
-    ? Math.round(patientSessions.reduce((s,r) => s + r.score/r.totalPairs*100, 0) / patientSessions.length) : null;
-  const allReactions = patientSessions.flatMap(s => (s.responses||[]).map(r => r.timeMs));
-  const avgReaction  = allReactions.length > 0 ? Math.round(allReactions.reduce((a,b)=>a+b,0)/allReactions.length) : null;
+  const avgPctRaw   = averageOf(patientSessions.map(sessionPct));
+  const avgPct      = avgPctRaw !== null ? Math.round(avgPctRaw) : null;
+  const avgReactRaw = averageOf(patientSessions.flatMap(sessionReactionTimes));
+  const avgReaction = avgReactRaw !== null ? Math.round(avgReactRaw) : null;
   const dobStr = patient.birthDate ? new Date(patient.birthDate + 'T00:00:00').toLocaleDateString('fr-FR') : '–';
   const rowsHtml = patientSessions.map(s => {
-    const pct = Math.round(s.score/s.totalPairs*100);
+    const pct = sessionPct(s);
     const scoreColor = pct>=80 ? '#16a34a' : pct<50 ? '#dc2626' : '#0f172a';
     const reaction = avgReactionMs(s);
     return '<tr>' +

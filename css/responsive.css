@@ -33,11 +33,6 @@
     border-radius: var(--radius-lg);
   }
 
-  /* Laisse la place aux boutons ✕ ⏹ ↶ ⛶ au-dessus de la barre de progression */
-  #view-exercise .progress-section {
-    padding-top: 30px;
-  }
-
   h1 {
     font-size: 1.5rem;
   }

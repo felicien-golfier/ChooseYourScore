@@ -172,8 +172,9 @@ h2 {
 
 #btn-fullscreen-setup {
   flex: none;
-  padding: 13px 16px;
+  padding: 13px 20px;
   font-size: 1rem;
+  white-space: nowrap;
 }
 
 .field-hint {

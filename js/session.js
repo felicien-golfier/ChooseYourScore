@@ -97,7 +97,9 @@ function startSequenceDisplay(pair, afterDisplayFn) {
 
   displayEl.innerHTML = '';
   const isSingle = (pair.items || []).length === 1;
+  const isSpell  = pair.displayLayout === 'spell';
   const audioUrls = [];
+  const itemNodes = [], itemAudios = [];
   const breakAfter = seqLayoutBreakAfter(pair.displayLayout);
   displayEl.classList.toggle('has-layout-break', !!breakAfter);
   (pair.items || []).forEach((item, idx) => {
@@ -126,9 +128,12 @@ function startSequenceDisplay(pair, afterDisplayFn) {
       });
       wrapper.appendChild(sndBtn);
       displayEl.appendChild(wrapper);
+      itemNodes.push(wrapper);
     } else {
       displayEl.appendChild(el);
+      itemNodes.push(el);
     }
+    itemAudios.push(itemObj.audioUrl && itemObj.autoPlay !== false ? itemObj.audioUrl : null);
     if (breakAfter && idx === breakAfter - 1 && idx < pair.items.length - 1) appendSeqLayoutBreak(displayEl);
   });
   questionEl.style.display = 'none';
@@ -144,35 +149,66 @@ function startSequenceDisplay(pair, afterDisplayFn) {
   else if (_visMode === 'hide_if_prev_incorrect') _hideItems = previousPairWasCorrect === false;
   else _hideItems = true;
 
+  const next = afterDisplayFn || (() => startSequenceQuestion(pair, 0));
   const firstQType = currentPairQuestions[0]?.type;
   if (pair.skipDisplay || _hideItems || firstQType === 'click-item' || firstQType === 'naming') {
     timerBar.style.display = 'none';
     displayEl.style.display = _hideItems ? 'none' : 'flex';
-    (afterDisplayFn || (() => startSequenceQuestion(pair, 0)))();
+    next();
     return;
   }
 
   timerBar.style.display = '';
   displayEl.style.display = 'flex';
 
+  const runTimerBar = ms => {
+    timerFill.style.transition = 'none';
+    timerFill.style.width = ms > 0 ? '100%' : '0%';
+    if (ms > 0) {
+      timerFill.getBoundingClientRect();
+      timerFill.style.transition = 'width ' + ms + 'ms linear';
+      timerFill.style.width = '0%';
+    }
+  };
+
+  // Épellation : les items apparaissent un par un, chacun pendant la durée d'affichage,
+  // puis la question suit automatiquement, sans clic.
+  if (isSpell) {
+    itemNodes.forEach(n => { n.style.display = 'none'; });
+    const showSpellItem = i => {
+      if (gen !== _displayGen) return;
+      if (i >= itemNodes.length) {
+        itemNodes.forEach(n => { n.style.display = ''; });  // pour « Revoir »
+        next();
+        return;
+      }
+      const url = itemAudios[i];
+      getAudiosDuration(url ? [url] : []).then(audioDurMs => {
+        if (gen !== _displayGen) return;
+        const itemDur = Math.max(dur, audioDurMs);
+        itemNodes[i].style.display = '';
+        runTimerBar(itemDur);
+        if (url) playAudioSequence([url]);
+        sequenceTimer = setTimeout(() => {
+          itemNodes[i].style.display = 'none';
+          if (i + 1 >= itemNodes.length) { sequenceTimer = null; showSpellItem(i + 1); return; }
+          sequenceTimer = setTimeout(() => { sequenceTimer = null; showSpellItem(i + 1); }, INTER_ITEM_PAUSE_MS);
+        }, itemDur || 50);
+      });
+    };
+    showSpellItem(0);
+    return;
+  }
+
   getAudiosDuration(audioUrls).then(audioDurMs => {
     if (gen !== _displayGen) return;
     const effectiveDur = Math.max(dur, audioDurMs);
 
-    if (effectiveDur > 0) {
-      timerFill.style.transition = 'none';
-      timerFill.style.width = '100%';
-      timerFill.getBoundingClientRect();
-      timerFill.style.transition = 'width ' + effectiveDur + 'ms linear';
-      timerFill.style.width = '0%';
-    } else {
-      timerFill.style.transition = 'none';
-      timerFill.style.width = '0%';
-    }
+    runTimerBar(effectiveDur);
 
     if (audioUrls.length > 0) playAudioSequence(audioUrls);
 
-    sequenceTimer = setTimeout(() => { sequenceTimer = null; (afterDisplayFn || (() => startSequenceQuestion(pair, 0)))(); }, effectiveDur || 50);
+    sequenceTimer = setTimeout(() => { sequenceTimer = null; next(); }, effectiveDur || 50);
   });
 }
 
@@ -287,11 +323,16 @@ function startSequenceQuestion(pair, qIdx, isRetry, isAfterReplay) {
     });
 
   // ── Dénomination : mot à trous, clic sur l'image ou le mot → mot complet ───
-  } else if (q.type === 'naming') {
-    displayEl.style.display    = 'flex';
-    showAgainBtn.style.display = 'none';
+  // Réponse orale : même zone, mais sans image ni mot à trous (le mot reste caché
+  // jusqu'à « Vérifier ma réponse »), et l'item reste masqué comme pour les autres questions.
+  } else if (q.type === 'naming' || q.type === 'oral') {
+    const isOral = q.type === 'oral';
+    if (!isOral) {
+      displayEl.style.display    = 'flex';
+      showAgainBtn.style.display = 'none';
+    }
     const fullWord = q.namingWord || correctAnswers[0] || '';
-    const hint     = q.namingHint || makeNamingHint(fullWord);
+    const hint     = isOral ? '?' : (q.namingHint || makeNamingHint(fullWord));
     const wordEl   = document.getElementById('seq-naming-word');
     const askEl    = document.getElementById('seq-naming-ask');
     const judgeEl  = document.getElementById('seq-naming-judge');
@@ -309,7 +350,7 @@ function startSequenceQuestion(pair, qIdx, isRetry, isAfterReplay) {
       judgeEl.style.display = 'flex';
     };
     wordEl.onclick = checkAnswer;
-    Array.from(displayEl.querySelectorAll('.sequence-item-box, .sequence-text-display')).forEach(el => {
+    if (!isOral) Array.from(displayEl.querySelectorAll('.sequence-item-box, .sequence-text-display')).forEach(el => {
       el.classList.add('naming-clickable');
       el.onclick = checkAnswer;
     });

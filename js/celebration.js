@@ -10,11 +10,16 @@ const CEL_MESSAGES = {
   0: ["C'est fini, bravo !", 'Tu as tout terminé !', 'On réessaiera ensemble !'],
 };
 
+// Nombre d'étoiles (0 à 3) pour un ratio score/total. Partagé avec les récompenses (rewards.js).
+function starsForRatio(ratio) {
+  return ratio >= 0.85 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.3 ? 1 : 0;
+}
+
 function celebrateResult(score, total) {
   const cel = document.getElementById('celebration');
   if (!cel) return;
   const pct = total > 0 ? score / total : 0;
-  const stars = pct >= 0.85 ? 3 : pct >= 0.6 ? 2 : pct >= 0.3 ? 1 : 0;
+  const stars = starsForRatio(pct);
 
   // Réglage : récompense de fin (étoiles + message) activable/désactivable
   const showCelebration = typeof getSetting !== 'function' || getSetting('celebration');

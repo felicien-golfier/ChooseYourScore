@@ -737,6 +737,7 @@ function finishExercise(isPartial) {
   if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   showView('session-result');
   if (typeof celebrateResult === 'function') celebrateResult(score, effectiveTotalQuestions);
+  if (typeof showRewardResult === 'function') showRewardResult(newSession);
 }
 
 function renderQuestionBreakdown(questionIndexStats) {
@@ -1011,6 +1012,7 @@ function finishGoNoGo(isPartial) {
   if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   showView('session-result');
   if (typeof celebrateResult === 'function') celebrateResult(totalCorrect, total || 1);
+  if (typeof showRewardResult === 'function') showRewardResult(newSession);
 }
 
 document.addEventListener('fullscreenchange', () => {

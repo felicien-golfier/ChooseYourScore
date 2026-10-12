@@ -42,6 +42,7 @@ function renderPatientDetail() {
   document.getElementById('patient-dob').value         = isoDateToFr(patient.birthDate);
   document.getElementById('patient-dob').classList.remove('input-invalid');
   document.getElementById('patient-notes-field').value = patient.notes || '';
+  renderPatientReward(patient);
 
   const patientSessions = sessions
     .filter(s => s.patientId === patient.id)

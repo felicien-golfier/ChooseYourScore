@@ -29,8 +29,9 @@ function applySettings() {
   b.classList.toggle('no-celebration', !settings.celebration);
 }
 
-// ── Helper partagé : une ligne de réglage avec interrupteur ──────────────────
-function makeSettingToggle(key, label, desc) {
+// ── Helper partagé : une ligne avec interrupteur ─────────────────────────────
+// Utilisé par les réglages globaux et par les récompenses d'un patient.
+function makeToggleRow(label, desc, checked, onChange) {
   const row = document.createElement('label');
   row.className = 'setting-row';
 
@@ -46,19 +47,23 @@ function makeSettingToggle(key, label, desc) {
   sw.className = 'setting-switch';
   const input = document.createElement('input');
   input.type = 'checkbox';
-  input.checked = settings[key] !== false;
+  input.checked = checked;
   const knob = document.createElement('span');
   knob.className = 'setting-knob';
   sw.append(input, knob);
 
-  input.addEventListener('change', () => {
-    settings[key] = input.checked;
-    saveSettings();
-    applySettings();
-  });
+  input.addEventListener('change', () => onChange(input.checked));
 
   row.append(txt, sw);
   return row;
+}
+
+function makeSettingToggle(key, label, desc) {
+  return makeToggleRow(label, desc, settings[key] !== false, checked => {
+    settings[key] = checked;
+    saveSettings();
+    applySettings();
+  });
 }
 
 function buildSettingsList() {

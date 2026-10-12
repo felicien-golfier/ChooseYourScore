@@ -7,15 +7,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=Comic+Neue:wght@400;700&family=Oswald:wght@400;700&family=Playfair+Display:wght@400;700&family=Raleway:wght@400;700&family=Pacifico&family=Indie+Flower&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/reset.css?v=50">
-  <link rel="stylesheet" href="css/variables.css?v=50">
-  <link rel="stylesheet" href="css/base.css?v=50">
-  <link rel="stylesheet" href="css/layout.css?v=50">
-  <link rel="stylesheet" href="css/session.css?v=50">
-  <link rel="stylesheet" href="css/editor.css?v=50">
-  <link rel="stylesheet" href="css/results.css?v=50">
-  <link rel="stylesheet" href="css/responsive.css?v=50">
-  <link rel="stylesheet" href="css/playful.css?v=50">
+  <link rel="stylesheet" href="css/reset.css?v=51">
+  <link rel="stylesheet" href="css/variables.css?v=51">
+  <link rel="stylesheet" href="css/base.css?v=51">
+  <link rel="stylesheet" href="css/layout.css?v=51">
+  <link rel="stylesheet" href="css/session.css?v=51">
+  <link rel="stylesheet" href="css/editor.css?v=51">
+  <link rel="stylesheet" href="css/results.css?v=51">
+  <link rel="stylesheet" href="css/responsive.css?v=51">
+  <link rel="stylesheet" href="css/playful.css?v=51">
+  <link rel="stylesheet" href="css/rewards.css?v=51">
 </head>
 <body>
 <canvas id="confetti-canvas"></canvas>
@@ -49,6 +50,7 @@
         <label for="patient-select-setup">Patient</label>
         <select id="patient-select-setup"></select>
       </div>
+      <div class="form-group" id="setup-reward" style="display:none"></div>
       <div class="form-group" id="new-patient-row">
         <label for="new-patient-name">Nom du nouveau patient</label>
         <input id="new-patient-name" type="text" placeholder="ex. Marie Dubois" autocomplete="off">
@@ -139,6 +141,7 @@
       <div class="cel-title" id="cel-title">Bravo&nbsp;!</div>
       <div class="cel-sub" id="cel-sub">Exercice terminé</div>
     </div>
+    <div id="reward-result" style="display:none"></div>
     <div class="results-grid">
       <div class="result-card"><div class="label">Score</div><div class="value good" id="res-score">–</div></div>
       <div class="result-card"><div class="label">Temps total</div><div class="value" id="res-time">–</div></div>
@@ -375,6 +378,7 @@
         <label class="editor-section-label" for="patient-notes-field">Notes</label>
         <textarea id="patient-notes-field" rows="3" placeholder="Informations, antécédents, remarques…"></textarea>
       </div>
+      <div id="patient-reward"></div>
       <div class="pairs-header pairs-header--mt">
         <span class="editor-section-label no-mb">Sessions <span class="badge" id="patient-session-count">0</span></span>
         <div id="patient-mini-stats"></div>
@@ -574,6 +578,14 @@
   </div>
 </div>
 
+<!-- ── Reward modal ────────────────────────────────────────────────────────── -->
+<div id="reward-modal">
+  <div class="rw rw-box" role="dialog" aria-modal="true" aria-label="Mon robot">
+    <button type="button" class="rw-close" id="rw-close" aria-label="Fermer">✕</button>
+    <div id="rw-content"></div>
+  </div>
+</div>
+
 <!-- ── Library modal ───────────────────────────────────────────────────────── -->
 <div id="library-modal">
   <div class="modal settings-modal-box">
@@ -587,18 +599,21 @@
 </div>
 
 <script src="chart.umd.min.js"></script>
-<script src="js/settings.js?v=50"></script>
-<script src="js/celebration.js?v=50"></script>
-<script src="js/data.js?v=50"></script>
-<script src="js/utils.js?v=50"></script>
-<script src="js/ui.js?v=50"></script>
-<script src="js/nav.js?v=50"></script>
-<script src="js/setup.js?v=50"></script>
-<script src="js/session.js?v=50"></script>
-<script src="js/editor.js?v=50"></script>
-<script src="js/patients.js?v=50"></script>
-<script src="js/results.js?v=50"></script>
-<script>initData().then(() => { initSetup(); initSettings(); },
+<script src="js/settings.js?v=51"></script>
+<script src="js/celebration.js?v=51"></script>
+<script src="js/data.js?v=51"></script>
+<script src="js/utils.js?v=51"></script>
+<script src="js/ui.js?v=51"></script>
+<script src="js/nav.js?v=51"></script>
+<script src="js/setup.js?v=51"></script>
+<script src="js/session.js?v=51"></script>
+<script src="js/editor.js?v=51"></script>
+<script src="js/patients.js?v=51"></script>
+<script src="js/rewards-robot.js?v=51"></script>
+<script src="js/rewards.js?v=51"></script>
+<script src="js/rewards-ui.js?v=51"></script>
+<script src="js/results.js?v=51"></script>
+<script>initData().then(() => { initSetup(); initSettings(); initRewards(); },
   () => alert('Impossible d\'ouvrir le stockage local du navigateur (navigation privée ?). Les exercices ne peuvent pas être chargés.'));</script>
 </body>
 </html>

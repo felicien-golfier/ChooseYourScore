@@ -103,6 +103,7 @@ function populateSetupPatientSelect() {
 function syncNewPatientRow() {
   document.getElementById('new-patient-row').style.display =
     document.getElementById('patient-select-setup').value === '__new__' ? 'block' : 'none';
+  if (typeof renderSetupReward === 'function') renderSetupReward();
 }
 
 document.getElementById('patient-select-setup').addEventListener('change', syncNewPatientRow);

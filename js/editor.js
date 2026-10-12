@@ -1016,7 +1016,7 @@ function buildSequenceQuestionBlock(q) {
   const typeSelect = document.createElement('select');
   typeSelect.className = 'seq-q-type';
   typeSelect.style.cssText = 'padding:3px 8px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.8rem;font-family:var(--font);outline:none;color:var(--text-1);background:var(--surface);cursor:pointer';
-  [['choice','Choix multiples'],['write','Saisie libre'],['direction','Direction (flèche)'],['click-item','Cliquer sur l\'item'],['naming','Dénomination (mot à trous)']].forEach(([v,l]) => {
+  [['choice','Choix multiples'],['write','Saisie libre'],['direction','Direction (flèche)'],['click-item','Cliquer sur l\'item'],['naming','Dénomination (mot à trous)'],['oral','Réponse orale (à vérifier)']].forEach(([v,l]) => {
     const opt = document.createElement('option'); opt.value = v; opt.textContent = l;
     if ((q.type || 'choice') === v) opt.selected = true;
     typeSelect.appendChild(opt);
@@ -1065,7 +1065,7 @@ function buildSequenceQuestionBlock(q) {
   // Hide retry options when allowRetry is off
   // Pas de 2ᵉ essai en dénomination : le mot complet est déjà montré
   const syncRetryVis = () => {
-    const retryAllowed = typeSelect.value !== 'naming';
+    const retryAllowed = typeSelect.value !== 'naming' && typeSelect.value !== 'oral';
     allowRetryLabel.style.display  = retryAllowed ? '' : 'none';
     retryLabel.style.display       = (retryAllowed && allowRetryChk.checked) ? '' : 'none';
     highlightLabel.style.display   = (retryAllowed && allowRetryChk.checked) ? '' : 'none';
@@ -1293,6 +1293,24 @@ function buildSequenceQuestionBlock(q) {
   namingHelp.textContent = 'En séance, le mot à trous s\'affiche sous l\'image. Le patient choisit « Je ne sais pas » ou « Vérifier ma réponse » (ou clique sur l\'image / le mot) : le mot complet apparaît et vous notez « Correct » ou « Incorrect ».';
   namingSection.append(namingWordRow, namingHintRow, namingHelp);
 
+  // ── Oral section (réponse dite à voix haute, vérifiée sur le mot écrit) ────
+  const oralSection = document.createElement('div');
+  oralSection.className = 'seq-q-oral-section';
+  const oralRow = document.createElement('div');
+  oralRow.className = 'field-row';
+  oralRow.innerHTML = '<label>Réponse attendue</label>';
+  const oralInput = document.createElement('input');
+  oralInput.type = 'text'; oralInput.className = 'seq-q-oral-answer';
+  oralInput.placeholder = 'ex : CHEVAL';
+  oralInput.value = q.type === 'oral' ? (q.namingWord || '') : '';
+  oralInput.style.cssText = fieldCss + ';border-color:var(--success-border);background:var(--success-bg)';
+  oralInput.addEventListener('input', refreshSequencePreview);
+  oralRow.appendChild(oralInput);
+  const oralHelp = document.createElement('div');
+  oralHelp.style.cssText = 'font-size:0.75rem;color:var(--text-3);margin-top:4px';
+  oralHelp.textContent = 'En séance, le patient dit sa réponse à voix haute puis clique sur « Vérifier ma réponse » : la réponse écrite s\'affiche et vous notez « Correct » ou « Incorrect ».';
+  oralSection.append(oralRow, oralHelp);
+
   // Show/hide sections based on type
   const applyType = (type) => {
     choiceSection.style.display    = type === 'choice'     ? 'block' : 'none';
@@ -1300,6 +1318,7 @@ function buildSequenceQuestionBlock(q) {
     dirSection.style.display       = type === 'direction'  ? 'block' : 'none';
     clickItemSection.style.display = type === 'click-item' ? 'block' : 'none';
     namingSection.style.display    = type === 'naming'     ? 'block' : 'none';
+    oralSection.style.display      = type === 'oral'       ? 'block' : 'none';
     syncRetryVis();
     shuffleAnswersLabel.style.display = type === 'choice'  ? ''      : 'none';
     if (type === 'click-item') {
@@ -1311,7 +1330,7 @@ function buildSequenceQuestionBlock(q) {
   applyType(q.type || 'choice');
   typeSelect.addEventListener('change', () => { applyType(typeSelect.value); refreshSequencePreview(); });
 
-  block.append(choiceSection, writeSection, dirSection, clickItemSection, namingSection);
+  block.append(choiceSection, writeSection, dirSection, clickItemSection, namingSection, oralSection);
 
   return block;
 }
@@ -1377,6 +1396,10 @@ function readSequenceModal() {
       base.namingHint = (block.querySelector('.seq-q-naming-hint')?.value || '').trim() || makeNamingHint(base.namingWord);
       base.choices = [base.namingWord];
       base.correctIndices = [0];
+    } else if (type === 'oral') {
+      base.namingWord = (block.querySelector('.seq-q-oral-answer')?.value || '').trim();
+      base.choices = [base.namingWord];
+      base.correctIndices = [0];
     } else {
       base.choices = Array.from(block.querySelectorAll('.seq-q-choice')).map(i => i.value.trim());
       base.correctIndices = getCorrectIndicesFromBlock(block);
@@ -1438,6 +1461,9 @@ function refreshSequencePreview() {
       const word = (block.querySelector('.seq-q-naming-word')?.value || '').trim();
       const hint = (block.querySelector('.seq-q-naming-hint')?.value || '').trim();
       choicesHtml = '<span style="padding:1px 8px;border-radius:4px;background:var(--success-bg);border:1px solid var(--success-border);letter-spacing:.1em">🖼 ' + escapeHtml(hint || '?') + ' → ' + escapeHtml(word || '?') + '</span>';
+    } else if (qType === 'oral') {
+      const word = (block.querySelector('.seq-q-oral-answer')?.value || '').trim();
+      choicesHtml = '<span style="padding:1px 8px;border-radius:4px;background:var(--success-bg);border:1px solid var(--success-border)">🗣 ' + escapeHtml(word || '?') + '</span>';
     } else if (qType === 'click-item') {
       const corrects = new Set(Array.from(block.querySelectorAll('.seq-item-toggle'))
         .filter(t => t.dataset.correct === '1').map(t => parseInt(t.dataset.itemIndex)));

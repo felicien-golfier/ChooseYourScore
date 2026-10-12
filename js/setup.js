@@ -96,6 +96,7 @@ function populateSetupPatientSelect() {
   newOpt.value = '__new__'; newOpt.textContent = '+ Nouveau patient…';
   if (current === '__new__') newOpt.selected = true;
   select.appendChild(newOpt);
+  if (!current && patients.length === 1) select.value = patients[0].id;
   syncNewPatientRow();
 }
 

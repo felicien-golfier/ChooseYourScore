@@ -25,11 +25,13 @@ const RW_BADGES = [
   { id:'triple',   fam:'x', n:'Machine à records', g:3,  stat:'records', u:'records battus',      d:g => 'Battre ' + RW_PLURAL(g,'record','records') + ' perso', gl:'bolt2' },
 ];
 // Univers du compagnon : même progression (XP, niveaux, badges), dessin et vocabulaire propres.
+// words(gender) : vocabulaire, accordé quand l'univers propose fille / garçon (genders).
 // colors : [clé, libellé, [[couleur, niveau requis], …]] ; accs : k = clé du dessin, b = badge qui le débloque.
 const RW_THEMES = {
   robot: {
-    label: 'Robots', my: 'Mon robot', see: 'Voir le robot', nameLabel: 'Nom du robot', defaultName: 'Zéphyr',
-    stages: ['Prototype', 'Recrue', 'Opérateur', 'Élite', 'Légende'],
+    label: 'Robots', genders: false,
+    words: () => ({ my: 'Mon robot', see: 'Voir le robot', nameLabel: 'Nom du robot', defaultName: 'Zéphyr',
+      stages: ['Prototype', 'Recrue', 'Opérateur', 'Élite', 'Légende'], species: k => RW_ROBOT_SPECIES[k].label }),
     species: RW_ROBOT_SPECIES, order: ['orb', 'bolt', 'spike', 'tank'], draw: rwRobotSvg, badge: rwBadgeSvg,
     colors: [
       ['body',   'Carrosserie', [['#1b2440',0],['#2a1a40',0],['#12302e',0],['#3a1f2e',0],['#2b2f3a',0],['#cfd8ff',4],['#ffd24d',5]]],
@@ -47,8 +49,12 @@ const RW_THEMES = {
     ],
   },
   wizard: {
-    label: 'Sorciers', my: 'Mon sorcier', see: 'Voir le sorcier', nameLabel: 'Nom du sorcier', defaultName: 'Merlinou',
-    stages: ['Novice', 'Apprenti', 'Adepte', 'Mage', 'Archimage'],
+    label: 'Sorcières & sorciers', genders: true,
+    words: g => g === 'm'
+      ? { my: 'Mon sorcier', see: 'Voir le sorcier', nameLabel: 'Nom du sorcier', defaultName: 'Merlinou',
+          stages: ['Novice', 'Apprenti', 'Adepte', 'Mage', 'Archimage'], species: k => RW_WIZARD_SPECIES[k].m }
+      : { my: 'Ma sorcière', see: 'Voir la sorcière', nameLabel: 'Nom de la sorcière', defaultName: 'Mélusine',
+          stages: ['Novice', 'Apprentie', 'Adepte', 'Mage', 'Archimage'], species: k => RW_WIZARD_SPECIES[k].f },
     species: RW_WIZARD_SPECIES, order: ['witch', 'wizard', 'mage', 'druid'], draw: rwWizardSvg, badge: rwWizardBadgeSvg,
     colors: [
       ['body',   'Robe',     [['#5b3fa0',0],['#2f3f8f',0],['#2f6b4f',0],['#8a2c4a',0],['#2b2533',0],['#c9cfe0',4],['#e8b33a',5]]],
@@ -69,20 +75,33 @@ const RW_THEMES = {
 };
 
 function rwTheme(r) { return RW_THEMES[r.theme] || RW_THEMES.robot; }
+function rwWords(r) { return rwTheme(r).words(r.gender); }
 
 // Apparence d'un patient dans son univers actuel : modèle, couleurs, accessoires, nom.
 function rwLookOf(r) {
+  const T = rwTheme(r);
   const look = { species: r.species, acc: r.acc, name: r.name };
-  rwTheme(r).colors.forEach(([key]) => { look[key] = r[key]; });
+  if (T.genders) look.gender = r.gender;
+  T.colors.forEach(([key]) => { look[key] = r[key]; });
   return look;
 }
 
 // Apparence par défaut d'un univers.
 function rwDefaultLook(theme) {
   const T = RW_THEMES[theme];
-  const look = { species: T.order[0], acc: {}, name: T.defaultName };
+  const look = { species: T.order[0], acc: {} };
+  if (T.genders) look.gender = 'f';
+  look.name = T.words(look.gender).defaultName;
   T.colors.forEach(([key, , list]) => { look[key] = list[0][0]; });
   return look;
+}
+
+// Fille / garçon : le nom par défaut suit, un nom choisi par l'enfant est gardé.
+function rwSetGender(r, gender) {
+  const T = rwTheme(r);
+  if (!T.genders || r.gender === gender) return;
+  if (r.name === T.words(r.gender).defaultName) r.name = T.words(gender).defaultName;
+  r.gender = gender;
 }
 
 // Changer d'univers garde la progression ; l'apparence de chaque univers est mémorisée à part.

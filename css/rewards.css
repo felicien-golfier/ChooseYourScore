@@ -120,6 +120,8 @@ body.no-answer-anim .rw-hero-bot, body.no-answer-anim .rw-result-bot { animation
 .rw-field input[type="text"]:focus { outline: none; border-color: var(--rw-main); box-shadow: 0 0 8px rgba(var(--rw-glow), 0.4); }
 
 .rw-species { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.rw-genders { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; max-width: 320px; }
+.rw-sp small { overflow-wrap: anywhere; text-align: center; }
 .rw-sp {
   background: var(--rw-surface-2); border: 2px solid transparent; border-radius: 8px; cursor: pointer;
   padding: 6px 4px 8px; display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0; color: var(--rw-text);

@@ -76,15 +76,19 @@ function rwAnalyze(list) {
   list.forEach(s => {
     const ratio = s.totalPairs > 0 ? s.score / s.totalPairs : 0;
     const stars = starsForRatio(ratio);
-    const first = !(s.exerciseId in best);
-    const record = !first && ratio > best[s.exerciseId];
-    best[s.exerciseId] = Math.max(best[s.exerciseId] ?? 0, ratio);
+    // Un passage « items échoués » ne porte que sur une partie de l'exercice : jamais une
+    // 1re fois ni un record, et il ne compte pas pour les exploits 3 étoiles / sans faute.
+    const sub = !!s.failedOnly;
+    const first = !sub && !(s.exerciseId in best);
+    const record = !sub && !first && ratio > best[s.exerciseId];
+    if (!sub) best[s.exerciseId] = Math.max(best[s.exerciseId] ?? 0, ratio);
     const gain = { first, base: first ? RW_XP.base : RW_XP.repeat, stars, starsXp: stars * RW_XP.perStar, record, recordXp: record ? RW_XP.record : 0 };
     gain.total = gain.base + gain.starsXp + gain.recordXp;
     out.per[s.id] = gain;
     out.n++; out.xp += gain.total;
-    if (stars === 3) out.stars3++;
     if (record) out.records++;
+    if (sub) return;
+    if (stars === 3) out.stars3++;
     if (s.totalPairs > 0 && s.score === s.totalPairs) out.perfect++;
   });
   return out;

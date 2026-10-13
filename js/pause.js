@@ -29,6 +29,7 @@ function snapshotSequenceState() {
     pairIndex,
     exampleCount: currentExampleCount,
     shuffle: currentShuffleEnabled,
+    failedOnly: currentFailedOnly,
     responses: responses.slice(0, keepCount),
     pairHistory: pairHistory
       .filter(h => h.pairIndex < pairIndex)
@@ -72,13 +73,13 @@ function pauseCurrentExercise() {
 document.getElementById('btn-pause-exercise').addEventListener('click', pauseCurrentExercise);
 
 // Les paires modifiées depuis la pause sont réconciliées par clé : paires supprimées
-// ignorées, paires ajoutées placées à la fin.
+// ignorées, paires ajoutées placées à la fin (sauf en mode items échoués).
 function restoreSequenceState(entry) {
   const ex = currentExercise;
   const byKey = new Map((ex.pairs || []).map(p => [pairKey(ex, p), p]));
   const kept = keys => keys.filter(k => byKey.has(k));
   const order = kept(entry.pairKeys);
-  byKey.forEach((p, k) => { if (!entry.pairKeys.includes(k)) order.push(k); });
+  if (!entry.failedOnly) byKey.forEach((p, k) => { if (!entry.pairKeys.includes(k)) order.push(k); });
   currentPairs = order.map(k => byKey.get(k));
   currentExampleCount = kept(entry.pairKeys.slice(0, entry.exampleCount)).length;
   pairIndex = kept(entry.pairKeys.slice(0, entry.pairIndex)).length;
@@ -115,6 +116,7 @@ function openPausedEntry(entry) {
   currentPatientId = entry.patientId;
   currentPatient = patient ? patient.name : entry.patientName;
   currentShuffleEnabled = !!entry.shuffle;
+  currentFailedOnly = !!entry.failedOnly;
   pendingResume = entry;
   showInstruction(entry.progressLabel);
 }
@@ -139,6 +141,7 @@ function renderPausedList() {
     meta.className = 'paused-meta';
     const date = new Date(entry.pausedAt);
     meta.textContent = (patient ? patient.name : entry.patientName) + '  ·  item ' + entry.progressLabel +
+      (entry.failedOnly ? '  ·  items échoués' : '') +
       '  ·  ' + date.toLocaleDateString('fr-FR') + ' à ' + date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     info.append(name, meta);
     const resumeBtn = document.createElement('button');

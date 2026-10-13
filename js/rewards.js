@@ -13,14 +13,16 @@ const RW_STAGE_XP = [0, 100, 300, 650, 1100];
 const RW_XP = { base: 30, repeat: 15, perStar: 10, record: 25 };
 
 const RW_PLURAL = (g, one, many) => g + ' ' + (g > 1 ? many : one);
+// Noms des badges épicènes (même forme pour une fille ou un garçon), plus lisibles
+// pour un enfant que l'écriture avec point médian.
 // stat = clé du compteur calculé par rwAnalyze ; g = objectif par défaut
 const RW_BADGES = [
   { id:'first',    fam:'e', n:'Premier pas',       g:1,  stat:'n',       u:'exercices terminés',  d:g => 'Terminer ' + RW_PLURAL(g,'exercice','exercices'),     gl:'chev1' },
-  { id:'five',     fam:'e', n:'Habitué',           g:5,  stat:'n',       u:'exercices terminés',  d:g => 'Terminer ' + RW_PLURAL(g,'exercice','exercices'),     gl:'chev2' },
-  { id:'marathon', fam:'e', n:'Marathonien',       g:25, stat:'n',       u:'exercices terminés',  d:g => 'Terminer ' + RW_PLURAL(g,'exercice','exercices'),     gl:'chev3' },
-  { id:'titan',    fam:'e', n:'Titan',             g:50, stat:'n',       u:'exercices terminés',  d:g => 'Terminer ' + RW_PLURAL(g,'exercice','exercices'),     gl:'chev4' },
+  { id:'five',     fam:'e', n:'Fidèle',            g:5,  stat:'n',       u:'exercices terminés',  d:g => 'Terminer ' + RW_PLURAL(g,'exercice','exercices'),     gl:'chev2' },
+  { id:'marathon', fam:'e', n:'Infatigable',       g:25, stat:'n',       u:'exercices terminés',  d:g => 'Terminer ' + RW_PLURAL(g,'exercice','exercices'),     gl:'chev3' },
+  { id:'titan',    fam:'e', n:'Inarrêtable',       g:50, stat:'n',       u:'exercices terminés',  d:g => 'Terminer ' + RW_PLURAL(g,'exercice','exercices'),     gl:'chev4' },
   { id:'record',   fam:'x', n:'Nouveau record',    g:1,  stat:'records', u:'records battus',      d:g => 'Battre ' + RW_PLURAL(g,'record','records') + ' perso', gl:'bolt'  },
-  { id:'stars',    fam:'x', n:"Chasseur d'étoiles",g:5,  stat:'stars3',  u:'exercices à 3 étoiles', d:g => RW_PLURAL(g,'exercice','exercices') + ' à 3 étoiles', gl:'star'  },
+  { id:'stars',    fam:'x', n:'Attrape-étoiles',   g:5,  stat:'stars3',  u:'exercices à 3 étoiles', d:g => RW_PLURAL(g,'exercice','exercices') + ' à 3 étoiles', gl:'star'  },
   { id:'perfect',  fam:'x', n:'Sans faute',        g:1,  stat:'perfect', u:'exercices parfaits',  d:g => RW_PLURAL(g,'exercice parfait','exercices parfaits'),  gl:'check' },
   { id:'triple',   fam:'x', n:'Machine à records', g:3,  stat:'records', u:'records battus',      d:g => 'Battre ' + RW_PLURAL(g,'record','records') + ' perso', gl:'bolt2' },
 ];
@@ -31,7 +33,7 @@ const RW_THEMES = {
   robot: {
     label: 'Robots', genders: false,
     words: () => ({ my: 'Mon robot', see: 'Voir le robot', nameLabel: 'Nom du robot', defaultName: 'Zéphyr',
-      stages: ['Prototype', 'Recrue', 'Opérateur', 'Élite', 'Légende'], species: k => RW_ROBOT_SPECIES[k].label }),
+      stages: ['Prototype', 'Recrue', 'Pilote', 'Élite', 'Légende'], species: k => RW_ROBOT_SPECIES[k].label }),
     species: RW_ROBOT_SPECIES, order: ['orb', 'bolt', 'spike', 'tank'], draw: rwRobotSvg, badge: rwBadgeSvg,
     colors: [
       ['body',   'Carrosserie', [['#1b2440',0],['#2a1a40',0],['#12302e',0],['#3a1f2e',0],['#2b2f3a',0],['#cfd8ff',4],['#ffd24d',5]]],

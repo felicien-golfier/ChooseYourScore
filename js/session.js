@@ -8,6 +8,8 @@ let previousPairWasCorrect = null;
 let pauseTimer = null;
 let currentPairQuestions = [];
 let currentShuffleEnabled = false;
+// Passage limité aux items échoués lors de la dernière session (voir lastFailedPairs).
+let currentFailedOnly = false;
 let currentExampleCount = 0;
 // Items effectivement affichés, dans l'ordre : permet de revenir à l'item précédent
 // en effaçant les réponses données depuis (responseStart = index dans `responses`).
@@ -699,6 +701,7 @@ function finishExercise(isPartial) {
     patientName: currentPatient, patientId: currentPatientId, date: new Date().toISOString(),
     totalTimeMs, totalPairs: effectiveTotalQuestions, score, responses, notes: '',
     ...(isPartial ? { partial: true, pairsAttempted: pairIndex, totalPairsInExercise: totalQuestionsInExercise } : {}),
+    ...(currentFailedOnly ? { failedOnly: true } : {}),
     ...(hasDirectionQuestions ? { errorsLeft, errorsRight } : {}),
     ...(hasNamingQuestions ? { namingStats } : {}),
     ...(Object.keys(questionIndexStats).length > 1 ? { questionIndexStats } : {}),
@@ -710,12 +713,13 @@ function finishExercise(isPartial) {
   document.getElementById('session-notes').value = '';
 
   const partialNote = document.getElementById('results-partial-note');
-  if (isPartial) {
-    partialNote.style.display = '';
-    partialNote.textContent = 'Résultats partiels — ' + pairIndex + ' paire' + (pairIndex > 1 ? 's' : '') + ' sur ' + currentPairs.length;
-  } else {
-    partialNote.style.display = 'none';
-  }
+  const notes = [
+    currentFailedOnly ? 'Items échoués seulement — ' + currentPairs.length + ' item' + (currentPairs.length > 1 ? 's' : '') : '',
+    isPartial ? 'Résultats partiels — ' + pairIndex + ' paire' + (pairIndex > 1 ? 's' : '') + ' sur ' + currentPairs.length : '',
+  ].filter(Boolean);
+  partialNote.style.display = notes.length ? '' : 'none';
+  partialNote.textContent = notes.join(' · ');
+  syncRetryFailedBtn();
 
   document.getElementById('progress-fill').style.width = isPartial
     ? (pairIndex / currentPairs.length * 100) + '%'
@@ -764,13 +768,30 @@ function renderQuestionBreakdown(questionIndexStats) {
   panel.style.display = 'block';
 }
 
-document.getElementById('btn-restart').addEventListener('click', () => {
+// Prépare les paires d'un nouveau passage : tout l'exercice, ou seulement les items
+// échoués à la dernière session du patient (si aucun, tout l'exercice).
+function prepareRunPairs(failedOnly) {
+  const failed = failedOnly ? lastFailedPairs(currentExercise, currentPatientId) : null;
+  currentFailedOnly = !!failed;
+  buildCurrentPairs(currentExercise, currentShuffleEnabled, failed && failed.pairs);
+}
+
+// Bouton « Refaire les items échoués » de l'écran de résultats.
+function syncRetryFailedBtn() {
+  const failed = lastFailedPairs(currentExercise, currentPatientId);
+  const btn = document.getElementById('btn-retry-failed');
+  btn.style.display = failed ? '' : 'none';
+  if (failed) btn.textContent = 'Refaire les items échoués (' + failed.pairs.length + ')';
+}
+
+function restartExercise(failedOnly) {
   pendingResume = null;
-  if (currentExercise && currentExercise.type !== 'gonogo') {
-    buildCurrentPairs(currentExercise, currentShuffleEnabled);
-  }
-  showView('instruction');
-});
+  if (currentExercise && currentExercise.type !== 'gonogo') prepareRunPairs(failedOnly);
+  showInstruction(null);
+}
+
+document.getElementById('btn-restart').addEventListener('click', () => restartExercise(false));
+document.getElementById('btn-retry-failed').addEventListener('click', () => restartExercise(true));
 document.getElementById('btn-see-progress').addEventListener('click', () => showView('results'));
 
 document.getElementById('session-notes').addEventListener('input', () => {
@@ -987,6 +1008,7 @@ function finishGoNoGo(isPartial) {
   discardResumedPause();
 
   document.getElementById('session-notes').value = '';
+  syncRetryFailedBtn();
   document.getElementById('results-partial-note').style.display = isPartial ? '' : 'none';
   if (isPartial) document.getElementById('results-partial-note').textContent =
     'Résultats partiels — ' + _gng.index + ' essai' + (_gng.index > 1 ? 's' : '') + ' sur ' + trials.length;

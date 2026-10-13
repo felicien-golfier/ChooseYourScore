@@ -176,7 +176,7 @@ function showRewardResult(session) {
   ].filter(Boolean).map(c => '<span class="rw-chip">' + escapeHtml(c) + '</span>').join('');
   el.innerHTML = '<div class="rw rw-result"><div class="rw-result-bot">' + rwRobotFor(patient, ev) + '</div>' +
     '<div class="rw-result-body"><p class="rw-bubble">' + escapeHtml(r.name) + ' : « ' + msg + ' »</p>' +
-    '<ul class="rw-gain">' + line(gain.first ? 'Exercice terminé (1re fois)' : 'Exercice refait', gain.base) +
+    '<ul class="rw-gain">' + line(gain.first ? 'Exercice terminé (1re fois)' : session.failedOnly ? 'Items échoués refaits' : 'Exercice refait', gain.base) +
     (gain.stars ? line(gain.stars + ' étoile' + (gain.stars > 1 ? 's' : ''), gain.starsXp) : '') +
     (gain.record ? line('Record battu sur « ' + escapeHtml(session.exerciseName) + ' »', gain.recordXp) : '') + '</ul>' +
     (chips ? '<p class="rw-chips">' + chips + '</p>' : '') +

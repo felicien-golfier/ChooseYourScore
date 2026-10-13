@@ -79,7 +79,7 @@ function makePickerItem(ex, indented) {
     ? (ex.trials||[]).length + ' essais'
     : (ex.pairs||[]).length + ' paires';
   div.append(nameSpan, countSpan);
-  div.addEventListener('click', () => { setupSelectedExId = ex.id; renderExercisePicker(); });
+  div.addEventListener('click', () => { setupSelectedExId = ex.id; renderExercisePicker(); syncFailedOnlyOption(); });
   return div;
 }
 
@@ -105,6 +105,21 @@ function syncNewPatientRow() {
   document.getElementById('new-patient-row').style.display =
     document.getElementById('patient-select-setup').value === '__new__' ? 'block' : 'none';
   if (typeof renderSetupReward === 'function') renderSetupReward();
+  syncFailedOnlyOption();
+}
+
+// Option « items échoués » : proposée seulement si la dernière session du patient
+// sur cet exercice contient des items échoués.
+function syncFailedOnlyOption() {
+  const ex = exercises.find(e => e.id === setupSelectedExId);
+  const failed = lastFailedPairs(ex, document.getElementById('patient-select-setup').value);
+  const checkbox = document.getElementById('failed-only');
+  document.getElementById('failed-only-group').style.display = failed ? '' : 'none';
+  if (!failed) { checkbox.checked = false; return; }
+  const scored = ex.pairs.length - Math.min(ex.exampleCount || 0, ex.pairs.length);
+  document.getElementById('failed-only-label').textContent =
+    'Ne refaire que les items échoués la dernière fois (' + failed.pairs.length + ' sur ' + scored +
+    ', le ' + new Date(failed.session.date).toLocaleDateString('fr-FR') + ')';
 }
 
 document.getElementById('patient-select-setup').addEventListener('change', syncNewPatientRow);
@@ -145,13 +160,14 @@ document.getElementById('btn-start').addEventListener('click', () => {
     }
     currentPairs = [];
     currentExampleCount = 0;
+    currentFailedOnly = false;
   } else {
     if (!currentExercise.pairs || currentExercise.pairs.length === 0) {
       alert("Cet exercice n'a pas de paires. Ajoutez des paires dans l'Éditeur.");
       return;
     }
     currentShuffleEnabled = document.getElementById('shuffle-pairs').checked;
-    buildCurrentPairs(currentExercise, currentShuffleEnabled);
+    prepareRunPairs(document.getElementById('failed-only').checked);
   }
 
   showInstruction(null);

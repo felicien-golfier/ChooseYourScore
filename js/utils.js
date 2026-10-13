@@ -245,7 +245,13 @@ function shuffleArray(arr) {
 
 // Construit currentPairs en gardant les paires d'exemple (non notées) fixes en tête,
 // même quand le mélange aléatoire est actif — seules les paires notées sont mélangées.
-function buildCurrentPairs(ex, shuffle) {
+// onlyPairs : ne passer que ces paires (items échoués), sans les exemples.
+function buildCurrentPairs(ex, shuffle, onlyPairs) {
+  if (onlyPairs) {
+    currentExampleCount = 0;
+    currentPairs = shuffle ? shuffleArray(onlyPairs) : onlyPairs.slice();
+    return;
+  }
   const allPairs = ex.pairs || [];
   currentExampleCount = Math.min(ex.exampleCount || 0, allPairs.length);
   const examplePairs = allPairs.slice(0, currentExampleCount);
@@ -253,6 +259,21 @@ function buildCurrentPairs(ex, shuffle) {
   currentPairs = shuffle
     ? [...examplePairs, ...shuffleArray(restPairs)]
     : [...examplePairs, ...restPairs];
+}
+
+// Items échoués lors de la dernière session (complète ou partielle) d'un patient sur
+// un exercice : paires avec au moins une réponse notée fausse (une 2ᵉ chance réussie
+// reste un échec, comme dans le score). Renvoie null s'il n'y en a aucun.
+function lastFailedPairs(ex, patientId) {
+  if (!ex || ex.type === 'gonogo' || !patientId) return null;
+  const last = sessions
+    .filter(s => s.exerciseId === ex.id && s.patientId === patientId)
+    .sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+  if (!last) return null;
+  const failedIds = new Set((last.responses || [])
+    .filter(r => !r.isRetry && !r.isExample && !r.isCorrect).map(r => r.pairId));
+  const pairs = (ex.pairs || []).filter(p => p.id && failedIds.has(p.id));
+  return pairs.length ? { session: last, pairs } : null;
 }
 
 // ── Helpers partagés résultats (vue Résultats, fiche patient, export PDF) ────

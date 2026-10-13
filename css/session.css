@@ -117,6 +117,7 @@
 /* ── QUIT EXERCISE BUTTON ────────────────────────────────────────────────── */
 .btn-quit-exercise,
 .btn-stop-exercise,
+.btn-pause-exercise,
 .btn-prev-item {
   position: absolute;
   top: 18px;
@@ -137,9 +138,16 @@
   transition: all 0.1s;
 }
 
-.btn-quit-exercise { left: 18px; }
-.btn-stop-exercise { left: 58px; }
-.btn-prev-item     { left: 98px; }
+.btn-quit-exercise  { left: 18px; }
+.btn-stop-exercise  { left: 58px; }
+.btn-pause-exercise { left: 98px; }
+.btn-prev-item      { left: 138px; }
+
+.btn-pause-exercise:hover {
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
 
 .btn-quit-exercise:hover {
   background: var(--danger-bg);
@@ -904,5 +912,64 @@ body.is-fullscreen #seq-pause-continue {
   margin-bottom: 24px;
 }
 .result-card .value.danger {
+  color: var(--danger);
+}
+
+/* ── EXERCICES EN PAUSE (écran d'accueil) ────────────────────────────────── */
+.paused-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.paused-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--accent-border);
+  border-radius: var(--radius);
+  background: var(--accent-bg);
+}
+
+.paused-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.paused-name {
+  font-weight: 600;
+  color: var(--text-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.paused-meta {
+  font-size: 0.8rem;
+  color: var(--text-2);
+  margin-top: 2px;
+}
+
+.paused-resume {
+  flex: none;
+  padding: 9px 16px;
+  font-size: 0.9rem;
+}
+
+.paused-delete {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-3);
+  cursor: pointer;
+}
+
+.paused-delete:hover {
+  background: var(--danger-bg);
+  border-color: var(--danger);
   color: var(--danger);
 }

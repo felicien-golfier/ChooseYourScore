@@ -7,6 +7,8 @@ let exercises = [];
 let sessions  = [];
 let patients  = [];
 let folders   = [];
+// Exercices mis en pause (un par couple exercice/patient), repris depuis l'écran d'accueil.
+let pausedExercises = [];
 
 let _db = null;
 
@@ -46,6 +48,7 @@ function saveExercises() { _persist('exercises', exercises); }
 function saveSessions()  { _persist('sessions',  sessions);  }
 function savePatients()  { _persist('patients',  patients);  }
 function saveFolders()   { _persist('folders',   folders);   }
+function savePausedExercises() { _persist('paused', pausedExercises); }
 
 const _DATA_KEYS = [
   ['cys_exercises', 'exercises'],
@@ -67,4 +70,5 @@ async function initData() {
   sessions  = (await idbGet('sessions'))  || [];
   patients  = (await idbGet('patients'))  || [];
   folders   = (await idbGet('folders'))   || [];
+  pausedExercises = (await idbGet('paused')) || [];
 }

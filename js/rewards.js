@@ -3,8 +3,8 @@
    terminés. Tout est dérivé de `sessions` ; patient.reward ne mémorise que les choix
    (apparence, objectifs) et les acquis qui ne doivent jamais se perdre (badges, XP max).
    Un « exercice terminé » = une entrée de `sessions` non partielle.
-   Deux univers au choix (RW_THEMES) : robots ou créatures magiques.
-   L'affichage est dans rewards-ui.js, le dessin dans rewards-robot.js et rewards-magic.js.
+   Deux univers au choix (RW_THEMES) : robots ou sorciers.
+   L'affichage est dans rewards-ui.js, le dessin dans rewards-robot.js et rewards-wizard.js.
    ──────────────────────────────────────────────────────────────────────────── */
 
 // XP minimale de chaque niveau (avant le rythme du patient) ; les noms dépendent de l'univers.
@@ -46,30 +46,38 @@ const RW_THEMES = {
       { k:'drone',      n:'Drone compagnon',    b:'titan'    },
     ],
   },
-  magic: {
-    label: 'Créatures magiques', my: 'Ma créature', see: 'Voir la créature', nameLabel: 'Nom de la créature', defaultName: 'Pompon',
-    stages: ['Œuf', 'Bébé', 'Apprenti', 'Étoile', 'Légende'],
-    species: RW_MAGIC_SPECIES, order: ['unicorn', 'dragon', 'cat', 'axolotl'], draw: rwMagicSvg, badge: rwMagicBadgeSvg,
+  wizard: {
+    label: 'Sorciers', my: 'Mon sorcier', see: 'Voir le sorcier', nameLabel: 'Nom du sorcier', defaultName: 'Merlinou',
+    stages: ['Novice', 'Apprenti', 'Adepte', 'Mage', 'Archimage'],
+    species: RW_WIZARD_SPECIES, order: ['witch', 'wizard', 'mage', 'druid'], draw: rwWizardSvg, badge: rwWizardBadgeSvg,
     colors: [
-      ['body',   'Couleur', [['#ffd6e8',0],['#e3d5ff',0],['#c9f3e1',0],['#cfe8ff',0],['#ffe0c7',0],['#fffaf2',4],['#ffe48a',5]]],
-      ['accent', 'Détails', [['#ff7eb6',0],['#a07cff',0],['#3fcf9f',0],['#5aa9ff',0],['#ffb347',0],['#ffd23f',0]]],
-      ['eye',    'Yeux',    [['#3d2b4f',0],['#2a3f73',0],['#1f5a46',0],['#6b3a2e',0],['#7a2e6b',0],['#14141f',0]]],
+      ['body',   'Robe',     [['#5b3fa0',0],['#2f3f8f',0],['#2f6b4f',0],['#8a2c4a',0],['#2b2533',0],['#c9cfe0',4],['#e8b33a',5]]],
+      ['accent', 'Magie',    [['#ffd45c',0],['#6fe3ff',0],['#ff8ad1',0],['#8de08a',0],['#e6e9f5',0],['#ffa24d',0]]],
+      ['hair',   'Cheveux',  [['#6b3f22',0],['#2a2228',0],['#f0c75e',0],['#d9642b',0],['#e8e4f0',0],['#9b6bd6',0],['#ff9ccf',0]]],
+      ['skin',   'Peau',     [['#ffe0c8',0],['#f5c6a0',0],['#d9a074',0],['#a86b44',0],['#6e4429',0]]],
     ],
     accs: [
-      { k:'bow',      n:'Nœud',               b:'first'    },
-      { k:'flowers',  n:'Couronne de fleurs', b:'five'     },
-      { k:'hearts',   n:'Lunettes cœur',      b:'record'   },
-      { k:'starcape', n:'Cape étoilée',       b:'stars'    },
-      { k:'bubble',   n:'Bulle magique',      b:'perfect'  },
-      { k:'balloon',  n:'Ballon cœur',        b:'marathon' },
-      { k:'buddy',    n:'Petite étoile',      b:'titan'    },
+      { k:'scarf',    n:'Écharpe',         b:'first'    },
+      { k:'cat',      n:'Chat noir',       b:'five'     },
+      { k:'glasses',  n:'Lunettes rondes', b:'record'   },
+      { k:'starcape', n:'Cape étoilée',    b:'stars'    },
+      { k:'book',     n:'Grimoire volant', b:'perfect'  },
+      { k:'broom',    n:'Balai volant',    b:'marathon' },
+      { k:'owl',      n:'Hibou',           b:'titan'    },
     ],
   },
 };
 
 function rwTheme(r) { return RW_THEMES[r.theme] || RW_THEMES.robot; }
 
-// Apparence par défaut d'un univers (modèle, couleurs, accessoires, nom).
+// Apparence d'un patient dans son univers actuel : modèle, couleurs, accessoires, nom.
+function rwLookOf(r) {
+  const look = { species: r.species, acc: r.acc, name: r.name };
+  rwTheme(r).colors.forEach(([key]) => { look[key] = r[key]; });
+  return look;
+}
+
+// Apparence par défaut d'un univers.
 function rwDefaultLook(theme) {
   const T = RW_THEMES[theme];
   const look = { species: T.order[0], acc: {}, name: T.defaultName };
@@ -81,7 +89,7 @@ function rwDefaultLook(theme) {
 function rwSetTheme(r, theme) {
   if (!RW_THEMES[theme] || r.theme === theme) return;
   const looks = r.looks || (r.looks = {});
-  looks[r.theme] = { species: r.species, body: r.body, accent: r.accent, eye: r.eye, acc: r.acc, name: r.name };
+  looks[r.theme] = rwLookOf(r);
   r.theme = theme;
   Object.assign(r, looks[theme] || rwDefaultLook(theme));
 }
@@ -93,7 +101,9 @@ function rwDefaultGoals() { return Object.fromEntries(RW_BADGES.map(b => [b.id, 
 // l'objet renvoyé reste le même d'un appel à l'autre, on peut donc le modifier puis sauvegarder.
 function getReward(patient) {
   const r = patient.reward || (patient.reward = {});
+  // Univers inconnu (ou retiré) : retour aux robots, avec l'apparence par défaut si besoin.
   if (!RW_THEMES[r.theme]) r.theme = 'robot';
+  if (r.species !== undefined && !rwTheme(r).species[r.species]) Object.assign(r, (r.looks && r.looks[r.theme]) || rwDefaultLook(r.theme));
   const defaults = { enabled: true, pace: 1, xpPeak: 0, unlocked: {}, goals: {}, ...rwDefaultLook(r.theme) };
   Object.keys(defaults).forEach(k => { if (r[k] === undefined) r[k] = defaults[k]; });
   Object.entries(rwDefaultGoals()).forEach(([id, g]) => { if (r.goals[id] === undefined) r.goals[id] = g; });

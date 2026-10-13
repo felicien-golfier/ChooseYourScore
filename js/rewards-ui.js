@@ -80,7 +80,8 @@ function rwTabEvolution(patient, r, ev) {
     rwRobotFor(patient, ev, { stage: i + 1 }) +
     '<b>' + (i + 1) + '. ' + (i + 1 > ev.stage ? '???' : s.n) + '</b><small>' + rwThreshold(i, r.pace) + ' XP</small></div>'
   ).join('') + '</div>' +
-    '<p class="rw-hint">Chaque exercice terminé donne de l\'XP : ' + RW_XP.base + ' pour l\'avoir fini, ' + RW_XP.perStar +
+    '<p class="rw-hint">Chaque exercice terminé donne de l\'XP : ' + RW_XP.base + ' la 1re fois qu\'on le finit (' + RW_XP.repeat +
+    ' les fois suivantes), ' + RW_XP.perStar +
     ' par étoile, ' + RW_XP.record + ' pour un record battu. L\'XP ne baisse jamais.</p>';
 }
 
@@ -175,7 +176,7 @@ function showRewardResult(session) {
   ].filter(Boolean).map(c => '<span class="rw-chip">' + escapeHtml(c) + '</span>').join('');
   el.innerHTML = '<div class="rw rw-result"><div class="rw-result-bot">' + rwRobotFor(patient, ev) + '</div>' +
     '<div class="rw-result-body"><p class="rw-bubble">' + escapeHtml(r.name) + ' : « ' + msg + ' »</p>' +
-    '<ul class="rw-gain">' + line('Exercice terminé', gain.base) +
+    '<ul class="rw-gain">' + line(gain.first ? 'Exercice terminé (1re fois)' : 'Exercice refait', gain.base) +
     (gain.stars ? line(gain.stars + ' étoile' + (gain.stars > 1 ? 's' : ''), gain.starsXp) : '') +
     (gain.record ? line('Record battu sur « ' + escapeHtml(session.exerciseName) + ' »', gain.recordXp) : '') + '</ul>' +
     (chips ? '<p class="rw-chips">' + chips + '</p>' : '') +

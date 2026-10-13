@@ -179,7 +179,7 @@ function initRewards() {
 
 // ── Fin d'exercice ───────────────────────────────────────────────────────────
 const RW_MESSAGES = {
-  record: ['Nouveau record, tu t\'es dépassé !', 'Record battu, bravo !'],
+  record: ['Nouveau record, tu as fait encore mieux !', 'Record battu, bravo !'],
   good:   ['Bien joué !', 'Beau travail !', 'Tu progresses !'],
   basic:  ['Exercice terminé, bravo !', 'On continue comme ça !'],
 };

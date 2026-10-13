@@ -17,10 +17,11 @@ let pairHistory = [];
 let _navGen = 0;
 
 document.getElementById('btn-ready').addEventListener('click', () => {
-  exerciseStartTime = Date.now();
   showView('exercise');
-  pairHistory = [];
   document.getElementById('btn-prev-item').style.display = currentExercise && currentExercise.type === 'gonogo' ? 'none' : '';
+  if (pendingResume) { resumePausedExercise(); return; }
+  exerciseStartTime = Date.now();
+  pairHistory = [];
   if (currentExercise && currentExercise.type === 'gonogo') {
     startGoNoGoSession();
   } else {
@@ -77,12 +78,15 @@ function renderPair() {
 }
 
 // Libellé « Exemple 1 / 2 » ou « 3 / 10 » (items notés seulement) et remplissage de la barre.
-function pairProgress(idx) {
-  if (idx < currentExampleCount) return { pct: 0, label: 'Exemple ' + (idx + 1) + ' / ' + currentExampleCount };
-  const realIdx   = idx - currentExampleCount;
-  const realTotal = currentPairs.length - currentExampleCount;
+// Partagé par les paires, les essais Go/No-Go et la liste des exercices en pause.
+function progressInfo(idx, total, exampleCount) {
+  if (idx < exampleCount) return { pct: 0, label: 'Exemple ' + (idx + 1) + ' / ' + exampleCount };
+  const realIdx   = idx - exampleCount;
+  const realTotal = total - exampleCount;
   return { pct: realIdx / realTotal * 100, label: (realIdx + 1) + ' / ' + realTotal };
 }
+
+function pairProgress(idx) { return progressInfo(idx, currentPairs.length, currentExampleCount); }
 
 function startSequenceDisplay(pair, afterDisplayFn) {
   const gen = ++_displayGen;
@@ -702,6 +706,7 @@ function finishExercise(isPartial) {
   sessions.push(newSession);
   currentSessionId = newSession.id;
   try { saveSessions(); } catch(e) {}
+  discardResumedPause();
   document.getElementById('session-notes').value = '';
 
   const partialNote = document.getElementById('results-partial-note');
@@ -760,6 +765,7 @@ function renderQuestionBreakdown(questionIndexStats) {
 }
 
 document.getElementById('btn-restart').addEventListener('click', () => {
+  pendingResume = null;
   if (currentExercise && currentExercise.type !== 'gonogo') {
     buildCurrentPairs(currentExercise, currentShuffleEnabled);
   }
@@ -814,10 +820,11 @@ function _gngCancelTimers() {
   display.classList.remove('gng-clickable', 'gng-feedback-correct', 'gng-feedback-incorrect');
 }
 
-function startGoNoGoSession() {
+// index/responses : reprise d'un exercice mis en pause (sinon départ du premier essai).
+function startGoNoGoSession(index = 0, responses = []) {
   _gng.trials       = currentExercise.trials || [];
-  _gng.index        = 0;
-  _gng.responses    = [];
+  _gng.index        = index;
+  _gng.responses    = responses;
   _gng.gen          = 0;
   _gng.exampleCount = Math.min(currentExercise.exampleTrialCount || 0, _gng.trials.length);
   document.getElementById('sequence-container').style.display = 'flex';
@@ -827,7 +834,8 @@ function startGoNoGoSession() {
   document.getElementById('seq-show-again-btn').style.display = 'none';
   document.getElementById('seq-write-zone').style.display     = 'none';
   document.getElementById('seq-naming-zone').style.display    = 'none';
-  _gngRenderIti();
+  if (index > 0 && index === _gng.exampleCount) showExampleTransitionScreen(_gngRenderIti);
+  else _gngRenderIti();
 }
 
 function _gngRenderIti() {
@@ -851,17 +859,10 @@ function _gngRenderIti() {
   fix.style.cssText = 'color:var(--border);font-size:56px;font-weight:300;user-select:none';
   display.appendChild(fix);
 
-  const isExampleTrial = _gng.index < _gng.exampleCount;
-  document.getElementById('example-badge').style.display = isExampleTrial ? '' : 'none';
-  if (isExampleTrial) {
-    document.getElementById('progress-fill').style.width  = '0%';
-    document.getElementById('progress-label').textContent = 'Exemple ' + (_gng.index + 1) + ' / ' + _gng.exampleCount;
-  } else {
-    const realIdx   = _gng.index - _gng.exampleCount;
-    const realTotal = _gng.trials.length - _gng.exampleCount;
-    document.getElementById('progress-fill').style.width  = (realIdx / realTotal * 100) + '%';
-    document.getElementById('progress-label').textContent = (realIdx + 1) + ' / ' + realTotal;
-  }
+  document.getElementById('example-badge').style.display = _gng.index < _gng.exampleCount ? '' : 'none';
+  const progress = progressInfo(_gng.index, _gng.trials.length, _gng.exampleCount);
+  document.getElementById('progress-fill').style.width  = progress.pct + '%';
+  document.getElementById('progress-label').textContent = progress.label;
 
   const gen = ++_gng.gen;
   _gng.itiTimer = setTimeout(() => {
@@ -983,6 +984,7 @@ function finishGoNoGo(isPartial) {
   sessions.push(newSession);
   currentSessionId = newSession.id;
   try { saveSessions(); } catch(e) {}
+  discardResumedPause();
 
   document.getElementById('session-notes').value = '';
   document.getElementById('results-partial-note').style.display = isPartial ? '' : 'none';

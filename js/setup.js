@@ -20,6 +20,7 @@ function initSetup() {
   if (selEx && selEx.folderId) setupOpenFolders.add(selEx.folderId);
   renderExercisePicker();
   populateSetupPatientSelect();
+  renderPausedList();
 }
 
 function renderExercisePicker() {
@@ -111,6 +112,8 @@ document.getElementById('patient-select-setup').addEventListener('change', syncN
 document.getElementById('btn-start').addEventListener('click', () => {
   currentExercise = exercises.find(ex => ex.id === setupSelectedExId);
   if (!currentExercise) return;
+  pendingResume = null;
+  resumedPauseId = null;
 
   const patientSelectEl = document.getElementById('patient-select-setup');
   const patientVal = patientSelectEl.value;
@@ -151,7 +154,15 @@ document.getElementById('btn-start').addEventListener('click', () => {
     buildCurrentPairs(currentExercise, currentShuffleEnabled);
   }
 
+  showInstruction(null);
+});
+
+// Écran de consigne, avant un départ ou une reprise (resumeLabel = item où reprendre).
+function showInstruction(resumeLabel) {
   document.getElementById('instruction-text').textContent =
     currentExercise.instruction || '(Aucune consigne définie)';
+  const note = document.getElementById('instruction-resume-note');
+  note.style.display = resumeLabel ? '' : 'none';
+  note.textContent = resumeLabel ? 'Reprise de l\'exercice à l\'item ' + resumeLabel : '';
   showView('instruction');
-});
+}

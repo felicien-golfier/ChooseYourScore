@@ -1,7 +1,7 @@
-/* ── RÉCOMPENSES : compagnon (robot ou créature magique) ─────────────────────
+/* ── RÉCOMPENSES : compagnon (robot ou sorcier) ──────────────────────────────
    Habillage volontairement indépendant du thème clair de l'app : tout est sous .rw
    (fenêtre, bloc de fin d'exercice, carte de départ). Par défaut cyber néon (robots) ;
-   .rw-t-magic redéfinit les variables et quelques fonds en pastel (fin du fichier).
+   .rw-t-wizard redéfinit les variables et quelques fonds en nuit étoilée (fin du fichier).
    Les réglages thérapeute (fiche patient) utilisent le thème normal de l'app.
    ──────────────────────────────────────────────────────────────────────────── */
 
@@ -216,7 +216,7 @@ body.no-answer-anim .rw-hero-bot, body.no-answer-anim .rw-result-bot { animation
 /* ── Fiche patient (thème normal de l'app) ───────────────────────────────── */
 .rw-fiche-summary { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 12px 0; }
 .rw-fiche-bot { width: 64px; flex: 0 0 auto; background: #05050d; border-radius: 8px; padding: 4px; }
-.rw-fiche-bot-magic { background: linear-gradient(160deg, #fff0f8, #ece6ff); }
+.rw-fiche-bot-wizard { background: linear-gradient(160deg, #1c1433, #3a2566); }
 .rw-fiche-bot svg { width: 100%; height: auto; display: block; }
 .rw-fiche-text { flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; }
 .rw-fiche-text span { font-size: 0.85rem; color: var(--text-3); }
@@ -245,52 +245,55 @@ body.no-answer-anim .rw-hero-bot, body.no-answer-anim .rw-result-bot { animation
 .rw-theme svg { width: 100%; max-width: 92px; height: auto; display: block; }
 .rw-theme small { font-weight: 700; font-size: 0.82rem; }
 .rw-theme-robot { background: radial-gradient(ellipse at 50% 40%, #12306a, #05050d); color: #e6f4ff; }
-.rw-theme-magic { background: linear-gradient(160deg, #fff0f8, #ece6ff 60%, #e3f4ff); color: #6b3f86; font-family: var(--font-display); }
+.rw-theme-wizard { background: linear-gradient(180deg, #120b2a, #4b2f7a); color: #ffe9a8; font-family: var(--font-display); }
 .rw-theme-robot small { font-family: 'Oswald', sans-serif; letter-spacing: 0.06em; text-transform: uppercase; }
 .rw-theme[aria-pressed="true"].rw-theme-robot { border-color: #00f0ff; box-shadow: 0 0 12px rgba(0, 240, 255, 0.45); }
-.rw-theme[aria-pressed="true"].rw-theme-magic { border-color: #ff7eb6; box-shadow: 0 0 12px rgba(255, 126, 182, 0.45); }
+.rw-theme[aria-pressed="true"].rw-theme-wizard { border-color: #ffd45c; box-shadow: 0 0 12px rgba(255, 212, 92, 0.45); }
 
-/* ── Univers « créatures magiques » : habillage pastel ───────────────────── */
-.rw-t-magic {
-  --rw-bg: #fff8fc; --rw-surface: #ffffff; --rw-surface-2: #fdf0fa; --rw-line: #f2d4ea;
-  --rw-text: #4a2d5c; --rw-muted: #9a7fae; --rw-main: #a77bff; --rw-alt: #ff6fb5; --rw-lock: #f1e9f6;
-  --rw-sel: #f3eaff; --rw-glow: 167, 123, 255;
+/* ── Univers « sorciers » : habillage nuit étoilée, violet et or ─────────── */
+.rw-t-wizard {
+  --rw-bg: #1c1433; --rw-surface: #241a40; --rw-surface-2: #2c2050; --rw-line: #4a3a78;
+  --rw-text: #f5ecff; --rw-muted: #b6a6d8; --rw-main: #ffd45c; --rw-alt: #c59bff; --rw-lock: #2a2140;
+  --rw-sel: #3a2a63; --rw-glow: 255, 212, 92;
   --rw-display: 'Baloo 2', 'Nunito', sans-serif;
 }
-#reward-modal[data-theme="magic"] { background: rgba(74, 45, 92, 0.45); }
-.rw-t-magic.rw-box { border: 2px solid #f6c6e3; border-radius: 24px; box-shadow: 0 10px 40px rgba(255, 111, 181, 0.25); }
-.rw-t-magic .rw-close { background: #fff; border-color: var(--rw-line); color: var(--rw-text); }
-.rw-t-magic .rw-hero {
-  border: 2px solid #f6d3ea; border-radius: 20px;
+#reward-modal[data-theme="wizard"] { background: rgba(12, 6, 28, 0.72); }
+.rw-t-wizard.rw-box { border: 2px solid #6b4fb0; border-radius: 22px; box-shadow: 0 0 36px rgba(197, 155, 255, 0.3); }
+.rw-t-wizard .rw-close { background: var(--rw-surface); }
+.rw-t-wizard .rw-hero {
+  border: 2px solid #4a3a78; border-radius: 18px;
   background:
-    radial-gradient(circle at 18% 22%, #fff 0 2px, transparent 3px),
-    radial-gradient(circle at 82% 30%, #fff 0 2px, transparent 3px),
-    radial-gradient(circle at 70% 12%, #fff 0 1.5px, transparent 2.5px),
-    radial-gradient(circle at 30% 60%, #fff 0 1.5px, transparent 2.5px),
-    linear-gradient(180deg, #e9e2ff 0%, #ffe6f3 60%, #fff4e8 100%);
+    radial-gradient(circle at 14% 42%, #fff6d0 0 16px, transparent 17px),
+    radial-gradient(circle at 15% 18%, #fff 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 30% 40%, #fff 0 1px, transparent 2px),
+    radial-gradient(circle at 62% 14%, #fff 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 72% 46%, #fff 0 1px, transparent 2px),
+    radial-gradient(circle at 8% 52%, #fff 0 1px, transparent 2px),
+    linear-gradient(180deg, #120b2a 0%, #2b1a55 55%, #4b2f7a 100%);
 }
-.rw-t-magic .rw-hero::before { background: none; }
-.rw-t-magic .rw-hero::after {
-  height: 28%; -webkit-mask-image: none; mask-image: none;
-  background: radial-gradient(120% 100% at 50% 100%, #c9f3e1 0 60%, transparent 61%);
+/* croissant de lune : un disque de la couleur du ciel décalé sur la pleine lune */
+.rw-t-wizard .rw-hero::before {
+  background: radial-gradient(circle at calc(14% + 9px) calc(42% - 6px), #22144a 0 14px, transparent 15px);
 }
-.rw-t-magic .rw-pill { background: rgba(255, 255, 255, 0.85); border-radius: 14px; border-width: 2px; }
-.rw-t-magic .rw-pill-name { border-radius: 999px; }
-.rw-t-magic .rw-bar { height: 16px; border-radius: 999px; }
-.rw-t-magic .rw-bar i { border-radius: 999px; box-shadow: none; background: linear-gradient(90deg, #ff9ec7, #c9b2ff, #9fd3ff); }
-.rw-t-magic .rw-tab, .rw-t-magic .rw-btn, .rw-t-magic .rw-field > span, .rw-t-magic .rw-fam h4,
-.rw-t-magic .rw-sp small, .rw-t-magic .rw-evo b { text-transform: none; letter-spacing: 0.01em; }
-.rw-t-magic .rw-tab { border-radius: 999px; font-size: 0.95rem; }
-.rw-t-magic .rw-field > span, .rw-t-magic .rw-fam h4 { font-size: 0.9rem; }
-.rw-t-magic .rw-sp, .rw-t-magic .rw-acc, .rw-t-magic .rw-evo > div, .rw-t-magic .rw-badge { border-radius: 16px; }
-.rw-t-magic .rw-sp small { font-size: 0.85rem; }
-.rw-t-magic .rw-sw.locked::after { background-color: rgba(74, 45, 92, 0.55); }
-.rw-t-magic .rw-evo .off svg { filter: brightness(0) opacity(0.18); }
-.rw-t-magic .rw-badge.on { border-color: #f6b8dc; background: #fff0f8; box-shadow: 0 4px 14px rgba(255, 111, 181, 0.18); }
-.rw-t-magic .rw-badge.off svg { filter: grayscale(1) opacity(0.7); }
-.rw-t-magic .rw-btn { border-radius: 999px; border-width: 2px; font-size: 0.9rem; }
-.rw-t-magic.rw-result, .rw-t-magic.rw-setup {
-  border: 2px solid #f6d3ea; border-radius: 20px; box-shadow: none;
-  background: linear-gradient(160deg, #fff8fc, #f3ecff);
+.rw-t-wizard .rw-hero::after {
+  height: 26%; -webkit-mask-image: none; mask-image: none;
+  background: radial-gradient(130% 100% at 50% 100%, #1d1238 0 60%, transparent 61%);
 }
-.rw-t-magic .rw-chip { background: #fff0f8; }
+.rw-t-wizard .rw-pill { background: rgba(28, 20, 51, 0.8); border-radius: 12px; border-width: 2px; }
+.rw-t-wizard .rw-pill-name { border-radius: 999px; }
+.rw-t-wizard .rw-bar { height: 16px; border-radius: 999px; }
+.rw-t-wizard .rw-bar i { border-radius: 999px; background: linear-gradient(90deg, #c59bff, #ffd45c); box-shadow: 0 0 10px rgba(255, 212, 92, 0.5); }
+.rw-t-wizard .rw-tab, .rw-t-wizard .rw-btn, .rw-t-wizard .rw-field > span, .rw-t-wizard .rw-fam h4,
+.rw-t-wizard .rw-sp small, .rw-t-wizard .rw-evo b { text-transform: none; letter-spacing: 0.01em; }
+.rw-t-wizard .rw-tab { border-radius: 999px; font-size: 0.95rem; }
+.rw-t-wizard .rw-field > span, .rw-t-wizard .rw-fam h4 { font-size: 0.9rem; }
+.rw-t-wizard .rw-sp, .rw-t-wizard .rw-acc, .rw-t-wizard .rw-evo > div, .rw-t-wizard .rw-badge { border-radius: 16px; }
+.rw-t-wizard .rw-sp small { font-size: 0.85rem; }
+.rw-t-wizard .rw-badge.on { border-color: #8a6a2a; background: #2a2148; box-shadow: 0 0 14px rgba(255, 212, 92, 0.18); }
+.rw-t-wizard .rw-badge.off svg { filter: none; opacity: 0.8; }
+.rw-t-wizard .rw-btn { border-radius: 999px; border-width: 2px; font-size: 0.9rem; }
+.rw-t-wizard.rw-result, .rw-t-wizard.rw-setup {
+  border: 2px solid #4a3a78; border-radius: 18px; box-shadow: none;
+  background: linear-gradient(160deg, #1c1433, #2e1f55);
+}
+.rw-t-wizard .rw-chip { background: #3a2a10; }

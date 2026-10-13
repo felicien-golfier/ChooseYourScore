@@ -1,10 +1,10 @@
 /* ── RÉCOMPENSES : ÉCRANS ─────────────────────────────────────────────────────
-   - fenêtre « Mon robot » / « Ma créature » (univers, apparence, évolution, badges)
+   - fenêtre « Mon robot » / « Mon sorcier » (univers, apparence, évolution, badges)
    - bloc de fin d'exercice (gains, nouveaux badges)
    - carte du compagnon sur l'écran de départ
    - réglages du patient (fiche patient : activer, univers, rythme, objectifs des badges)
    Le vocabulaire et le dessin viennent de l'univers choisi (RW_THEMES, rewards.js).
-   Modèle et calculs : rewards.js. Dessin : rewards-robot.js, rewards-magic.js.
+   Modèle et calculs : rewards.js. Dessin : rewards-robot.js, rewards-wizard.js.
    ──────────────────────────────────────────────────────────────────────────── */
 
 let rwUidCount = 0;
@@ -15,13 +15,10 @@ function rwCompanionFor(patient, ev, over = {}) {
   const r = getReward(patient), T = rwTheme(r);
   const acc = {};
   T.accs.forEach(a => { acc[a.k] = !!r.acc[a.k] && ev.on.has(a.b); });
-  return T.draw({
-    species: r.species, stage: ev.stage, body: r.body, accent: r.accent, eye: r.eye, acc,
-    uid: 'u' + (++rwUidCount), ...over,
-  });
+  return T.draw({ ...rwLookOf(r), stage: ev.stage, acc, uid: 'u' + (++rwUidCount), ...over });
 }
 
-// Classes du conteneur : habillage néon (robots) ou pastel (créatures magiques).
+// Classes du conteneur : habillage néon (robots) ou nuit étoilée (sorciers).
 function rwThemeClass(r) { return 'rw rw-t-' + r.theme; }
 
 function rwStageName(r, stage) { return rwTheme(r).stages[stage - 1]; }
@@ -31,8 +28,7 @@ function rwStageName(r, stage) { return rwTheme(r).stages[stage - 1]; }
 function rwThemePicker(r) {
   return '<div class="rw-themes">' + Object.keys(RW_THEMES).map(k => {
     const look = k === r.theme ? r : (r.looks && r.looks[k]) || rwDefaultLook(k);
-    const svg = RW_THEMES[k].draw({ species: look.species, stage: 3, body: look.body, accent: look.accent, eye: look.eye,
-      acc: {}, uid: 'u' + (++rwUidCount) });
+    const svg = RW_THEMES[k].draw({ ...look, stage: 3, acc: {}, uid: 'u' + (++rwUidCount) });
     return '<button type="button" class="rw-theme rw-theme-' + k + '" data-universe="' + k + '" aria-pressed="' + (r.theme === k) + '">' +
       svg + '<small>' + RW_THEMES[k].label + '</small></button>';
   }).join('') + '</div>';

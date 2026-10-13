@@ -10,7 +10,8 @@ const RW_STAGES = [
   { n: 'Prototype', xp: 0 }, { n: 'Recrue', xp: 100 }, { n: 'Opérateur', xp: 300 },
   { n: 'Élite', xp: 650 }, { n: 'Légende', xp: 1100 },
 ];
-const RW_XP = { base: 30, perStar: 10, record: 25 };
+// base : 1re fois qu'un exercice est terminé ; repeat : les fois suivantes
+const RW_XP = { base: 30, repeat: 15, perStar: 10, record: 25 };
 
 // [couleur, niveau requis]
 const RW_BODY   = [['#1b2440',0],['#2a1a40',0],['#12302e',0],['#3a1f2e',0],['#2b2f3a',0],['#cfd8ff',4],['#ffd24d',5]];
@@ -67,16 +68,18 @@ function rwSessionsOf(patient) {
 // ── Calculs ──────────────────────────────────────────────────────────────────
 // `list` : exercices terminés d'un patient, du plus ancien au plus récent.
 // Un record = meilleur ratio que tous les essais précédents du même exercice
-// (le premier essai d'un exercice n'est jamais un record). `per` : gains par session.
+// (le premier essai d'un exercice n'est jamais un record). Refaire un exercice déjà
+// terminé rapporte RW_XP.repeat au lieu de RW_XP.base. `per` : gains par session.
 function rwAnalyze(list) {
   const best = {};
   const out = { n: 0, stars3: 0, perfect: 0, records: 0, xp: 0, per: {} };
   list.forEach(s => {
     const ratio = s.totalPairs > 0 ? s.score / s.totalPairs : 0;
     const stars = starsForRatio(ratio);
-    const record = s.exerciseId in best && ratio > best[s.exerciseId];
+    const first = !(s.exerciseId in best);
+    const record = !first && ratio > best[s.exerciseId];
     best[s.exerciseId] = Math.max(best[s.exerciseId] ?? 0, ratio);
-    const gain = { base: RW_XP.base, stars, starsXp: stars * RW_XP.perStar, record, recordXp: record ? RW_XP.record : 0 };
+    const gain = { first, base: first ? RW_XP.base : RW_XP.repeat, stars, starsXp: stars * RW_XP.perStar, record, recordXp: record ? RW_XP.record : 0 };
     gain.total = gain.base + gain.starsXp + gain.recordXp;
     out.per[s.id] = gain;
     out.n++; out.xp += gain.total;

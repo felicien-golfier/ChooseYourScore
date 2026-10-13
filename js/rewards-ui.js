@@ -1,5 +1,5 @@
 /* ── RÉCOMPENSES : ÉCRANS ─────────────────────────────────────────────────────
-   - fenêtre « Mon robot » / « Mon sorcier » (univers, apparence, évolution, badges)
+   - fenêtre « Mon robot » / « Ma sorcière » / « Mon sorcier » (univers, apparence, évolution, badges)
    - bloc de fin d'exercice (gains, nouveaux badges)
    - carte du compagnon sur l'écran de départ
    - réglages du patient (fiche patient : activer, univers, rythme, objectifs des badges)
@@ -21,7 +21,7 @@ function rwCompanionFor(patient, ev, over = {}) {
 // Classes du conteneur : habillage néon (robots) ou nuit étoilée (sorciers).
 function rwThemeClass(r) { return 'rw rw-t-' + r.theme; }
 
-function rwStageName(r, stage) { return rwTheme(r).stages[stage - 1]; }
+function rwStageName(r, stage) { return rwWords(r).stages[stage - 1]; }
 
 // Choix de l'univers (fenêtre du compagnon et fiche patient) : aperçu de chaque univers
 // avec l'apparence mémorisée du patient, ou celle par défaut.
@@ -70,11 +70,15 @@ function rwSwatches(kind, list, current, stage) {
 }
 
 function rwTabLook(patient, r, ev) {
-  const T = rwTheme(r);
+  const T = rwTheme(r), w = rwWords(r);
   const species = T.order.map(k =>
     '<button type="button" class="rw-sp" data-species="' + k + '" aria-pressed="' + (r.species === k) + '">' +
-    rwCompanionFor(patient, ev, { species: k, stage: 3, acc: {} }) + '<small>' + T.species[k].label + '</small></button>'
+    rwCompanionFor(patient, ev, { species: k, stage: 3, acc: {} }) + '<small>' + w.species(k) + '</small></button>'
   ).join('');
+  const genders = !T.genders ? '' : '<div class="rw-field"><span>Personnage</span><div class="rw-genders">' +
+    [['f', 'Fille'], ['m', 'Garçon']].map(([g, label]) =>
+      '<button type="button" class="rw-sp" data-gender="' + g + '" aria-pressed="' + (r.gender === g) + '">' +
+      rwCompanionFor(patient, ev, { gender: g, stage: 3, acc: {} }) + '<small>' + label + '</small></button>').join('') + '</div></div>';
   const accs = T.accs.map(a => {
     const ok = ev.on.has(a.b), bd = RW_BADGES.find(b => b.id === a.b);
     return '<button type="button" class="rw-acc' + (ok ? '' : ' locked') + '" data-acc="' + a.k + '"' +
@@ -82,8 +86,9 @@ function rwTabLook(patient, r, ev) {
       '<b>' + a.n + '</b><small>' + (ok ? (r.acc[a.k] ? 'Équipé' : 'Débloqué') : 'Badge « ' + escapeHtml(bd.n) + ' »') + '</small></button>';
   }).join('');
   return '<div class="rw-field"><span>Univers</span>' + rwThemePicker(r) + '</div>' +
+    genders +
     '<div class="rw-field"><span>Modèle</span><div class="rw-species">' + species + '</div></div>' +
-    '<div class="rw-field"><span>Nom</span><input type="text" id="rw-name" maxlength="14" value="' + escapeHtml(r.name) + '" aria-label="' + T.nameLabel + '"></div>' +
+    '<div class="rw-field"><span>Nom</span><input type="text" id="rw-name" maxlength="14" value="' + escapeHtml(r.name) + '" aria-label="' + w.nameLabel + '"></div>' +
     T.colors.map(([key, label, list]) =>
       '<div class="rw-field"><span>' + label + '</span><div class="rw-swatches">' + rwSwatches(key, list, r[key], ev.stage) + '</div></div>').join('') +
     '<div class="rw-field"><span>Accessoires</span><div class="rw-accs">' + accs + '</div></div>';
@@ -116,12 +121,12 @@ function rwTabBadges(patient, r, ev) {
 function renderRewardModal() {
   const patient = patients.find(p => p.id === rwModalPatientId);
   if (!patient) { closeRewardModal(); return; }
-  const r = getReward(patient), ev = rwEvaluate(patient), xp = rwXpProgress(ev, r), T = rwTheme(r);
+  const r = getReward(patient), ev = rwEvaluate(patient), xp = rwXpProgress(ev, r), w = rwWords(r);
   const box = document.querySelector('#reward-modal .rw-box');
   box.className = rwThemeClass(r) + ' rw-box';
-  box.setAttribute('aria-label', T.my);
+  box.setAttribute('aria-label', w.my);
   document.getElementById('reward-modal').dataset.theme = r.theme;
-  const tabs = [['look', T.my], ['evo', 'Évolution'], ['badges', 'Badges · ' + RW_BADGES.filter(b => ev.on.has(b.id)).length + '/' + RW_BADGES.length]];
+  const tabs = [['look', w.my], ['evo', 'Évolution'], ['badges', 'Badges · ' + RW_BADGES.filter(b => ev.on.has(b.id)).length + '/' + RW_BADGES.length]];
   const body = rwModalTab === 'evo' ? rwTabEvolution(patient, r, ev)
              : rwModalTab === 'badges' ? rwTabBadges(patient, r, ev)
              : rwTabLook(patient, r, ev);
@@ -143,9 +148,11 @@ function rwModalClick(e) {
   if (!patient) return;
   const r = getReward(patient);
   const tab = t.closest('[data-tab]'), sp = t.closest('[data-species]'), th = t.closest('[data-universe]'),
+        gd = t.closest('[data-gender]'),
         col = t.closest('[data-color]'), acc = t.closest('[data-acc]');
   if (tab) { rwModalTab = tab.dataset.tab; renderRewardModal(); document.querySelector('.rw-tab[aria-selected="true"]').focus(); return; }
   if (th) rwSetTheme(r, th.dataset.universe);
+  else if (gd) rwSetGender(r, gd.dataset.gender);
   else if (sp) r.species = sp.dataset.species;
   else if (col) r[col.dataset.color] = col.dataset.value;
   else if (acc) r.acc[acc.dataset.acc] = !r.acc[acc.dataset.acc];
@@ -188,8 +195,7 @@ function showRewardResult(session) {
   const pool = gain.record ? RW_MESSAGES.record : gain.stars >= 2 ? RW_MESSAGES.good : RW_MESSAGES.basic;
   const msg = pool[Math.floor(Math.random() * pool.length)];
   const line = (label, xp) => '<li><span>' + label + '</span><b>+' + xp + ' XP</b></li>';
-  const T = rwTheme(r);
-  const newAccs = T.accs.filter(a => newBadges.some(b => b.id === a.b));
+  const newAccs = rwTheme(r).accs.filter(a => newBadges.some(b => b.id === a.b));
   const chips = [
     levelUp ? 'Niveau ' + levelUp + ' · ' + rwStageName(r, levelUp) + ' !' : '',
     ...newBadges.map(b => 'Nouveau badge · ' + b.n),
@@ -201,7 +207,7 @@ function showRewardResult(session) {
     (gain.stars ? line(gain.stars + ' étoile' + (gain.stars > 1 ? 's' : ''), gain.starsXp) : '') +
     (gain.record ? line('Record battu sur « ' + escapeHtml(session.exerciseName) + ' »', gain.recordXp) : '') + '</ul>' +
     (chips ? '<p class="rw-chips">' + chips + '</p>' : '') +
-    '<button type="button" class="rw-btn" id="rw-open-result">' + T.my + '</button></div></div>';
+    '<button type="button" class="rw-btn" id="rw-open-result">' + rwWords(r).my + '</button></div></div>';
   el.style.display = '';
   document.getElementById('rw-open-result').addEventListener('click', () => openRewardModal(patient.id));
 }
@@ -215,7 +221,7 @@ function renderSetupReward() {
   const r = patient.reward, ev = rwEvaluate(patient);
   box.innerHTML = '<div class="' + rwThemeClass(r) + ' rw-setup"><div class="rw-setup-bot">' + rwCompanionFor(patient, ev) + '</div>' +
     '<div class="rw-setup-text"><b>' + escapeHtml(r.name) + '</b><span>Niveau ' + ev.stage + ' · ' + rwStageName(r, ev.stage) + ' · ' + ev.xp + ' XP</span></div>' +
-    '<button type="button" class="rw-btn" id="rw-open-setup">' + rwTheme(r).my + '</button></div>';
+    '<button type="button" class="rw-btn" id="rw-open-setup">' + rwWords(r).my + '</button></div>';
   box.style.display = '';
   document.getElementById('rw-open-setup').addEventListener('click', () => openRewardModal(patient.id));
 }
@@ -230,7 +236,7 @@ function rwRenderFicheSummary(patient) {
     '<div class="rw-fiche-text"><b>' + escapeHtml(r.name) + '</b><span>Niveau ' + ev.stage + ' · ' + rwStageName(r, ev.stage) +
     ' · ' + ev.xp + ' XP · ' + owned + '/' + RW_BADGES.length + ' badges</span></div>';
   const btn = document.createElement('button');
-  btn.type = 'button'; btn.className = 'btn-dup'; btn.textContent = rwTheme(r).see;
+  btn.type = 'button'; btn.className = 'btn-dup'; btn.textContent = rwWords(r).see;
   btn.addEventListener('click', () => openRewardModal(patient.id));
   box.appendChild(btn);
 }

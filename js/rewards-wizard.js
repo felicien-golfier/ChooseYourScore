@@ -2,18 +2,20 @@
    Univers « sorcellerie », pendant de rewards-robot.js : mêmes entrées (modèle,
    niveau 1 à 5, couleurs, accessoires), même cadre 200×240, sol vers y=206.
    Couleurs : body = robe et chapeau, accent = détails (étoiles, boucle, baguette),
-   hair = cheveux, skin = peau.
+   hair = cheveux, skin = peau. gender ('f' ou 'm') : coiffure et cils ; les 4 tenues
+   (modèles) existent pour les deux, avec un nom accordé.
    Niveau 1 = novice tête nue avec une brindille, 2 = chapeau et baguette,
    3 = ceinture et robe étoilée, 4 = galon, baguette lumineuse et étincelles,
    5 = bâton à cristal, cercle magique et aura.
    Utilise rwShade et rwStarPts (rewards-robot.js). Logique : rewards.js.
    ──────────────────────────────────────────────────────────────────────────── */
 
+// Nom de chaque tenue, selon le genre choisi
 const RW_WIZARD_SPECIES = {
-  witch:  { label: 'Sorcière' },
-  wizard: { label: 'Sorcier' },
-  mage:   { label: 'Mage' },
-  druid:  { label: 'Druide' },
+  witch:  { f: 'Sorcière',      m: 'Sorcier' },
+  wizard: { f: 'Enchanteresse', m: 'Enchanteur' },
+  mage:   { f: 'Mage',          m: 'Mage' },
+  druid:  { f: 'Druidesse',     m: 'Druide' },
 };
 
 const RW_WIZ_GOLD = '#ffd45c';
@@ -25,12 +27,12 @@ function rwWizSparkle(x, y, r, fill) {
 
 function rwWizardSvg(o) {
   const { species: sp, stage: st, body: B, accent: A, hair: H, skin: P, acc, uid } = o;
-  const S = RW_WIZARD_SPECIES[sp];
+  const g = o.gender === 'm' ? 'm' : 'f';
   const K = rwShade(B, -0.45), HK = rwShade(H, -0.35), PK = rwShade(P, -0.3), AK = rwShade(A, -0.35);
   const line = `stroke="${K}" stroke-width="3" stroke-linejoin="round"`;
   const sc = [0.78, 0.85, 0.92, 0.98, 1][st - 1];
 
-  let s = `<svg viewBox="0 0 200 240" role="img" aria-label="${S.label}"><defs>` +
+  let s = `<svg viewBox="0 0 200 240" role="img" aria-label="${RW_WIZARD_SPECIES[sp][g]}"><defs>` +
     `<radialGradient id="wz${uid}"><stop offset="0" stop-color="${A}" stop-opacity=".6"/><stop offset="1" stop-color="${A}" stop-opacity="0"/></radialGradient></defs>`;
   if (st >= 5) s += `<circle class="rw-pulse" cx="100" cy="120" r="96" fill="url(#wz${uid})"/>`;
   s += `<ellipse cx="100" cy="207" rx="40" ry="6" fill="#000" opacity=".22"/>`;
@@ -53,10 +55,15 @@ function rwWizardSvg(o) {
       [[60, 186], [70, 160], [132, 166], [142, 190]].map(([x, y]) => `<polygon points="${rwStarPts(x, y, 4)}" fill="#fff3b0"/>`).join('');
   }
 
-  // cheveux longs / capuche / boucles : derrière la tête
-  if (sp === 'witch') s += `<path d="M64 92 Q58 140 74 152 L126 152 Q142 140 136 92 Z" fill="${H}" stroke="${HK}" stroke-width="2.5" stroke-linejoin="round"/>`;
-  if (sp === 'druid') s += [[62, 84, 12], [60, 104, 11], [66, 122, 10], [138, 84, 12], [140, 104, 11], [134, 122, 10]]
-    .map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${H}" stroke="${HK}" stroke-width="2.5"/>`).join('');
+  // cheveux longs (fille) / boucles / capuche : derrière la tête
+  const hairLine = `stroke="${HK}" stroke-width="2.5" stroke-linejoin="round"`;
+  if (sp === 'druid') {
+    const curls = g === 'f' ? [[62, 84, 12], [60, 104, 11], [64, 124, 10], [70, 142, 9], [138, 84, 12], [140, 104, 11], [136, 124, 10], [130, 142, 9]]
+                            : [[62, 84, 12], [62, 100, 9], [138, 84, 12], [138, 100, 9]];
+    s += curls.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${H}" ${hairLine}/>`).join('');
+  } else if (g === 'f') {
+    s += `<path d="M64 92 Q58 140 74 152 L126 152 Q142 140 136 92 Z" fill="${H}" ${hairLine}/>`;
+  }
   if (sp === 'mage' && st >= 2) s += `<path d="M56 104 Q52 52 100 44 Q148 52 144 104 Q142 130 100 134 Q58 130 56 104 Z" fill="${B}" ${line}/>`;
 
   // ── Corps : bottines, robe, ceinture, galon ─────────────────────────────────
@@ -89,6 +96,7 @@ function rwWizardSvg(o) {
   const eye = x => `<ellipse cx="${x}" cy="${ey}" rx="6" ry="7.5" fill="${RW_WIZ_EYE}"/>` +
     `<circle cx="${x - 2}" cy="${ey - 3}" r="2.6" fill="#fff"/><circle cx="${x + 2}" cy="${ey + 2.2}" r="1.2" fill="#fff"/>`;
   s += eye(88) + eye(112) +
+    (g === 'f' ? `<path d="M82.6 95.5 L78.6 92.8 M82.2 99 L78.2 98.2 M117.4 95.5 L121.4 92.8 M117.8 99 L121.8 98.2" stroke="${RW_WIZ_EYE}" stroke-width="1.8" stroke-linecap="round"/>` : '') +
     `<ellipse cx="78" cy="110" rx="6.5" ry="4" fill="#ff8fa8" opacity=".5"/><ellipse cx="122" cy="110" rx="6.5" ry="4" fill="#ff8fa8" opacity=".5"/>` +
     `<path d="M95 112 Q100 117 105 112" stroke="${RW_WIZ_EYE}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
   if (acc.glasses) {
@@ -96,16 +104,20 @@ function rwWizardSvg(o) {
       `<path d="M97.5 98 Q100 95 102.5 98" stroke="#4a3426" stroke-width="2.5" fill="none"/>`;
   }
 
-  // cheveux de devant
-  const fringe = {
-    witch:  'M66 90 Q68 58 100 56 Q132 58 134 90 Q124 74 110 78 Q102 68 92 78 Q78 74 66 90 Z',
-    wizard: 'M66 92 Q64 60 100 56 Q136 60 134 92 L126 78 L118 86 L110 72 L100 82 L90 72 L82 86 L74 78 Z',
-    mage:   'M68 88 Q70 60 100 58 Q130 60 132 88 Q118 74 100 78 Q82 74 68 88 Z',
-    druid:  '',
-  }[sp];
-  if (fringe) s += `<path d="${fringe}" fill="${H}" stroke="${HK}" stroke-width="2.5" stroke-linejoin="round"/>`;
-  if (sp === 'druid') s += [[72, 76, 10], [84, 64, 11], [100, 59, 11], [116, 64, 11], [128, 76, 10]]
-    .map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${H}" stroke="${HK}" stroke-width="2.5"/>`).join('');
+  // cheveux de devant : frange souple (fille), en épis (garçon), boucles (druide)
+  if (sp === 'druid') {
+    s += [[72, 76, 10], [84, 64, 11], [100, 59, 11], [116, 64, 11], [128, 76, 10]]
+      .map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${H}" ${hairLine}/>`).join('');
+  } else {
+    const fringe = g === 'f' ? 'M66 90 Q68 58 100 56 Q132 58 134 90 Q124 74 110 78 Q102 68 92 78 Q78 74 66 90 Z'
+                             : 'M66 92 Q64 60 100 56 Q136 60 134 92 L126 78 L118 86 L110 72 L100 82 L90 72 L82 86 L74 78 Z';
+    s += `<path d="${fringe}" fill="${H}" ${hairLine}/>`;
+    // sous la capuche, les cheveux longs retombent devant les épaules
+    if (g === 'f' && sp === 'mage' && st >= 2) {
+      s += `<path d="M67 88 Q60 122 70 148 L80 146 Q73 120 76 94 Z" fill="${H}" ${hairLine}/>` +
+        `<path d="M133 88 Q140 122 130 148 L120 146 Q127 120 124 94 Z" fill="${H}" ${hairLine}/>`;
+    }
+  }
 
   // ── Couvre-chef (dès le niveau 2) ──────────────────────────────────────────
   if (st >= 2) {

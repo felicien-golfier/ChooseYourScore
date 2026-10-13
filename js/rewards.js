@@ -1,23 +1,16 @@
 /* ── RÉCOMPENSES : MODÈLE, XP, BADGES ─────────────────────────────────────────
-   Chaque patient a un robot compagnon (patient.reward) qui évolue avec les exercices
+   Chaque patient a un compagnon (patient.reward) qui évolue avec les exercices
    terminés. Tout est dérivé de `sessions` ; patient.reward ne mémorise que les choix
    (apparence, objectifs) et les acquis qui ne doivent jamais se perdre (badges, XP max).
    Un « exercice terminé » = une entrée de `sessions` non partielle.
-   L'affichage est dans rewards-ui.js, le dessin dans rewards-robot.js.
+   Deux univers au choix (RW_THEMES) : robots ou créatures magiques.
+   L'affichage est dans rewards-ui.js, le dessin dans rewards-robot.js et rewards-magic.js.
    ──────────────────────────────────────────────────────────────────────────── */
 
-const RW_STAGES = [
-  { n: 'Prototype', xp: 0 }, { n: 'Recrue', xp: 100 }, { n: 'Opérateur', xp: 300 },
-  { n: 'Élite', xp: 650 }, { n: 'Légende', xp: 1100 },
-];
+// XP minimale de chaque niveau (avant le rythme du patient) ; les noms dépendent de l'univers.
+const RW_STAGE_XP = [0, 100, 300, 650, 1100];
 // base : 1re fois qu'un exercice est terminé ; repeat : les fois suivantes
 const RW_XP = { base: 30, repeat: 15, perStar: 10, record: 25 };
-
-// [couleur, niveau requis]
-const RW_BODY   = [['#1b2440',0],['#2a1a40',0],['#12302e',0],['#3a1f2e',0],['#2b2f3a',0],['#cfd8ff',4],['#ffd24d',5]];
-const RW_ACCENT = [['#00f0ff',0],['#ff2bd6',0],['#b6ff3b',0],['#ffe14d',0],['#ffffff',0],['#9a6bff',0]];
-const RW_EYE    = [['#ff2bd6',0],['#00f0ff',0],['#b6ff3b',0],['#ffe14d',0],['#ffffff',0],['#ff4d4d',0]];
-const RW_SPECIES_ORDER = ['orb', 'bolt', 'spike', 'tank'];
 
 const RW_PLURAL = (g, one, many) => g + ' ' + (g > 1 ? many : one);
 // stat = clé du compteur calculé par rwAnalyze ; g = objectif par défaut
@@ -31,16 +24,67 @@ const RW_BADGES = [
   { id:'perfect',  fam:'x', n:'Sans faute',        g:1,  stat:'perfect', u:'exercices parfaits',  d:g => RW_PLURAL(g,'exercice parfait','exercices parfaits'),  gl:'check' },
   { id:'triple',   fam:'x', n:'Machine à records', g:3,  stat:'records', u:'records battus',      d:g => 'Battre ' + RW_PLURAL(g,'record','records') + ' perso', gl:'bolt2' },
 ];
-// k = clé du dessin (rwRobotSvg), b = badge qui le débloque
-const RW_ACCS = [
-  { k:'cap',        n:'Casquette',          b:'first'    },
-  { k:'headphones', n:'Casque audio',       b:'five'     },
-  { k:'shades',     n:'Lunettes',           b:'record'   },
-  { k:'cape',       n:'Cape',               b:'stars'    },
-  { k:'shield',     n:"Bouclier d'énergie", b:'perfect'  },
-  { k:'jetpack',    n:'Jetpack',            b:'marathon' },
-  { k:'drone',      n:'Drone compagnon',    b:'titan'    },
-];
+// Univers du compagnon : même progression (XP, niveaux, badges), dessin et vocabulaire propres.
+// colors : [clé, libellé, [[couleur, niveau requis], …]] ; accs : k = clé du dessin, b = badge qui le débloque.
+const RW_THEMES = {
+  robot: {
+    label: 'Robots', my: 'Mon robot', see: 'Voir le robot', nameLabel: 'Nom du robot', defaultName: 'Zéphyr',
+    stages: ['Prototype', 'Recrue', 'Opérateur', 'Élite', 'Légende'],
+    species: RW_ROBOT_SPECIES, order: ['orb', 'bolt', 'spike', 'tank'], draw: rwRobotSvg, badge: rwBadgeSvg,
+    colors: [
+      ['body',   'Carrosserie', [['#1b2440',0],['#2a1a40',0],['#12302e',0],['#3a1f2e',0],['#2b2f3a',0],['#cfd8ff',4],['#ffd24d',5]]],
+      ['accent', 'Détails',     [['#00f0ff',0],['#ff2bd6',0],['#b6ff3b',0],['#ffe14d',0],['#ffffff',0],['#9a6bff',0]]],
+      ['eye',    'Yeux',        [['#ff2bd6',0],['#00f0ff',0],['#b6ff3b',0],['#ffe14d',0],['#ffffff',0],['#ff4d4d',0]]],
+    ],
+    accs: [
+      { k:'cap',        n:'Casquette',          b:'first'    },
+      { k:'headphones', n:'Casque audio',       b:'five'     },
+      { k:'shades',     n:'Lunettes',           b:'record'   },
+      { k:'cape',       n:'Cape',               b:'stars'    },
+      { k:'shield',     n:"Bouclier d'énergie", b:'perfect'  },
+      { k:'jetpack',    n:'Jetpack',            b:'marathon' },
+      { k:'drone',      n:'Drone compagnon',    b:'titan'    },
+    ],
+  },
+  magic: {
+    label: 'Créatures magiques', my: 'Ma créature', see: 'Voir la créature', nameLabel: 'Nom de la créature', defaultName: 'Pompon',
+    stages: ['Œuf', 'Bébé', 'Apprenti', 'Étoile', 'Légende'],
+    species: RW_MAGIC_SPECIES, order: ['unicorn', 'dragon', 'cat', 'axolotl'], draw: rwMagicSvg, badge: rwMagicBadgeSvg,
+    colors: [
+      ['body',   'Couleur', [['#ffd6e8',0],['#e3d5ff',0],['#c9f3e1',0],['#cfe8ff',0],['#ffe0c7',0],['#fffaf2',4],['#ffe48a',5]]],
+      ['accent', 'Détails', [['#ff7eb6',0],['#a07cff',0],['#3fcf9f',0],['#5aa9ff',0],['#ffb347',0],['#ffd23f',0]]],
+      ['eye',    'Yeux',    [['#3d2b4f',0],['#2a3f73',0],['#1f5a46',0],['#6b3a2e',0],['#7a2e6b',0],['#14141f',0]]],
+    ],
+    accs: [
+      { k:'bow',      n:'Nœud',               b:'first'    },
+      { k:'flowers',  n:'Couronne de fleurs', b:'five'     },
+      { k:'hearts',   n:'Lunettes cœur',      b:'record'   },
+      { k:'starcape', n:'Cape étoilée',       b:'stars'    },
+      { k:'bubble',   n:'Bulle magique',      b:'perfect'  },
+      { k:'balloon',  n:'Ballon cœur',        b:'marathon' },
+      { k:'buddy',    n:'Petite étoile',      b:'titan'    },
+    ],
+  },
+};
+
+function rwTheme(r) { return RW_THEMES[r.theme] || RW_THEMES.robot; }
+
+// Apparence par défaut d'un univers (modèle, couleurs, accessoires, nom).
+function rwDefaultLook(theme) {
+  const T = RW_THEMES[theme];
+  const look = { species: T.order[0], acc: {}, name: T.defaultName };
+  T.colors.forEach(([key, , list]) => { look[key] = list[0][0]; });
+  return look;
+}
+
+// Changer d'univers garde la progression ; l'apparence de chaque univers est mémorisée à part.
+function rwSetTheme(r, theme) {
+  if (!RW_THEMES[theme] || r.theme === theme) return;
+  const looks = r.looks || (r.looks = {});
+  looks[r.theme] = { species: r.species, body: r.body, accent: r.accent, eye: r.eye, acc: r.acc, name: r.name };
+  r.theme = theme;
+  Object.assign(r, looks[theme] || rwDefaultLook(theme));
+}
 
 // ── Données du patient ───────────────────────────────────────────────────────
 function rwDefaultGoals() { return Object.fromEntries(RW_BADGES.map(b => [b.id, b.g])); }
@@ -49,11 +93,8 @@ function rwDefaultGoals() { return Object.fromEntries(RW_BADGES.map(b => [b.id, 
 // l'objet renvoyé reste le même d'un appel à l'autre, on peut donc le modifier puis sauvegarder.
 function getReward(patient) {
   const r = patient.reward || (patient.reward = {});
-  const defaults = {
-    enabled: true, species: 'orb', name: 'Zéphyr', pace: 1, xpPeak: 0,
-    body: RW_BODY[0][0], accent: RW_ACCENT[0][0], eye: RW_EYE[0][0],
-    acc: {}, unlocked: {}, goals: {},
-  };
+  if (!RW_THEMES[r.theme]) r.theme = 'robot';
+  const defaults = { enabled: true, pace: 1, xpPeak: 0, unlocked: {}, goals: {}, ...rwDefaultLook(r.theme) };
   Object.keys(defaults).forEach(k => { if (r[k] === undefined) r[k] = defaults[k]; });
   Object.entries(rwDefaultGoals()).forEach(([id, g]) => { if (r.goals[id] === undefined) r.goals[id] = g; });
   return r;
@@ -94,11 +135,11 @@ function rwAnalyze(list) {
   return out;
 }
 
-function rwThreshold(i, pace) { return Math.round(RW_STAGES[i].xp * pace); }
+function rwThreshold(i, pace) { return Math.round(RW_STAGE_XP[i] * pace); }
 
 function rwStageOf(xp, pace) {
   let stage = 1;
-  RW_STAGES.forEach((_, i) => { if (xp >= rwThreshold(i, pace)) stage = i + 1; });
+  RW_STAGE_XP.forEach((_, i) => { if (xp >= rwThreshold(i, pace)) stage = i + 1; });
   return stage;
 }
 

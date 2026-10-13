@@ -4,7 +4,7 @@
    Les noms de classes SVG (rw-pulse, rw-flick, rw-dro) sont animées dans css/rewards.css.
    ──────────────────────────────────────────────────────────────────────────── */
 
-const RW_SPECIES={
+const RW_ROBOT_SPECIES={
   bolt:{label:'Cube', top:44, eyeY:72, sideX:68, w:64, bw:56, neck:104, chest:[100,125]},
   orb: {label:'Orbe', top:42, eyeY:78, sideX:66, w:68, bw:56, neck:110, chest:[100,142]},
   spike:{label:'Lame', top:52, eyeY:82, sideX:66, w:68, bw:54, neck:104, chest:[100,132]},
@@ -20,7 +20,7 @@ function rwStarPts(cx,cy,r){let p=[];for(let i=0;i<10;i++){const a=-Math.PI/2+i*
 
 function rwRobotSvg(o){
   const {species:sp,stage:st,body:B,accent:A,eye:E,acc,uid}=o;
-  const S=RW_SPECIES[sp], D=rwShade(B,-.4), L=rwShade(B,.3), gold='#ffffff', K=st>=5?'#ffffff':A, W=3;
+  const S=RW_ROBOT_SPECIES[sp], D=rwShade(B,-.4), L=rwShade(B,.3), gold='#ffffff', K=st>=5?'#ffffff':A, W=3;
   const eye=(x,y,r)=>`<circle cx="${x}" cy="${y}" r="${r+4}" fill="${E}" opacity=".22"/><circle cx="${x}" cy="${y}" r="${r}" fill="${E}"/><circle cx="${x-r*.3}" cy="${y-r*.3}" r="${r*.28}" fill="#fff" opacity=".8"/>`;
   const sc=[.8,.86,.92,.98,1][st-1];
   let s=`<svg viewBox="0 0 200 240" role="img" aria-label="Robot ${S.label}"><defs><filter id="gl${uid}" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur in="SourceAlpha" stdDeviation="2.6" result="b"/><feFlood flood-color="${A}" flood-opacity=".75"/><feComposite in2="b" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter><radialGradient id="au${uid}"><stop offset="0" stop-color="${A}" stop-opacity=".55"/><stop offset="1" stop-color="${A}" stop-opacity="0"/></radialGradient></defs>`;
@@ -94,14 +94,17 @@ function rwRobotSvg(o){
 }
 
 
+// Pictogramme d'un badge (commun aux deux univers), dans un cadre 64×64.
+function rwBadgeGlyph(b,ink){
+  if(b.gl==='star') return `<polygon points="${rwStarPts(32,33,14)}" fill="${ink}"/>`;
+  if(b.gl==='bolt') return `<polygon points="35,16 22,35 31,35 28,50 42,29 33,29" fill="${ink}"/>`;
+  if(b.gl==='check') return `<path d="M21 33 L29 41 L44 24" stroke="${ink}" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+  if(b.gl.startsWith('chev')){const n=+b.gl.slice(4);return Array.from({length:n},(_,i)=>{const y=27+(i-(n-1)/2)*9;return `<path d="M20 ${y+10} L32 ${y} L44 ${y+10}" stroke="${ink}" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`}).join('')}
+  if(b.gl==='bolt2') return `<polygon points="27,16 17,33 24,33 22,46 32,29 25,29" fill="${ink}"/><polygon points="43,16 33,33 40,33 38,46 48,29 41,29" fill="${ink}"/>`;
+  return `<text x="32" y="${b.gl.length>2?40:41}" text-anchor="middle" font-family="Chakra Petch,sans-serif" font-weight="700" font-size="${b.gl.length>1?20:26}" fill="${ink}">${b.gl}</text>`;
+}
+
 function rwBadgeSvg(b,on){
   const c=on?'#00f0ff':'#4a5478', c2=on?'#ff2bd6':'#2c3350';
-  let gl;
-  if(b.gl==='star') gl=`<polygon points="${rwStarPts(32,33,14)}" fill="#05050d"/>`;
-  else if(b.gl==='bolt') gl=`<polygon points="35,16 22,35 31,35 28,50 42,29 33,29" fill="#05050d"/>`;
-  else if(b.gl==='check') gl=`<path d="M21 33 L29 41 L44 24" stroke="#05050d" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
-  else if(b.gl.startsWith('chev')){const n=+b.gl.slice(4);gl=Array.from({length:n},(_,i)=>{const y=27+(i-(n-1)/2)*9;return `<path d="M20 ${y+10} L32 ${y} L44 ${y+10}" stroke="#05050d" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`}).join('')}
-  else if(b.gl==='bolt2') gl=`<polygon points="27,16 17,33 24,33 22,46 32,29 25,29" fill="#05050d"/><polygon points="43,16 33,33 40,33 38,46 48,29 41,29" fill="#05050d"/>`;
-  else gl=`<text x="32" y="${b.gl.length>2?40:41}" text-anchor="middle" font-family="Chakra Petch,sans-serif" font-weight="700" font-size="${b.gl.length>1?20:26}" fill="#05050d">${b.gl}</text>`;
-  return `<svg viewBox="0 0 64 64" aria-hidden="true"><polygon points="32,3 58,18 58,46 32,61 6,46 6,18" fill="${c2}"/><polygon points="32,8 53,20 53,44 32,56 11,44 11,20" fill="${c}"/>${gl}</svg>`;
+  return `<svg viewBox="0 0 64 64" aria-hidden="true"><polygon points="32,3 58,18 58,46 32,61 6,46 6,18" fill="${c2}"/><polygon points="32,8 53,20 53,44 32,56 11,44 11,20" fill="${c}"/>${rwBadgeGlyph(b,'#05050d')}</svg>`;
 }

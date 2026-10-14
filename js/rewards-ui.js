@@ -268,7 +268,7 @@ function renderPatientReward(patient) {
   const r = getReward(patient);
   box.innerHTML = '<div class="pairs-header pairs-header--mt"><span class="editor-section-label no-mb">Récompenses</span></div>';
   box.appendChild(makeToggleRow('Compagnon et récompenses',
-    'À couper pour les patients que le jeu ne motive pas ou qui se comparent trop.', r.enabled,
+    'À activer pour les patients que le jeu motive (désactivé par défaut).', r.enabled,
     checked => { r.enabled = checked; savePatients(); renderPatientReward(patient); }));
   if (!r.enabled) return;
 

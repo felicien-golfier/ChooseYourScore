@@ -125,7 +125,7 @@ function getReward(patient) {
   // Univers inconnu (ou retiré) : retour aux robots, avec l'apparence par défaut si besoin.
   if (!RW_THEMES[r.theme]) r.theme = 'robot';
   if (r.species !== undefined && !rwTheme(r).species[r.species]) Object.assign(r, (r.looks && r.looks[r.theme]) || rwDefaultLook(r.theme));
-  const defaults = { enabled: true, pace: 1, xpPeak: 0, unlocked: {}, goals: {}, ...rwDefaultLook(r.theme) };
+  const defaults = { enabled: false, pace: 1, xpPeak: 0, unlocked: {}, goals: {}, ...rwDefaultLook(r.theme) };
   Object.keys(defaults).forEach(k => { if (r[k] === undefined) r[k] = defaults[k]; });
   Object.entries(rwDefaultGoals()).forEach(([id, g]) => { if (r.goals[id] === undefined) r.goals[id] = g; });
   return r;

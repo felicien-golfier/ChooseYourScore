@@ -61,7 +61,7 @@ const RW_THEMES = {
     ],
     accs: [
       { k:'headband', n:'Bandeau de héros',   b:'first'    },
-      { k:'mustache', n:'Moustache',          b:'five'     },
+      { k:'teeth',    n:'Dents de lapin',     b:'five'     },
       { k:'shades',   n:'Lunettes de soleil', b:'record'   },
       { k:'shield',   n:'Bouclier casserole', b:'stars'    },
       { k:'bolts',    n:'Éclairs de pouvoir', b:'perfect'  },

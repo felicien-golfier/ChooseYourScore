@@ -3,8 +3,8 @@
    terminés. Tout est dérivé de `sessions` ; patient.reward ne mémorise que les choix
    (apparence, objectifs) et les acquis qui ne doivent jamais se perdre (badges, XP max).
    Un « exercice terminé » = une entrée de `sessions` non partielle.
-   Deux univers au choix (RW_THEMES) : robots ou sorciers.
-   L'affichage est dans rewards-ui.js, le dessin dans rewards-robot.js et rewards-wizard.js.
+   Deux univers au choix (RW_THEMES) : robots ou légumes super-héros.
+   L'affichage est dans rewards-ui.js, le dessin dans rewards-robot.js et rewards-veggie.js.
    ──────────────────────────────────────────────────────────────────────────── */
 
 // XP minimale de chaque niveau (avant le rythme du patient) ; les noms dépendent de l'univers.
@@ -50,28 +50,23 @@ const RW_THEMES = {
       { k:'drone',      n:'Drone compagnon',    b:'titan'    },
     ],
   },
-  wizard: {
-    label: 'Sorcières & sorciers', genders: true,
-    words: g => g === 'm'
-      ? { my: 'Mon sorcier', see: 'Voir le sorcier', nameLabel: 'Nom du sorcier', defaultName: 'Merlinou',
-          stages: ['Novice', 'Apprenti', 'Adepte', 'Mage', 'Archimage'], species: k => RW_WIZARD_SPECIES[k].m }
-      : { my: 'Ma sorcière', see: 'Voir la sorcière', nameLabel: 'Nom de la sorcière', defaultName: 'Mélusine',
-          stages: ['Novice', 'Apprentie', 'Adepte', 'Mage', 'Archimage'], species: k => RW_WIZARD_SPECIES[k].f },
-    species: RW_WIZARD_SPECIES, order: ['witch', 'wizard', 'mage', 'druid'], draw: rwWizardSvg, badge: rwWizardBadgeSvg,
+  veggie: {
+    label: 'Légumes super-héros', genders: false,
+    words: () => ({ my: 'Mon super-légume', see: 'Voir mon super-légume', nameLabel: 'Nom du super-légume', defaultName: 'Capitaine Croc',
+      stages: ['Graine', 'Pousse', 'Costaud', 'Super-légume', 'Légende'], species: k => RW_VEGGIE_SPECIES[k].label }),
+    species: RW_VEGGIE_SPECIES, order: ['carrot', 'radish', 'potato', 'broccoli'], draw: rwVeggieSvg, badge: rwVeggieBadgeSvg,
     colors: [
-      ['body',   'Robe',     [['#5b3fa0',0],['#2f3f8f',0],['#2f6b4f',0],['#8a2c4a',0],['#2b2533',0],['#c9cfe0',4],['#e8b33a',5]]],
-      ['accent', 'Magie',    [['#ffd45c',0],['#6fe3ff',0],['#ff8ad1',0],['#8de08a',0],['#e6e9f5',0],['#ffa24d',0]]],
-      ['hair',   'Cheveux',  [['#6b3f22',0],['#2a2228',0],['#f0c75e',0],['#d9642b',0],['#e8e4f0',0],['#9b6bd6',0],['#ff9ccf',0]]],
-      ['skin',   'Peau',     [['#ffe0c8',0],['#f5c6a0',0],['#d9a074',0],['#a86b44',0],['#6e4429',0]]],
+      ['accent', 'Cape',   [['#e8354a',0],['#2f6bd6',0],['#8a4fd6',0],['#ff8a1f',0],['#1fa89a',0],['#2b2533',0],['#ffd45c',5]]],
+      ['mask',   'Masque', [['#2b2533',0],['#e8354a',0],['#2f6bd6',0],['#8a4fd6',0],['#1fa89a',0],['#ffffff',0]]],
     ],
     accs: [
-      { k:'scarf',    n:'Écharpe',         b:'first'    },
-      { k:'cat',      n:'Chat noir',       b:'five'     },
-      { k:'glasses',  n:'Lunettes rondes', b:'record'   },
-      { k:'starcape', n:'Cape étoilée',    b:'stars'    },
-      { k:'book',     n:'Grimoire volant', b:'perfect'  },
-      { k:'broom',    n:'Balai volant',    b:'marathon' },
-      { k:'owl',      n:'Hibou',           b:'titan'    },
+      { k:'headband', n:'Bandeau de héros',   b:'first'    },
+      { k:'mustache', n:'Moustache',          b:'five'     },
+      { k:'shades',   n:'Lunettes de soleil', b:'record'   },
+      { k:'shield',   n:'Bouclier casserole', b:'stars'    },
+      { k:'bolts',    n:'Éclairs de pouvoir', b:'perfect'  },
+      { k:'fork',     n:'Fourchette géante',  b:'marathon' },
+      { k:'peas',     n:'Petits pois copains', b:'titan'   },
     ],
   },
 };

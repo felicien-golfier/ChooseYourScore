@@ -1,7 +1,7 @@
-/* ── RÉCOMPENSES : compagnon (robot ou sorcier) ──────────────────────────────
+/* ── RÉCOMPENSES : compagnon (robot ou légume) ──────────────────────────────
    Habillage volontairement indépendant du thème clair de l'app : tout est sous .rw
    (fenêtre, bloc de fin d'exercice, carte de départ). Par défaut cyber néon (robots) ;
-   .rw-t-wizard redéfinit les variables et quelques fonds en nuit étoilée (fin du fichier).
+   .rw-t-veggie redéfinit les variables et quelques fonds en potager ensoleillé (fin du fichier).
    Les réglages thérapeute (fiche patient) utilisent le thème normal de l'app.
    ──────────────────────────────────────────────────────────────────────────── */
 
@@ -218,7 +218,7 @@ body.no-answer-anim .rw-hero-bot, body.no-answer-anim .rw-result-bot { animation
 /* ── Fiche patient (thème normal de l'app) ───────────────────────────────── */
 .rw-fiche-summary { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 12px 0; }
 .rw-fiche-bot { width: 64px; flex: 0 0 auto; background: #05050d; border-radius: 8px; padding: 4px; }
-.rw-fiche-bot-wizard { background: linear-gradient(160deg, #1c1433, #3a2566); }
+.rw-fiche-bot-veggie { background: linear-gradient(180deg, #bfe6ff, #e6f5c8); }
 .rw-fiche-bot svg { width: 100%; height: auto; display: block; }
 .rw-fiche-text { flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; }
 .rw-fiche-text span { font-size: 0.85rem; color: var(--text-3); }
@@ -247,55 +247,55 @@ body.no-answer-anim .rw-hero-bot, body.no-answer-anim .rw-result-bot { animation
 .rw-theme svg { width: 100%; max-width: 92px; height: auto; display: block; }
 .rw-theme small { font-weight: 700; font-size: 0.82rem; }
 .rw-theme-robot { background: radial-gradient(ellipse at 50% 40%, #12306a, #05050d); color: #e6f4ff; }
-.rw-theme-wizard { background: linear-gradient(180deg, #120b2a, #4b2f7a); color: #ffe9a8; font-family: var(--font-display); }
+.rw-theme-veggie { background: linear-gradient(180deg, #bfe6ff, #e6f5c8); color: #2d3b1f; font-family: var(--font-display); }
 .rw-theme-robot small { font-family: 'Oswald', sans-serif; letter-spacing: 0.06em; text-transform: uppercase; }
 .rw-theme[aria-pressed="true"].rw-theme-robot { border-color: #00f0ff; box-shadow: 0 0 12px rgba(0, 240, 255, 0.45); }
-.rw-theme[aria-pressed="true"].rw-theme-wizard { border-color: #ffd45c; box-shadow: 0 0 12px rgba(255, 212, 92, 0.45); }
+.rw-theme[aria-pressed="true"].rw-theme-veggie { border-color: #3f9d3a; box-shadow: 0 0 12px rgba(63, 157, 58, 0.45); }
 
-/* ── Univers « sorciers » : habillage nuit étoilée, violet et or ─────────── */
-.rw-t-wizard {
-  --rw-bg: #1c1433; --rw-surface: #241a40; --rw-surface-2: #2c2050; --rw-line: #4a3a78;
-  --rw-text: #f5ecff; --rw-muted: #b6a6d8; --rw-main: #ffd45c; --rw-alt: #c59bff; --rw-lock: #2a2140;
-  --rw-sel: #3a2a63; --rw-glow: 255, 212, 92;
+/* ── Univers « légumes super-héros » : potager ensoleillé, clair et rond ─── */
+.rw-t-veggie {
+  --rw-bg: #fffaf0; --rw-surface: #ffffff; --rw-surface-2: #f3f8e8; --rw-line: #cfe3b0;
+  --rw-text: #2d3b1f; --rw-muted: #66784c; --rw-main: #3f9d3a; --rw-alt: #e8641c; --rw-lock: #ebe8da;
+  --rw-sel: #e3f3cf; --rw-glow: 63, 157, 58;
   --rw-display: 'Baloo 2', 'Nunito', sans-serif;
 }
-#reward-modal[data-theme="wizard"] { background: rgba(12, 6, 28, 0.72); }
-.rw-t-wizard.rw-box { border: 2px solid #6b4fb0; border-radius: 22px; box-shadow: 0 0 36px rgba(197, 155, 255, 0.3); }
-.rw-t-wizard .rw-close { background: var(--rw-surface); }
-.rw-t-wizard .rw-hero {
-  border: 2px solid #4a3a78; border-radius: 18px;
+#reward-modal[data-theme="veggie"] { background: rgba(40, 60, 20, 0.6); }
+.rw-t-veggie.rw-box { border: 3px solid #8cc56a; border-radius: 22px; box-shadow: 0 0 30px rgba(63, 157, 58, 0.3); }
+.rw-t-veggie .rw-close { background: var(--rw-surface); }
+.rw-t-veggie .rw-hero {
+  border: 3px solid #8cc56a; border-radius: 18px;
   background:
-    radial-gradient(circle at 14% 42%, #fff6d0 0 16px, transparent 17px),
-    radial-gradient(circle at 15% 18%, #fff 0 1.5px, transparent 2.5px),
-    radial-gradient(circle at 30% 40%, #fff 0 1px, transparent 2px),
-    radial-gradient(circle at 62% 14%, #fff 0 1.5px, transparent 2.5px),
-    radial-gradient(circle at 72% 46%, #fff 0 1px, transparent 2px),
-    radial-gradient(circle at 8% 52%, #fff 0 1px, transparent 2px),
-    linear-gradient(180deg, #120b2a 0%, #2b1a55 55%, #4b2f7a 100%);
+    radial-gradient(circle at 84% 24%, #fff6a8 0 18px, #ffd94d 19px 26px, transparent 27px),
+    radial-gradient(ellipse 60px 18px at 24% 26%, #fff 0 60%, transparent 62%),
+    radial-gradient(ellipse 46px 14px at 38% 18%, #fff 0 60%, transparent 62%),
+    linear-gradient(180deg, #8fd3ff 0%, #d8f1ff 60%, #e9f7d4 100%);
 }
-/* croissant de lune : un disque de la couleur du ciel décalé sur la pleine lune */
-.rw-t-wizard .rw-hero::before {
-  background: radial-gradient(circle at calc(14% + 9px) calc(42% - 6px), #22144a 0 14px, transparent 15px);
+.rw-t-veggie .rw-hero::before { background: none; }
+/* rangs de terre du potager, avec des petites pousses */
+.rw-t-veggie .rw-hero::after {
+  height: 24%; -webkit-mask-image: none; mask-image: none;
+  background:
+    repeating-linear-gradient(100deg, transparent 0 34px, rgba(88, 56, 28, 0.35) 34px 38px),
+    linear-gradient(#7a5230, #5e3d22);
+  border-top: 4px solid #4fae4a;
 }
-.rw-t-wizard .rw-hero::after {
-  height: 26%; -webkit-mask-image: none; mask-image: none;
-  background: radial-gradient(130% 100% at 50% 100%, #1d1238 0 60%, transparent 61%);
+.rw-t-veggie .rw-pill { background: rgba(255, 255, 255, 0.85); border-radius: 12px; border-width: 2px; }
+.rw-t-veggie .rw-pill-name { border-radius: 999px; }
+.rw-t-veggie .rw-bar { height: 16px; border-radius: 999px; }
+.rw-t-veggie .rw-bar i { border-radius: 999px; background: linear-gradient(90deg, #6cc04a, #ffb43a); box-shadow: none; }
+.rw-t-veggie .rw-tab, .rw-t-veggie .rw-btn, .rw-t-veggie .rw-field > span, .rw-t-veggie .rw-fam h4,
+.rw-t-veggie .rw-sp small, .rw-t-veggie .rw-evo b { text-transform: none; letter-spacing: 0.01em; }
+.rw-t-veggie .rw-tab { border-radius: 999px; font-size: 0.95rem; }
+.rw-t-veggie .rw-field > span, .rw-t-veggie .rw-fam h4 { font-size: 0.9rem; }
+.rw-t-veggie .rw-sp, .rw-t-veggie .rw-acc, .rw-t-veggie .rw-evo > div, .rw-t-veggie .rw-badge { border-radius: 16px; }
+.rw-t-veggie .rw-sp small { font-size: 0.85rem; }
+.rw-t-veggie .rw-evo .off svg { filter: brightness(0) opacity(0.25); }
+.rw-t-veggie .rw-badge.on { border-color: #8cc56a; background: #f1fbe3; box-shadow: 0 0 12px rgba(63, 157, 58, 0.18); }
+.rw-t-veggie .rw-badge.off svg { filter: none; opacity: 0.8; }
+.rw-t-veggie .rw-btn { border-radius: 999px; border-width: 2px; font-size: 0.9rem; }
+.rw-t-veggie .rw-sw.locked::after { background-color: rgba(255, 250, 240, 0.7); }
+.rw-t-veggie.rw-result, .rw-t-veggie.rw-setup {
+  border: 2px solid #8cc56a; border-radius: 18px; box-shadow: none;
+  background: linear-gradient(160deg, #fffaf0, #eaf6d6);
 }
-.rw-t-wizard .rw-pill { background: rgba(28, 20, 51, 0.8); border-radius: 12px; border-width: 2px; }
-.rw-t-wizard .rw-pill-name { border-radius: 999px; }
-.rw-t-wizard .rw-bar { height: 16px; border-radius: 999px; }
-.rw-t-wizard .rw-bar i { border-radius: 999px; background: linear-gradient(90deg, #c59bff, #ffd45c); box-shadow: 0 0 10px rgba(255, 212, 92, 0.5); }
-.rw-t-wizard .rw-tab, .rw-t-wizard .rw-btn, .rw-t-wizard .rw-field > span, .rw-t-wizard .rw-fam h4,
-.rw-t-wizard .rw-sp small, .rw-t-wizard .rw-evo b { text-transform: none; letter-spacing: 0.01em; }
-.rw-t-wizard .rw-tab { border-radius: 999px; font-size: 0.95rem; }
-.rw-t-wizard .rw-field > span, .rw-t-wizard .rw-fam h4 { font-size: 0.9rem; }
-.rw-t-wizard .rw-sp, .rw-t-wizard .rw-acc, .rw-t-wizard .rw-evo > div, .rw-t-wizard .rw-badge { border-radius: 16px; }
-.rw-t-wizard .rw-sp small { font-size: 0.85rem; }
-.rw-t-wizard .rw-badge.on { border-color: #8a6a2a; background: #2a2148; box-shadow: 0 0 14px rgba(255, 212, 92, 0.18); }
-.rw-t-wizard .rw-badge.off svg { filter: none; opacity: 0.8; }
-.rw-t-wizard .rw-btn { border-radius: 999px; border-width: 2px; font-size: 0.9rem; }
-.rw-t-wizard.rw-result, .rw-t-wizard.rw-setup {
-  border: 2px solid #4a3a78; border-radius: 18px; box-shadow: none;
-  background: linear-gradient(160deg, #1c1433, #2e1f55);
-}
-.rw-t-wizard .rw-chip { background: #3a2a10; }
+.rw-t-veggie .rw-chip { background: #fff0dc; }

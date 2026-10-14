@@ -98,15 +98,15 @@ function rwVeggieSvg(o) {
 
   // ceinture (dès le niveau 3), dans la couleur du masque
   if (st >= 3 && sp !== 'broccoli') {
-    const by = fy + 40;
+    const by = fy + 47;
     s += `<path d="M${100 - ax - 8} ${by} Q100 ${by + 7} ${100 + ax + 8} ${by} L${100 + ax + 8} ${by + 7} Q100 ${by + 14} ${100 - ax - 8} ${by + 7} Z" fill="${M}" stroke="${MK}" stroke-width="2"/>` +
       `<rect x="94" y="${by - 1}" width="12" height="11" rx="2" fill="${RW_VEG_GOLD}" stroke="#c99a1c" stroke-width="1.5"/>`;
   }
   // étoile de héros sur le torse (dès le niveau 4)
   if (st >= 4) {
-    const ey = sp === 'broccoli' ? fy + 30 : fy + 28;
-    s += `<circle cx="100" cy="${ey}" r="11" fill="${st >= 5 ? RW_VEG_GOLD : A}" stroke="${st >= 5 ? '#c99a1c' : AK}" stroke-width="2"/>` +
-      `<polygon points="${rwStarPts(100, ey + 0.5, 7.5)}" fill="#fff"/>`;
+    const ey = fy + 37;
+    s += `<circle cx="100" cy="${ey}" r="9" fill="${st >= 5 ? RW_VEG_GOLD : A}" stroke="${st >= 5 ? '#c99a1c' : AK}" stroke-width="2"/>` +
+      `<polygon points="${rwStarPts(100, ey + 0.5, 6)}" fill="#fff"/>`;
   }
 
   // ── Visage ─────────────────────────────────────────────────────────────────
@@ -124,9 +124,10 @@ function rwVeggieSvg(o) {
     ? `<path d="M88 ${fy + 15} Q100 ${fy + 32} 112 ${fy + 15} Z" fill="#7a1f35" stroke="${RW_VEG_EYE}" stroke-width="2" stroke-linejoin="round"/>`
     : `<path d="M92 ${fy + 16} Q100 ${fy + 24} 108 ${fy + 16}" stroke="${RW_VEG_EYE}" stroke-width="2.6" fill="none" stroke-linecap="round"/>`;
 
-  if (acc.mustache) {
-    s += `<path d="M100 ${fy + 12} Q94 ${fy + 8} 86 ${fy + 12} Q80 ${fy + 16} 78 ${fy + 11} Q82 ${fy + 22} 94 ${fy + 17} Q99 ${fy + 15} 100 ${fy + 12} Z ` +
-      `M100 ${fy + 12} Q106 ${fy + 8} 114 ${fy + 12} Q120 ${fy + 16} 122 ${fy + 11} Q118 ${fy + 22} 106 ${fy + 17} Q101 ${fy + 15} 100 ${fy + 12} Z" fill="#5a3a22" stroke="#3a2414" stroke-width="1.5" stroke-linejoin="round"/>`;
+  if (acc.teeth) {
+    const ty = fy + (st >= 5 ? 15 : 18);
+    s += `<rect x="93" y="${ty}" width="7" height="11" rx="2.5" fill="#fff" stroke="#8a7f86" stroke-width="1.8"/>` +
+      `<rect x="100" y="${ty}" width="7" height="11" rx="2.5" fill="#fff" stroke="#8a7f86" stroke-width="1.8"/>`;
   }
   if (acc.shades) {
     s += ex.map(x => `<rect x="${x - 12}" y="${fy - 9}" width="24" height="17" rx="7" fill="#1d1a28" stroke="#000" stroke-width="2"/>` +

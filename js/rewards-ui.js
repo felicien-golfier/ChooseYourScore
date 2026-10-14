@@ -1,10 +1,10 @@
 /* ── RÉCOMPENSES : ÉCRANS ─────────────────────────────────────────────────────
-   - fenêtre « Mon robot » / « Ma sorcière » / « Mon sorcier » (univers, apparence, évolution, badges)
+   - fenêtre « Mon robot » / « Mon super-légume » (univers, apparence, évolution, badges)
    - bloc de fin d'exercice (gains, nouveaux badges)
    - carte du compagnon sur l'écran de départ
    - réglages du patient (fiche patient : activer, univers, rythme, objectifs des badges)
    Le vocabulaire et le dessin viennent de l'univers choisi (RW_THEMES, rewards.js).
-   Modèle et calculs : rewards.js. Dessin : rewards-robot.js, rewards-wizard.js.
+   Modèle et calculs : rewards.js. Dessin : rewards-robot.js, rewards-veggie.js.
    ──────────────────────────────────────────────────────────────────────────── */
 
 let rwUidCount = 0;
@@ -18,7 +18,7 @@ function rwCompanionFor(patient, ev, over = {}) {
   return T.draw({ ...rwLookOf(r), stage: ev.stage, acc, uid: 'u' + (++rwUidCount), ...over });
 }
 
-// Classes du conteneur : habillage néon (robots) ou nuit étoilée (sorciers).
+// Classes du conteneur : habillage néon (robots) ou potager (légumes).
 function rwThemeClass(r) { return 'rw rw-t-' + r.theme; }
 
 function rwStageName(r, stage) { return rwWords(r).stages[stage - 1]; }

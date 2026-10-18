@@ -20,16 +20,18 @@
 .rw-flick { animation: rw-flick 0.14s steps(2) infinite alternate; }
 .rw-pulse { animation: rw-pulse 2.4s ease-in-out infinite; transform-origin: 100px 125px; }
 .rw-dro   { animation: rw-bob 2.4s ease-in-out infinite; }
+.rw-wingfx { stroke-dasharray: 9 11; animation: rw-wingfx 1.2s linear infinite; }
 .rw-twinkle { animation: rw-twinkle 1.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
 .rw-hero-bot, .rw-result-bot { animation: rw-bob 3s ease-in-out infinite; }
 @keyframes rw-flick { to { opacity: 0.6; } }
 @keyframes rw-pulse { 50% { opacity: 0.55; } }
 @keyframes rw-bob   { 50% { transform: translateY(-6px); } }
+@keyframes rw-wingfx { to { stroke-dashoffset: -20; } }
 @keyframes rw-twinkle { 50% { transform: scale(.45) rotate(45deg); opacity: 0.35; } }
-body.no-answer-anim .rw-flick, body.no-answer-anim .rw-pulse, body.no-answer-anim .rw-dro, body.no-answer-anim .rw-twinkle,
+body.no-answer-anim .rw-flick, body.no-answer-anim .rw-pulse, body.no-answer-anim .rw-dro, body.no-answer-anim .rw-twinkle, body.no-answer-anim .rw-wingfx,
 body.no-answer-anim .rw-hero-bot, body.no-answer-anim .rw-result-bot { animation: none; }
 @media (prefers-reduced-motion: reduce) {
-  .rw-flick, .rw-pulse, .rw-dro, .rw-twinkle, .rw-hero-bot, .rw-result-bot { animation: none; }
+  .rw-flick, .rw-pulse, .rw-dro, .rw-twinkle, .rw-wingfx, .rw-hero-bot, .rw-result-bot { animation: none; }
 }
 
 /* ── Fenêtre ─────────────────────────────────────────────────────────────── */

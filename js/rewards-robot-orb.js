@@ -1,13 +1,13 @@
 /* ── RÉCOMPENSES : ACCESSOIRES DE L'ORBE (thème « explorateur de l'espace ») ───
-   Retourne { head, outer } : `head` suit la tête (antenne, lunettes, drapeau, laser),
-   `outer` est dessiné autour du robot (bulle, planète, étoile filante).
+   Retourne { head, outer } : `head` suit la tête (antenne, lunettes, laser),
+   `outer` est dessiné autour du robot (bulle, planète, étoile filante, effets d'ailes).
    Le drone compagnon est dessiné par rwRobotSvg (même code que les autres robots).
    Rien ne couvre l'antenne (100,27). Les touches (twinkle, visor…) sont reliées
    aux badges dans RW_THEMES.robot. La pose de combat (acc.combat) est gérée dans
    rwRobotSvg (penché, bras levé) ; ici on dessine son laser.
    ──────────────────────────────────────────────────────────────────────────── */
 
-function rwOrbAccs({ acc, A, E, B }) {
+function rwOrbAccs({ acc, A, E, B, st }) {
   const dark = rwShade(A, -.45), visor = acc.visor || acc.combat;
   let head = '', outer = '';
 
@@ -30,15 +30,24 @@ function rwOrbAccs({ acc, A, E, B }) {
       `<path d="M140 58 L145 64 M152 52 L155 60 M140 98 L145 92 M152 104 L155 96" stroke="${E}" stroke-width="2.2" stroke-linecap="round" opacity=".85"/>` +
       `<polygon points="${rwStarPts(186, 78, 8)}" fill="#fff"/>`;
   }
-  if (acc.flag) {
-    head += `<line x1="114" y1="46" x2="114" y2="12" stroke="${dark}" stroke-width="2.5" stroke-linecap="round"/><path d="M114 12 L142 19 L114 28 Z" fill="${A}" stroke="${dark}" stroke-width="2" stroke-linejoin="round"/><polygon points="${rwStarPts(124, 20, 4)}" fill="#fff"/>`;
-  }
 
   if (acc.bubble) {
     outer += `<circle cx="100" cy="122" r="96" fill="${A}" fill-opacity=".06" stroke="${A}" stroke-width="2" opacity=".9"/><path d="M38 78 Q46 44 78 30" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round" opacity=".6"/><path d="M160 190 Q176 170 182 148" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".35"/>`;
   }
   if (acc.planet) {
     outer += `<g class="rw-dro" transform="translate(34 98) scale(1.35) translate(-34 -98)"><circle cx="34" cy="98" r="11" fill="${E}" fill-opacity=".85" stroke="${dark}" stroke-width="2"/><path d="M26 94 Q34 90 42 95" stroke="#fff" stroke-width="2" fill="none" opacity=".5"/><ellipse cx="34" cy="98" rx="21" ry="5.5" transform="rotate(-22 34 98)" fill="none" stroke="${A}" stroke-width="2.2"/></g>`;
+  }
+  if (acc.wingfx) {
+    if (st >= 5) {
+      // les ailes (niveau 5) s'animent : courants d'énergie le long des plumes, éclats aux pointes
+      const side = `<path d="M72 118 L14 66 L24 108 L8 126 L34 140 L72 152 Z" fill="none" stroke="${E}" stroke-width="1.8" stroke-linejoin="round" class="rw-wingfx" opacity=".9"/>` +
+        `<path d="M72 126 L18 72 M72 132 L24 108 M72 138 L10 126" stroke="#fff" stroke-width="1.6" stroke-linecap="round" fill="none" class="rw-wingfx" opacity=".75"/>` +
+        `<circle cx="14" cy="66" r="3.2" fill="#fff" class="rw-twinkle"/><circle cx="8" cy="126" r="3.2" fill="#fff" class="rw-twinkle"/><circle cx="30" cy="98" r="1.8" fill="${E}" class="rw-twinkle"/>`;
+      outer += `<g>${side}</g><g transform="translate(200 0) scale(-1 1)">${side}</g>`;
+    } else {
+      // pas encore d'ailes : le réacteur s'embrase en attendant
+      outer += `<g class="rw-flick"><polygon points="92,182 108,182 100,212" fill="${E}"/><polygon points="96,182 104,182 100,201" fill="#fff"/></g><circle cx="90" cy="205" r="1.8" fill="${E}" class="rw-twinkle"/><circle cx="111" cy="209" r="1.5" fill="#fff" class="rw-twinkle"/>`;
+    }
   }
   if (acc.comet) {
     outer += `<g transform="translate(60 31) scale(1.3) translate(-60 -31)"><path d="M60 31 L16 12" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".25"/><path d="M60 31 L26 17" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".5"/><path d="M60 31 L36 21" stroke="${A}" stroke-width="2" stroke-linecap="round"/><polygon points="${rwStarPts(62, 32, 8)}" fill="#fff"/></g>`;

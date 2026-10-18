@@ -37,8 +37,8 @@ const RW_THEMES = {
     species: RW_ROBOT_SPECIES, order: ['orb', 'bolt', 'spike', 'tank'], draw: rwRobotSvg, badge: rwBadgeSvg,
     colors: [
       ['body',   'Carrosserie', [['#1b2440',0],['#2a1a40',0],['#12302e',0],['#3a1f2e',0],['#2b2f3a',0],['#cfd8ff',4],['#ffd24d',5]]],
-      ['accent', 'Détails',     [['#00f0ff',0],['#ff2bd6',0],['#b6ff3b',0],['#ffe14d',0],['#ffffff',0],['#9a6bff',0]]],
-      ['eye',    'Yeux',        [['#ff2bd6',0],['#00f0ff',0],['#b6ff3b',0],['#ffe14d',0],['#ffffff',0],['#ff4d4d',0]]],
+      ['accent', 'Détails',     [['#00f0ff',0],['#ff2bd6',0],['#b6ff3b',2],['#ffe14d',3],['#ffffff',4],['#9a6bff',5]]],
+      ['eye',    'Yeux',        [['#ff2bd6',0],['#00f0ff',0],['#b6ff3b',2],['#ffe14d',3],['#ff4d4d',4],['#ffffff',5]]],
     ],
     accs: [
       { k:'cap',        n:'Casquette',          b:'first'    },

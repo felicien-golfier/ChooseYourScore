@@ -41,7 +41,7 @@ const RW_THEMES = {
       ['eye',    'Yeux',        [['#ff2bd6',0],['#00f0ff',0],['#b6ff3b',2],['#ffe14d',3],['#ff4d4d',4],['#ffffff',5]]],
     ],
     accs: [
-      { k:'cap',        n:'Casquette',          b:'first'    },
+      { k:'scarf',      n:'Écharpe',            b:'first'    },
       { k:'headphones', n:'Casque audio',       b:'five'     },
       { k:'shades',     n:'Lunettes',           b:'record'   },
       { k:'cape',       n:'Cape',               b:'stars'    },

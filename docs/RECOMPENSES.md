@@ -40,7 +40,7 @@ Les noms des badges sont **épicènes** (le même mot pour une fille et un garç
 
 | Badge (objectif par défaut) | Robot | Légume |
 |---|---|---|
-| Premier pas (1 exercice) | Casquette | Bandeau de héros |
+| Premier pas (1 exercice) | Écharpe | Bandeau de héros |
 | Fidèle (5) | Casque audio | Dents de lapin |
 | Infatigable (25) | Jetpack | Fourchette géante |
 | Inarrêtable (50) | Drone compagnon | Petits pois copains |

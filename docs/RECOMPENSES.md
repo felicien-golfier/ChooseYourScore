@@ -62,3 +62,5 @@ Les noms des badges sont **épicènes** (le même mot pour une fille et un garç
 **Ajouter un univers** : ajouter une entrée dans `RW_THEMES` (vocabulaire, modèles, couleurs, accessoires, fonctions de dessin), un fichier de dessin et un bloc CSS `.rw-t-<univers>`. L'option `genders: true` ajoute un choix fille / garçon qui accorde le vocabulaire.
 
 **Historique** : deux univers ont été essayés puis retirés, « Créatures magiques » (jugé peu parlant) puis « Sorciers ». Un patient resté sur un univers retiré revient automatiquement aux robots.
+
+**Accessoires par robot** (chantier en cours, Orbe prototypé) : voir `docs/ROBOTS-ACCESSOIRES.md`.

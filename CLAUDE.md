@@ -96,3 +96,7 @@ Si une fonctionnalité apparaît à plusieurs endroits (ex : boutons ↑/↓ pou
 ### Toute liste doit être réordonnable
 
 Dès qu'un élément est affiché dans une liste ordonnée et que l'utilisateur pourrait vouloir en changer l'ordre, des boutons ↑/↓ doivent être présents, en utilisant `makeReorderBtns`.
+
+## Récompenses (robots / super-légumes)
+
+Avant de toucher au compagnon, à l'XP ou aux badges, lire `docs/RECOMPENSES.md` (résumé des règles et décisions).

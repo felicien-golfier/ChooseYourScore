@@ -19,7 +19,8 @@ function rwShade(hex,a){
 function rwStarPts(cx,cy,r){let p=[];for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.45:r;p.push((cx+rr*Math.cos(a)).toFixed(1)+','+(cy+rr*Math.sin(a)).toFixed(1))}return p.join(' ')}
 
 function rwRobotSvg(o){
-  const {species:sp,stage:st,body:B,accent:A,eye:E,acc,uid}=o;
+  const {species:sp,stage:st,body:B,accent:A,eye:E,uid}=o;
+  const orb=sp==='orb'?rwOrbAccs({acc:o.acc||{},A,E,B,st}):null, acc=orb?{}:o.acc;
   const S=RW_ROBOT_SPECIES[sp], D=rwShade(B,-.4), L=rwShade(B,.3), gold='#ffffff', K=st>=5?'#ffffff':A, W=3;
   const eye=(x,y,r)=>`<circle cx="${x}" cy="${y}" r="${r+4}" fill="${E}" opacity=".22"/><circle cx="${x}" cy="${y}" r="${r}" fill="${E}"/><circle cx="${x-r*.3}" cy="${y-r*.3}" r="${r*.28}" fill="#fff" opacity=".8"/>`;
   const sc=[.8,.86,.92,.98,1][st-1];
@@ -89,7 +90,8 @@ function rwRobotSvg(o){
   if(acc.drone&&st>=2){
     s+=`<g class="rw-dro"><line x1="150" y1="70" x2="124" y2="96" stroke="${A}" stroke-width="1.2" stroke-dasharray="2 4" opacity=".6"/><rect x="143" y="45" width="6" height="4" rx="2" fill="${A}"/><rect x="171" y="45" width="6" height="4" rx="2" fill="${A}"/><circle cx="160" cy="54" r="11" fill="${B}" stroke="${A}" stroke-width="2.5"/><circle cx="160" cy="54" r="6" fill="#05050c"/><circle cx="160" cy="54" r="3.2" fill="${E}"/><polygon points="157,66 163,66 160,74" fill="${E}" class="rw-flick"/></g>`;
   }
-  s+=`</g></g></svg>`;
+  if(orb) s+=orb.head;
+  s+=`</g>${orb?orb.outer:''}</g></svg>`;
   return s;
 }
 

@@ -7,7 +7,7 @@
    le niveau : réacteur (niveau 1 = soucoupe) et courants d'énergie (ailes au niveau 5).
    ──────────────────────────────────────────────────────────────────────────── */
 
-function rwOrbAccs({ acc, A, E, B, st }) {
+function rwOrbAccs({ acc, A, E, B, st, uid }) {
   const dark = rwShade(A, -.45);
   let head = '', outer = '';
 
@@ -22,7 +22,9 @@ function rwOrbAccs({ acc, A, E, B, st }) {
   }
 
   if (acc.bubble) {
-    outer += `<circle cx="100" cy="122" r="96" fill="${A}" fill-opacity=".06" stroke="${A}" stroke-width="2" opacity=".9"/><path d="M38 78 Q46 44 78 30" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round" opacity=".6"/><path d="M160 190 Q176 170 182 148" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".35"/>`;
+    const g = rwShieldGrad(uid, A, E, st);
+    outer += g.defs + `<circle cx="100" cy="122" r="96" fill="${g.fill}" stroke="${g.stroke}" stroke-width="3"/>`;
+    outer += `<path d="M38 78 Q46 44 78 30" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round" opacity=".6"/><path d="M160 190 Q176 170 182 148" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".35"/>`;
   }
   if (acc.comet) {
     outer += `<g transform="translate(60 31) scale(1.3) translate(-60 -31)"><path d="M60 31 L16 12" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".25"/><path d="M60 31 L26 17" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".5"/><path d="M60 31 L36 21" stroke="${A}" stroke-width="2" stroke-linecap="round"/><polygon points="${rwStarPts(62, 32, 8)}" fill="#fff"/></g>`;

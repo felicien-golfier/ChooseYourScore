@@ -13,8 +13,8 @@ let rwModalTab = 'look';
 
 function rwCompanionFor(patient, ev, over = {}) {
   const r = getReward(patient), T = rwTheme(r);
-  const acc = {};
-  T.accs.forEach(a => { acc[a.k] = !!r.acc[a.k] && ev.on.has(a.b); });
+  const acc = {}, sp = over.species || r.species, own = r.acc[sp] || {};
+  rwAccsOf(r, sp).forEach(a => { acc[a.k] = !!own[a.k] && ev.on.has(a.b); });
   return T.draw({ ...rwLookOf(r), stage: ev.stage, acc, uid: 'u' + (++rwUidCount), ...over });
 }
 
@@ -71,19 +71,21 @@ function rwSwatches(kind, list, current, stage) {
 
 function rwTabLook(patient, r, ev) {
   const T = rwTheme(r), w = rwWords(r);
-  const species = T.order.map(k =>
-    '<button type="button" class="rw-sp" data-species="' + k + '" aria-pressed="' + (r.species === k) + '">' +
-    rwCompanionFor(patient, ev, { species: k, stage: 3, acc: {} }) + '<small>' + w.species(k) + '</small></button>'
-  ).join('');
+  const species = T.order.map(k => {
+    const done = rwRobotComplete(rwEvaluate(patient, undefined, k));
+    return '<button type="button" class="rw-sp' + (done ? ' done' : '') + '" data-species="' + k + '" aria-pressed="' + (r.species === k) + '">' +
+      rwCompanionFor(patient, ev, { species: k, stage: 3, acc: {} }) + '<small>' + w.species(k) + (done ? ' · complet ★' : '') + '</small></button>';
+  }).join('');
   const genders = !T.genders ? '' : '<div class="rw-field"><span>Personnage</span><div class="rw-genders">' +
     [['f', 'Fille'], ['m', 'Garçon']].map(([g, label]) =>
       '<button type="button" class="rw-sp" data-gender="' + g + '" aria-pressed="' + (r.gender === g) + '">' +
       rwCompanionFor(patient, ev, { gender: g, stage: 3, acc: {} }) + '<small>' + label + '</small></button>').join('') + '</div></div>';
-  const accs = T.accs.map(a => {
+  const own = r.acc[r.species] || {};
+  const accs = rwAccsOf(r).map(a => {
     const ok = ev.on.has(a.b), bd = RW_BADGES.find(b => b.id === a.b);
     return '<button type="button" class="rw-acc' + (ok ? '' : ' locked') + '" data-acc="' + a.k + '"' +
-      ' aria-pressed="' + (ok && !!r.acc[a.k]) + '"' + (ok ? '' : ' disabled') + '>' +
-      '<b>' + a.n + '</b><small>' + (ok ? (r.acc[a.k] ? 'Équipé' : 'Débloqué') : 'Badge « ' + escapeHtml(bd.n) + ' »') + '</small></button>';
+      ' aria-pressed="' + (ok && !!own[a.k]) + '"' + (ok ? '' : ' disabled') + '>' +
+      '<b>' + a.n + '</b><small>' + (ok ? (own[a.k] ? 'Équipé' : 'Débloqué') : 'Badge « ' + escapeHtml(bd.n) + ' »') + '</small></button>';
   }).join('');
   return '<div class="rw-field"><span>Univers</span>' + rwThemePicker(r) + '</div>' +
     genders +
@@ -115,7 +117,8 @@ function rwBadgeCard(b, r, ev) {
 function rwTabBadges(patient, r, ev) {
   const fam = (f, title) => '<div class="rw-fam"><h4>' + title + '</h4><div class="rw-badges">' +
     RW_BADGES.filter(b => b.fam === f).map(b => rwBadgeCard(b, r, ev)).join('') + '</div></div>';
-  return fam('e', 'Effort · pour tout le monde') + fam('x', 'Exploits · pour se dépasser');
+  return '<p class="rw-hint">Les badges se gagnent avec le modèle choisi. Quand il les a tous, il est complet : on peut en adopter un autre pour les collectionner tous.</p>' +
+    fam('e', 'Effort · pour tout le monde') + fam('x', 'Exploits · pour se dépasser');
 }
 
 function renderRewardModal() {
@@ -155,7 +158,10 @@ function rwModalClick(e) {
   else if (gd) rwSetGender(r, gd.dataset.gender);
   else if (sp) r.species = sp.dataset.species;
   else if (col) r[col.dataset.color] = col.dataset.value;
-  else if (acc) r.acc[acc.dataset.acc] = !r.acc[acc.dataset.acc];
+  else if (acc) {
+    const own = r.acc[r.species] || (r.acc[r.species] = {});
+    own[acc.dataset.acc] = !own[acc.dataset.acc];
+  }
   else return;
   savePatients();
   renderRewardModal();
@@ -190,16 +196,17 @@ function showRewardResult(session) {
   if (!el) return;
   const info = rwOnSessionSaved(session);
   if (!info) { el.style.display = 'none'; el.innerHTML = ''; return; }
-  const { patient, gain, newBadges, levelUp, ev } = info;
+  const { patient, gain, newBadges, levelUp, robotDone, ev } = info;
   const r = getReward(patient);
   const pool = gain.record ? RW_MESSAGES.record : gain.stars >= 2 ? RW_MESSAGES.good : RW_MESSAGES.basic;
   const msg = pool[Math.floor(Math.random() * pool.length)];
   const line = (label, xp) => '<li><span>' + label + '</span><b>+' + xp + ' XP</b></li>';
-  const newAccs = rwTheme(r).accs.filter(a => newBadges.some(b => b.id === a.b));
+  const newAccs = rwAccsOf(r).filter(a => newBadges.some(b => b.id === a.b));
   const chips = [
     levelUp ? 'Niveau ' + levelUp + ' · ' + rwStageName(r, levelUp) + ' !' : '',
     ...newBadges.map(b => 'Nouveau badge · ' + b.n),
     ...newAccs.map(a => 'Nouvel accessoire · ' + a.n),
+    robotDone ? 'Collection complète · ' + rwWords(r).species(r.species) + ' ! Tu peux en adopter un autre' : '',
   ].filter(Boolean).map(c => '<span class="rw-chip">' + escapeHtml(c) + '</span>').join('');
   el.innerHTML = '<div class="' + rwThemeClass(r) + ' rw-result"><div class="rw-result-bot">' + rwCompanionFor(patient, ev) + '</div>' +
     '<div class="rw-result-body"><p class="rw-bubble">' + escapeHtml(r.name) + ' : « ' + msg + ' »</p>' +
@@ -275,7 +282,7 @@ function renderPatientReward(patient) {
   const themeField = document.createElement('div');
   themeField.className = 'form-group';
   themeField.innerHTML = '<span class="editor-section-label">Univers</span>' + rwThemePicker(r) +
-    '<p class="rw-fiche-hint">Changer d\'univers garde l\'XP, les niveaux et les badges ; l\'apparence de chaque univers est conservée.</p>';
+    '<p class="rw-fiche-hint">Changer d\'univers garde l\'XP et les niveaux ; badges et accessoires sont propres à chaque modèle, et l\'apparence de chaque univers est conservée.</p>';
   themeField.addEventListener('click', e => {
     const th = e.target.closest('[data-universe]');
     if (!th) return;

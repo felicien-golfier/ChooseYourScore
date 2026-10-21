@@ -28,7 +28,8 @@ const RW_BADGES = [
 ];
 // Univers du compagnon : même progression (XP, niveaux, badges), dessin et vocabulaire propres.
 // words(gender) : vocabulaire, accordé quand l'univers propose fille / garçon (genders).
-// colors : [clé, libellé, [[couleur, niveau requis], …]] ; accs : k = clé du dessin, b = badge qui le débloque.
+// colors : [clé, libellé, [[couleur, niveau requis], …]] ; accs : k = clé du dessin, b = badge qui le débloque
+// (speciesAccs : liste propre à un modèle, voir rwAccsOf).
 const RW_THEMES = {
   robot: {
     label: 'Robots', genders: false,
@@ -49,6 +50,20 @@ const RW_THEMES = {
       { k:'jetpack',    n:'Jetpack',            b:'marathon' },
       { k:'drone',      n:'Drone compagnon',    b:'titan'    },
     ],
+    // Accessoires propres à un modèle (thème « explorateur de l'espace » pour l'Orbe, dessin : rewards-robot-orb.js).
+    // Les modèles sans entrée ici gardent la liste ci-dessus.
+    speciesAccs: {
+      orb: [
+        { k:'twinkle', n:'Antenne scintillante', b:'first'    },
+        { k:'visor',   n:'Lunettes bandeau',     b:'five'     },
+        { k:'comet',   n:'Étoile filante',       b:'marathon' },
+        { k:'thrust',  n:'Réacteur embrasé',     b:'titan'    },
+        { k:'scepter', n:'Sceptre de Saturne',   b:'record'   },
+        { k:'drone',   n:'Drone compagnon',      b:'stars'    },
+        { k:'bubble',  n:'Bulle de protection',  b:'perfect'  },
+        { k:'wingfx',  n:"Ailes d'énergie",      b:'triple'   },
+      ],
+    },
   },
   veggie: {
     label: 'Légumes super-héros', genders: false,
@@ -73,6 +88,8 @@ const RW_THEMES = {
 
 function rwTheme(r) { return RW_THEMES[r.theme] || RW_THEMES.robot; }
 function rwWords(r) { return rwTheme(r).words(r.gender); }
+// Accessoires d'un modèle : sa liste propre si l'univers en définit une, sinon celle de l'univers.
+function rwAccsOf(r, species = r.species) { const T = rwTheme(r); return (T.speciesAccs && T.speciesAccs[species]) || T.accs; }
 
 // Apparence d'un patient dans son univers actuel : modèle, couleurs, accessoires, nom.
 function rwLookOf(r) {
@@ -123,7 +140,18 @@ function getReward(patient) {
   const defaults = { enabled: false, pace: 1, xpPeak: 0, unlocked: {}, goals: {}, ...rwDefaultLook(r.theme) };
   Object.keys(defaults).forEach(k => { if (r[k] === undefined) r[k] = defaults[k]; });
   Object.entries(rwDefaultGoals()).forEach(([id, g]) => { if (r.goals[id] === undefined) r.goals[id] = g; });
+  // Collection par modèle : badges acquis (unlocked) et accessoires équipés (acc) sont rangés par modèle.
+  // Avant, ils étaient à plat (un seul compagnon) : ils vont au modèle actuel, les autres repartent de zéro.
+  if (Object.values(r.unlocked).some(v => typeof v === 'string')) r.unlocked = { [r.species]: r.unlocked };
+  rwNestAcc(r);
+  Object.values(r.looks || {}).forEach(rwNestAcc);
+  // Les exercices d'avant la collection par modèle n'ont pas de `robot` : ils comptent pour ce modèle-là.
+  if (!r.legacyRobot) r.legacyRobot = r.species;
   return r;
+}
+
+function rwNestAcc(look) {
+  if (look.acc && Object.values(look.acc).some(v => typeof v === 'boolean')) look.acc = { [look.species]: look.acc };
 }
 
 function rwSessionsOf(patient) {
@@ -137,9 +165,10 @@ function rwSessionsOf(patient) {
 // Un record = meilleur ratio que tous les essais précédents du même exercice
 // (le premier essai d'un exercice n'est jamais un record). Refaire un exercice déjà
 // terminé rapporte RW_XP.repeat au lieu de RW_XP.base. `per` : gains par session.
-function rwAnalyze(list) {
+// `robots` : compteurs des badges par modèle (s.robot, ou `legacy` pour les exercices d'avant).
+function rwAnalyze(list, legacy) {
   const best = {};
-  const out = { n: 0, stars3: 0, perfect: 0, records: 0, xp: 0, per: {} };
+  const out = { n: 0, stars3: 0, perfect: 0, records: 0, xp: 0, per: {}, robots: {} };
   list.forEach(s => {
     const ratio = s.totalPairs > 0 ? s.score / s.totalPairs : 0;
     const stars = starsForRatio(ratio);
@@ -152,11 +181,12 @@ function rwAnalyze(list) {
     const gain = { first, base: first ? RW_XP.base : RW_XP.repeat, stars, starsXp: stars * RW_XP.perStar, record, recordXp: record ? RW_XP.record : 0 };
     gain.total = gain.base + gain.starsXp + gain.recordXp;
     out.per[s.id] = gain;
-    out.n++; out.xp += gain.total;
-    if (record) out.records++;
+    const mine = out.robots[s.robot || legacy] || (out.robots[s.robot || legacy] = { n: 0, stars3: 0, perfect: 0, records: 0 });
+    out.n++; mine.n++; out.xp += gain.total;
+    if (record) { out.records++; mine.records++; }
     if (sub) return;
-    if (stars === 3) out.stars3++;
-    if (s.totalPairs > 0 && s.score === s.totalPairs) out.perfect++;
+    if (stars === 3) { out.stars3++; mine.stars3++; }
+    if (s.totalPairs > 0 && s.score === s.totalPairs) { out.perfect++; mine.perfect++; }
   });
   return out;
 }
@@ -169,15 +199,20 @@ function rwStageOf(xp, pace) {
   return stage;
 }
 
-// État courant : badges (acquis mémorisés + objectifs atteints), XP (jamais en baisse), niveau.
-function rwEvaluate(patient, list) {
-  const r = getReward(patient);
-  const stats = rwAnalyze(list || rwSessionsOf(patient));
-  const on = new Set(Object.keys(r.unlocked));
-  RW_BADGES.forEach(b => { if (stats[b.stat] >= r.goals[b.id]) on.add(b.id); });
-  const xp = Math.max(stats.xp, r.xpPeak || 0);
-  return { stats, on, xp, stage: rwStageOf(xp, r.pace) };
+// État courant : badges du modèle `species` (le modèle actuel par défaut ; acquis mémorisés + objectifs
+// atteints, chaque modèle a sa propre collection), XP et niveau communs (l'XP ne baisse jamais).
+function rwEvaluate(patient, list, species) {
+  const r = getReward(patient), sp = species || r.species;
+  const all = rwAnalyze(list || rwSessionsOf(patient), r.legacyRobot);
+  const mine = all.robots[sp] || { n: 0, stars3: 0, perfect: 0, records: 0 };
+  const on = new Set(Object.keys(r.unlocked[sp] || {}));
+  RW_BADGES.forEach(b => { if (mine[b.stat] >= r.goals[b.id]) on.add(b.id); });
+  const xp = Math.max(all.xp, r.xpPeak || 0);
+  return { stats: { ...mine, per: all.per }, on, xp, stage: rwStageOf(xp, r.pace) };
 }
+
+// Le modèle a tous ses badges : sa collection est complète, on peut en adopter un autre.
+function rwRobotComplete(ev) { return RW_BADGES.every(b => ev.on.has(b.id)); }
 
 // À appeler une fois la session enregistrée : mémorise XP et badges, renvoie ce qui est nouveau.
 function rwOnSessionSaved(session) {
@@ -185,17 +220,21 @@ function rwOnSessionSaved(session) {
   const patient = patients.find(p => p.id === session.patientId);
   if (!patient || !getReward(patient).enabled) return null;
   const r = patient.reward;
+  // L'exercice compte pour le modèle actif au moment où il est terminé.
+  if (!session.robot) { session.robot = r.species; saveSessions(); }
   const all = rwSessionsOf(patient);
   const before = rwEvaluate(patient, all.filter(s => s.id !== session.id));
   const after = rwEvaluate(patient, all);
   r.xpPeak = Math.max(r.xpPeak || 0, after.xp);
   const now = new Date().toISOString();
-  after.on.forEach(id => { if (!r.unlocked[id]) r.unlocked[id] = now; });
+  const owned = r.unlocked[session.robot] || (r.unlocked[session.robot] = {});
+  after.on.forEach(id => { if (!owned[id]) owned[id] = now; });
   savePatients();
   return {
     patient, session, ev: after,
     gain: after.stats.per[session.id],
     newBadges: RW_BADGES.filter(b => after.on.has(b.id) && !before.on.has(b.id)),
     levelUp: after.stage > before.stage ? after.stage : 0,
+    robotDone: rwRobotComplete(after) && !rwRobotComplete(before),
   };
 }

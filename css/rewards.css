@@ -130,6 +130,8 @@ body.no-answer-anim .rw-hero-bot, body.no-answer-anim .rw-result-bot { animation
   background: var(--rw-surface-2); border: 2px solid transparent; border-radius: 8px; cursor: pointer;
   padding: 6px 4px 8px; display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0; color: var(--rw-text);
 }
+.rw-sp.done { border-color: #ffd24d; }
+.rw-sp.done small { color: #ffd24d; }
 .rw-sp svg { width: 100%; max-width: 72px; height: auto; }
 .rw-sp small { font: 600 0.72rem var(--rw-display); text-transform: uppercase; letter-spacing: 0.08em; }
 .rw-sp[aria-pressed="true"], .rw-acc[aria-pressed="true"] {

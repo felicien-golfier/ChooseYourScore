@@ -20,14 +20,18 @@
 .rw-flick { animation: rw-flick 0.14s steps(2) infinite alternate; }
 .rw-pulse { animation: rw-pulse 2.4s ease-in-out infinite; transform-origin: 100px 125px; }
 .rw-dro   { animation: rw-bob 2.4s ease-in-out infinite; }
+.rw-wingfx { stroke-dasharray: 9 11; animation: rw-wingfx 1.2s linear infinite; }
+.rw-twinkle { animation: rw-twinkle 1.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
 .rw-hero-bot, .rw-result-bot { animation: rw-bob 3s ease-in-out infinite; }
 @keyframes rw-flick { to { opacity: 0.6; } }
 @keyframes rw-pulse { 50% { opacity: 0.55; } }
 @keyframes rw-bob   { 50% { transform: translateY(-6px); } }
-body.no-answer-anim .rw-flick, body.no-answer-anim .rw-pulse, body.no-answer-anim .rw-dro,
+@keyframes rw-wingfx { to { stroke-dashoffset: -20; } }
+@keyframes rw-twinkle { 50% { transform: scale(.45) rotate(45deg); opacity: 0.35; } }
+body.no-answer-anim .rw-flick, body.no-answer-anim .rw-pulse, body.no-answer-anim .rw-dro, body.no-answer-anim .rw-twinkle, body.no-answer-anim .rw-wingfx,
 body.no-answer-anim .rw-hero-bot, body.no-answer-anim .rw-result-bot { animation: none; }
 @media (prefers-reduced-motion: reduce) {
-  .rw-flick, .rw-pulse, .rw-dro, .rw-hero-bot, .rw-result-bot { animation: none; }
+  .rw-flick, .rw-pulse, .rw-dro, .rw-twinkle, .rw-wingfx, .rw-hero-bot, .rw-result-bot { animation: none; }
 }
 
 /* ── Fenêtre ─────────────────────────────────────────────────────────────── */
@@ -126,6 +130,8 @@ body.no-answer-anim .rw-hero-bot, body.no-answer-anim .rw-result-bot { animation
   background: var(--rw-surface-2); border: 2px solid transparent; border-radius: 8px; cursor: pointer;
   padding: 6px 4px 8px; display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0; color: var(--rw-text);
 }
+.rw-sp.done { border-color: #ffd24d; }
+.rw-sp.done small { color: #ffd24d; }
 .rw-sp svg { width: 100%; max-width: 72px; height: auto; }
 .rw-sp small { font: 600 0.72rem var(--rw-display); text-transform: uppercase; letter-spacing: 0.08em; }
 .rw-sp[aria-pressed="true"], .rw-acc[aria-pressed="true"] {

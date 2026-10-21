@@ -20,7 +20,6 @@ function rwStarPts(cx,cy,r){let p=[];for(let i=0;i<10;i++){const a=-Math.PI/2+i*
 
 function rwRobotSvg(o){
   const {species:sp,stage:st,body:B,accent:A,eye:E,uid}=o;
-  const combat=sp==='orb'&&o.acc&&o.acc.combat;
   const orb=sp==='orb'?rwOrbAccs({acc:o.acc||{},A,E,B,st}):null, acc=orb?{drone:o.acc&&o.acc.drone}:o.acc;
   const S=RW_ROBOT_SPECIES[sp], D=rwShade(B,-.4), L=rwShade(B,.3), gold='#ffffff', K=st>=5?'#ffffff':A, W=3;
   const eye=(x,y,r)=>`<circle cx="${x}" cy="${y}" r="${r+4}" fill="${E}" opacity=".22"/><circle cx="${x}" cy="${y}" r="${r}" fill="${E}"/><circle cx="${x-r*.3}" cy="${y-r*.3}" r="${r*.28}" fill="#fff" opacity=".8"/>`;
@@ -28,7 +27,7 @@ function rwRobotSvg(o){
   let s=`<svg viewBox="0 0 200 240" role="img" aria-label="Robot ${S.label}"><defs><filter id="gl${uid}" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur in="SourceAlpha" stdDeviation="2.6" result="b"/><feFlood flood-color="${A}" flood-opacity=".75"/><feComposite in2="b" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter><radialGradient id="au${uid}"><stop offset="0" stop-color="${A}" stop-opacity=".55"/><stop offset="1" stop-color="${A}" stop-opacity="0"/></radialGradient></defs>`;
   if(st>=5) s+=`<circle class="rw-pulse" cx="100" cy="125" r="100" fill="url(#au${uid})"/>`;
   s+=`<ellipse cx="100" cy="214" rx="${sp==='tank'?56:38}" ry="7" fill="#000" opacity=".35"/>`;
-  s+=`<g filter="url(#gl${uid})" transform="translate(100 214) scale(${sc}) translate(-100 -214)${combat?' rotate(-6 100 214)':''}">`;
+  s+=`<g filter="url(#gl${uid})" transform="translate(100 214) scale(${sc}) translate(-100 -214)">`;
   const bw=S.bw, nk=S.neck;
   if(st>=5){
     const wl=`M${100-bw/2} ${nk+8} L14 66 L24 108 L8 126 L34 140 L${100-bw/2} 152 Z`;
@@ -52,11 +51,10 @@ function rwRobotSvg(o){
     if(sp==='orb') s+=`<path d="M86 164 L114 164 L108 182 L92 182 Z" fill="${D}"/><polygon points="94,182 106,182 100,200" fill="${A}"/><polygon points="97,182 103,182 100,192" fill="#fff" opacity=".8"/>`;
     if(sp==='tank') s+=`<rect x="46" y="158" width="108" height="46" rx="23" fill="#202034" stroke="${K}" stroke-width="3"/>`+[70,100,130].map(x=>`<circle cx="${x}" cy="181" r="11" fill="${L}" stroke="${D}" stroke-width="2.5"/><circle cx="${x}" cy="181" r="3.5" fill="${A}"/>`).join('');
     // bras
-    if(st>=3||(combat&&st>=2)){
+    if(st>=3){
       const [x1,y1,x2,y2,w]=RW_ARM[sp];
-      // pose de combat : le bras gauche se lève
-      [[x1,combat?36:x2,combat?92:y2],[200-x1,200-x2,y2]].forEach(([a,b,ye])=>{
-        s+=`<line x1="${a}" y1="${y1}" x2="${b}" y2="${ye}" stroke="${K}" stroke-width="${w+4}" stroke-linecap="round"/><line x1="${a}" y1="${y1}" x2="${b}" y2="${ye}" stroke="${B}" stroke-width="${w}" stroke-linecap="round"/><circle cx="${b}" cy="${ye}" r="${w/2+2}" fill="${A}" stroke="${K}" stroke-width="2.5"/>`;
+      [[x1,x2],[200-x1,200-x2]].forEach(([a,b])=>{
+        s+=`<line x1="${a}" y1="${y1}" x2="${b}" y2="${y2}" stroke="${K}" stroke-width="${w+4}" stroke-linecap="round"/><line x1="${a}" y1="${y1}" x2="${b}" y2="${y2}" stroke="${B}" stroke-width="${w}" stroke-linecap="round"/><circle cx="${b}" cy="${y2}" r="${w/2+2}" fill="${A}" stroke="${K}" stroke-width="2.5"/>`;
       });
     }
     // corps
@@ -76,7 +74,7 @@ function rwRobotSvg(o){
     }
   }
   // tête
-  s+=`<g transform="translate(${combat?4:0} ${st===1?70:0})">`;
+  s+=`<g transform="translate(0 ${st===1?70:0})">`;
   if(sp==='bolt') s+=`<line x1="100" y1="46" x2="100" y2="31" stroke="${K}" stroke-width="4" stroke-linecap="round"/><circle cx="100" cy="27" r="6" fill="${A}" stroke="${K}" stroke-width="2"/><rect x="68" y="44" width="64" height="58" rx="12" fill="${B}" stroke="${K}" stroke-width="${W}"/><rect x="73" y="48" width="54" height="5" rx="2.5" fill="${L}" opacity=".7"/><rect x="77" y="57" width="46" height="31" rx="9" fill="#0b0b16"/>${eye(90,72,7)}${eye(110,72,7)}`;
   if(sp==='orb') s+=`<line x1="100" y1="44" x2="100" y2="31" stroke="${K}" stroke-width="4" stroke-linecap="round"/><circle cx="100" cy="27" r="5" fill="${A}" stroke="${K}" stroke-width="2"/><circle cx="100" cy="76" r="34" fill="${B}" stroke="${K}" stroke-width="${W}"/><path d="M78 56 Q90 48 104 47" stroke="${L}" stroke-width="5" stroke-linecap="round" fill="none" opacity=".7"/><circle cx="100" cy="78" r="22" fill="#05050c" stroke="${D}" stroke-width="1.5"/><circle cx="100" cy="78" r="17" fill="none" stroke="${E}" stroke-width="1.5" stroke-dasharray="5 3" opacity=".8"/><path d="M100 52 V58 M100 98 V104 M74 78 H80 M120 78 H126" stroke="${A}" stroke-width="2" stroke-linecap="round"/>${eye(100,78,9)}`;
   if(sp==='spike') s+=`<polygon points="66,102 66,60 76,38 92,58 108,58 124,38 134,60 134,102" fill="${B}" stroke="${K}" stroke-width="${W}" stroke-linejoin="round"/><polygon points="74,72 126,72 122,93 78,93" fill="#0b0b16" stroke="${D}" stroke-width="1.5" stroke-linejoin="round"/>${eye(88,82,6.5)}${eye(112,82,6.5)}<polygon points="76,44 76,56 84,52" fill="${A}"/><polygon points="124,44 124,56 116,52" fill="${A}"/>`;

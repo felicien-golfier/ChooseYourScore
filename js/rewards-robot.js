@@ -18,9 +18,19 @@ function rwShade(hex,a){
 }
 function rwStarPts(cx,cy,r){let p=[];for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.45:r;p.push((cx+rr*Math.cos(a)).toFixed(1)+','+(cy+rr*Math.sin(a)).toFixed(1))}return p.join(' ')}
 
+// Dégradé des boucliers (bouclier d'énergie, bulle de l'Orbe) : la puissance se lit dans la densité vers le bord,
+// plus intense à chaque niveau. Renvoie les defs à insérer et les valeurs fill / stroke à utiliser.
+function rwShieldGrad(uid,A,E,st){
+  const pw=.3+.1*st;
+  return {
+    defs:`<defs><radialGradient id="sh${uid}"><stop offset=".5" stop-color="${A}" stop-opacity="0"/><stop offset=".82" stop-color="${A}" stop-opacity="${(pw*.55).toFixed(2)}"/><stop offset="1" stop-color="${E}" stop-opacity="${pw.toFixed(2)}"/></radialGradient><linearGradient id="shs${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".5" stop-color="${A}"/><stop offset="1" stop-color="${E}"/></linearGradient></defs>`,
+    fill:`url(#sh${uid})`, stroke:`url(#shs${uid})`
+  };
+}
+
 function rwRobotSvg(o){
   const {species:sp,stage:st,body:B,accent:A,eye:E,uid}=o;
-  const orb=sp==='orb'?rwOrbAccs({acc:o.acc||{},A,E,B,st}):null, acc=orb?{drone:o.acc&&o.acc.drone}:o.acc;
+  const orb=sp==='orb'?rwOrbAccs({acc:o.acc||{},A,E,B,st,uid}):null, acc=orb?{drone:o.acc&&o.acc.drone}:o.acc;
   const S=RW_ROBOT_SPECIES[sp], D=rwShade(B,-.4), L=rwShade(B,.3), gold='#ffffff', K=st>=5?'#ffffff':A, W=3;
   const eye=(x,y,r)=>`<circle cx="${x}" cy="${y}" r="${r+4}" fill="${E}" opacity=".22"/><circle cx="${x}" cy="${y}" r="${r}" fill="${E}"/><circle cx="${x-r*.3}" cy="${y-r*.3}" r="${r*.28}" fill="#fff" opacity=".8"/>`;
   const sc=[.8,.86,.92,.98,1][st-1];
@@ -85,7 +95,9 @@ function rwRobotSvg(o){
   if(acc.scarf){const sw=bw+10, sd=rwShade(A,-.45), tx=100+bw/2-8; s+=`<path d="M${tx} ${nk+6} L${tx+14} ${nk+6} L${tx+17} ${nk+34} L${tx+7} ${nk+29} L${tx-3} ${nk+34} Z" fill="${A}" stroke="${sd}" stroke-width="2.5" stroke-linejoin="round"/><line x1="${tx+1}" y1="${nk+18}" x2="${tx+14}" y2="${nk+18}" stroke="${sd}" stroke-width="2" opacity=".6"/><rect x="${100-sw/2}" y="${nk-4}" width="${sw}" height="14" rx="7" fill="${rwShade(A,-.15)}" stroke="${sd}" stroke-width="2.5"/><line x1="${100-sw/2+12}" y1="${nk+3}" x2="${100+sw/2-12}" y2="${nk+3}" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".45"/>`;}
   if(acc.shield){
     const e=st===1?[46,56,150]:[74,100,125];
-    s+=`<ellipse cx="100" cy="${e[2]}" rx="${e[0]}" ry="${e[1]}" fill="${A}" fill-opacity=".07" stroke="${A}" stroke-width="2" stroke-dasharray="10 6" opacity=".9"/><path d="M${100-e[0]*.7} ${e[2]-e[1]*.5} Q${100-e[0]*.6} ${e[2]-e[1]*.85} ${100-e[0]*.2} ${e[2]-e[1]*.95}" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".6"/>`;
+    const g=rwShieldGrad(uid,A,E,st);
+    s+=g.defs +
+      `<ellipse cx="100" cy="${e[2]}" rx="${e[0]}" ry="${e[1]}" fill="${g.fill}" stroke="${g.stroke}" stroke-width="3"/><path d="M${100-e[0]*.7} ${e[2]-e[1]*.5} Q${100-e[0]*.6} ${e[2]-e[1]*.85} ${100-e[0]*.2} ${e[2]-e[1]*.95}" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".6"/>`;
   }
   if(acc.drone&&st>=2){
     s+=`<g class="rw-dro"><line x1="150" y1="70" x2="124" y2="96" stroke="${A}" stroke-width="1.2" stroke-dasharray="2 4" opacity=".6"/><rect x="143" y="45" width="6" height="4" rx="2" fill="${A}"/><rect x="171" y="45" width="6" height="4" rx="2" fill="${A}"/><circle cx="160" cy="54" r="11" fill="${B}" stroke="${A}" stroke-width="2.5"/><circle cx="160" cy="54" r="6" fill="#05050c"/><circle cx="160" cy="54" r="3.2" fill="${E}"/><polygon points="157,66 163,66 160,74" fill="${E}" class="rw-flick"/></g>`;

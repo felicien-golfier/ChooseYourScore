@@ -21,7 +21,7 @@ Aujourd'hui les robots partageaient les mêmes accessoires : seule la forme de d
 | Badge (id) | Touche `acc` | Élément |
 |---|---|---|
 | Premier pas (`first`) | `twinkle` | Antenne scintillante : étincelle blanche qui pulse + points brillants |
-| Fidèle (`five`) | `visor` | Lunettes bandeau : verre teinté qui laisse voir l'œil, sangle autour de la tête |
+| Fidèle (`five`) | `visor` | Lunettes bandeau : bandeau opaque avec une fente lumineuse (couleur de l'œil), sangle autour de la tête |
 | Infatigable (`marathon`) | `comet` | Étoile filante en haut à gauche |
 | Inarrêtable (`titan`) | `thrust` | Réacteur embrasé : grande flamme sous le robot (sous la soucoupe au niveau 1) |
 | Nouveau record (`record`) | `scepter` | Sceptre tenu à droite (aligné avec la main dès le niveau 3), pommeau en forme de Saturne |

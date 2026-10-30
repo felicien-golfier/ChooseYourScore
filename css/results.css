@@ -245,3 +245,19 @@ tbody tr:last-child td {
   align-self: flex-end;
   margin-left: auto;
 }
+
+/* ── Détail des items échoués ───────────────────────────────────────────── */
+.failed-items-list { list-style: none; margin: 0 0 24px; padding: 0; text-align: left; display: flex; flex-direction: column; gap: 6px; }
+.failed-items-list li {
+  background: var(--danger-bg); border: 1px solid var(--danger-border, var(--border));
+  border-radius: var(--radius-sm); padding: 8px 14px; font-size: 0.9rem;
+  display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline;
+}
+.failed-item-label { font-weight: 700; color: var(--text-1); }
+.failed-item-q { color: var(--text-2); font-style: italic; }
+.failed-item-detail { color: var(--danger); font-weight: 600; }
+.failed-item-expected { color: var(--success); font-weight: 600; }
+.failed-items-details { margin-top: 6px; }
+.failed-items-details summary { cursor: pointer; font-size: 0.78rem; color: var(--danger); font-weight: 600; }
+.failed-items-details .failed-items-list { margin: 6px 0 0; min-width: 260px; }
+.failed-items-details .failed-items-list li { font-size: 0.78rem; padding: 5px 8px; }

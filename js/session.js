@@ -743,10 +743,22 @@ function finishExercise(isPartial) {
     document.getElementById('naming-res-correct').textContent = formatNamingCorrect(namingStats);
   }
   renderQuestionBreakdown(questionIndexStats);
+  renderFailedItems(newSession);
   if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   showView('session-result');
   if (typeof celebrateResult === 'function') celebrateResult(score, effectiveTotalQuestions);
   if (typeof showRewardResult === 'function') showRewardResult(newSession);
+}
+
+function renderFailedItems(session) {
+  const panel = document.getElementById('failed-items-panel');
+  const body  = document.getElementById('failed-items-body');
+  const { ul, count } = buildFailedItemsList(session, currentExercise);
+  body.innerHTML = '';
+  panel.style.display = count ? 'block' : 'none';
+  if (!count) return;
+  document.getElementById('failed-items-title').textContent = 'Items échoués (' + count + ')';
+  body.appendChild(ul);
 }
 
 function renderQuestionBreakdown(questionIndexStats) {
@@ -1032,6 +1044,8 @@ function finishGoNoGo(isPartial) {
   document.getElementById('gng-misses').textContent                = misses;
   document.getElementById('gng-false-alarms').textContent          = falseAlarms;
   document.getElementById('gng-correct-rejections').textContent    = correctRejections;
+  document.getElementById('question-breakdown-panel').style.display = 'none';
+  renderFailedItems(newSession);
 
   if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   showView('session-result');

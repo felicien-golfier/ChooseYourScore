@@ -276,6 +276,73 @@ function lastFailedPairs(ex, patientId) {
   return pairs.length ? { session: last, pairs } : null;
 }
 
+// Libellé court d'un item (texte, flèche, média) pour le détail des échecs.
+function itemShortLabel(item) {
+  if (!item) return '';
+  if (typeof item === 'string') return item;
+  if (item.type === 'arrow') return ARROW_CHARS[item.arrowDirection || 'left'] || '←';
+  if (item.type === 'image') return item.text || '🖼';
+  if (item.type === 'video') return item.text || '🎬';
+  if (item.type === 'audio') return item.text || '🔊';
+  return item.text || '■';
+}
+
+// Détail des items échoués d'une session : une entrée par réponse notée fausse
+// (hors exemples et 2ᵉ essais), avec l'item concerné et la réponse attendue.
+// Partagé entre l'écran de fin d'exercice et la vue Résultats. ex peut être null
+// (exercice supprimé) : on retombe alors sur un libellé générique.
+function sessionFailedItems(session, ex) {
+  const rows = [];
+  (session.responses || []).forEach(r => {
+    if (r.isExample || r.isRetry || r.isCorrect) return;
+    if (r.type === 'gonogo') {
+      const trial = ((ex && ex.trials) || []).find(t => t.id === r.trialId);
+      rows.push({
+        label: trial ? itemShortLabel(trial.item) : 'Essai',
+        detail: r.isGo ? 'Go raté (omission)' : 'No-Go cliqué (fausse alarme)',
+      });
+      return;
+    }
+    const pair = ((ex && ex.pairs) || []).find(p => p.id === r.pairId);
+    const q = pair && (pair.questions || [])[r.questionIndex];
+    const label = pair ? (pair.items || []).map(itemShortLabel).join(' ') : 'Item';
+    const correct = (r.correctAnswers || [r.correctAnswer]).filter(a => a !== undefined && a !== '').map(a => {
+      if (q && q.type === 'click-item') return itemShortLabel((pair.items || [])[+a]);
+      return ARROW_CHARS[a] || a;
+    });
+    let detail;
+    if (r.type === 'naming') detail = r.attempted ? 'Mot incorrect' : 'Ne sait pas';
+    else if (r.type === 'direction') detail = 'Appuyé ' + (ARROW_CHARS[r.pressed] || r.pressed);
+    else if (q && q.type === 'click-item') detail = 'Cliqué ' + itemShortLabel((pair.items || [])[+r.chosen]);
+    else detail = r.chosen !== undefined && r.chosen !== '' ? 'Répondu « ' + r.chosen + ' »' : '';
+    rows.push({
+      label,
+      question: q && q.questionText ? q.questionText : '',
+      detail,
+      expected: correct.join(' / '),
+    });
+  });
+  return rows;
+}
+
+// Construit la liste HTML des items échoués (vide si aucun échec). Un seul rendu
+// pour l'écran de fin d'exercice et le tableau des résultats.
+function buildFailedItemsList(session, ex) {
+  const rows = sessionFailedItems(session, ex);
+  const ul = document.createElement('ul');
+  ul.className = 'failed-items-list';
+  rows.forEach(row => {
+    const li = document.createElement('li');
+    li.innerHTML =
+      '<span class="failed-item-label">' + escapeHtml(row.label) + '</span>' +
+      (row.question ? ' <span class="failed-item-q">' + escapeHtml(row.question) + '</span>' : '') +
+      (row.detail ? ' <span class="failed-item-detail">' + escapeHtml(row.detail) + '</span>' : '') +
+      (row.expected ? ' <span class="failed-item-expected">attendu : ' + escapeHtml(row.expected) + '</span>' : '');
+    ul.appendChild(li);
+  });
+  return { ul, count: rows.length };
+}
+
 // ── Helpers partagés résultats (vue Résultats, fiche patient, export PDF) ────
 function sessionPct(session) {
   return session.totalPairs > 0 ? Math.round(session.score / session.totalPairs * 100) : 0;

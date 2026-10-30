@@ -125,6 +125,14 @@ function renderTable(filtered) {
       '<td>'+(reaction !== null ? Math.round(reaction)+' ms' : '–')+'</td>'+
       '<td></td>'+
       '<td></td>';
+    const failed = buildFailedItemsList(session, exercises.find(e => e.id === session.exerciseId));
+    if (failed.count) {
+      const det = document.createElement('details');
+      det.className = 'failed-items-details';
+      det.innerHTML = '<summary>' + failed.count + ' échec' + (failed.count > 1 ? 's' : '') + '</summary>';
+      det.appendChild(failed.ul);
+      tr.children[3].appendChild(det);
+    }
     const notesTd = tr.children[8];
     notesTd.contentEditable = 'true';
     notesTd.textContent = session.notes || '';

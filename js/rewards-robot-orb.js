@@ -16,8 +16,9 @@ function rwOrbAccs({ acc, A, E, B, st, uid }) {
       `<circle class="rw-flick" cx="100" cy="27" r="9" fill="${A}" opacity=".35"/><circle cx="119" cy="16" r="2" fill="#fff" class="rw-twinkle"/><circle cx="82" cy="14" r="1.6" fill="#fff" class="rw-twinkle"/>`;
   }
   if (acc.visor) {
-    // lunettes bandeau : le verre laisse voir l'œil, la sangle fait le tour de la tête
-    head += `<rect x="63" y="66" width="74" height="24" rx="10" fill="${E}" fill-opacity=".14" stroke="${A}" stroke-width="3"/>` +
+    // lunettes bandeau : bandeau opaque, seule une fente lumineuse (couleur de l'œil) laisse passer la lumière
+    head += `<rect x="63" y="66" width="74" height="24" rx="10" fill="#0b0b16" stroke="${A}" stroke-width="3"/>` +
+      `<rect x="68" y="73" width="64" height="10" rx="5" fill="${E}" opacity=".22"/><rect x="71" y="75" width="58" height="6" rx="3" fill="${E}"/><rect x="78" y="76.2" width="22" height="1.8" rx=".9" fill="#fff" opacity=".8"/>` +
       `<path d="M69 70 L79 70" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity=".6"/><rect x="60" y="74" width="6" height="16" rx="3" fill="${dark}"/><rect x="134" y="74" width="6" height="16" rx="3" fill="${dark}"/>`;
   }
 

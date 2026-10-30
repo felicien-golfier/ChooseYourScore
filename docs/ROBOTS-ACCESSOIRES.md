@@ -1,4 +1,4 @@
-# Accessoires par robot : récapitulatif (Orbe fait, Cube / Lame / Char à faire)
+# Accessoires par robot : récapitulatif (Orbe et Lame faits, Cube / Char à faire)
 
 Complète `docs/RECOMPENSES.md`. Écrit pour reprendre le chantier sans l'historique de la conversation.
 Le code fait foi en cas de doute.
@@ -35,6 +35,20 @@ Aujourd'hui les robots partageaient les mêmes accessoires : seule la forme de d
 
 La pose de combat (penché, bras levé, laser des lunettes) a été essayée puis retirée de la liste ; elle est dans l'historique git (commit « Orbe : accessoires revus (antenne qui scintille, lunettes bandeau, drone, pose de combat) »).
 
+## Lame : thème « chat ninja » (fait)
+
+7 accessoires (rien pour « Machine à records », le badge existe quand même et compte pour la collection complète). Dessin : `js/rewards-robot-spike.js`, `rwSpikeAccs({acc,A,E,B,st})` renvoie `{back, head, outer}` : `back` derrière le corps (cape), `head` suit la tête, `outer` autour du robot (sabre).
+
+| Badge (id) | Touche `acc` | Élément |
+|---|---|---|
+| Premier pas (`first`) | `cateye` | Œil de chat : pupille fine verticale |
+| Fidèle (`five`) | `whiskers` | Moustaches scintillantes (3 par côté, étoiles qui scintillent au bout) |
+| Infatigable (`marathon`) | `cape` | Cape à l'ourlet ondulé (dès le niveau 2) |
+| Inarrêtable (`titan`) | `headband` | Bandeau de ninja sur le front, plaque métallique, pans qui flottent |
+| Nouveau record (`record`) | `sabre` | Sabre de samouraï : tenu dans la main gauche dès le niveau 3, planté dans le sol avant |
+| Attrape-étoiles (`stars`) | `drone` | Drone en forme d'étoile de ninja qui tourne (`rw-spin`), dès le niveau 2 |
+| Sans faute (`perfect`) | `shield` | Bouclier d'énergie (dessin générique de `rwRobotSvg`) |
+
 ## Où est le code
 
 | Fichier | Rôle |
@@ -47,12 +61,11 @@ La pose de combat (penché, bras levé, laser des lunettes) a été essayée pui
 
 Repères de dessin de l'Orbe (viewBox 200×240) : tête = cercle centre (100,76) rayon 34, antenne de (100,44) à (100,27), œil en (100,78), corps = cercle centre (100,142) rayon 30, ailes niveau 5 : `M72 118 L14 66 L24 108 L8 126 L34 140 L72 152 Z` (et symétrique), flamme du réacteur sous (100,182). Au niveau 1 la tête est décalée de 70 px vers le bas (`translate`), les éléments de `head` suivent, ceux de `outer` non.
 
-## Robots à faire (thèmes validés, accessoires à détailler un par un, avec rendu validé avant implémentation)
+## Robots à faire (Cube et Char ; thèmes validés, accessoires à détailler un par un, avec rendu validé avant implémentation)
 
 | Robot | Thème | Idées d'accessoires |
 |---|---|---|
 | **Cube** | Bricoleur / atelier | lunettes de soudeur relevées sur le front, ceinture d'outils, clé à molette, ressort-pieds, engrenages dans le dos, panneau solaire, boîte à outils |
-| **Lame** (tête de chat) | Chat ninja | bandeau ninja, écharpe qui flotte, katana dans le dos, queue de chat articulée, shurikens, moustaches lumineuses, griffes |
 | **Char** (chenilles) | Engin de chantier / explorateur | pelle de bulldozer, gyrophare à côté de l'antenne, phares, remorque ou benne, drapeau, blindage rivetté, tourelle-lanterne |
 
 Pour chacun : 8 éléments (un par badge, dont « Machine à records » qui peut être une pose, un effet ou un objet propre à sa personnalité), un trait propre (mouvement, forme, petite animation), deux rendus quand un effet dépend du niveau. À ajouter : une entrée dans `speciesAccs`, un fichier `js/rewards-robot-<modèle>.js`, l'appel dans `rwRobotSvg`, `?v=` incrémenté, planche de rendu, test Chromium. **Légumes** : même démarche après les robots.

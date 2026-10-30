@@ -30,7 +30,9 @@ function rwShieldGrad(uid,A,E,st){
 
 function rwRobotSvg(o){
   const {species:sp,stage:st,body:B,accent:A,eye:E,uid}=o;
-  const orb=sp==='orb'?rwOrbAccs({acc:o.acc||{},A,E,B,st,uid}):null, acc=orb?{drone:o.acc&&o.acc.drone}:o.acc;
+  // Orbe et Lame ont leurs propres accessoires (un fichier chacun) ; le drone (Orbe) et le bouclier (Lame) sont réutilisés tels quels.
+  const orb=sp==='orb'?rwOrbAccs({acc:o.acc||{},A,E,B,st,uid}):null, spike=sp==='spike'?rwSpikeAccs({acc:o.acc||{},A,E,B,st,uid}):null;
+  const acc=orb?{drone:o.acc&&o.acc.drone}:spike?{shield:o.acc&&o.acc.shield}:o.acc;
   const S=RW_ROBOT_SPECIES[sp], D=rwShade(B,-.4), L=rwShade(B,.3), gold='#ffffff', K=st>=5?'#ffffff':A, W=3;
   const eye=(x,y,r)=>`<circle cx="${x}" cy="${y}" r="${r+4}" fill="${E}" opacity=".22"/><circle cx="${x}" cy="${y}" r="${r}" fill="${E}"/><circle cx="${x-r*.3}" cy="${y-r*.3}" r="${r*.28}" fill="#fff" opacity=".8"/>`;
   const sc=[.8,.86,.92,.98,1][st-1];
@@ -44,6 +46,7 @@ function rwRobotSvg(o){
     const wr=`M${100+bw/2} ${nk+8} L186 66 L176 108 L192 126 L166 140 L${100+bw/2} 152 Z`;
     s+=`<path d="${wl}" fill="${A}" fill-opacity=".22" stroke="${A}" stroke-width="2.5" stroke-linejoin="round"/><path d="${wr}" fill="${A}" fill-opacity=".22" stroke="${A}" stroke-width="2.5" stroke-linejoin="round"/>`;
   }
+  if(spike) s+=spike.back;
   if(acc.cape&&st>=2) s+=`<path d="M${100-bw/2-4} ${nk+2} L${100+bw/2+4} ${nk+2} L${100+bw/2+26} 204 L${100-bw/2-26} 204 Z" fill="#220c44" stroke="${A}" stroke-width="3" stroke-linejoin="round"/>`;
   if(acc.jetpack&&st>=2){
     const pw=bw+16, px=100-pw/2, py=nk+4, by=py+44;
@@ -89,6 +92,7 @@ function rwRobotSvg(o){
   if(sp==='orb') s+=`<line x1="100" y1="44" x2="100" y2="31" stroke="${K}" stroke-width="4" stroke-linecap="round"/><circle cx="100" cy="27" r="5" fill="${A}" stroke="${K}" stroke-width="2"/><circle cx="100" cy="76" r="34" fill="${B}" stroke="${K}" stroke-width="${W}"/><path d="M78 56 Q90 48 104 47" stroke="${L}" stroke-width="5" stroke-linecap="round" fill="none" opacity=".7"/><circle cx="100" cy="78" r="22" fill="#05050c" stroke="${D}" stroke-width="1.5"/><circle cx="100" cy="78" r="17" fill="none" stroke="${E}" stroke-width="1.5" stroke-dasharray="5 3" opacity=".8"/><path d="M100 52 V58 M100 98 V104 M74 78 H80 M120 78 H126" stroke="${A}" stroke-width="2" stroke-linecap="round"/>${eye(100,78,9)}`;
   if(sp==='spike') s+=`<polygon points="66,102 66,60 76,38 92,58 108,58 124,38 134,60 134,102" fill="${B}" stroke="${K}" stroke-width="${W}" stroke-linejoin="round"/><polygon points="74,72 126,72 122,93 78,93" fill="#0b0b16" stroke="${D}" stroke-width="1.5" stroke-linejoin="round"/>${eye(88,82,6.5)}${eye(112,82,6.5)}<polygon points="76,44 76,56 84,52" fill="${A}"/><polygon points="124,44 124,56 116,52" fill="${A}"/>`;
   if(sp==='tank') s+=`<rect x="58" y="52" width="84" height="48" rx="10" fill="${B}" stroke="${K}" stroke-width="${W}"/><rect x="63" y="55" width="74" height="5" rx="2.5" fill="${L}" opacity=".7"/><rect x="94" y="44" width="12" height="9" rx="3" fill="${A}" stroke="${K}" stroke-width="2"/><rect x="66" y="62" width="68" height="26" rx="13" fill="#0b0b16"/><rect x="75" y="69" width="17" height="12" rx="5" fill="${E}"/><rect x="108" y="69" width="17" height="12" rx="5" fill="${E}"/>`;
+  if(spike) s+=spike.head;
   const cx=100, t=S.top, ey=S.eyeY, w=S.w, sx=S.sideX;
   if(acc.headphones) s+=`<path d="M${sx+2} ${ey} Q100 ${t-24} ${200-sx-2} ${ey}" stroke="${rwShade(A,-.45)}" stroke-width="5" fill="none" stroke-linecap="round"/><rect x="${sx-10}" y="${ey-13}" width="13" height="26" rx="6" fill="${A}" stroke="${rwShade(A,-.45)}" stroke-width="2.5"/><rect x="${197-sx-3}" y="${ey-13}" width="13" height="26" rx="6" fill="${A}" stroke="${rwShade(A,-.45)}" stroke-width="2.5"/>`;
   if(acc.shades) s+=`<rect x="${cx-w/2+6}" y="${ey-10}" width="${w-12}" height="20" rx="7" fill="#101018" stroke="${A}" stroke-width="2.5"/><line x1="${cx-w/2+16}" y1="${ey-6}" x2="${cx-w/2+26}" y2="${ey+4}" stroke="#fff" stroke-width="2.5" opacity=".6" stroke-linecap="round"/>`;
@@ -103,7 +107,7 @@ function rwRobotSvg(o){
     s+=`<g class="rw-dro"><line x1="150" y1="70" x2="124" y2="96" stroke="${A}" stroke-width="1.2" stroke-dasharray="2 4" opacity=".6"/><rect x="143" y="45" width="6" height="4" rx="2" fill="${A}"/><rect x="171" y="45" width="6" height="4" rx="2" fill="${A}"/><circle cx="160" cy="54" r="11" fill="${B}" stroke="${A}" stroke-width="2.5"/><circle cx="160" cy="54" r="6" fill="#05050c"/><circle cx="160" cy="54" r="3.2" fill="${E}"/><polygon points="157,66 163,66 160,74" fill="${E}" class="rw-flick"/></g>`;
   }
   if(orb) s+=orb.head;
-  s+=`</g>${orb?orb.outer:''}</g></svg>`;
+  s+=`</g>${orb?orb.outer:spike?spike.outer:''}</g></svg>`;
   return s;
 }
 

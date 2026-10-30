@@ -50,7 +50,7 @@ const RW_THEMES = {
       { k:'jetpack',    n:'Jetpack',            b:'marathon' },
       { k:'drone',      n:'Drone compagnon',    b:'titan'    },
     ],
-    // Accessoires propres à un modèle (thème « explorateur de l'espace » pour l'Orbe, dessin : rewards-robot-orb.js).
+    // Accessoires propres à un modèle (thème « explorateur de l'espace » pour l'Orbe, dessin : rewards-robot-orb.js ; « chat ninja » pour la Lame).
     // Les modèles sans entrée ici gardent la liste ci-dessus.
     speciesAccs: {
       orb: [
@@ -62,6 +62,16 @@ const RW_THEMES = {
         { k:'drone',   n:'Drone compagnon',      b:'stars'    },
         { k:'bubble',  n:'Bulle de protection',  b:'perfect'  },
         { k:'wingfx',  n:"Ailes d'énergie",      b:'triple'   },
+      ],
+      // Lame : thème « chat ninja » (dessin : rewards-robot-spike.js). Pas d'accessoire pour « Machine à records ».
+      spike: [
+        { k:'cateye',   n:'Œil de chat',            b:'first'    },
+        { k:'whiskers', n:'Moustaches scintillantes', b:'five'   },
+        { k:'cape',     n:'Cape',                   b:'marathon' },
+        { k:'headband', n:'Bandeau de ninja',       b:'titan'    },
+        { k:'sabre',    n:'Sabre de samouraï',      b:'record'   },
+        { k:'drone',    n:'Drone étoile de ninja',  b:'stars'    },
+        { k:'shield',   n:"Bouclier d'énergie",     b:'perfect'  },
       ],
     },
   },

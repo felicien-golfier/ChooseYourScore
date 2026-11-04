@@ -1,4 +1,4 @@
-# Accessoires par robot : récapitulatif (Orbe et Lame faits, Cube / Char à faire)
+# Accessoires par robot : récapitulatif (Orbe, Lame, Char et Cube faits)
 
 Complète `docs/RECOMPENSES.md`. Écrit pour reprendre le chantier sans l'historique de la conversation.
 Le code fait foi en cas de doute.
@@ -61,14 +61,37 @@ La pose de combat (penché, bras levé, laser des lunettes) a été essayée pui
 
 Repères de dessin de l'Orbe (viewBox 200×240) : tête = cercle centre (100,76) rayon 34, antenne de (100,44) à (100,27), œil en (100,78), corps = cercle centre (100,142) rayon 30, ailes niveau 5 : `M72 118 L14 66 L24 108 L8 126 L34 140 L72 152 Z` (et symétrique), flamme du réacteur sous (100,182). Au niveau 1 la tête est décalée de 70 px vers le bas (`translate`), les éléments de `head` suivent, ceux de `outer` non.
 
-## Robots à faire (Cube et Char ; thèmes validés, accessoires à détailler un par un, avec rendu validé avant implémentation)
+## Char : thème « engin de chantier » (fait)
 
-| Robot | Thème | Idées d'accessoires |
+Dessin : `js/rewards-robot-tank.js`, `rwTankAccs({acc,A,E,B,st})` renvoie `{back, head, outer}`.
+
+| Badge (id) | Touche `acc` | Élément |
 |---|---|---|
-| **Cube** | Bricoleur / atelier | lunettes de soudeur relevées sur le front, ceinture d'outils, clé à molette, ressort-pieds, engrenages dans le dos, panneau solaire, boîte à outils |
-| **Char** (chenilles) | Engin de chantier / explorateur | pelle de bulldozer, gyrophare à côté de l'antenne, phares, remorque ou benne, drapeau, blindage rivetté, tourelle-lanterne |
+| Premier pas (`first`) | `beacon` | Gyrophare ambre à gauche de l'antenne |
+| Fidèle (`five`) | `headlights` | Phares aux bouts des chenilles, halo et rayons |
+| Infatigable (`marathon`) | `flag` | Drapeau à damier sur un mât à droite de la tête |
+| Inarrêtable (`titan`) | `dozer` | Pelle de bulldozer devant les chenilles (vérins dès le niveau 2) |
+| Nouveau record (`record`) | `lantern` | Lanterne au bout d'un bâton : en main dès le niveau 3, plantée au sol avant |
+| Attrape-étoiles (`stars`) | `drone` | Drone compagnon générique |
+| Sans faute (`perfect`) | `armor` | Visière et rivets sur la tête, bande de sécurité sur le corps |
+| Machine à records (`triple`) | `turbo` | Pots d'échappement : fumée (niveaux 1 à 4), flammes et étincelles (niveau 5) |
 
-Pour chacun : 8 éléments (un par badge, dont « Machine à records » qui peut être une pose, un effet ou un objet propre à sa personnalité), un trait propre (mouvement, forme, petite animation), deux rendus quand un effet dépend du niveau. À ajouter : une entrée dans `speciesAccs`, un fichier `js/rewards-robot-<modèle>.js`, l'appel dans `rwRobotSvg`, `?v=` incrémenté, planche de rendu, test Chromium. **Légumes** : même démarche après les robots.
+## Cube : thème « bricoleur / atelier » (fait)
+
+Dessin : `js/rewards-robot-bolt.js`, `rwBoltAccs({acc,A,E,B,st})` renvoie `{back, head, outer}`. Le drone générique est remplacé par un drone engrenage (`cogdrone`).
+
+| Badge (id) | Touche `acc` | Élément |
+|---|---|---|
+| Premier pas (`first`) | `goggles` | Lunettes de soudeur relevées sur le front |
+| Fidèle (`five`) | `belt` | Ceinture d'outils (dès le niveau 2) |
+| Infatigable (`marathon`) | `springs` | Ressorts aux jambes (dès le niveau 2) |
+| Inarrêtable (`titan`) | `solar` | Panneau solaire articulé au-dessus de la tête |
+| Nouveau record (`record`) | `wrench` | Clé à molette : en main dès le niveau 3, posée au sol avant |
+| Attrape-étoiles (`stars`) | `cogdrone` | Drone engrenage qui tourne, œil lumineux au centre |
+| Sans faute (`perfect`) | `toolbox` | Boîte à outils : en main dès le niveau 3, posée au sol avant |
+| Machine à records (`triple`) | `gears` | Deux engrenages qui tournent dans le torse, dorés au niveau 5 (dès le niveau 2) |
+
+Les engrenages « dans le dos » ont été écartés (invisibles de face). **Légumes** : même démarche ensuite.
 
 ## Méthode de travail utilisée
 

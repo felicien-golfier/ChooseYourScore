@@ -30,9 +30,9 @@ function rwShieldGrad(uid,A,E,st){
 
 function rwRobotSvg(o){
   const {species:sp,stage:st,body:B,accent:A,eye:E,uid}=o;
-  // Orbe, Lame et Char ont leurs propres accessoires (un fichier chacun) ; le drone (Orbe, Char) et le bouclier (Lame) sont réutilisés tels quels.
-  const orb=sp==='orb'?rwOrbAccs({acc:o.acc||{},A,E,B,st,uid}):null, spike=sp==='spike'?rwSpikeAccs({acc:o.acc||{},A,E,B,st,uid}):null, tank=sp==='tank'?rwTankAccs({acc:o.acc||{},A,E,B,st,uid}):null;
-  const acc=orb||tank?{drone:o.acc&&o.acc.drone}:spike?{shield:o.acc&&o.acc.shield}:o.acc;
+  // Orbe, Lame, Char et Cube ont leurs propres accessoires (un fichier chacun) ; le drone (Orbe, Char) et le bouclier (Lame) sont réutilisés tels quels.
+  const orb=sp==='orb'?rwOrbAccs({acc:o.acc||{},A,E,B,st,uid}):null, spike=sp==='spike'?rwSpikeAccs({acc:o.acc||{},A,E,B,st,uid}):null, tank=sp==='tank'?rwTankAccs({acc:o.acc||{},A,E,B,st,uid}):null, bolt=sp==='bolt'?rwBoltAccs({acc:o.acc||{},A,E,B,st,uid}):null;
+  const acc=orb||tank?{drone:o.acc&&o.acc.drone}:spike?{shield:o.acc&&o.acc.shield}:bolt?{}:o.acc;
   const S=RW_ROBOT_SPECIES[sp], D=rwShade(B,-.4), L=rwShade(B,.3), gold='#ffffff', K=st>=5?'#ffffff':A, W=3;
   const eye=(x,y,r)=>`<circle cx="${x}" cy="${y}" r="${r+4}" fill="${E}" opacity=".22"/><circle cx="${x}" cy="${y}" r="${r}" fill="${E}"/><circle cx="${x-r*.3}" cy="${y-r*.3}" r="${r*.28}" fill="#fff" opacity=".8"/>`;
   const sc=[.8,.86,.92,.98,1][st-1];
@@ -95,6 +95,7 @@ function rwRobotSvg(o){
   if(sp==='tank') s+=`<rect x="58" y="52" width="84" height="48" rx="10" fill="${B}" stroke="${K}" stroke-width="${W}"/><rect x="63" y="55" width="74" height="5" rx="2.5" fill="${L}" opacity=".7"/><rect x="94" y="44" width="12" height="9" rx="3" fill="${A}" stroke="${K}" stroke-width="2"/><rect x="66" y="62" width="68" height="26" rx="13" fill="#0b0b16"/><rect x="75" y="69" width="17" height="12" rx="5" fill="${E}"/><rect x="108" y="69" width="17" height="12" rx="5" fill="${E}"/>`;
   if(spike) s+=spike.head;
   if(tank) s+=tank.head;
+  if(bolt) s+=bolt.head;
   const cx=100, t=S.top, ey=S.eyeY, w=S.w, sx=S.sideX;
   if(acc.headphones) s+=`<path d="M${sx+2} ${ey} Q100 ${t-24} ${200-sx-2} ${ey}" stroke="${rwShade(A,-.45)}" stroke-width="5" fill="none" stroke-linecap="round"/><rect x="${sx-10}" y="${ey-13}" width="13" height="26" rx="6" fill="${A}" stroke="${rwShade(A,-.45)}" stroke-width="2.5"/><rect x="${197-sx-3}" y="${ey-13}" width="13" height="26" rx="6" fill="${A}" stroke="${rwShade(A,-.45)}" stroke-width="2.5"/>`;
   if(acc.shades) s+=`<rect x="${cx-w/2+6}" y="${ey-10}" width="${w-12}" height="20" rx="7" fill="#101018" stroke="${A}" stroke-width="2.5"/><line x1="${cx-w/2+16}" y1="${ey-6}" x2="${cx-w/2+26}" y2="${ey+4}" stroke="#fff" stroke-width="2.5" opacity=".6" stroke-linecap="round"/>`;
@@ -109,7 +110,7 @@ function rwRobotSvg(o){
     s+=`<g class="rw-dro"><line x1="150" y1="70" x2="124" y2="96" stroke="${A}" stroke-width="1.2" stroke-dasharray="2 4" opacity=".6"/><rect x="143" y="45" width="6" height="4" rx="2" fill="${A}"/><rect x="171" y="45" width="6" height="4" rx="2" fill="${A}"/><circle cx="160" cy="54" r="11" fill="${B}" stroke="${A}" stroke-width="2.5"/><circle cx="160" cy="54" r="6" fill="#05050c"/><circle cx="160" cy="54" r="3.2" fill="${E}"/><polygon points="157,66 163,66 160,74" fill="${E}" class="rw-flick"/></g>`;
   }
   if(orb) s+=orb.head;
-  s+=`</g>${orb?orb.outer:spike?spike.outer:tank?tank.outer:''}</g></svg>`;
+  s+=`</g>${orb?orb.outer:spike?spike.outer:tank?tank.outer:bolt?bolt.outer:''}</g></svg>`;
   return s;
 }
 

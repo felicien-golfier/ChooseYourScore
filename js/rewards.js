@@ -73,6 +73,17 @@ const RW_THEMES = {
         { k:'drone',    n:'Drone étoile de ninja',  b:'stars'    },
         { k:'shield',   n:"Bouclier d'énergie",     b:'perfect'  },
       ],
+      // Cube : thème « bricoleur / atelier » (dessin : rewards-robot-bolt.js).
+      bolt: [
+        { k:'goggles', n:'Lunettes de soudeur',   b:'first'    },
+        { k:'belt',    n:"Ceinture d'outils",     b:'five'     },
+        { k:'springs', n:'Ressorts aux jambes',   b:'marathon' },
+        { k:'solar',   n:'Panneau solaire',       b:'titan'    },
+        { k:'wrench',  n:'Clé à molette',         b:'record'   },
+        { k:'cogdrone', n:'Drone engrenage',      b:'stars'    },
+        { k:'toolbox', n:'Boîte à outils',        b:'perfect'  },
+        { k:'gears',   n:'Moteur à engrenages',   b:'triple'   },
+      ],
       // Char : thème « engin de chantier » (dessin : rewards-robot-tank.js).
       tank: [
         { k:'beacon',     n:'Gyrophare',            b:'first'    },

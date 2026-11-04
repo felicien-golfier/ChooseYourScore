@@ -73,6 +73,17 @@ const RW_THEMES = {
         { k:'drone',    n:'Drone étoile de ninja',  b:'stars'    },
         { k:'shield',   n:"Bouclier d'énergie",     b:'perfect'  },
       ],
+      // Char : thème « engin de chantier » (dessin : rewards-robot-tank.js).
+      tank: [
+        { k:'beacon',     n:'Gyrophare',            b:'first'    },
+        { k:'headlights', n:'Phares',               b:'five'     },
+        { k:'flag',       n:'Drapeau à damier',     b:'marathon' },
+        { k:'dozer',      n:'Pelle de bulldozer',   b:'titan'    },
+        { k:'lantern',    n:"Lanterne d'explorateur", b:'record' },
+        { k:'drone',      n:'Drone compagnon',      b:'stars'    },
+        { k:'armor',      n:'Blindage rivetté',     b:'perfect'  },
+        { k:'turbo',      n:'Pots turbo',           b:'triple'   },
+      ],
     },
   },
   veggie: {

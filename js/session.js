@@ -461,7 +461,12 @@ function handleOrderResponse(origIdx, btn, clicked, orderChoices, pair, question
     if (clicked.length < orderChoices.length) return;
     isWaiting = true;
     record(true);
-    afterFeedback(() => advance(pair, questions, qIdx, isRetry), 700);
+    // Séquence complète : le mot reconstitué s'affiche (ex. AR + MOI + RE → ARMOIRE)
+    const wordEl = document.createElement('div');
+    wordEl.className = 'order-result-word';
+    wordEl.textContent = orderChoices.join('');
+    choicesEl.appendChild(wordEl);
+    afterFeedback(() => advance(pair, questions, qIdx, isRetry), 2000);
   } else {
     isWaiting = true;
     btn.classList.add('incorrect');

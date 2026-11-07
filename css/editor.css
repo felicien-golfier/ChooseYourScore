@@ -1366,3 +1366,6 @@ tbody td[contenteditable]:focus {
   color: var(--danger);
   border: 1.5px solid var(--danger-border);
 }
+
+/* Question « ordre de clic » : l'ordre de saisie fait foi, pas de case « correcte » */
+.order-mode .seq-correct-toggle { display: none !important; }

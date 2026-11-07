@@ -1016,7 +1016,7 @@ function buildSequenceQuestionBlock(q) {
   const typeSelect = document.createElement('select');
   typeSelect.className = 'seq-q-type';
   typeSelect.style.cssText = 'padding:3px 8px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-size:0.8rem;font-family:var(--font);outline:none;color:var(--text-1);background:var(--surface);cursor:pointer';
-  [['choice','Choix multiples'],['write','Saisie libre'],['direction','Direction (flèche)'],['click-item','Cliquer sur l\'item'],['naming','Dénomination (mot à trous)'],['oral','Réponse orale (à vérifier)']].forEach(([v,l]) => {
+  [['choice','Choix multiples'],['write','Saisie libre'],['direction','Direction (flèche)'],['click-item','Cliquer sur l\'item'],['order','Ordre de clic (séquence)'],['naming','Dénomination (mot à trous)'],['oral','Réponse orale (à vérifier)']].forEach(([v,l]) => {
     const opt = document.createElement('option'); opt.value = v; opt.textContent = l;
     if ((q.type || 'choice') === v) opt.selected = true;
     typeSelect.appendChild(opt);
@@ -1313,7 +1313,11 @@ function buildSequenceQuestionBlock(q) {
 
   // Show/hide sections based on type
   const applyType = (type) => {
-    choiceSection.style.display    = type === 'choice'     ? 'block' : 'none';
+    choiceSection.style.display    = (type === 'choice' || type === 'order') ? 'block' : 'none';
+    choiceSection.classList.toggle('order-mode', type === 'order');
+    choicesLabel.innerHTML = type === 'order'
+      ? 'Réponses <span style="color:var(--success);font-size:0.72rem">(saisir dans le BON ORDRE de clic ; elles seront mélangées pour le patient)</span>'
+      : 'Réponses <span style="color:var(--success);font-size:0.72rem">(● = correcte)</span>';
     writeSection.style.display     = type === 'write'      ? 'block' : 'none';
     dirSection.style.display       = type === 'direction'  ? 'block' : 'none';
     clickItemSection.style.display = type === 'click-item' ? 'block' : 'none';
@@ -1396,6 +1400,9 @@ function readSequenceModal() {
       base.namingHint = (block.querySelector('.seq-q-naming-hint')?.value || '').trim() || makeNamingHint(base.namingWord);
       base.choices = [base.namingWord];
       base.correctIndices = [0];
+    } else if (type === 'order') {
+      base.choices = Array.from(block.querySelectorAll('.seq-q-choice')).map(i => i.value.trim());
+      base.correctIndices = base.choices.map((_, i) => i);
     } else if (type === 'oral') {
       base.namingWord = (block.querySelector('.seq-q-oral-answer')?.value || '').trim();
       base.choices = [base.namingWord];
@@ -1464,6 +1471,9 @@ function refreshSequencePreview() {
     } else if (qType === 'oral') {
       const word = (block.querySelector('.seq-q-oral-answer')?.value || '').trim();
       choicesHtml = '<span style="padding:1px 8px;border-radius:4px;background:var(--success-bg);border:1px solid var(--success-border)">🗣 ' + escapeHtml(word || '?') + '</span>';
+    } else if (qType === 'order') {
+      const choices = Array.from(block.querySelectorAll('.seq-q-choice')).map(inp => inp.value.trim());
+      choicesHtml = choices.map((c, ci) => '<span style="padding:1px 6px;border-radius:4px;background:var(--success-bg);border:1px solid var(--success-border)">' + (ci + 1) + '. ' + escapeHtml(c || '?') + '</span>').join(' → ');
     } else if (qType === 'click-item') {
       const corrects = new Set(Array.from(block.querySelectorAll('.seq-item-toggle'))
         .filter(t => t.dataset.correct === '1').map(t => parseInt(t.dataset.itemIndex)));

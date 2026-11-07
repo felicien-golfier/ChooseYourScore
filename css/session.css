@@ -973,3 +973,12 @@ body.is-fullscreen #seq-pause-continue {
   border-color: var(--danger);
   color: var(--danger);
 }
+
+/* Ordre de clic : numéro d'ordre sur les propositions validées */
+.sequence-choice-btn[data-rank]::before {
+  content: attr(data-rank);
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.4em; height: 1.4em; margin-right: 8px;
+  border-radius: 50%; background: var(--success); color: #fff;
+  font-size: 0.8em; font-weight: 700;
+}

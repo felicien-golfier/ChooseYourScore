@@ -366,6 +366,29 @@ function startSequenceQuestion(pair, qIdx, isRetry, isAfterReplay) {
     document.getElementById('seq-naming-incorrect').onclick = () => handleNamingResponse(false, true,  fullWord, pair, questions, qIdx);
     document.getElementById('seq-naming-zone').style.display = 'flex';
 
+  // ── Ordre de clic : cliquer sur les propositions dans l'ordre exact ────────
+  } else if (q.type === 'order') {
+    const orderChoices = q.choices || [];
+    let order = orderChoices.map((c, i) => i);
+    if (order.length > 1) {
+      // Mélange, en évitant de présenter directement la bonne séquence
+      do { order = shuffleArray(order); } while (order.every((v, i) => v === i));
+    }
+    const clicked = [];
+    order.forEach(origIdx => {
+      const choice = orderChoices[origIdx];
+      const btn = document.createElement('button');
+      btn.className = 'sequence-choice-btn';
+      btn.dataset.value = choice;
+      btn.dataset.orderIndex = String(origIdx);
+      if (hasSqCodes(choice)) btn.appendChild(renderSqChoice(choice));
+      else btn.textContent = choice;
+      btn.addEventListener('click', () =>
+        handleOrderResponse(origIdx, btn, clicked, orderChoices, pair, questions, qIdx, isRetry));
+      choicesEl.appendChild(btn);
+    });
+    choicesEl.style.display = 'flex';
+
   // ── Choix multiples ────────────────────────────────────────────────────────
   } else {
     const shuffledChoices = q.shuffleAnswers !== false ? shuffleArray([...(q.choices || [])]) : [...(q.choices || [])];
@@ -414,6 +437,39 @@ function handleSequenceResponse(chosen, correctAnswers, foundAnswers, pair, ques
       // Only reveal correct answers on the final attempt (retry or no-retry-allowed), not the first wrong attempt when retry is available
       else if ((isRetry || q.allowRetry === false) && q.highlightCorrectOnRetry !== false && correctAnswers.includes(b.dataset.value) && !foundAnswers.has(b.dataset.value)) b.classList.add('missed');
     });
+    afterFeedback(() => resolveQuestion(false, q, pair, questions, qIdx, isRetry), 1200);
+  }
+}
+
+// Ordre de clic : la bonne séquence est l'ordre des réponses saisies dans l'éditeur.
+// Une seule réponse enregistrée par question (juste si toute la séquence est respectée).
+function handleOrderResponse(origIdx, btn, clicked, orderChoices, pair, questions, qIdx, isRetry) {
+  if (isWaiting) return;
+  const q = questions[qIdx];
+  const choicesEl = document.getElementById('sequence-choices');
+  const allBtns = Array.from(choicesEl.querySelectorAll('.sequence-choice-btn'));
+  const expected = clicked.length;
+  const record = (isCorrect) => {
+    const fullAnswer = orderChoices.join(' → ');
+    responses.push({ pairId: pair.id, type: 'sequence', questionIndex: qIdx, chosen: clicked.map(i => orderChoices[i]).join(' → '), isCorrect, correctAnswer: fullAnswer, correctAnswers: [fullAnswer], isRetry: !!isRetry, isExample: pairIndex < currentExampleCount, timeMs: Date.now() - pairStartTime });
+  };
+  clicked.push(origIdx);
+  if (origIdx === expected) {
+    btn.classList.add('correct');
+    btn.disabled = true;
+    btn.dataset.rank = String(clicked.length);
+    if (clicked.length < orderChoices.length) return;
+    isWaiting = true;
+    record(true);
+    afterFeedback(() => advance(pair, questions, qIdx, isRetry), 700);
+  } else {
+    isWaiting = true;
+    btn.classList.add('incorrect');
+    allBtns.forEach(b => {
+      b.disabled = true;
+      if ((isRetry || q.allowRetry === false) && q.highlightCorrectOnRetry !== false && !b.classList.contains('correct') && b !== btn) b.classList.add('missed');
+    });
+    record(false);
     afterFeedback(() => resolveQuestion(false, q, pair, questions, qIdx, isRetry), 1200);
   }
 }

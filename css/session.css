@@ -982,3 +982,10 @@ body.is-fullscreen #seq-pause-continue {
   border-radius: 50%; background: var(--success); color: #fff;
   font-size: 0.8em; font-weight: 700;
 }
+
+/* Ordre de clic : mot complet affiché une fois la séquence réussie */
+.order-result-word {
+  flex-basis: 100%; text-align: center; margin-top: 12px;
+  font-size: 2.6rem; font-weight: 800; letter-spacing: .08em;
+  color: var(--success); text-transform: uppercase;
+}

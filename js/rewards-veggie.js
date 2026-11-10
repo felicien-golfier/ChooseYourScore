@@ -1,7 +1,7 @@
 /* ── RÉCOMPENSES : DESSIN DES LÉGUMES SUPER-HÉROS ────────────────────────────
    Univers « potager », pendant de rewards-robot.js : mêmes entrées (modèle,
    niveau 1 à 5, couleurs, accessoires), même cadre 200×240, sol vers y=206.
-   Couleurs : accent = cape, étoile et bottes ; mask = masque et ceinture ; lens = monture des lunettes de soleil.
+   Couleurs : accent = cape, étoile et bottes ; mask = masque et ceinture (lens = lunettes, Carotte seulement).
    Le légume garde ses couleurs naturelles (carotte, radis, patate, brocoli).
    Niveau 1 = petit légume tout nu, 2 = masque de héros et poing levé, 3 = cape et bottes,
    4 = étoile de héros sur le torse et étincelles, 5 = aura dorée, couronne de feuilles et éclairs.
@@ -80,9 +80,9 @@ function rwVeggieSvg(o) {
   const line = `stroke="${K}" stroke-width="3" stroke-linejoin="round"`;
   const sc = [0.8, 0.87, 0.93, 0.98, 1][st - 1];
   const { fy, sh, ax } = S;
-  // ceinture découpée à la forme du corps (bc) : elle ne dépasse jamais du légume
-  const beltClip = RW_VEG_SHAPE[sp] ? `url(#bc${uid})` : '';
-  const C = sp === 'carrot' ? rwCarrotAccs({ acc, A, AK, st, fy, beltClip }) : null;
+  // Carotte : accessoires propres, ceinture découpée à la forme du corps (bc) pour qu'elle ne dépasse pas
+  const beltClip = sp === 'carrot' ? `url(#bc${uid})` : '';
+  const C = sp === 'carrot' ? rwCarrotAccs({ acc, A, AK, st, fy, ax, L, beltClip }) : null;
 
   let s = `<svg viewBox="0 0 200 240" role="img" aria-label="${S.label}"><defs>` +
     `<radialGradient id="vg${uid}"><stop offset="0" stop-color="${RW_VEG_GOLD}" stop-opacity=".7"/><stop offset="1" stop-color="${RW_VEG_GOLD}" stop-opacity="0"/></radialGradient>` +
@@ -114,7 +114,8 @@ function rwVeggieSvg(o) {
   // ceinture (dès le niveau 3), dans la couleur du masque (sauf ceinturon de Super-carotte, dessiné après le torse)
   if (st >= 3 && sp !== 'broccoli' && !(C && C.belt)) {
     const by = fy + 47;
-    s += `<path d="M40 ${by} Q100 ${by + 7} 160 ${by} L160 ${by + 7} Q100 ${by + 14} 40 ${by + 7} Z" fill="${M}" stroke="${MK}" stroke-width="2" clip-path="${beltClip}"/>` +
+    const [x1, x2] = beltClip ? [40, 160] : [100 - ax - 8, 100 + ax + 8];
+    s += `<path d="M${x1} ${by} Q100 ${by + 7} ${x2} ${by} L${x2} ${by + 7} Q100 ${by + 14} ${x1} ${by + 7} Z" fill="${M}" stroke="${MK}" stroke-width="2"${beltClip ? ` clip-path="${beltClip}"` : ''}/>` +
       `<rect x="94" y="${by - 1}" width="12" height="11" rx="2" fill="${RW_VEG_GOLD}" stroke="#c99a1c" stroke-width="1.5"/>`;
   }
   // étoile de héros sur le torse (dès le niveau 4), remplacée par le grand S de Super-carotte
@@ -129,8 +130,8 @@ function rwVeggieSvg(o) {
 
   // ── Visage ─────────────────────────────────────────────────────────────────
   const ex = [86, 114];
-  if (st >= 2 && !acc.shades) {
-    // masque de héros (remplacé par les lunettes de soleil quand elles sont portées) : bandeau autour des yeux + petits nœuds sur les côtés
+  if (st >= 2 && !(C && C.noMask)) {
+    // masque de héros (remplacé par les lunettes de soleil de Super-carotte quand elles sont portées) : bandeau autour des yeux + petits nœuds sur les côtés
     s += `<path d="M58 ${fy - 8} L72 ${fy - 12} L70 ${fy} Z M142 ${fy - 8} L128 ${fy - 12} L130 ${fy} Z" fill="${M}" stroke="${MK}" stroke-width="2" stroke-linejoin="round"/>` +
       `<path d="M66 ${fy - 8} Q100 ${fy - 24} 134 ${fy - 8} Q138 ${fy + 8} 118 ${fy + 12} Q100 ${fy + 4} 82 ${fy + 12} Q62 ${fy + 8} 66 ${fy - 8} Z" fill="${M}" stroke="${MK}" stroke-width="2.5" stroke-linejoin="round"/>`;
   }
@@ -148,15 +149,10 @@ function rwVeggieSvg(o) {
     s += `<rect x="93" y="${ty}" width="7" height="11" rx="2.5" fill="#fff" stroke="#8a7f86" stroke-width="1.8"/>` +
       `<rect x="100" y="${ty}" width="7" height="11" rx="2.5" fill="#fff" stroke="#8a7f86" stroke-width="1.8"/>`;
   }
-  if (acc.shades) {
-    // lunettes de soleil rectangulaires : monture couleur « lens », verres teintés foncés, branches vers les côtés
-    const LK = rwShade(L, -0.45), glass = rwShade(L, -0.72);
-    const tw = Math.min(40, ax + 7); // branches plus courtes sur un légume étroit (brocoli)
-    s += `<path d="M${100 - tw} ${fy - 6} L${100 - 27} ${fy - 4} M${100 + tw} ${fy - 6} L${100 + 27} ${fy - 4}" stroke="${LK}" stroke-width="3.5" stroke-linecap="round"/>` +
-      ex.map(x => `<rect x="${x - 14}" y="${fy - 9}" width="28" height="16" rx="2.5" fill="${glass}" stroke="${L}" stroke-width="3.5"/>` +
-      `<rect x="${x - 14}" y="${fy - 9}" width="28" height="16" rx="2.5" fill="none" stroke="${LK}" stroke-width="1"/>` +
-      `<path d="M${x - 9} ${fy - 3} L${x - 3} ${fy - 6} M${x - 8} ${fy + 2} L${x + 2} ${fy - 4}" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".55"/>`).join('') +
-      `<path d="M98 ${fy - 4} L102 ${fy - 4}" stroke="${L}" stroke-width="4" stroke-linecap="round"/>`;
+  if (acc.shades && !C) {
+    s += ex.map(x => `<rect x="${x - 12}" y="${fy - 9}" width="24" height="17" rx="7" fill="#1d1a28" stroke="#000" stroke-width="2"/>` +
+      `<path d="M${x - 8} ${fy - 4} L${x - 2} ${fy - 6}" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".7"/>`).join('') +
+      `<path d="M97 ${fy - 4} Q100 ${fy - 7} 103 ${fy - 4}" stroke="#000" stroke-width="2.5" fill="none"/>`;
   }
   if (acc.headband) {
     const hy = fy - 24;

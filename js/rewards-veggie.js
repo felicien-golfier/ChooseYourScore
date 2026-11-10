@@ -5,19 +5,24 @@
    Le légume garde ses couleurs naturelles (carotte, radis, patate, brocoli).
    Niveau 1 = petit légume tout nu, 2 = masque de héros et poing levé, 3 = cape et bottes,
    4 = étoile de héros sur le torse et étincelles, 5 = aura dorée, couronne de feuilles et éclairs.
-   Un modèle peut avoir ses propres accessoires (Carotte : rewards-veggie-carrot.js).
+   Un modèle peut avoir ses propres accessoires, dans son fichier (RW_VEG_ACCS : Carotte →
+   rewards-veggie-carrot.js, Patate → rewards-veggie-potato.js). La fonction reçoit les repères
+   du dessin et renvoie des morceaux de SVG par emplacement (voir « slot » plus bas) ; fitBelt
+   découpe la ceinture à la forme du corps.
    Utilise rwShade et rwStarPts (rewards-robot.js). Logique : rewards.js.
    ──────────────────────────────────────────────────────────────────────────── */
 
 // fy : hauteur des yeux ; sh : hauteur des épaules ; ax : écart des bras au centre
 const RW_VEGGIE_SPECIES = {
-  carrot:   { label: 'Carotte', body: '#f28a2e', fy: 114, sh: 126, ax: 33 },
+  carrot:   { label: 'Carotte', body: '#f28a2e', fy: 114, sh: 126, ax: 33, fitBelt: true },
   radish:   { label: 'Radis',   body: '#e8456b', fy: 124, sh: 134, ax: 46 },
-  potato:   { label: 'Patate',  body: '#cfa064', fy: 134, sh: 146, ax: 50 },
+  potato:   { label: 'Patate',  body: '#cfa064', fy: 134, sh: 146, ax: 50, fitBelt: true },
   broccoli: { label: 'Brocoli', body: '#a8d37a', fy: 142, sh: 146, ax: 25 },
 };
 
 const RW_VEG_GOLD = '#ffd45c';
+// Accessoires propres à un modèle (fichiers chargés avant celui-ci)
+const RW_VEG_ACCS = { carrot: rwCarrotAccs, potato: rwPotatoAccs };
 const RW_VEG_EYE = '#2b2238';
 const RW_VEG_LEAF = '#4fae4a';
 
@@ -74,15 +79,21 @@ function rwVegBody(sp, B, K, uid) {
 }
 
 function rwVeggieSvg(o) {
-  const { species: sp, stage: st, accent: A, mask: M, lens: L = '#1d1a28', acc, uid } = o;
+  const { species: sp, stage: st, accent: A, mask: M, lens: L = '#1d1a28', crest: CR = '#2f6bd6', acc, uid } = o;
   const S = RW_VEGGIE_SPECIES[sp];
   const B = S.body, K = rwShade(B, -0.45), AK = rwShade(A, -0.4), MK = rwShade(M, -0.4);
   const line = `stroke="${K}" stroke-width="3" stroke-linejoin="round"`;
   const sc = [0.8, 0.87, 0.93, 0.98, 1][st - 1];
   const { fy, sh, ax } = S;
-  // Carotte : accessoires propres, ceinture découpée à la forme du corps (bc) pour qu'elle ne dépasse pas
-  const beltClip = sp === 'carrot' ? `url(#bc${uid})` : '';
-  const C = sp === 'carrot' ? rwCarrotAccs({ acc, A, AK, st, fy, ax, L, beltClip }) : null;
+  const lx = 100 - ax, rx = 100 + ax;
+  // poing droit : levé en pose de héros dès le niveau 2
+  const fist = st >= 2 ? [rx + 18, sh - 22 - (st >= 5 ? 8 : 0)] : [rx + 8, sh + 16];
+  // ceinture découpée à la forme du corps (bc) pour qu'elle ne dépasse pas
+  const beltClip = S.fitBelt ? `url(#bc${uid})` : '';
+  // accessoires propres au modèle ; slot(k) : morceau de SVG à l'emplacement k
+  // (back, mid, leaves, chest, belt, face, hand, arm, front ; noMask, noCrown : retire bandeau / couronne)
+  const C = RW_VEG_ACCS[sp] ? RW_VEG_ACCS[sp]({ acc, A, AK, L, CR, st, fy, sh, ax, fist, beltClip }) : null;
+  const slot = k => (C && C[k]) || '';
 
   let s = `<svg viewBox="0 0 200 240" role="img" aria-label="${S.label}"><defs>` +
     `<radialGradient id="vg${uid}"><stop offset="0" stop-color="${RW_VEG_GOLD}" stop-opacity=".7"/><stop offset="1" stop-color="${RW_VEG_GOLD}" stop-opacity="0"/></radialGradient>` +
@@ -93,6 +104,7 @@ function rwVeggieSvg(o) {
   if (st >= 4) s += rwVegSparkle(34, 72, 7, '#fff') + rwVegSparkle(170, 92, 6, A) + rwVegSparkle(42, 150, 5, A) + rwVegSparkle(168, 168, 6, '#fff');
 
   // ── Derrière : éclairs, cape ───────────────────────────────────────────────
+  s += slot('back');
   if (acc.bolts) {
     s += `<g class="rw-flick"><polygon points="30,60 20,84 29,84 24,104 40,76 31,76 36,60" fill="${RW_VEG_GOLD}" stroke="#c99a1c" stroke-width="1.5" stroke-linejoin="round"/>` +
       `<polygon points="172,64 162,88 171,88 166,108 182,80 173,80 178,64" fill="${RW_VEG_GOLD}" stroke="#c99a1c" stroke-width="1.5" stroke-linejoin="round"/></g>`;
@@ -103,30 +115,32 @@ function rwVeggieSvg(o) {
       `<path d="M${100 - ax} ${sh + 4} L${100 + ax} ${sh + 4}" stroke="${AK}" stroke-width="2" opacity=".5"/>`;
   }
 
+  s += slot('mid');
+
   // ── Jambes et bottes ───────────────────────────────────────────────────────
   const boot = st >= 3 ? A : K, bootK = st >= 3 ? AK : rwShade(B, -0.7);
   s += [86, 114].map(x => `<ellipse cx="${x}" cy="201" rx="12" ry="6.5" fill="${boot}" stroke="${bootK}" stroke-width="2.5"/>`).join('');
 
   // ── Corps ──────────────────────────────────────────────────────────────────
   s += rwVegBody(sp, B, K, uid);
-  if (C) s += C.leaves;
+  s += slot('leaves');
 
   // ceinture (dès le niveau 3), dans la couleur du masque (sauf ceinturon de Super-carotte, dessiné après le torse)
-  if (st >= 3 && sp !== 'broccoli' && !(C && C.belt)) {
+  if (st >= 3 && sp !== 'broccoli' && !slot('belt')) {
     const by = fy + 47;
     const [x1, x2] = beltClip ? [40, 160] : [100 - ax - 8, 100 + ax + 8];
     s += `<path d="M${x1} ${by} Q100 ${by + 7} ${x2} ${by} L${x2} ${by + 7} Q100 ${by + 14} ${x1} ${by + 7} Z" fill="${M}" stroke="${MK}" stroke-width="2"${beltClip ? ` clip-path="${beltClip}"` : ''}/>` +
       `<rect x="94" y="${by - 1}" width="12" height="11" rx="2" fill="${RW_VEG_GOLD}" stroke="#c99a1c" stroke-width="1.5"/>`;
   }
   // étoile de héros sur le torse (dès le niveau 4), remplacée par le grand S de Super-carotte
-  if (C && C.chest) s += C.chest;
+  if (slot('chest')) s += slot('chest');
   else if (st >= 4) {
     const ey = fy + 37;
     s += `<circle cx="100" cy="${ey}" r="9" fill="${st >= 5 ? RW_VEG_GOLD : A}" stroke="${st >= 5 ? '#c99a1c' : AK}" stroke-width="2"/>` +
       `<polygon points="${rwStarPts(100, ey + 0.5, 6)}" fill="#fff"/>`;
   }
 
-  if (C) s += C.belt;
+  s += slot('belt');
 
   // ── Visage ─────────────────────────────────────────────────────────────────
   const ex = [86, 114];
@@ -143,7 +157,7 @@ function rwVeggieSvg(o) {
     ? `<path d="M88 ${fy + 15} Q100 ${fy + 32} 112 ${fy + 15} Z" fill="#7a1f35" stroke="${RW_VEG_EYE}" stroke-width="2" stroke-linejoin="round"/>`
     : `<path d="M92 ${fy + 16} Q100 ${fy + 24} 108 ${fy + 16}" stroke="${RW_VEG_EYE}" stroke-width="2.6" fill="none" stroke-linecap="round"/>`;
 
-  if (C) s += C.face;
+  s += slot('face');
   if (acc.teeth) {
     const ty = fy + (st >= 5 ? 15 : 18);
     s += `<rect x="93" y="${ty}" width="7" height="11" rx="2.5" fill="#fff" stroke="#8a7f86" stroke-width="1.8"/>` +
@@ -161,7 +175,7 @@ function rwVeggieSvg(o) {
   }
 
   // couronne de feuilles dorées (niveau 5)
-  if (st >= 5) {
+  if (st >= 5 && !(C && C.noCrown)) {
     const cy = sp === 'broccoli' ? 42 : sp === 'carrot' ? 56 : sp === 'radish' ? 58 : 84;
     s += [-34, -17, 0, 17, 34].map(d => {
       const a = d * Math.PI / 180, x = 100 + 22 * Math.sin(a), y = cy + 22 - 22 * Math.cos(a);
@@ -173,9 +187,7 @@ function rwVeggieSvg(o) {
   const arm = (x1, y1, x2, y2) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${K}" stroke-width="12" stroke-linecap="round"/>` +
     `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${B}" stroke-width="7" stroke-linecap="round"/>` +
     `<circle cx="${x2}" cy="${y2}" r="7.5" fill="${B}" stroke="${K}" stroke-width="2.5"/>`;
-  const lx = 100 - ax, rx = 100 + ax;
-  const fist = st >= 2 ? [rx + 18, sh - 22 - (st >= 5 ? 8 : 0)] : [rx + 8, sh + 16];
-
+  s += slot('hand');
   if (acc.fork) {
     const [fx, fyy] = fist;
     s += `<line x1="${fx}" y1="${fyy + 34}" x2="${fx}" y2="${fyy - 46}" stroke="#aeb7c2" stroke-width="5" stroke-linecap="round"/>` +
@@ -192,7 +204,7 @@ function rwVeggieSvg(o) {
       `<circle cx="${cx + 2}" cy="${cy + 2}" r="6.5" fill="${A}" stroke="${AK}" stroke-width="2"/>`;
   }
 
-  if (C) s += C.arm;
+  s += slot('arm');
 
   // ── Compagnons : mini petits pois ──────────────────────────────────────────
   if (acc.peas) {
@@ -201,6 +213,7 @@ function rwVeggieSvg(o) {
       `<path d="M${x - 3} ${y + 3.5} Q${x} ${y + 6.5} ${x + 3} ${y + 3.5}" stroke="${RW_VEG_EYE}" stroke-width="1.6" fill="none" stroke-linecap="round"/></g>`;
     s += pea(30, 198) + pea(52, 198) + pea(41, 179, 'rw-dro');
   }
+  s += slot('front');
   s += `</g></svg>`;
   return s;
 }

@@ -1,4 +1,4 @@
-# Accessoires par légume : récapitulatif (Carotte faite)
+# Accessoires par légume : récapitulatif (Carotte et Patate faites)
 
 Pendant de `docs/ROBOTS-ACCESSOIRES.md` pour l'univers « Légumes super-héros », même démarche :
 chaque légume a ses propres accessoires (`RW_THEMES.veggie.speciesAccs[modèle]`, lu par `rwAccsOf`)
@@ -38,6 +38,33 @@ reprennent le dessin générique de `rwVeggieSvg` (même code pour tous les lég
 Repères de la Carotte (viewBox 200×240, avant l'échelle du niveau) : fanes partant de (100,88), pointes
 en (100,46), (79,61), (121,61) ; yeux à y=114, bouche à y=130, torse vers (100,151), ceinture à y=161 ;
 main gauche en (53,142), poing levé en (151,104).
+
+## Branchement commun
+
+`rwVeggieSvg` appelle la fonction du modèle (`RW_VEG_ACCS = { carrot: rwCarrotAccs, potato: rwPotatoAccs }`)
+avec les repères du dessin (`acc, A, AK, L, CR, st, fy, sh, ax, fist, beltClip`) et insère chaque
+morceau renvoyé à son emplacement : `back` (derrière la cape), `mid` (entre la cape et le corps),
+`leaves`, `chest`, `belt`, `face`, `hand` (avant les bras), `arm` (après les bras), `front` (devant tout).
+Drapeaux : `noMask` (retire le bandeau), `noCrown` (retire la couronne de feuilles du niveau 5).
+`fitBelt` dans `RW_VEGGIE_SPECIES` découpe la ceinture à la forme du corps. Les couleurs de cape et de
+masque des légumes à couleurs propres sont partagées (`RW_VEG_CAPE`, `RW_VEG_MASK`).
+
+## Patate : « Super-patate », chevalier (fait)
+
+Dessin : `js/rewards-veggie-potato.js`, `rwPotatoAccs`. Couleurs (`speciesColors.potato`) : cape à
+débloquer (comme la Carotte), masque libre, **blason** (`crest` : bouclier et étendard) à débloquer
+(bleu et rouge, turquoise niv. 2, violet niv. 3, noir niv. 4, or niv. 5). Ceinture découpée à la forme du corps.
+
+| Badge (id) | Touche `acc` | Élément |
+|---|---|---|
+| Premier pas (`first`) | `helmet` | Casque : casserole retournée, manche vers la gauche ; remplace la couronne de feuilles du niveau 5 |
+| Fidèle (`five`) | `plume` | Plume couleur de la cape, sur le casque (plantée dans la pousse sans casque) |
+| Infatigable (`marathon`) | `banner` | Étendard planté à gauche, flamme couleur du blason avec étoile |
+| Inarrêtable (`titan`) | `horse` | Cheval-bâton : le bâton passe entre les jambes, la tête dépasse à gauche |
+| Nouveau record (`record`) | `sword` | Épée-frite géante dans le poing droit, garde rouge ketchup |
+| Attrape-étoiles (`stars`) | `pig` | Petit cochon rose compagnon, à droite |
+| Sans faute (`perfect`) | `blason` | Bouclier en écu couleur du blason (bande dorée, couronne, étoile) à la main gauche. Touche `blason` et non `shield`, qui dessinerait aussi le bouclier casserole générique |
+| Machine à records (`triple`) | `crown` | Couronne sur la tête du petit cochon ; sans le cochon, posée sur la tête de la patate (ou sur le casque) |
 
 ## Méthode
 

@@ -13,7 +13,7 @@
    y=130, torse vers (100,151), ceinture à y=161 ; main gauche en (53,142).
    ──────────────────────────────────────────────────────────────────────────── */
 
-function rwCarrotAccs({ acc, A, AK, st, fy, ax, L, beltClip }) {
+function rwCarrotAccs({ acc, A, AK, L, st, fy, ax, beltClip }) {
   let leaves = '', chest = '', belt = '', face = '', arm = '';
   const ex = [86, 114];
 

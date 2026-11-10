@@ -1,4 +1,4 @@
-# Accessoires par légume : récapitulatif (Carotte et Patate faites)
+# Accessoires par légume : récapitulatif (Carotte, Patate et Brocoli faits ; Radis à faire)
 
 Pendant de `docs/ROBOTS-ACCESSOIRES.md` pour l'univers « Légumes super-héros », même démarche :
 chaque légume a ses propres accessoires (`RW_THEMES.veggie.speciesAccs[modèle]`, lu par `rwAccsOf`)
@@ -41,8 +41,8 @@ main gauche en (53,142), poing levé en (151,104).
 
 ## Branchement commun
 
-`rwVeggieSvg` appelle la fonction du modèle (`RW_VEG_ACCS = { carrot: rwCarrotAccs, potato: rwPotatoAccs }`)
-avec les repères du dessin (`acc, A, AK, L, CR, st, fy, sh, ax, fist, beltClip`) et insère chaque
+`rwVeggieSvg` appelle la fonction du modèle (`RW_VEG_ACCS = { carrot: rwCarrotAccs, potato: rwPotatoAccs, broccoli: rwBroccoliAccs }`)
+avec les repères du dessin (`acc, A, AK, L, CR, P, st, fy, sh, ax, fist, beltClip`) et insère chaque
 morceau renvoyé à son emplacement : `back` (derrière la cape), `mid` (entre la cape et le corps),
 `leaves`, `chest`, `belt`, `face`, `hand` (avant les bras), `arm` (après les bras), `front` (devant tout).
 Drapeaux : `noMask` (retire le bandeau), `noCrown` (retire la couronne de feuilles du niveau 5).
@@ -65,6 +65,24 @@ débloquer (comme la Carotte), masque libre, **blason** (`crest` : bouclier et �
 | Attrape-étoiles (`stars`) | `pig` | Petit cochon rose compagnon, à droite |
 | Sans faute (`perfect`) | `blason` | Bouclier en écu couleur du blason (bande dorée, couronne, étoile) à la main gauche. Touche `blason` et non `shield`, qui dessinerait aussi le bouclier casserole générique |
 | Machine à records (`triple`) | `crown` | Couronne sur la tête du petit cochon ; sans le cochon, posée sur la tête de la patate (ou sur le casque) |
+
+## Brocoli : « Super-brocoli », jungle (fait)
+
+Dessin : `js/rewards-veggie-broccoli.js`, `rwBroccoliAccs`. Couleurs (`speciesColors.broccoli`) : cape à
+débloquer (comme les autres), masque libre, **peintures** (`paint` : peintures des joues et pétales de la
+couronne de fleurs) à débloquer (rose et bleu, orange niv. 2, rouge niv. 3, violet niv. 4, or niv. 5).
+Pas de ceinture (le brocoli n'en a pas).
+
+| Badge (id) | Touche `acc` | Élément |
+|---|---|---|
+| Premier pas (`first`) | `ladybug` | Coccinelle copine posée sur le côté gauche du bouquet |
+| Fidèle (`five`) | `paint` | Peintures de jungle sur les joues (deux traits et un point, couleur `paint`) |
+| Infatigable (`marathon`) | `vine` | Liane qui tombe du haut à gauche, avec des feuilles |
+| Inarrêtable (`titan`) | `drum` | Tambour couleur de la cape à gauche, la main gauche posée dessus |
+| Nouveau record (`record`) | `tornado` | Mini tornade au-dessus du poing droit (à côté de la main au niveau 1) |
+| Attrape-étoiles (`stars`) | `bird` | Oiseau de la jungle qui lance un éclair, en haut à droite |
+| Sans faute (`perfect`) | `flowers` | Couronne de fleurs sur le bouquet ; remplace la couronne de feuilles du niveau 5 |
+| Machine à records (`triple`) | `rainbow` | Arc-en-ciel au-dessus du bouquet, posé sur deux nuages |
 
 ## Méthode
 

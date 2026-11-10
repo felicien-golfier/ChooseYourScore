@@ -110,10 +110,12 @@ const RW_THEMES = {
       ['mask',   'Masque', [['#2b2533',0],['#e8354a',0],['#2f6bd6',0],['#8a4fd6',0],['#1fa89a',0],['#ffffff',0]]],
     ],
     // Couleurs propres à un modèle, à débloquer niveau par niveau.
-    // Carotte : cape et lunettes de soleil (lens) ; Patate : cape et blason (crest : bouclier, étendard).
+    // Carotte : cape et lunettes de soleil (lens) ; Patate : cape et blason (crest : bouclier, étendard) ;
+    // Brocoli : cape et peintures (paint : peintures des joues, pétales de la couronne de fleurs).
     speciesColors: {
       carrot: [RW_VEG_CAPE, RW_VEG_MASK, ['lens',  'Lunettes', [['#1d1a28',0],['#e8354a',0],['#2f6bd6',2],['#ff5fa8',3],['#1fa89a',4],['#ffd45c',5]]]],
       potato: [RW_VEG_CAPE, RW_VEG_MASK, ['crest', 'Blason',   [['#2f6bd6',0],['#e8354a',0],['#1fa89a',2],['#8a4fd6',3],['#2b2533',4],['#ffd45c',5]]]],
+      broccoli: [RW_VEG_CAPE, RW_VEG_MASK, ['paint', 'Peintures', [['#ff5fa8',0],['#2f6bd6',0],['#ff8a1f',2],['#e8354a',3],['#8a4fd6',4],['#ffd45c',5]]]],
     },
     accs: [
       { k:'headband', n:'Bandeau de héros',   b:'first'    },
@@ -124,7 +126,7 @@ const RW_THEMES = {
       { k:'fork',     n:'Fourchette géante',  b:'marathon' },
       { k:'peas',     n:'Petits pois copains', b:'titan'   },
     ],
-    // Accessoires propres à un modèle (dessin : rewards-veggie-carrot.js, rewards-veggie-potato.js).
+    // Accessoires propres à un modèle (dessin : rewards-veggie-carrot.js, -potato.js, -broccoli.js).
     speciesAccs: {
       carrot: [
         { k:'sparkle',   n:'Fanes scintillantes', b:'first'    },
@@ -146,6 +148,17 @@ const RW_THEMES = {
         { k:'pig',    n:'Petit cochon compagnon', b:'stars'   },
         { k:'blason', n:'Bouclier à blason',     b:'perfect'  },
         { k:'crown',  n:'Couronne du petit cochon', b:'triple' },
+      ],
+      // Brocoli : « Super-brocoli », jungle (dessin : rewards-veggie-broccoli.js).
+      broccoli: [
+        { k:'ladybug', n:'Coccinelle copine',       b:'first'    },
+        { k:'paint',   n:'Peintures de jungle',     b:'five'     },
+        { k:'vine',    n:'Liane',                   b:'marathon' },
+        { k:'drum',    n:'Tambour',                 b:'titan'    },
+        { k:'tornado', n:'Mini tornade',            b:'record'   },
+        { k:'bird',    n:"Oiseau lanceur d'éclairs", b:'stars'   },
+        { k:'flowers', n:'Couronne de fleurs',      b:'perfect'  },
+        { k:'rainbow', n:'Arc-en-ciel',             b:'triple'   },
       ],
     },
   },

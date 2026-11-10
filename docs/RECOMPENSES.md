@@ -31,7 +31,7 @@ Un « exercice terminé » est une session non partielle. Une session arrêtée 
 |---|---|---|
 | Noms des niveaux | Prototype, Recrue, Pilote, Élite, Légende | Graine, Pousse, Costaud, Super-légume, Légende |
 | Modèles | Orbe, Cube, Lame, Char | Carotte, Radis, Patate, Brocoli |
-| Couleurs | carrosserie, détails, yeux (certaines verrouillées jusqu’au niveau 2 à 5, voir `RW_THEMES.robot.colors`) | cape, masque ; Carotte et Patate ont leur propre liste (cape et lunettes / blason à débloquer, voir `RW_THEMES.veggie.speciesColors`) |
+| Couleurs | carrosserie, détails, yeux (certaines verrouillées jusqu’au niveau 2 à 5, voir `RW_THEMES.robot.colors`) | cape, masque ; Carotte, Patate et Brocoli ont leur propre liste (cape et lunettes / blason / peintures à débloquer, voir `RW_THEMES.veggie.speciesColors`) |
 | Nom par défaut | Zéphyr | Capitaine Croc |
 
 ## Badges, accessoires et collection par modèle
@@ -40,7 +40,7 @@ Les noms des badges sont **épicènes** (le même mot pour une fille et un garç
 
 **Chaque modèle (Orbe, Cube, Lame, Char, légumes…) a sa propre collection de badges.** Un exercice terminé compte pour le modèle actif à ce moment-là (champ `robot` de la session) : ses compteurs (exercices terminés, records, 3 étoiles, sans faute) alimentent les badges de ce modèle uniquement. Quand un modèle a tous ses badges (8), il est **complet** (★ dans le sélecteur de modèle, annonce en fin d'exercice) et le patient peut en adopter un autre pour les collectionner tous. L'**XP, les niveaux et les records restent communs** à tous les modèles. Accessoires équipés (`r.acc[modèle]`) et badges acquis (`r.unlocked[modèle]`) sont rangés par modèle. Avant cette règle ils étaient à plat : ils vont au modèle actif, les autres repartent de zéro ; les exercices anciens (sans `robot`) comptent pour `legacyRobot`.
 
-Un modèle peut avoir sa propre liste d'accessoires (`RW_THEMES.robot.speciesAccs[modèle]`, lue par `rwAccsOf`), sinon il prend celle de l'univers. Tous les robots (**Orbe**, **Cube**, **Lame**, **Char**) ont la leur (voir `docs/ROBOTS-ACCESSOIRES.md`). Côté légumes, la **Carotte** (Super-carotte : fanes scintillantes, moustache, fourchette géante, petits pois copains, lunettes de soleil, bouclier ovale, grand S, ceinturon) et la **Patate** (Super-patate, chevalier : casque casserole, plume, étendard, cheval-bâton, épée-frite, petit cochon, bouclier à blason, couronne du cochon) ont la leur, les autres légumes gardent la liste de l'univers (colonne « Légume » ci-dessous ; voir `docs/LEGUMES-ACCESSOIRES.md`).
+Un modèle peut avoir sa propre liste d'accessoires (`RW_THEMES.robot.speciesAccs[modèle]`, lue par `rwAccsOf`), sinon il prend celle de l'univers. Tous les robots (**Orbe**, **Cube**, **Lame**, **Char**) ont la leur (voir `docs/ROBOTS-ACCESSOIRES.md`). Côté légumes, la **Carotte** (Super-carotte : fanes scintillantes, moustache, fourchette géante, petits pois copains, lunettes de soleil, bouclier ovale, grand S, ceinturon) et la **Patate** (Super-patate, chevalier : casque casserole, plume, étendard, cheval-bâton, épée-frite, petit cochon, bouclier à blason, couronne du cochon) et le **Brocoli** (Super-brocoli, jungle : coccinelle, peintures, liane, tambour, mini tornade, oiseau lanceur d'éclairs, couronne de fleurs, arc-en-ciel) ont la leur, le Radis garde la liste de l'univers (colonne « Légume » ci-dessous ; voir `docs/LEGUMES-ACCESSOIRES.md`).
 
 | Badge (objectif par défaut) | Robot (liste générique de repli, plus utilisée par les 4 modèles) | Orbe | Légume |
 |---|---|---|---|
@@ -62,7 +62,7 @@ Un modèle peut avoir sa propre liste d'accessoires (`RW_THEMES.robot.speciesAcc
 | `js/rewards-robot.js` | dessin des robots |
 | `js/rewards-robot-orb.js`, `-bolt.js`, `-spike.js`, `-tank.js` | accessoires de l'Orbe, du Cube, de la Lame et du Char (un fichier par robot) |
 | `js/rewards-veggie.js` | dessin des légumes |
-| `js/rewards-veggie-carrot.js`, `-potato.js` | accessoires de la Carotte et de la Patate |
+| `js/rewards-veggie-carrot.js`, `-potato.js`, `-broccoli.js` | accessoires de la Carotte, de la Patate et du Brocoli |
 | `css/rewards.css` | habillage : néon pour les robots, `.rw-t-veggie` pour le potager |
 
 **Ajouter un univers** : ajouter une entrée dans `RW_THEMES` (vocabulaire, modèles, couleurs, accessoires, fonctions de dessin), un fichier de dessin et un bloc CSS `.rw-t-<univers>`. L'option `genders: true` ajoute un choix fille / garçon qui accorde le vocabulaire.

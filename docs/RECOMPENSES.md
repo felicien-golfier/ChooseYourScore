@@ -40,7 +40,7 @@ Les noms des badges sont **épicènes** (le même mot pour une fille et un garç
 
 **Chaque modèle (Orbe, Cube, Lame, Char, légumes…) a sa propre collection de badges.** Un exercice terminé compte pour le modèle actif à ce moment-là (champ `robot` de la session) : ses compteurs (exercices terminés, records, 3 étoiles, sans faute) alimentent les badges de ce modèle uniquement. Quand un modèle a tous ses badges (8), il est **complet** (★ dans le sélecteur de modèle, annonce en fin d'exercice) et le patient peut en adopter un autre pour les collectionner tous. L'**XP, les niveaux et les records restent communs** à tous les modèles. Accessoires équipés (`r.acc[modèle]`) et badges acquis (`r.unlocked[modèle]`) sont rangés par modèle. Avant cette règle ils étaient à plat : ils vont au modèle actif, les autres repartent de zéro ; les exercices anciens (sans `robot`) comptent pour `legacyRobot`.
 
-Un modèle peut avoir sa propre liste d'accessoires (`RW_THEMES.robot.speciesAccs[modèle]`, lue par `rwAccsOf`), sinon il prend celle de l'univers. Tous les robots (**Orbe**, **Cube**, **Lame**, **Char**) ont la leur (voir `docs/ROBOTS-ACCESSOIRES.md`).
+Un modèle peut avoir sa propre liste d'accessoires (`RW_THEMES.robot.speciesAccs[modèle]`, lue par `rwAccsOf`), sinon il prend celle de l'univers. Tous les robots (**Orbe**, **Cube**, **Lame**, **Char**) ont la leur (voir `docs/ROBOTS-ACCESSOIRES.md`). Côté légumes, la **Carotte** a la sienne (Super-carotte : fanes scintillantes, moustache, fourchette géante, petits pois copains, lunettes de soleil, bouclier ovale, grand S), les autres légumes gardent la liste de l'univers (colonne « Légume » ci-dessous ; voir `docs/LEGUMES-ACCESSOIRES.md`).
 
 | Badge (objectif par défaut) | Robot (liste générique de repli, plus utilisée par les 4 modèles) | Orbe | Légume |
 |---|---|---|---|
@@ -62,10 +62,11 @@ Un modèle peut avoir sa propre liste d'accessoires (`RW_THEMES.robot.speciesAcc
 | `js/rewards-robot.js` | dessin des robots |
 | `js/rewards-robot-orb.js`, `-bolt.js`, `-spike.js`, `-tank.js` | accessoires de l'Orbe, du Cube, de la Lame et du Char (un fichier par robot) |
 | `js/rewards-veggie.js` | dessin des légumes |
+| `js/rewards-veggie-carrot.js` | accessoires de la Carotte |
 | `css/rewards.css` | habillage : néon pour les robots, `.rw-t-veggie` pour le potager |
 
 **Ajouter un univers** : ajouter une entrée dans `RW_THEMES` (vocabulaire, modèles, couleurs, accessoires, fonctions de dessin), un fichier de dessin et un bloc CSS `.rw-t-<univers>`. L'option `genders: true` ajoute un choix fille / garçon qui accorde le vocabulaire.
 
 **Historique** : deux univers ont été essayés puis retirés, « Créatures magiques » (jugé peu parlant) puis « Sorciers ». Un patient resté sur un univers retiré revient automatiquement aux robots.
 
-**Accessoires par robot** : voir `docs/ROBOTS-ACCESSOIRES.md`.
+**Accessoires par robot** : voir `docs/ROBOTS-ACCESSOIRES.md`. **Par légume** : `docs/LEGUMES-ACCESSOIRES.md`.

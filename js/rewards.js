@@ -4,7 +4,7 @@
    (apparence, objectifs) et les acquis qui ne doivent jamais se perdre (badges, XP max).
    Un « exercice terminé » = une entrée de `sessions` non partielle.
    Deux univers au choix (RW_THEMES) : robots ou légumes super-héros.
-   L'affichage est dans rewards-ui.js, le dessin dans rewards-robot.js et rewards-veggie.js.
+   L'affichage est dans rewards-ui.js, le dessin dans rewards-robot.js et rewards-veggie.js (+ un fichier d'accessoires par modèle).
    ──────────────────────────────────────────────────────────────────────────── */
 
 // XP minimale de chaque niveau (avant le rythme du patient) ; les noms dépendent de l'univers.
@@ -115,6 +115,18 @@ const RW_THEMES = {
       { k:'fork',     n:'Fourchette géante',  b:'marathon' },
       { k:'peas',     n:'Petits pois copains', b:'titan'   },
     ],
+    // Accessoires propres à un modèle (dessin : rewards-veggie-carrot.js pour la Carotte). Pas d'accessoire pour « Machine à records ».
+    speciesAccs: {
+      carrot: [
+        { k:'sparkle',   n:'Fanes scintillantes', b:'first'    },
+        { k:'moustache', n:'Moustache',           b:'five'     },
+        { k:'fork',      n:'Fourchette géante',   b:'marathon' },
+        { k:'peas',      n:'Petits pois copains', b:'titan'    },
+        { k:'shades',    n:'Lunettes de soleil',  b:'record'   },
+        { k:'oval',      n:'Bouclier ovale',      b:'stars'    },
+        { k:'superS',    n:'Grand S de héros',    b:'perfect'  },
+      ],
+    },
   },
 };
 

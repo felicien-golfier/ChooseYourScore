@@ -6,7 +6,8 @@
    Niveau 1 = petit légume tout nu, 2 = masque de héros et poing levé, 3 = cape et bottes,
    4 = étoile de héros sur le torse et étincelles, 5 = aura dorée, couronne de feuilles et éclairs.
    Un modèle peut avoir ses propres accessoires, dans son fichier (RW_VEG_ACCS : Carotte →
-   rewards-veggie-carrot.js, Patate → rewards-veggie-potato.js). La fonction reçoit les repères
+   rewards-veggie-carrot.js, Patate → rewards-veggie-potato.js,
+   Brocoli → rewards-veggie-broccoli.js). La fonction reçoit les repères
    du dessin et renvoie des morceaux de SVG par emplacement (voir « slot » plus bas) ; fitBelt
    découpe la ceinture à la forme du corps.
    Utilise rwShade et rwStarPts (rewards-robot.js). Logique : rewards.js.
@@ -22,7 +23,7 @@ const RW_VEGGIE_SPECIES = {
 
 const RW_VEG_GOLD = '#ffd45c';
 // Accessoires propres à un modèle (fichiers chargés avant celui-ci)
-const RW_VEG_ACCS = { carrot: rwCarrotAccs, potato: rwPotatoAccs };
+const RW_VEG_ACCS = { carrot: rwCarrotAccs, potato: rwPotatoAccs, broccoli: rwBroccoliAccs };
 const RW_VEG_EYE = '#2b2238';
 const RW_VEG_LEAF = '#4fae4a';
 
@@ -79,7 +80,7 @@ function rwVegBody(sp, B, K, uid) {
 }
 
 function rwVeggieSvg(o) {
-  const { species: sp, stage: st, accent: A, mask: M, lens: L = '#1d1a28', crest: CR = '#2f6bd6', acc, uid } = o;
+  const { species: sp, stage: st, accent: A, mask: M, lens: L = '#1d1a28', crest: CR = '#2f6bd6', paint: P = '#ff5fa8', acc, uid } = o;
   const S = RW_VEGGIE_SPECIES[sp];
   const B = S.body, K = rwShade(B, -0.45), AK = rwShade(A, -0.4), MK = rwShade(M, -0.4);
   const line = `stroke="${K}" stroke-width="3" stroke-linejoin="round"`;
@@ -92,7 +93,7 @@ function rwVeggieSvg(o) {
   const beltClip = S.fitBelt ? `url(#bc${uid})` : '';
   // accessoires propres au modèle ; slot(k) : morceau de SVG à l'emplacement k
   // (back, mid, leaves, chest, belt, face, hand, arm, front ; noMask, noCrown : retire bandeau / couronne)
-  const C = RW_VEG_ACCS[sp] ? RW_VEG_ACCS[sp]({ acc, A, AK, L, CR, st, fy, sh, ax, fist, beltClip }) : null;
+  const C = RW_VEG_ACCS[sp] ? RW_VEG_ACCS[sp]({ acc, A, AK, L, CR, P, st, fy, sh, ax, fist, beltClip }) : null;
   const slot = k => (C && C[k]) || '';
 
   let s = `<svg viewBox="0 0 200 240" role="img" aria-label="${S.label}"><defs>` +

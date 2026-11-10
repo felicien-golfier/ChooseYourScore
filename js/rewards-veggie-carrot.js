@@ -1,19 +1,21 @@
 /* ── RÉCOMPENSES : ACCESSOIRES DE SUPER-CAROTTE ──────────────────────────────
-   Retourne { leaves, chest, belt, face, arm } en SVG, insérés par rwVeggieSvg :
+   Retourne { leaves, chest, belt, face, arm, noMask } en SVG, insérés par rwVeggieSvg :
    `leaves` par-dessus les fanes, `chest` sur le torse (remplace l'étoile de héros),
    `belt` après le torse (le ceinturon remplace la ceinture des niveaux 3 à 5 ;
    beltClip = découpe à la forme du corps, fournie par rwVeggieSvg),
-   `face` sur le visage, `arm` après le bras gauche (qui tient le bouclier).
-   Lunettes de soleil, fourchette géante et petits pois copains sont dessinés par
-   rwVeggieSvg (même code pour tous les légumes). Les touches sont reliées aux
+   `face` sur le visage (moustache, lunettes de soleil rectangulaires de couleur L),
+   `arm` après le bras gauche (qui tient le bouclier) ; noMask : les lunettes
+   remplacent le bandeau. Fourchette géante et petits pois copains sont dessinés
+   par rwVeggieSvg (même code pour tous les légumes). Les touches sont reliées aux
    badges dans RW_THEMES.veggie.speciesAccs.carrot (rewards.js).
    Repères (viewBox 200×240, avant mise à l'échelle du niveau) : fanes partant de
    (100,88), pointes en (100,46), (79,61) et (121,61) ; yeux à y=114, bouche à
    y=130, torse vers (100,151), ceinture à y=161 ; main gauche en (53,142).
    ──────────────────────────────────────────────────────────────────────────── */
 
-function rwCarrotAccs({ acc, A, AK, st, fy, beltClip }) {
+function rwCarrotAccs({ acc, A, AK, st, fy, ax, L, beltClip }) {
   let leaves = '', chest = '', belt = '', face = '', arm = '';
+  const ex = [86, 114];
 
   if (acc.sparkle) {
     // fanes scintillantes : nervures dorées sur chaque fane et étincelles qui scintillent autour
@@ -48,6 +50,16 @@ function rwCarrotAccs({ acc, A, AK, st, fy, beltClip }) {
       `<path d="M92 ${y - 1} Q86 ${y - 2} 82 ${y + 1} M108 ${y - 1} Q114 ${y - 2} 118 ${y + 1}" stroke="#8a5a32" stroke-width="1.4" fill="none" stroke-linecap="round"/>`;
   }
 
+  if (acc.shades) {
+    // lunettes de soleil rectangulaires (remplacent le bandeau) : monture couleur « lens », verres teintés, branches vers les côtés
+    const LK = rwShade(L, -0.45), glass = rwShade(L, -0.72), tw = Math.min(40, ax + 7);
+    face += `<path d="M${100 - tw} ${fy - 6} L${100 - 27} ${fy - 4} M${100 + tw} ${fy - 6} L${100 + 27} ${fy - 4}" stroke="${LK}" stroke-width="3.5" stroke-linecap="round"/>` +
+      ex.map(x => `<rect x="${x - 14}" y="${fy - 9}" width="28" height="16" rx="2.5" fill="${glass}" stroke="${L}" stroke-width="3.5"/>` +
+      `<rect x="${x - 14}" y="${fy - 9}" width="28" height="16" rx="2.5" fill="none" stroke="${LK}" stroke-width="1"/>` +
+      `<path d="M${x - 9} ${fy - 3} L${x - 3} ${fy - 6} M${x - 8} ${fy + 2} L${x + 2} ${fy - 4}" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".55"/>`).join('') +
+      `<path d="M98 ${fy - 4} L102 ${fy - 4}" stroke="${L}" stroke-width="4" stroke-linecap="round"/>`;
+  }
+
   if (acc.oval) {
     // bouclier ovale tenu par la main gauche
     const cx = 44, cy = 140;
@@ -56,5 +68,5 @@ function rwCarrotAccs({ acc, A, AK, st, fy, beltClip }) {
       `<path d="M${cx - 11} ${cy - 12} Q${cx - 9} ${cy - 20} ${cx - 3} ${cy - 22}" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".65"/>` +
       `<polygon points="${rwStarPts(cx, cy + 1, 8)}" fill="${RW_VEG_GOLD}" stroke="#c99a1c" stroke-width="1.2" stroke-linejoin="round"/>`;
   }
-  return { leaves, chest, belt, face, arm };
+  return { leaves, chest, belt, face, arm, noMask: !!acc.shades };
 }

@@ -91,7 +91,7 @@ function rwTabLook(patient, r, ev) {
     genders +
     '<div class="rw-field"><span>Modèle</span><div class="rw-species">' + species + '</div></div>' +
     '<div class="rw-field"><span>Nom</span><input type="text" id="rw-name" maxlength="14" value="' + escapeHtml(r.name) + '" aria-label="' + w.nameLabel + '"></div>' +
-    T.colors.map(([key, label, list]) =>
+    rwColorsOf(r).map(([key, label, list]) =>
       '<div class="rw-field"><span>' + label + '</span><div class="rw-swatches">' + rwSwatches(key, list, r[key], ev.stage) + '</div></div>').join('') +
     '<div class="rw-field"><span>Accessoires</span><div class="rw-accs">' + accs + '</div></div>';
 }

@@ -29,7 +29,7 @@ const RW_BADGES = [
 // Univers du compagnon : même progression (XP, niveaux, badges), dessin et vocabulaire propres.
 // words(gender) : vocabulaire, accordé quand l'univers propose fille / garçon (genders).
 // colors : [clé, libellé, [[couleur, niveau requis], …]] ; accs : k = clé du dessin, b = badge qui le débloque
-// (speciesAccs : liste propre à un modèle, voir rwAccsOf).
+// (speciesAccs / speciesColors : listes propres à un modèle, voir rwAccsOf / rwColorsOf).
 const RW_THEMES = {
   robot: {
     label: 'Robots', genders: false,
@@ -103,10 +103,17 @@ const RW_THEMES = {
       stages: ['Graine', 'Pousse', 'Costaud', 'Super-légume', 'Légende'], species: k => RW_VEGGIE_SPECIES[k].label }),
     species: RW_VEGGIE_SPECIES, order: ['carrot', 'radish', 'potato', 'broccoli'], draw: rwVeggieSvg, badge: rwVeggieBadgeSvg,
     colors: [
-      ['accent', 'Cape',     [['#e8354a',0],['#2f6bd6',0],['#8a4fd6',2],['#1fa89a',3],['#ff8a1f',4],['#2b2533',4],['#ffd45c',5]]],
-      ['mask',   'Masque',   [['#2b2533',0],['#e8354a',0],['#2f6bd6',0],['#8a4fd6',0],['#1fa89a',0],['#ffffff',0]]],
-      ['lens',   'Lunettes', [['#1d1a28',0],['#e8354a',0],['#2f6bd6',2],['#ff5fa8',3],['#1fa89a',4],['#ffd45c',5]]],
+      ['accent', 'Cape',   [['#e8354a',0],['#2f6bd6',0],['#8a4fd6',0],['#ff8a1f',0],['#1fa89a',0],['#2b2533',0],['#ffd45c',5]]],
+      ['mask',   'Masque', [['#2b2533',0],['#e8354a',0],['#2f6bd6',0],['#8a4fd6',0],['#1fa89a',0],['#ffffff',0]]],
     ],
+    // Couleurs propres à un modèle. Carotte : cape et lunettes de soleil (lens) à débloquer niveau par niveau.
+    speciesColors: {
+      carrot: [
+        ['accent', 'Cape',     [['#e8354a',0],['#2f6bd6',0],['#8a4fd6',2],['#1fa89a',3],['#ff8a1f',4],['#2b2533',4],['#ffd45c',5]]],
+        ['mask',   'Masque',   [['#2b2533',0],['#e8354a',0],['#2f6bd6',0],['#8a4fd6',0],['#1fa89a',0],['#ffffff',0]]],
+        ['lens',   'Lunettes', [['#1d1a28',0],['#e8354a',0],['#2f6bd6',2],['#ff5fa8',3],['#1fa89a',4],['#ffd45c',5]]],
+      ],
+    },
     accs: [
       { k:'headband', n:'Bandeau de héros',   b:'first'    },
       { k:'teeth',    n:'Dents de lapin',     b:'five'     },
@@ -136,13 +143,20 @@ function rwTheme(r) { return RW_THEMES[r.theme] || RW_THEMES.robot; }
 function rwWords(r) { return rwTheme(r).words(r.gender); }
 // Accessoires d'un modèle : sa liste propre si l'univers en définit une, sinon celle de l'univers.
 function rwAccsOf(r, species = r.species) { const T = rwTheme(r); return (T.speciesAccs && T.speciesAccs[species]) || T.accs; }
+// Couleurs proposées pour un modèle : sa liste propre si l'univers en définit une, sinon celle de l'univers.
+function rwColorsOf(r, species = r.species) { const T = rwTheme(r); return (T.speciesColors && T.speciesColors[species]) || T.colors; }
+// Toutes les couleurs d'un univers (une entrée par clé, la liste de l'univers d'abord) : l'apparence les garde toutes.
+function rwAllColors(T) {
+  const seen = new Set();
+  return [T.colors, ...Object.values(T.speciesColors || {})].flat().filter(([key]) => !seen.has(key) && seen.add(key));
+}
 
 // Apparence d'un patient dans son univers actuel : modèle, couleurs, accessoires, nom.
 function rwLookOf(r) {
   const T = rwTheme(r);
   const look = { species: r.species, acc: r.acc, name: r.name };
   if (T.genders) look.gender = r.gender;
-  T.colors.forEach(([key]) => { look[key] = r[key]; });
+  rwAllColors(T).forEach(([key]) => { look[key] = r[key]; });
   return look;
 }
 
@@ -152,7 +166,7 @@ function rwDefaultLook(theme) {
   const look = { species: T.order[0], acc: {} };
   if (T.genders) look.gender = 'f';
   look.name = T.words(look.gender).defaultName;
-  T.colors.forEach(([key, , list]) => { look[key] = list[0][0]; });
+  rwAllColors(T).forEach(([key, , list]) => { look[key] = list[0][0]; });
   return look;
 }
 

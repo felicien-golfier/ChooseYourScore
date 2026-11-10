@@ -91,7 +91,7 @@ Dessin : `js/rewards-robot-bolt.js`, `rwBoltAccs({acc,A,E,B,st})` renvoie `{back
 | Sans faute (`perfect`) | `toolbox` | Boîte à outils : en main dès le niveau 3, posée au sol avant |
 | Machine à records (`triple`) | `gears` | Deux engrenages qui tournent dans le torse, dorés au niveau 5 (dès le niveau 2) |
 
-Les engrenages « dans le dos » ont été écartés (invisibles de face). **Légumes** : même démarche ensuite.
+Les engrenages « dans le dos » ont été écartés (invisibles de face). **Légumes** : même démarche, voir `docs/LEGUMES-ACCESSOIRES.md`.
 
 ## Méthode de travail utilisée
 

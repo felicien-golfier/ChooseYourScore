@@ -5,6 +5,7 @@
    Le légume garde ses couleurs naturelles (carotte, radis, patate, brocoli).
    Niveau 1 = petit légume tout nu, 2 = masque de héros et poing levé, 3 = cape et bottes,
    4 = étoile de héros sur le torse et étincelles, 5 = aura dorée, couronne de feuilles et éclairs.
+   Un modèle peut avoir ses propres accessoires (Carotte : rewards-veggie-carrot.js).
    Utilise rwShade et rwStarPts (rewards-robot.js). Logique : rewards.js.
    ──────────────────────────────────────────────────────────────────────────── */
 
@@ -70,6 +71,7 @@ function rwVeggieSvg(o) {
   const line = `stroke="${K}" stroke-width="3" stroke-linejoin="round"`;
   const sc = [0.8, 0.87, 0.93, 0.98, 1][st - 1];
   const { fy, sh, ax } = S;
+  const C = sp === 'carrot' ? rwCarrotAccs({ acc, A, AK, st, fy }) : null;
 
   let s = `<svg viewBox="0 0 200 240" role="img" aria-label="${S.label}"><defs>` +
     `<radialGradient id="vg${uid}"><stop offset="0" stop-color="${RW_VEG_GOLD}" stop-opacity=".7"/><stop offset="1" stop-color="${RW_VEG_GOLD}" stop-opacity="0"/></radialGradient></defs>`;
@@ -95,6 +97,7 @@ function rwVeggieSvg(o) {
 
   // ── Corps ──────────────────────────────────────────────────────────────────
   s += rwVegBody(sp, B, K, uid);
+  if (C) s += C.leaves;
 
   // ceinture (dès le niveau 3), dans la couleur du masque
   if (st >= 3 && sp !== 'broccoli') {
@@ -102,8 +105,9 @@ function rwVeggieSvg(o) {
     s += `<path d="M${100 - ax - 8} ${by} Q100 ${by + 7} ${100 + ax + 8} ${by} L${100 + ax + 8} ${by + 7} Q100 ${by + 14} ${100 - ax - 8} ${by + 7} Z" fill="${M}" stroke="${MK}" stroke-width="2"/>` +
       `<rect x="94" y="${by - 1}" width="12" height="11" rx="2" fill="${RW_VEG_GOLD}" stroke="#c99a1c" stroke-width="1.5"/>`;
   }
-  // étoile de héros sur le torse (dès le niveau 4)
-  if (st >= 4) {
+  // étoile de héros sur le torse (dès le niveau 4), remplacée par le grand S de Super-carotte
+  if (C && C.chest) s += C.chest;
+  else if (st >= 4) {
     const ey = fy + 37;
     s += `<circle cx="100" cy="${ey}" r="9" fill="${st >= 5 ? RW_VEG_GOLD : A}" stroke="${st >= 5 ? '#c99a1c' : AK}" stroke-width="2"/>` +
       `<polygon points="${rwStarPts(100, ey + 0.5, 6)}" fill="#fff"/>`;
@@ -124,6 +128,7 @@ function rwVeggieSvg(o) {
     ? `<path d="M88 ${fy + 15} Q100 ${fy + 32} 112 ${fy + 15} Z" fill="#7a1f35" stroke="${RW_VEG_EYE}" stroke-width="2" stroke-linejoin="round"/>`
     : `<path d="M92 ${fy + 16} Q100 ${fy + 24} 108 ${fy + 16}" stroke="${RW_VEG_EYE}" stroke-width="2.6" fill="none" stroke-linecap="round"/>`;
 
+  if (C) s += C.face;
   if (acc.teeth) {
     const ty = fy + (st >= 5 ? 15 : 18);
     s += `<rect x="93" y="${ty}" width="7" height="11" rx="2.5" fill="#fff" stroke="#8a7f86" stroke-width="1.8"/>` +
@@ -171,6 +176,8 @@ function rwVeggieSvg(o) {
       `<path d="M${cx - 12} ${cy - 8} L${cx - 5} ${cy - 13}" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".8"/>` +
       `<circle cx="${cx + 2}" cy="${cy + 2}" r="6.5" fill="${A}" stroke="${AK}" stroke-width="2"/>`;
   }
+
+  if (C) s += C.arm;
 
   // ── Compagnons : mini petits pois ──────────────────────────────────────────
   if (acc.peas) {

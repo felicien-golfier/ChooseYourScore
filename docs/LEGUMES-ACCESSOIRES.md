@@ -8,10 +8,9 @@ petits pois). Le code fait foi en cas de doute.
 
 ## Carotte : « Super-carotte » (fait)
 
-7 accessoires (rien pour « Machine à records », comme la Lame ; le badge compte quand même pour la
-collection complète). Dessin : `js/rewards-veggie-carrot.js`, `rwCarrotAccs({acc,A,AK,st,fy})` renvoie
-`{leaves, chest, face, arm}`, insérés par `rwVeggieSvg` : `leaves` par-dessus les fanes, `chest` sur le
-torse, `face` sur le visage, `arm` après le bras gauche. Les lunettes de soleil, la fourchette géante et
+8 accessoires, un par badge. Dessin : `js/rewards-veggie-carrot.js`, `rwCarrotAccs({acc,A,AK,st,fy,ax})`
+renvoie `{leaves, chest, belt, face, arm}`, insérés par `rwVeggieSvg` : `leaves` par-dessus les fanes,
+`chest` sur le torse, `belt` après le torse, `face` sur le visage, `arm` après le bras gauche. Les lunettes de soleil, la fourchette géante et
 les petits pois reprennent le dessin générique de `rwVeggieSvg` (même code pour tous les légumes).
 
 | Badge (id) | Touche `acc` | Élément |
@@ -23,6 +22,7 @@ les petits pois reprennent le dessin générique de `rwVeggieSvg` (même code po
 | Nouveau record (`record`) | `shades` | Lunettes de soleil (dessin générique) |
 | Attrape-étoiles (`stars`) | `oval` | Bouclier ovale couleur de la cape, bord doré, étoile au centre, dans la main gauche |
 | Sans faute (`perfect`) | `superS` | Grand S doré sur le torse dans un écusson ovale couleur de la cape ; remplace l'étoile de héros des niveaux 4 et 5 |
+| Machine à records (`triple`) | `belt` | Ceinturon (dès le niveau 1) : cuir, rivets dorés, grosse boucle étoilée, deux poches couleur de la cape ; remplace la ceinture simple des niveaux 3 à 5 et passe devant le bas de l'écusson du S |
 
 Repères de la Carotte (viewBox 200×240, avant l'échelle du niveau) : fanes partant de (100,88), pointes
 en (100,46), (79,61), (121,61) ; yeux à y=114, bouche à y=130, torse vers (100,151), ceinture à y=161 ;

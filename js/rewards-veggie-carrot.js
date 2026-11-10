@@ -1,17 +1,18 @@
 /* ── RÉCOMPENSES : ACCESSOIRES DE SUPER-CAROTTE ──────────────────────────────
-   Retourne { leaves, chest, face, arm } en SVG, insérés par rwVeggieSvg :
+   Retourne { leaves, chest, belt, face, arm } en SVG, insérés par rwVeggieSvg :
    `leaves` par-dessus les fanes, `chest` sur le torse (remplace l'étoile de héros),
+   `belt` après le torse (le ceinturon remplace la ceinture des niveaux 3 à 5),
    `face` sur le visage, `arm` après le bras gauche (qui tient le bouclier).
    Lunettes de soleil, fourchette géante et petits pois copains sont dessinés par
    rwVeggieSvg (même code pour tous les légumes). Les touches sont reliées aux
    badges dans RW_THEMES.veggie.speciesAccs.carrot (rewards.js).
    Repères (viewBox 200×240, avant mise à l'échelle du niveau) : fanes partant de
    (100,88), pointes en (100,46), (79,61) et (121,61) ; yeux à y=114, bouche à
-   y=130, torse vers (100,151) ; main gauche en (53,142).
+   y=130, torse vers (100,151), ceinture à y=161 ; main gauche en (53,142).
    ──────────────────────────────────────────────────────────────────────────── */
 
-function rwCarrotAccs({ acc, A, AK, st, fy }) {
-  let leaves = '', chest = '', face = '', arm = '';
+function rwCarrotAccs({ acc, A, AK, st, fy, ax }) {
+  let leaves = '', chest = '', belt = '', face = '', arm = '';
 
   if (acc.sparkle) {
     // fanes scintillantes : nervures dorées sur chaque fane et étincelles qui scintillent autour
@@ -27,6 +28,18 @@ function rwCarrotAccs({ acc, A, AK, st, fy }) {
     chest += `<ellipse cx="100" cy="151" rx="20" ry="15" fill="${A}" stroke="${RW_VEG_GOLD}" stroke-width="3"/>` +
       `<g transform="translate(100 151) scale(1.3)"><path d="${S}" stroke="${AK}" stroke-width="6.5" fill="none" stroke-linecap="round"/>` +
       `<path d="${S}" stroke="${RW_VEG_GOLD}" stroke-width="3.8" fill="none" stroke-linecap="round"/></g>`;
+  }
+
+  if (acc.belt) {
+    // ceinturon de héros (dès le niveau 1) : cuir, rivets dorés, grosse boucle étoilée, deux poches couleur de la cape
+    const y = fy + 49, x1 = 100 - ax - 8, x2 = 100 + ax + 8;
+    belt += [74, 126].map(x => `<rect x="${x - 6}" y="${y + 9}" width="12" height="13" rx="3" fill="${A}" stroke="${AK}" stroke-width="2"/>` +
+      `<path d="M${x - 6} ${y + 13} L${x + 6} ${y + 13}" stroke="${AK}" stroke-width="1.5"/><circle cx="${x}" cy="${y + 15}" r="1.6" fill="${RW_VEG_GOLD}"/>`).join('') +
+      `<path d="M${x1} ${y} Q100 ${y + 7} ${x2} ${y} L${x2} ${y + 12} Q100 ${y + 19} ${x1} ${y + 12} Z" fill="#7a4a26" stroke="#3d2412" stroke-width="2.2" stroke-linejoin="round"/>` +
+      [66, 84, 116, 134].map(x => `<circle cx="${x}" cy="${y + 6 + (x < 100 ? (x - x1) : (x2 - x)) * 0.075}" r="2" fill="${RW_VEG_GOLD}" stroke="#c99a1c" stroke-width=".8"/>`).join('') +
+      `<rect x="89" y="${y}" width="22" height="19" rx="4" fill="${RW_VEG_GOLD}" stroke="#c99a1c" stroke-width="2"/>` +
+      `<rect x="93" y="${y + 3.5}" width="14" height="12" rx="2.5" fill="none" stroke="#c99a1c" stroke-width="1.5"/>` +
+      `<polygon points="${rwStarPts(100, y + 10, 5)}" fill="#fff"/>`;
   }
 
   if (acc.moustache) {
@@ -45,5 +58,5 @@ function rwCarrotAccs({ acc, A, AK, st, fy }) {
       `<path d="M${cx - 11} ${cy - 12} Q${cx - 9} ${cy - 20} ${cx - 3} ${cy - 22}" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".65"/>` +
       `<polygon points="${rwStarPts(cx, cy + 1, 8)}" fill="${RW_VEG_GOLD}" stroke="#c99a1c" stroke-width="1.2" stroke-linejoin="round"/>`;
   }
-  return { leaves, chest, face, arm };
+  return { leaves, chest, belt, face, arm };
 }

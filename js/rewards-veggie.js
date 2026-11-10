@@ -71,7 +71,7 @@ function rwVeggieSvg(o) {
   const line = `stroke="${K}" stroke-width="3" stroke-linejoin="round"`;
   const sc = [0.8, 0.87, 0.93, 0.98, 1][st - 1];
   const { fy, sh, ax } = S;
-  const C = sp === 'carrot' ? rwCarrotAccs({ acc, A, AK, st, fy }) : null;
+  const C = sp === 'carrot' ? rwCarrotAccs({ acc, A, AK, st, fy, ax }) : null;
 
   let s = `<svg viewBox="0 0 200 240" role="img" aria-label="${S.label}"><defs>` +
     `<radialGradient id="vg${uid}"><stop offset="0" stop-color="${RW_VEG_GOLD}" stop-opacity=".7"/><stop offset="1" stop-color="${RW_VEG_GOLD}" stop-opacity="0"/></radialGradient></defs>`;
@@ -99,8 +99,8 @@ function rwVeggieSvg(o) {
   s += rwVegBody(sp, B, K, uid);
   if (C) s += C.leaves;
 
-  // ceinture (dès le niveau 3), dans la couleur du masque
-  if (st >= 3 && sp !== 'broccoli') {
+  // ceinture (dès le niveau 3), dans la couleur du masque (sauf ceinturon de Super-carotte, dessiné après le torse)
+  if (st >= 3 && sp !== 'broccoli' && !(C && C.belt)) {
     const by = fy + 47;
     s += `<path d="M${100 - ax - 8} ${by} Q100 ${by + 7} ${100 + ax + 8} ${by} L${100 + ax + 8} ${by + 7} Q100 ${by + 14} ${100 - ax - 8} ${by + 7} Z" fill="${M}" stroke="${MK}" stroke-width="2"/>` +
       `<rect x="94" y="${by - 1}" width="12" height="11" rx="2" fill="${RW_VEG_GOLD}" stroke="#c99a1c" stroke-width="1.5"/>`;
@@ -112,6 +112,8 @@ function rwVeggieSvg(o) {
     s += `<circle cx="100" cy="${ey}" r="9" fill="${st >= 5 ? RW_VEG_GOLD : A}" stroke="${st >= 5 ? '#c99a1c' : AK}" stroke-width="2"/>` +
       `<polygon points="${rwStarPts(100, ey + 0.5, 6)}" fill="#fff"/>`;
   }
+
+  if (C) s += C.belt;
 
   // ── Visage ─────────────────────────────────────────────────────────────────
   const ex = [86, 114];

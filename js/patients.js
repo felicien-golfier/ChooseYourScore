@@ -148,8 +148,10 @@ document.getElementById('btn-export-patient-json').addEventListener('click', () 
   );
 });
 
-document.getElementById('btn-import-patient-json').addEventListener('click', () => {
-  importSessionsJson(added => { alert(added + ' session(s) importée(s).'); renderPatientDetail(); });
+['btn-import-patient-json', 'btn-import-patients-sessions'].forEach(id => {
+  document.getElementById(id).addEventListener('click', () => {
+    importSessionsJson(added => { alert(added + ' session(s) importée(s).'); renderPatientDetail(); });
+  });
 });
 
 document.getElementById('btn-export-patient-pdf').addEventListener('click', () => {

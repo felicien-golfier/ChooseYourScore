@@ -31,7 +31,7 @@ Un « exercice terminé » est une session non partielle. Une session arrêtée 
 |---|---|---|
 | Noms des niveaux | Prototype, Recrue, Pilote, Élite, Légende | Graine, Pousse, Costaud, Super-légume, Légende |
 | Modèles | Orbe, Cube, Lame, Char | Carotte, Radis, Patate, Brocoli |
-| Couleurs | carrosserie, détails, yeux (certaines verrouillées jusqu’au niveau 2 à 5, voir `RW_THEMES.robot.colors`) | cape, masque |
+| Couleurs | carrosserie, détails, yeux (certaines verrouillées jusqu’au niveau 2 à 5, voir `RW_THEMES.robot.colors`) | cape et lunettes (certaines verrouillées jusqu’au niveau 2 à 5, voir `RW_THEMES.veggie.colors`), masque |
 | Nom par défaut | Zéphyr | Capitaine Croc |
 
 ## Badges, accessoires et collection par modèle

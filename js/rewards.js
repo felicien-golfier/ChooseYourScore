@@ -103,8 +103,9 @@ const RW_THEMES = {
       stages: ['Graine', 'Pousse', 'Costaud', 'Super-légume', 'Légende'], species: k => RW_VEGGIE_SPECIES[k].label }),
     species: RW_VEGGIE_SPECIES, order: ['carrot', 'radish', 'potato', 'broccoli'], draw: rwVeggieSvg, badge: rwVeggieBadgeSvg,
     colors: [
-      ['accent', 'Cape',   [['#e8354a',0],['#2f6bd6',0],['#8a4fd6',0],['#ff8a1f',0],['#1fa89a',0],['#2b2533',0],['#ffd45c',5]]],
-      ['mask',   'Masque', [['#2b2533',0],['#e8354a',0],['#2f6bd6',0],['#8a4fd6',0],['#1fa89a',0],['#ffffff',0]]],
+      ['accent', 'Cape',     [['#e8354a',0],['#2f6bd6',0],['#8a4fd6',2],['#1fa89a',3],['#ff8a1f',4],['#2b2533',4],['#ffd45c',5]]],
+      ['mask',   'Masque',   [['#2b2533',0],['#e8354a',0],['#2f6bd6',0],['#8a4fd6',0],['#1fa89a',0],['#ffffff',0]]],
+      ['lens',   'Lunettes', [['#1d1a28',0],['#e8354a',0],['#2f6bd6',2],['#ff5fa8',3],['#1fa89a',4],['#ffd45c',5]]],
     ],
     accs: [
       { k:'headband', n:'Bandeau de héros',   b:'first'    },

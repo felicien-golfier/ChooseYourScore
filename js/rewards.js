@@ -26,6 +26,9 @@ const RW_BADGES = [
   { id:'perfect',  fam:'x', n:'Sans faute',        g:1,  stat:'perfect', u:'exercices parfaits',  d:g => RW_PLURAL(g,'exercice parfait','exercices parfaits'),  gl:'check' },
   { id:'triple',   fam:'x', n:'Machine à records', g:3,  stat:'records', u:'records battus',      d:g => 'Battre ' + RW_PLURAL(g,'record','records') + ' perso', gl:'bolt2' },
 ];
+// Couleurs de cape et de masque des légumes qui ont leurs propres couleurs (speciesColors).
+const RW_VEG_CAPE = ['accent', 'Cape',   [['#e8354a',0],['#2f6bd6',0],['#8a4fd6',2],['#1fa89a',3],['#ff8a1f',4],['#2b2533',4],['#ffd45c',5]]];
+const RW_VEG_MASK = ['mask',   'Masque', [['#2b2533',0],['#e8354a',0],['#2f6bd6',0],['#8a4fd6',0],['#1fa89a',0],['#ffffff',0]]];
 // Univers du compagnon : même progression (XP, niveaux, badges), dessin et vocabulaire propres.
 // words(gender) : vocabulaire, accordé quand l'univers propose fille / garçon (genders).
 // colors : [clé, libellé, [[couleur, niveau requis], …]] ; accs : k = clé du dessin, b = badge qui le débloque
@@ -106,13 +109,11 @@ const RW_THEMES = {
       ['accent', 'Cape',   [['#e8354a',0],['#2f6bd6',0],['#8a4fd6',0],['#ff8a1f',0],['#1fa89a',0],['#2b2533',0],['#ffd45c',5]]],
       ['mask',   'Masque', [['#2b2533',0],['#e8354a',0],['#2f6bd6',0],['#8a4fd6',0],['#1fa89a',0],['#ffffff',0]]],
     ],
-    // Couleurs propres à un modèle. Carotte : cape et lunettes de soleil (lens) à débloquer niveau par niveau.
+    // Couleurs propres à un modèle, à débloquer niveau par niveau.
+    // Carotte : cape et lunettes de soleil (lens) ; Patate : cape et blason (crest : bouclier, étendard).
     speciesColors: {
-      carrot: [
-        ['accent', 'Cape',     [['#e8354a',0],['#2f6bd6',0],['#8a4fd6',2],['#1fa89a',3],['#ff8a1f',4],['#2b2533',4],['#ffd45c',5]]],
-        ['mask',   'Masque',   [['#2b2533',0],['#e8354a',0],['#2f6bd6',0],['#8a4fd6',0],['#1fa89a',0],['#ffffff',0]]],
-        ['lens',   'Lunettes', [['#1d1a28',0],['#e8354a',0],['#2f6bd6',2],['#ff5fa8',3],['#1fa89a',4],['#ffd45c',5]]],
-      ],
+      carrot: [RW_VEG_CAPE, RW_VEG_MASK, ['lens',  'Lunettes', [['#1d1a28',0],['#e8354a',0],['#2f6bd6',2],['#ff5fa8',3],['#1fa89a',4],['#ffd45c',5]]]],
+      potato: [RW_VEG_CAPE, RW_VEG_MASK, ['crest', 'Blason',   [['#2f6bd6',0],['#e8354a',0],['#1fa89a',2],['#8a4fd6',3],['#2b2533',4],['#ffd45c',5]]]],
     },
     accs: [
       { k:'headband', n:'Bandeau de héros',   b:'first'    },
@@ -123,7 +124,7 @@ const RW_THEMES = {
       { k:'fork',     n:'Fourchette géante',  b:'marathon' },
       { k:'peas',     n:'Petits pois copains', b:'titan'   },
     ],
-    // Accessoires propres à un modèle (dessin : rewards-veggie-carrot.js pour la Carotte).
+    // Accessoires propres à un modèle (dessin : rewards-veggie-carrot.js, rewards-veggie-potato.js).
     speciesAccs: {
       carrot: [
         { k:'sparkle',   n:'Fanes scintillantes', b:'first'    },
@@ -134,6 +135,17 @@ const RW_THEMES = {
         { k:'oval',      n:'Bouclier ovale',      b:'stars'    },
         { k:'superS',    n:'Grand S de héros',    b:'perfect'  },
         { k:'belt',      n:'Ceinturon',           b:'triple'   },
+      ],
+      // Patate : « Super-patate », chevalier (dessin : rewards-veggie-potato.js).
+      potato: [
+        { k:'helmet', n:'Casque casserole',      b:'first'    },
+        { k:'plume',  n:'Plume sur le casque',   b:'five'     },
+        { k:'banner', n:'Étendard',              b:'marathon' },
+        { k:'horse',  n:'Cheval-bâton',          b:'titan'    },
+        { k:'sword',  n:'Épée-frite géante',     b:'record'   },
+        { k:'pig',    n:'Petit cochon compagnon', b:'stars'   },
+        { k:'blason', n:'Bouclier à blason',     b:'perfect'  },
+        { k:'crown',  n:'Couronne du petit cochon', b:'triple' },
       ],
     },
   },

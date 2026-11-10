@@ -185,10 +185,6 @@
     white-space: normal;
   }
 
-  .pair-vs {
-    align-self: center;
-  }
-
   .pair-actions {
     justify-content: flex-end;
     flex-wrap: wrap;

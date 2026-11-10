@@ -110,10 +110,6 @@
   color: var(--success);
 }
 
-.result-card .value.warn {
-  color: var(--danger);
-}
-
 /* ── QUIT EXERCISE BUTTON ────────────────────────────────────────────────── */
 .btn-quit-exercise,
 .btn-stop-exercise,

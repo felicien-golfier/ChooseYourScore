@@ -310,18 +310,6 @@
   min-width: 0;
 }
 
-.pair-item-preview.is-correct {
-  background: var(--success-bg);
-  border: 1.5px solid var(--success-border);
-}
-
-.pair-vs {
-  color: var(--border);
-  font-size: 0.7rem;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
 .pair-actions {
   display: flex;
   align-items: center;
@@ -856,13 +844,6 @@ tbody td[contenteditable]:focus {
 }
 
 /* ── SEQ QUESTION BUILDER ────────────────────────────────────────────────── */
-.seq-q-override-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 4px;
-}
-
 .seq-q-header {
   display: flex;
   align-items: center;
@@ -883,19 +864,6 @@ tbody td[contenteditable]:focus {
   align-items: center;
   gap: 4px;
   position: relative;
-}
-
-.seq-q-override-section {
-  margin-top: 10px;
-  padding-top: 8px;
-  border-top: 1px dashed var(--border);
-}
-
-.seq-q-override-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
 }
 
 .sq-picker {

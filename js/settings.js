@@ -17,7 +17,9 @@ function loadSettings() {
 
 let settings = loadSettings();
 
-function saveSettings() { localStorage.setItem('cys_settings', JSON.stringify(settings)); }
+function saveSettings() {
+  try { localStorage.setItem('cys_settings', JSON.stringify(settings)); } catch (e) { /* stockage indisponible : réglages valables pour cette session seulement */ }
+}
 
 function getSetting(key) { return settings[key] !== false; }
 

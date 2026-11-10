@@ -85,7 +85,7 @@ function progressInfo(idx, total, exampleCount) {
   if (idx < exampleCount) return { pct: 0, label: 'Exemple ' + (idx + 1) + ' / ' + exampleCount };
   const realIdx   = idx - exampleCount;
   const realTotal = total - exampleCount;
-  return { pct: realIdx / realTotal * 100, label: (realIdx + 1) + ' / ' + realTotal };
+  return { pct: realTotal > 0 ? realIdx / realTotal * 100 : 0, label: (realIdx + 1) + ' / ' + realTotal };
 }
 
 function pairProgress(idx) { return progressInfo(idx, currentPairs.length, currentExampleCount); }
@@ -481,6 +481,7 @@ function handleOrderResponse(origIdx, btn, clicked, orderChoices, pair, question
 
 function handleClickItemResponse(chosenIdx, correctItemIndices, foundItemIndices, pair, questions, qIdx, isRetry) {
   if (isWaiting) return;
+  if (foundItemIndices.has(chosenIdx)) return;  // item déjà trouvé : ne pas recompter
   const q = questions[qIdx];
   const displayEl  = document.getElementById('sequence-display');
   const allItemEls = Array.from(displayEl.querySelectorAll('.sequence-item-box, .sequence-text-display'));
@@ -726,17 +727,39 @@ function finishExercise(isPartial) {
   let hasNamingQuestions = false;
 
   const totalQuestionsInExercise = currentPairs.reduce((sum, p, idx) =>
-    idx < currentExampleCount ? sum : sum + (p.questions || [{}]).length, 0);
-  const attemptedQuestions = responses.filter(r => !r.isRetry && !r.isExample).length;
-  const effectiveTotalQuestions = isPartial ? (attemptedQuestions || 1) : totalQuestionsInExercise;
+    idx < currentExampleCount ? sum : sum + getPairQuestions(p).length, 0);
+
+  // Une question = une unité de score, même si elle attend plusieurs réponses (une
+  // réponse enregistrée par clic) : juste seulement si toutes ses réponses (hors 2ᵉ essai) le sont.
+  const scored = new Map();
+  responses.forEach(r => {
+    if (r.isRetry || r.isExample) return;
+    const key = r.pairId ? r.pairId + '|' + r.questionIndex : 'noid' + scored.size;  // anciennes paires sans id : jamais fusionnées
+    const q = scored.get(key) || { questionIndex: r.questionIndex, isCorrect: true };
+    if (!r.isCorrect) q.isCorrect = false;
+    scored.set(key, q);
+  });
+  if (isPartial && scored.size === 0) {  // arrêt avant toute réponse notée : rien à enregistrer
+    if (sequenceTimer) { clearTimeout(sequenceTimer); sequenceTimer = null; }
+    stopAudio();
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    showView('setup');
+    return;
+  }
+  const effectiveTotalQuestions = Math.max(isPartial ? scored.size : totalQuestionsInExercise, 1);
 
   // Score par position de question, pour les exercices à plusieurs questions par paire
   // (ex. rappel du mot + question d'interférence) : permet de distinguer d'où viennent les erreurs.
   const questionIndexStats = {};
+  scored.forEach(q => {
+    if (q.isCorrect) score++;
+    const stats = questionIndexStats[q.questionIndex] || (questionIndexStats[q.questionIndex] = { score: 0, total: 0 });
+    stats.total++;
+    if (q.isCorrect) stats.score++;
+  });
 
   responses.forEach(r => {
     if (r.isRetry || r.isExample) return;
-    if (r.isCorrect) score++;
     totalReactionMs += r.timeMs; reactionCount++;
     if (r.type === 'direction') {
       hasDirectionQuestions = true;
@@ -750,9 +773,6 @@ function finishExercise(isPartial) {
       if (!r.attempted) namingStats.unknown++;
       else { namingStats.attempted++; if (r.isCorrect) namingStats.correct++; }
     }
-    const stats = questionIndexStats[r.questionIndex] || (questionIndexStats[r.questionIndex] = { score: 0, total: 0 });
-    stats.total++;
-    if (r.isCorrect) stats.score++;
   });
 
   const avgReactionMs = reactionCount > 0 ? Math.round(totalReactionMs / reactionCount) : null;
@@ -941,6 +961,8 @@ function _gngRenderIti() {
   const timerBar = document.getElementById('sequence-timer-bar');
 
   _gngCancelTimers();
+  // L'écran de fin des exemples masque le conteneur : le rétablir au retour des essais.
+  document.getElementById('sequence-container').style.display = 'flex';
   timerBar.style.display  = 'none';
   display.style.display   = 'flex';
   display.innerHTML       = '';
@@ -1053,6 +1075,11 @@ function finishGoNoGo(isPartial) {
 
   const allResp = _gng.responses;
   const resp    = allResp.filter(r => !r.isExample);
+  if (isPartial && resp.length === 0) {  // arrêt avant toute réponse notée : rien à enregistrer
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    showView('setup');
+    return;
+  }
   const trials  = _gng.trials;
   const total   = isPartial ? resp.length : (trials.length - _gng.exampleCount);
 

@@ -405,6 +405,11 @@ document.getElementById('btn-delete-exercise').addEventListener('click', () => {
   const ex = getSelectedEx(); if (!ex) return;
   if (!confirm('Supprimer l\'exercice "' + ex.name + '" et toutes ses paires ?')) return;
   exercises = exercises.filter(e => e.id !== editorSelectedId);
+  // Les pauses de cet exercice ne pourraient plus être reprises : on les retire aussi.
+  if (pausedExercises.some(p => p.exerciseId === ex.id)) {
+    pausedExercises = pausedExercises.filter(p => p.exerciseId !== ex.id);
+    savePausedExercises();
+  }
   editorSelectedId = exercises.length > 0 ? exercises[0].id : null;
   saveExercises(); renderSidebar(); renderExerciseEditor();
 });
@@ -1123,7 +1128,9 @@ function buildSequenceQuestionBlock(q) {
     const existing = Array.from(choicesRow.querySelectorAll('.seq-q-choice')).map(i => i.value);
     const existingCorrects = getCorrectIndicesFromBlock(block);
     while (existing.length < n) existing.push('');
-    buildChoicesRow(choicesRow, existing.slice(0, n), existingCorrects.length ? existingCorrects : [0]);
+    // Réduire le nombre de réponses ne doit pas laisser la question sans bonne réponse.
+    const keptCorrects = existingCorrects.filter(i => i < n);
+    buildChoicesRow(choicesRow, existing.slice(0, n), keptCorrects.length ? keptCorrects : [0]);
     refreshSequencePreview();
   });
   const { wrap: numGroup } = makeCounterBtns(numInput,
@@ -1712,8 +1719,14 @@ document.getElementById('btn-import').addEventListener('click', () => document.g
 // et import bibliothèque passent tous deux par ici).
 function importExercisePayload(parsed) {
   if (!parsed || !Array.isArray(parsed.exercises)) throw new Error('Format invalide');
-  const exList = parsed.exercises;
-  const folderList = parsed.folders || [];
+  // Entrées invalides ignorées ; id manquants (fichier écrit à la main) générés pour éviter doublons et sélection cassée.
+  const exList = parsed.exercises.filter(ex => ex && typeof ex === 'object');
+  exList.forEach(ex => {
+    if (!ex.id) ex.id = newId('ex');
+    (ex.pairs  || []).forEach(p => { if (!p.id) p.id = newId('pair'); });
+    (ex.trials || []).forEach(t => { if (!t.id) t.id = newId('trial'); });
+  });
+  const folderList = (Array.isArray(parsed.folders) ? parsed.folders : []).filter(f => f && f.id);
   if (!confirm('Importer '+exList.length+' exercice(s)'+
     (folderList.length ? ' et '+folderList.length+' dossier(s)' : '')+
     ' et les ajouter aux existants ?')) return;

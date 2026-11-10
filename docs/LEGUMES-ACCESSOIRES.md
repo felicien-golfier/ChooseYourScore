@@ -1,4 +1,4 @@
-# Accessoires par légume : récapitulatif (Carotte, Patate et Brocoli faits ; Radis à faire)
+# Accessoires par légume : récapitulatif (Carotte, Patate, Brocoli et Radis faits)
 
 Pendant de `docs/ROBOTS-ACCESSOIRES.md` pour l'univers « Légumes super-héros », même démarche :
 chaque légume a ses propres accessoires (`RW_THEMES.veggie.speciesAccs[modèle]`, lu par `rwAccsOf`)
@@ -41,12 +41,12 @@ main gauche en (53,142), poing levé en (151,104).
 
 ## Branchement commun
 
-`rwVeggieSvg` appelle la fonction du modèle (`RW_VEG_ACCS = { carrot: rwCarrotAccs, potato: rwPotatoAccs, broccoli: rwBroccoliAccs }`)
-avec les repères du dessin (`acc, A, AK, L, CR, P, st, fy, sh, ax, fist, beltClip`) et insère chaque
+`rwVeggieSvg` appelle la fonction du modèle (`RW_VEG_ACCS = { carrot: rwCarrotAccs, potato: rwPotatoAccs, broccoli: rwBroccoliAccs, radish: rwRadishAccs }`)
+avec les repères du dessin (`acc, A, AK, L, CR, P, SC, st, fy, sh, ax, fist, beltClip, bodyClip`) et insère chaque
 morceau renvoyé à son emplacement : `back` (derrière la cape), `mid` (entre la cape et le corps),
 `leaves`, `chest`, `belt`, `face`, `hand` (avant les bras), `arm` (après les bras), `front` (devant tout).
 Drapeaux : `noMask` (retire le bandeau), `noCrown` (retire la couronne de feuilles du niveau 5).
-`fitBelt` dans `RW_VEGGIE_SPECIES` découpe la ceinture à la forme du corps. Les couleurs de cape et de
+`bodyClip` est la découpe à la forme du corps (foulard du Radis) ; `fitBelt` dans `RW_VEGGIE_SPECIES` l'applique à la ceinture (Carotte, Patate, Radis). Les couleurs de cape et de
 masque des légumes à couleurs propres sont partagées (`RW_VEG_CAPE`, `RW_VEG_MASK`).
 
 ## Patate : « Super-patate », chevalier (fait)
@@ -83,6 +83,24 @@ Pas de ceinture (le brocoli n'en a pas).
 | Attrape-étoiles (`stars`) | `bird` | Oiseau de la jungle qui lance un éclair, en haut à droite |
 | Sans faute (`perfect`) | `flowers` | Couronne de fleurs sur le bouquet ; remplace la couronne de feuilles du niveau 5 |
 | Machine à records (`triple`) | `rainbow` | Arc-en-ciel au-dessus du bouquet, posé sur deux nuages |
+
+## Radis : « Super-radis », pirate (fait)
+
+Dessin : `js/rewards-veggie-radish.js`, `rwRadishAccs`. Couleurs (`speciesColors.radish`) : cape à
+débloquer (comme les autres), masque libre, **foulard** (`scarf`) à débloquer (bleu et noir, turquoise
+niv. 2, orange niv. 3, violet niv. 4, or niv. 5 ; pas de rouge, il disparaîtrait sur le radis).
+Ceinture découpée à la forme du corps.
+
+| Badge (id) | Touche `acc` | Élément |
+|---|---|---|
+| Premier pas (`first`) | `patch` | Bandeau de pirate sur l'œil droit ; remplace le bandeau de héros (`noMask`) |
+| Fidèle (`five`) | `scarf` | Foulard de pirate à pois noué sur le côté, découpé à la forme de la tête (`bodyClip`) |
+| Infatigable (`marathon`) | `map` | Carte au trésor dépliée par terre, à droite (chemin en pointillés, croix rouge) |
+| Inarrêtable (`titan`) | `hat` | Tricorne noir à galon doré et petite tête de mort ; remplace la couronne de feuilles du niveau 5 |
+| Nouveau record (`record`) | `sabre` | Sabre en bois dans le poing droit |
+| Attrape-étoiles (`stars`) | `parrot` | Perroquet copain (vert, pour ressortir sur le radis) sur l'épaule gauche |
+| Sans faute (`perfect`) | `spyglass` | Longue-vue dorée dans la main gauche |
+| Machine à records (`triple`) | `fire` | Le perroquet crache du feu ; dessine aussi le perroquet s'il n'est pas équipé à part |
 
 ## Méthode
 

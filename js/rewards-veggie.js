@@ -7,7 +7,7 @@
    4 = étoile de héros sur le torse et étincelles, 5 = aura dorée, couronne de feuilles et éclairs.
    Un modèle peut avoir ses propres accessoires, dans son fichier (RW_VEG_ACCS : Carotte →
    rewards-veggie-carrot.js, Patate → rewards-veggie-potato.js,
-   Brocoli → rewards-veggie-broccoli.js). La fonction reçoit les repères
+   Brocoli → rewards-veggie-broccoli.js, Radis → rewards-veggie-radish.js). La fonction reçoit les repères
    du dessin et renvoie des morceaux de SVG par emplacement (voir « slot » plus bas) ; fitBelt
    découpe la ceinture à la forme du corps.
    Utilise rwShade et rwStarPts (rewards-robot.js). Logique : rewards.js.
@@ -16,14 +16,14 @@
 // fy : hauteur des yeux ; sh : hauteur des épaules ; ax : écart des bras au centre
 const RW_VEGGIE_SPECIES = {
   carrot:   { label: 'Carotte', body: '#f28a2e', fy: 114, sh: 126, ax: 33, fitBelt: true },
-  radish:   { label: 'Radis',   body: '#e8456b', fy: 124, sh: 134, ax: 46 },
+  radish:   { label: 'Radis',   body: '#e8456b', fy: 124, sh: 134, ax: 46, fitBelt: true },
   potato:   { label: 'Patate',  body: '#cfa064', fy: 134, sh: 146, ax: 50, fitBelt: true },
   broccoli: { label: 'Brocoli', body: '#a8d37a', fy: 142, sh: 146, ax: 25 },
 };
 
 const RW_VEG_GOLD = '#ffd45c';
 // Accessoires propres à un modèle (fichiers chargés avant celui-ci)
-const RW_VEG_ACCS = { carrot: rwCarrotAccs, potato: rwPotatoAccs, broccoli: rwBroccoliAccs };
+const RW_VEG_ACCS = { carrot: rwCarrotAccs, potato: rwPotatoAccs, broccoli: rwBroccoliAccs, radish: rwRadishAccs };
 const RW_VEG_EYE = '#2b2238';
 const RW_VEG_LEAF = '#4fae4a';
 
@@ -80,7 +80,7 @@ function rwVegBody(sp, B, K, uid) {
 }
 
 function rwVeggieSvg(o) {
-  const { species: sp, stage: st, accent: A, mask: M, lens: L = '#1d1a28', crest: CR = '#2f6bd6', paint: P = '#ff5fa8', acc, uid } = o;
+  const { species: sp, stage: st, accent: A, mask: M, lens: L = '#1d1a28', crest: CR = '#2f6bd6', paint: P = '#ff5fa8', scarf: SC = '#2f6bd6', acc, uid } = o;
   const S = RW_VEGGIE_SPECIES[sp];
   const B = S.body, K = rwShade(B, -0.45), AK = rwShade(A, -0.4), MK = rwShade(M, -0.4);
   const line = `stroke="${K}" stroke-width="3" stroke-linejoin="round"`;
@@ -90,15 +90,16 @@ function rwVeggieSvg(o) {
   // poing droit : levé en pose de héros dès le niveau 2
   const fist = st >= 2 ? [rx + 18, sh - 22 - (st >= 5 ? 8 : 0)] : [rx + 8, sh + 16];
   // ceinture découpée à la forme du corps (bc) pour qu'elle ne dépasse pas
-  const beltClip = S.fitBelt ? `url(#bc${uid})` : '';
+  // bodyClip : découpe à la forme du corps, pour les accessoires qui doivent le suivre (foulard…)
+  const bodyClip = RW_VEG_SHAPE[sp] ? `url(#bc${uid})` : '', beltClip = S.fitBelt ? bodyClip : '';
   // accessoires propres au modèle ; slot(k) : morceau de SVG à l'emplacement k
   // (back, mid, leaves, chest, belt, face, hand, arm, front ; noMask, noCrown : retire bandeau / couronne)
-  const C = RW_VEG_ACCS[sp] ? RW_VEG_ACCS[sp]({ acc, A, AK, L, CR, P, st, fy, sh, ax, fist, beltClip }) : null;
+  const C = RW_VEG_ACCS[sp] ? RW_VEG_ACCS[sp]({ acc, A, AK, L, CR, P, SC, st, fy, sh, ax, fist, beltClip, bodyClip }) : null;
   const slot = k => (C && C[k]) || '';
 
   let s = `<svg viewBox="0 0 200 240" role="img" aria-label="${S.label}"><defs>` +
     `<radialGradient id="vg${uid}"><stop offset="0" stop-color="${RW_VEG_GOLD}" stop-opacity=".7"/><stop offset="1" stop-color="${RW_VEG_GOLD}" stop-opacity="0"/></radialGradient>` +
-    (beltClip ? `<clipPath id="bc${uid}">${RW_VEG_SHAPE[sp]}</clipPath>` : '') + `</defs>`;
+    (bodyClip ? `<clipPath id="bc${uid}">${RW_VEG_SHAPE[sp]}</clipPath>` : '') + `</defs>`;
   if (st >= 5) s += `<circle class="rw-pulse" cx="100" cy="120" r="98" fill="url(#vg${uid})"/>`;
   s += `<ellipse cx="100" cy="207" rx="42" ry="6" fill="#000" opacity=".2"/>`;
   s += `<g transform="translate(100 214) scale(${sc}) translate(-100 -214)">`;

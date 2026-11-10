@@ -111,11 +111,13 @@ const RW_THEMES = {
     ],
     // Couleurs propres à un modèle, à débloquer niveau par niveau.
     // Carotte : cape et lunettes de soleil (lens) ; Patate : cape et blason (crest : bouclier, étendard) ;
-    // Brocoli : cape et peintures (paint : peintures des joues, pétales de la couronne de fleurs).
+    // Brocoli : cape et peintures (paint : peintures des joues, pétales de la couronne de fleurs) ;
+    // Radis : cape et foulard (scarf : foulard de pirate ; pas de rouge, il disparaîtrait sur le radis).
     speciesColors: {
       carrot: [RW_VEG_CAPE, RW_VEG_MASK, ['lens',  'Lunettes', [['#1d1a28',0],['#e8354a',0],['#2f6bd6',2],['#ff5fa8',3],['#1fa89a',4],['#ffd45c',5]]]],
       potato: [RW_VEG_CAPE, RW_VEG_MASK, ['crest', 'Blason',   [['#2f6bd6',0],['#e8354a',0],['#1fa89a',2],['#8a4fd6',3],['#2b2533',4],['#ffd45c',5]]]],
       broccoli: [RW_VEG_CAPE, RW_VEG_MASK, ['paint', 'Peintures', [['#ff5fa8',0],['#2f6bd6',0],['#ff8a1f',2],['#e8354a',3],['#8a4fd6',4],['#ffd45c',5]]]],
+      radish:   [RW_VEG_CAPE, RW_VEG_MASK, ['scarf', 'Foulard',   [['#2f6bd6',0],['#2b2533',0],['#1fa89a',2],['#ff8a1f',3],['#8a4fd6',4],['#ffd45c',5]]]],
     },
     accs: [
       { k:'headband', n:'Bandeau de héros',   b:'first'    },
@@ -126,7 +128,7 @@ const RW_THEMES = {
       { k:'fork',     n:'Fourchette géante',  b:'marathon' },
       { k:'peas',     n:'Petits pois copains', b:'titan'   },
     ],
-    // Accessoires propres à un modèle (dessin : rewards-veggie-carrot.js, -potato.js, -broccoli.js).
+    // Accessoires propres à un modèle (dessin : rewards-veggie-carrot.js, -potato.js, -broccoli.js, -radish.js).
     speciesAccs: {
       carrot: [
         { k:'sparkle',   n:'Fanes scintillantes', b:'first'    },
@@ -159,6 +161,17 @@ const RW_THEMES = {
         { k:'bird',    n:"Oiseau lanceur d'éclairs", b:'stars'   },
         { k:'flowers', n:'Couronne de fleurs',      b:'perfect'  },
         { k:'rainbow', n:'Arc-en-ciel',             b:'triple'   },
+      ],
+      // Radis : « Super-radis », pirate (dessin : rewards-veggie-radish.js).
+      radish: [
+        { k:'patch',    n:"Bandeau sur l'œil",       b:'first'    },
+        { k:'scarf',    n:'Foulard de pirate',       b:'five'     },
+        { k:'map',      n:'Carte au trésor',         b:'marathon' },
+        { k:'hat',      n:'Tricorne',                b:'titan'    },
+        { k:'sabre',    n:'Sabre en bois',           b:'record'   },
+        { k:'parrot',   n:'Perroquet copain',        b:'stars'    },
+        { k:'spyglass', n:'Longue-vue',              b:'perfect'  },
+        { k:'fire',     n:'Perroquet crache du feu', b:'triple'   },
       ],
     },
   },

@@ -115,7 +115,7 @@ const RW_THEMES = {
       { k:'fork',     n:'Fourchette géante',  b:'marathon' },
       { k:'peas',     n:'Petits pois copains', b:'titan'   },
     ],
-    // Accessoires propres à un modèle (dessin : rewards-veggie-carrot.js pour la Carotte). Pas d'accessoire pour « Machine à records ».
+    // Accessoires propres à un modèle (dessin : rewards-veggie-carrot.js pour la Carotte).
     speciesAccs: {
       carrot: [
         { k:'sparkle',   n:'Fanes scintillantes', b:'first'    },
@@ -125,6 +125,7 @@ const RW_THEMES = {
         { k:'shades',    n:'Lunettes de soleil',  b:'record'   },
         { k:'oval',      n:'Bouclier ovale',      b:'stars'    },
         { k:'superS',    n:'Grand S de héros',    b:'perfect'  },
+        { k:'belt',      n:'Ceinturon',           b:'triple'   },
       ],
     },
   },

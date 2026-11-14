@@ -19,8 +19,8 @@ const RW_PLURAL = (g, one, many) => g + ' ' + (g > 1 ? many : one);
 const RW_BADGES = [
   { id:'first',    fam:'e', n:'Premier pas',       g:1,  stat:'n',       u:'exercices terminés',  d:g => 'Terminer ' + RW_PLURAL(g,'exercice','exercices'),     gl:'chev1' },
   { id:'five',     fam:'e', n:'Fidèle',            g:5,  stat:'n',       u:'exercices terminés',  d:g => 'Terminer ' + RW_PLURAL(g,'exercice','exercices'),     gl:'chev2' },
-  { id:'marathon', fam:'e', n:'Infatigable',       g:25, stat:'n',       u:'exercices terminés',  d:g => 'Terminer ' + RW_PLURAL(g,'exercice','exercices'),     gl:'chev3' },
-  { id:'titan',    fam:'e', n:'Inarrêtable',       g:50, stat:'n',       u:'exercices terminés',  d:g => 'Terminer ' + RW_PLURAL(g,'exercice','exercices'),     gl:'chev4' },
+  { id:'marathon', fam:'e', n:'Infatigable',       g:15, stat:'n',       u:'exercices terminés',  d:g => 'Terminer ' + RW_PLURAL(g,'exercice','exercices'),     gl:'chev3' },
+  { id:'titan',    fam:'e', n:'Inarrêtable',       g:20, stat:'n',       u:'exercices terminés',  d:g => 'Terminer ' + RW_PLURAL(g,'exercice','exercices'),     gl:'chev4' },
   { id:'record',   fam:'x', n:'Nouveau record',    g:1,  stat:'records', u:'records battus',      d:g => 'Battre ' + RW_PLURAL(g,'record','records') + ' perso', gl:'bolt'  },
   { id:'stars',    fam:'x', n:'Attrape-étoiles',   g:5,  stat:'stars3',  u:'exercices à 3 étoiles', d:g => RW_PLURAL(g,'exercice','exercices') + ' à 3 étoiles', gl:'star'  },
   { id:'perfect',  fam:'x', n:'Sans faute',        g:1,  stat:'perfect', u:'exercices parfaits',  d:g => RW_PLURAL(g,'exercice parfait','exercices parfaits'),  gl:'check' },
@@ -238,6 +238,13 @@ function getReward(patient) {
   const defaults = { enabled: false, pace: 1, xpPeak: 0, unlocked: {}, goals: {}, ...rwDefaultLook(r.theme) };
   Object.keys(defaults).forEach(k => { if (r[k] === undefined) r[k] = defaults[k]; });
   Object.entries(rwDefaultGoals()).forEach(([id, g]) => { if (r.goals[id] === undefined) r.goals[id] = g; });
+  // Objectifs par défaut d'Infatigable / Inarrêtable passés de 25 / 50 à 15 / 20 : les patients
+  // restés sur les anciens défauts suivent (une seule fois, un objectif choisi ensuite est respecté).
+  if (!r.goalsV) {
+    if (r.goals.marathon === 25) r.goals.marathon = 15;
+    if (r.goals.titan === 50) r.goals.titan = 20;
+    r.goalsV = 2;
+  }
   // Collection par modèle : badges acquis (unlocked) et accessoires équipés (acc) sont rangés par modèle.
   // Avant, ils étaient à plat (un seul compagnon) : ils vont au modèle actuel, les autres repartent de zéro.
   if (Object.values(r.unlocked).some(v => typeof v === 'string')) r.unlocked = { [r.species]: r.unlocked };

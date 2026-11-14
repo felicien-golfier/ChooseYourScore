@@ -42,12 +42,14 @@ Les noms des badges sont **épicènes** (le même mot pour une fille et un garç
 
 Un modèle peut avoir sa propre liste d'accessoires (`RW_THEMES.robot.speciesAccs[modèle]`, lue par `rwAccsOf`), sinon il prend celle de l'univers. Tous les robots (**Orbe**, **Cube**, **Lame**, **Char**) ont la leur (voir `docs/ROBOTS-ACCESSOIRES.md`). Côté légumes, les 4 modèles ont aussi la leur : la **Carotte** (Super-carotte : fanes scintillantes, moustache, fourchette géante, petits pois copains, lunettes de soleil, bouclier ovale, grand S, ceinturon) et la **Patate** (Super-patate, chevalier : casque casserole, plume, étendard, cheval-bâton, épée-frite, petit cochon, bouclier à blason, couronne du cochon) et le **Brocoli** (Super-brocoli, jungle : coccinelle, peintures, liane, tambour, mini tornade, oiseau lanceur d'éclairs, couronne de fleurs, arc-en-ciel) et le **Radis** (Super-radis, pirate : bandeau sur l'œil, foulard, carte au trésor, tricorne, sabre en bois, perroquet, longue-vue, perroquet qui crache du feu) ; voir `docs/LEGUMES-ACCESSOIRES.md`. La colonne « Légume » ci-dessous est la liste générique de repli de l'univers, plus utilisée par les 4 légumes.
 
+Les objectifs par défaut d'Infatigable et Inarrêtable sont passés de 25 / 50 à 15 / 20. Migration unique dans `getReward` (drapeau `r.goalsV`) : un patient resté sur 25 / 50 passe à 15 / 20, un objectif personnalisé est conservé.
+
 | Badge (objectif par défaut) | Robot (liste générique de repli, plus utilisée par les 4 modèles) | Orbe | Légume (liste générique de repli, plus utilisée par les 4 modèles) |
 |---|---|---|---|
 | Premier pas (1 exercice) | Casquette | Antenne scintillante | Bandeau de héros |
 | Fidèle (5) | Casque audio | Lunettes bandeau | Dents de lapin |
-| Infatigable (25) | Jetpack | Étoile filante | Fourchette géante |
-| Inarrêtable (50) | Drone compagnon | Réacteur embrasé | Petits pois copains |
+| Infatigable (15) | Jetpack | Étoile filante | Fourchette géante |
+| Inarrêtable (20) | Drone compagnon | Réacteur embrasé | Petits pois copains |
 | Nouveau record (1) | Lunettes | Sceptre de Saturne | Lunettes de soleil |
 | Attrape-étoiles (5 exercices à 3 étoiles) | Cape | Drone compagnon | Bouclier casserole |
 | Sans faute (1 exercice parfait) | Bouclier d'énergie | Bulle de protection | Éclairs de pouvoir |

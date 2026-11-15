@@ -2,6 +2,8 @@
    Chaque patient a un compagnon (patient.reward) qui évolue avec les exercices
    terminés. Tout est dérivé de `sessions` ; patient.reward ne mémorise que les choix
    (apparence, objectifs) et les acquis qui ne doivent jamais se perdre (badges, XP max).
+   Chaque modèle (Orbe, Carotte…) est un personnage indépendant : son XP, son niveau, ses
+   badges, ses accessoires, ses couleurs et son nom lui sont propres (rangés par modèle).
    Un « exercice terminé » = une entrée de `sessions` non partielle.
    Deux univers au choix (RW_THEMES) : robots ou légumes super-héros.
    L'affichage est dans rewards-ui.js, le dessin dans rewards-robot.js et rewards-veggie.js (+ un fichier d'accessoires par modèle).
@@ -36,7 +38,8 @@ const RW_VEG_MASK = ['mask',   'Masque', [['#2b2533',0],['#e8354a',0],['#2f6bd6'
 const RW_THEMES = {
   robot: {
     label: 'Robots', genders: false,
-    words: () => ({ my: 'Mon robot', see: 'Voir le robot', nameLabel: 'Nom du robot', defaultName: 'Zéphyr',
+    words: () => ({ my: 'Mon robot', see: 'Voir le robot', nameLabel: 'Nom du robot',
+      names: { orb: 'Zéphyr', bolt: 'Boulon', spike: 'Shuriken', tank: 'Bulldo' },
       stages: ['Prototype', 'Recrue', 'Pilote', 'Élite', 'Légende'], species: k => RW_ROBOT_SPECIES[k].label }),
     species: RW_ROBOT_SPECIES, order: ['orb', 'bolt', 'spike', 'tank'], draw: rwRobotSvg, badge: rwBadgeSvg,
     colors: [
@@ -102,7 +105,8 @@ const RW_THEMES = {
   },
   veggie: {
     label: 'Légumes super-héros', genders: false,
-    words: () => ({ my: 'Mon super-légume', see: 'Voir mon super-légume', nameLabel: 'Nom du super-légume', defaultName: 'Capitaine Croc',
+    words: () => ({ my: 'Mon super-légume', see: 'Voir mon super-légume', nameLabel: 'Nom du super-légume',
+      names: { carrot: 'Capitaine Croc', radish: 'Barbe-Rose', potato: 'Sire Patate', broccoli: 'Brocoman' },
       stages: ['Graine', 'Pousse', 'Costaud', 'Super-légume', 'Légende'], species: k => RW_VEGGIE_SPECIES[k].label }),
     species: RW_VEGGIE_SPECIES, order: ['carrot', 'radish', 'potato', 'broccoli'], draw: rwVeggieSvg, badge: rwVeggieBadgeSvg,
     colors: [
@@ -189,40 +193,44 @@ function rwAllColors(T) {
   return [T.colors, ...Object.values(T.speciesColors || {})].flat().filter(([key]) => !seen.has(key) && seen.add(key));
 }
 
-// Apparence d'un patient dans son univers actuel : modèle, couleurs, accessoires, nom.
-function rwLookOf(r) {
-  const T = rwTheme(r);
-  const look = { species: r.species, acc: r.acc, name: r.name };
+// Apparence d'un modèle (`sp`, de l'univers `theme`) : ses couleurs à lui (r.colors[sp]),
+// sinon la 1re couleur de sa liste. Les accessoires et le nom sont à part (r.acc, r.names).
+function rwLookOf(r, sp = r.species, theme = r.theme) {
+  const T = RW_THEMES[theme], own = (r.colors && r.colors[sp]) || {};
+  const mine = Object.fromEntries(rwColorsOf({ theme }, sp).map(([key, , list]) => [key, list[0][0]]));
+  const look = { species: sp };
   if (T.genders) look.gender = r.gender;
-  rwAllColors(T).forEach(([key]) => { look[key] = r[key]; });
+  rwAllColors(T).forEach(([key, , list]) => { look[key] = own[key] ?? mine[key] ?? list[0][0]; });
   return look;
 }
 
-// Apparence par défaut d'un univers.
+// Choix par défaut d'un univers (le modèle actif ; fille par défaut si l'univers le propose).
 function rwDefaultLook(theme) {
   const T = RW_THEMES[theme];
-  const look = { species: T.order[0], acc: {} };
+  const look = { species: T.order[0] };
   if (T.genders) look.gender = 'f';
-  look.name = T.words(look.gender).defaultName;
-  rwAllColors(T).forEach(([key, , list]) => { look[key] = list[0][0]; });
   return look;
 }
 
-// Fille / garçon : le nom par défaut suit, un nom choisi par l'enfant est gardé.
-function rwSetGender(r, gender) {
-  const T = rwTheme(r);
-  if (!T.genders || r.gender === gender) return;
-  if (r.name === T.words(r.gender).defaultName) r.name = T.words(gender).defaultName;
-  r.gender = gender;
+// Nom d'un modèle : celui choisi par l'enfant, sinon le nom par défaut du modèle.
+function rwName(r, sp = r.species) {
+  return r.names && r.names[sp] !== undefined ? r.names[sp] : (rwWords(r).names[sp] || '');
 }
 
-// Changer d'univers garde la progression ; l'apparence de chaque univers est mémorisée à part.
+// Fille / garçon : un nom jamais modifié suit le nom par défaut, un nom choisi est gardé.
+function rwSetGender(r, gender) {
+  if (rwTheme(r).genders) r.gender = gender;
+}
+
+// Changer d'univers : chaque univers mémorise son modèle actif (et fille / garçon).
 function rwSetTheme(r, theme) {
   if (!RW_THEMES[theme] || r.theme === theme) return;
   const looks = r.looks || (r.looks = {});
-  looks[r.theme] = rwLookOf(r);
+  looks[r.theme] = { species: r.species, ...(r.gender !== undefined ? { gender: r.gender } : {}) };
   r.theme = theme;
-  Object.assign(r, looks[theme] || rwDefaultLook(theme));
+  const back = looks[theme] && RW_THEMES[theme].species[looks[theme].species] ? looks[theme] : rwDefaultLook(theme);
+  r.species = back.species;
+  if (back.gender !== undefined) r.gender = back.gender;
 }
 
 // ── Données du patient ───────────────────────────────────────────────────────
@@ -232,10 +240,13 @@ function rwDefaultGoals() { return Object.fromEntries(RW_BADGES.map(b => [b.id, 
 // l'objet renvoyé reste le même d'un appel à l'autre, on peut donc le modifier puis sauvegarder.
 function getReward(patient) {
   const r = patient.reward || (patient.reward = {});
-  // Univers inconnu (ou retiré) : retour aux robots, avec l'apparence par défaut si besoin.
+  // Univers inconnu (ou retiré) : retour aux robots, avec le modèle mémorisé ou celui par défaut.
   if (!RW_THEMES[r.theme]) r.theme = 'robot';
-  if (r.species !== undefined && !rwTheme(r).species[r.species]) Object.assign(r, (r.looks && r.looks[r.theme]) || rwDefaultLook(r.theme));
-  const defaults = { enabled: false, pace: 1, xpPeak: 0, unlocked: {}, goals: {}, ...rwDefaultLook(r.theme) };
+  if (r.species !== undefined && !rwTheme(r).species[r.species]) {
+    const back = r.looks && r.looks[r.theme];
+    r.species = back && rwTheme(r).species[back.species] ? back.species : rwTheme(r).order[0];
+  }
+  const defaults = { enabled: false, pace: 1, unlocked: {}, goals: {}, acc: {}, ...rwDefaultLook(r.theme) };
   Object.keys(defaults).forEach(k => { if (r[k] === undefined) r[k] = defaults[k]; });
   Object.entries(rwDefaultGoals()).forEach(([id, g]) => { if (r.goals[id] === undefined) r.goals[id] = g; });
   // Objectifs par défaut d'Infatigable / Inarrêtable passés de 25 / 50 à 15 / 20 : les patients
@@ -249,14 +260,52 @@ function getReward(patient) {
   // Avant, ils étaient à plat (un seul compagnon) : ils vont au modèle actuel, les autres repartent de zéro.
   if (Object.values(r.unlocked).some(v => typeof v === 'string')) r.unlocked = { [r.species]: r.unlocked };
   rwNestAcc(r);
-  Object.values(r.looks || {}).forEach(rwNestAcc);
   // Les exercices d'avant la collection par modèle n'ont pas de `robot` : ils comptent pour ce modèle-là.
   if (!r.legacyRobot) r.legacyRobot = r.species;
+  rwSplitLooks(patient, r);
   return r;
 }
 
 function rwNestAcc(look) {
   if (look.acc && Object.values(look.acc).some(v => typeof v === 'boolean')) look.acc = { [look.species]: look.acc };
+}
+
+// Migration unique vers des personnages indépendants. Avant, l'apparence (couleurs, nom, accessoires)
+// était rangée par univers (r et r.looks[univers]) et l'XP max (xpPeak) était commune à tous les modèles.
+// Le nom et les couleurs de chaque univers vont à son modèle actif, les accessoires (déjà par modèle)
+// sont regroupés dans r.acc, et l'XP de chaque modèle se recalcule à partir de ses propres exercices.
+// Si l'ancienne XP max dépassait l'XP des exercices (sessions supprimées), le surplus reste au modèle
+// actif : il ne perd jamais de niveau.
+function rwSplitLooks(patient, r) {
+  if (r.names && r.colors && r.xpPeak && typeof r.xpPeak === 'object') return;
+  const looks = [[r, r.theme], ...Object.entries(r.looks || {}).filter(([t]) => RW_THEMES[t] && t !== r.theme).map(([t, l]) => [l, t])];
+  if (!r.names) {
+    r.names = {};
+    looks.forEach(([l]) => { if (l.name !== undefined && l.species && r.names[l.species] === undefined) r.names[l.species] = l.name; });
+  }
+  if (!r.colors) {
+    r.colors = {};
+    looks.forEach(([l, t]) => {
+      const c = {};
+      rwAllColors(RW_THEMES[t]).forEach(([key]) => { if (l[key] !== undefined) c[key] = l[key]; });
+      if (l.species && !r.colors[l.species] && Object.keys(c).length) r.colors[l.species] = c;
+    });
+  }
+  Object.values(r.looks || {}).forEach(l => {
+    rwNestAcc(l);
+    Object.entries(l.acc || {}).forEach(([sp, a]) => { if (!r.acc[sp]) r.acc[sp] = a; });
+  });
+  // Ne garder que le choix du modèle actif (et fille / garçon) : le reste est désormais par modèle.
+  looks.forEach(([l, t]) => {
+    delete l.name;
+    rwAllColors(RW_THEMES[t]).forEach(([key]) => { delete l[key]; });
+    if (l !== r) delete l.acc;
+  });
+  if (typeof r.xpPeak !== 'object' || r.xpPeak === null) {
+    const old = r.xpPeak || 0, all = rwAnalyze(rwSessionsOf(patient), r.legacyRobot);
+    const own = (all.robots[r.species] || { xp: 0 }).xp;
+    r.xpPeak = old > all.xp ? { [r.species]: own + old - all.xp } : {};
+  }
 }
 
 function rwSessionsOf(patient) {
@@ -270,7 +319,7 @@ function rwSessionsOf(patient) {
 // Un record = meilleur ratio que tous les essais précédents du même exercice
 // (le premier essai d'un exercice n'est jamais un record). Refaire un exercice déjà
 // terminé rapporte RW_XP.repeat au lieu de RW_XP.base. `per` : gains par session.
-// `robots` : compteurs des badges par modèle (s.robot, ou `legacy` pour les exercices d'avant).
+// `robots` : XP et compteurs des badges par modèle (s.robot, ou `legacy` pour les exercices d'avant).
 function rwAnalyze(list, legacy) {
   const best = {};
   const out = { n: 0, stars3: 0, perfect: 0, records: 0, xp: 0, per: {}, robots: {} };
@@ -286,8 +335,8 @@ function rwAnalyze(list, legacy) {
     const gain = { first, base: first ? RW_XP.base : RW_XP.repeat, stars, starsXp: stars * RW_XP.perStar, record, recordXp: record ? RW_XP.record : 0 };
     gain.total = gain.base + gain.starsXp + gain.recordXp;
     out.per[s.id] = gain;
-    const mine = out.robots[s.robot || legacy] || (out.robots[s.robot || legacy] = { n: 0, stars3: 0, perfect: 0, records: 0 });
-    out.n++; mine.n++; out.xp += gain.total;
+    const mine = out.robots[s.robot || legacy] || (out.robots[s.robot || legacy] = { n: 0, stars3: 0, perfect: 0, records: 0, xp: 0 });
+    out.n++; mine.n++; out.xp += gain.total; mine.xp += gain.total;
     if (record) { out.records++; mine.records++; }
     if (sub) return;
     if (stars === 3) { out.stars3++; mine.stars3++; }
@@ -304,15 +353,15 @@ function rwStageOf(xp, pace) {
   return stage;
 }
 
-// État courant : badges du modèle `species` (le modèle actuel par défaut ; acquis mémorisés + objectifs
-// atteints, chaque modèle a sa propre collection), XP et niveau communs (l'XP ne baisse jamais).
+// État courant du modèle `species` (le modèle actuel par défaut) : ses badges (acquis mémorisés +
+// objectifs atteints), son XP et son niveau, calculés sur ses seuls exercices (l'XP ne baisse jamais).
 function rwEvaluate(patient, list, species) {
   const r = getReward(patient), sp = species || r.species;
   const all = rwAnalyze(list || rwSessionsOf(patient), r.legacyRobot);
-  const mine = all.robots[sp] || { n: 0, stars3: 0, perfect: 0, records: 0 };
+  const mine = all.robots[sp] || { n: 0, stars3: 0, perfect: 0, records: 0, xp: 0 };
   const on = new Set(Object.keys(r.unlocked[sp] || {}));
   RW_BADGES.forEach(b => { if (mine[b.stat] >= r.goals[b.id]) on.add(b.id); });
-  const xp = Math.max(all.xp, r.xpPeak || 0);
+  const xp = Math.max(mine.xp, r.xpPeak[sp] || 0);
   return { stats: { ...mine, per: all.per }, on, xp, stage: rwStageOf(xp, r.pace) };
 }
 
@@ -328,9 +377,9 @@ function rwOnSessionSaved(session) {
   // L'exercice compte pour le modèle actif au moment où il est terminé.
   if (!session.robot) { session.robot = r.species; saveSessions(); }
   const all = rwSessionsOf(patient);
-  const before = rwEvaluate(patient, all.filter(s => s.id !== session.id));
-  const after = rwEvaluate(patient, all);
-  r.xpPeak = Math.max(r.xpPeak || 0, after.xp);
+  const before = rwEvaluate(patient, all.filter(s => s.id !== session.id), session.robot);
+  const after = rwEvaluate(patient, all, session.robot);
+  r.xpPeak[session.robot] = Math.max(r.xpPeak[session.robot] || 0, after.xp);
   const now = new Date().toISOString();
   const owned = r.unlocked[session.robot] || (r.unlocked[session.robot] = {});
   after.on.forEach(id => { if (!owned[id]) owned[id] = now; });

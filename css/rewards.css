@@ -138,6 +138,7 @@ body.no-answer-anim .rw-hero-bot, body.no-answer-anim .rw-result-bot { animation
 .rw-sp.done small { color: #ffd24d; }
 .rw-sp svg { width: 100%; max-width: 72px; height: auto; }
 .rw-sp small { font: 600 0.72rem var(--rw-display); text-transform: uppercase; letter-spacing: 0.08em; }
+.rw-sp .rw-sp-name { font-family: inherit; font-weight: 500; font-size: 0.7rem; text-transform: none; letter-spacing: 0; opacity: 0.8; }
 .rw-sp[aria-pressed="true"], .rw-acc[aria-pressed="true"] {
   border-color: var(--rw-main); background: var(--rw-sel); box-shadow: 0 0 12px rgba(var(--rw-glow), 0.3);
 }
@@ -299,6 +300,7 @@ body.no-answer-anim .rw-hero-bot, body.no-answer-anim .rw-result-bot { animation
 .rw-t-veggie .rw-field > span, .rw-t-veggie .rw-fam h4 { font-size: 0.9rem; }
 .rw-t-veggie .rw-sp, .rw-t-veggie .rw-acc, .rw-t-veggie .rw-evo > div, .rw-t-veggie .rw-badge { border-radius: 16px; }
 .rw-t-veggie .rw-sp small { font-size: 0.85rem; }
+.rw-t-veggie .rw-sp .rw-sp-name { font-size: 0.75rem; }
 .rw-t-veggie .rw-evo .off svg { filter: brightness(0) opacity(0.25); }
 .rw-t-veggie .rw-badge.on { border-color: #8cc56a; background: #f1fbe3; box-shadow: 0 0 12px rgba(63, 157, 58, 0.18); }
 .rw-t-veggie .rw-badge.off svg { filter: none; opacity: 0.8; }

@@ -157,7 +157,7 @@ function startSequenceDisplay(pair, afterDisplayFn) {
 
   const next = afterDisplayFn || (() => startSequenceQuestion(pair, 0));
   const firstQType = currentPairQuestions[0]?.type;
-  if (pair.skipDisplay || _hideItems || firstQType === 'click-item' || firstQType === 'naming') {
+  if (pairSkipsDisplay(pair, currentExercise) || _hideItems || firstQType === 'click-item' || firstQType === 'naming') {
     timerBar.style.display = 'none';
     displayEl.style.display = _hideItems ? 'none' : 'flex';
     next();
@@ -237,7 +237,8 @@ function startSequenceQuestion(pair, qIdx, isRetry, isAfterReplay) {
   else if (visMode === 'hide_if_prev_correct') hideItems = previousPairWasCorrect === true;
   else if (visMode === 'hide_if_prev_incorrect') hideItems = previousPairWasCorrect === false;
   else hideItems = true;
-  const shouldShowItems = (pair.skipDisplay && !hideItems) || (!pair.skipDisplay && isRetry && !isAfterReplay && q.showOnRetry !== false);
+  const skipsDisplay = pairSkipsDisplay(pair, currentExercise);
+  const shouldShowItems = (skipsDisplay && !hideItems) || (!skipsDisplay && isRetry && !isAfterReplay && q.showOnRetry !== false);
   displayEl.style.display = shouldShowItems ? 'flex' : 'none';
 
   // Bouton Masquer/Revoir — toggle simple dans tous les cas
@@ -544,7 +545,7 @@ function afterFeedback(fn, ms) {
 
 function resolveQuestion(isCorrect, q, pair, questions, qIdx, isRetry) {
   if (!isCorrect && !isRetry && q.allowRetry !== false) {
-    if (q.showOnRetry !== false && q.replayWithTimer === true && !pair.skipDisplay) {
+    if (q.showOnRetry !== false && q.replayWithTimer === true && !pairSkipsDisplay(pair, currentExercise)) {
       startSequenceDisplay(pair, () => startSequenceQuestion(pair, qIdx, true, true));
     } else {
       startSequenceQuestion(pair, qIdx, true);

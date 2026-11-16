@@ -220,6 +220,13 @@ function appendSeqLayoutBreak(container) {
 }
 function newId(p) { return p + '_' + Date.now() + '_' + Math.random().toString(36).slice(2,6); }
 function escapeHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+// Vrai si la paire n'a pas de phase d'affichage chronométrée : les items restent
+// affichés avec la question. Cas d'une paire réglée à 0 s, ou d'une paire qui
+// suit la durée de l'exercice quand celle-ci vaut 0.
+function pairSkipsDisplay(pair, ex) {
+  if (pair.skipDisplay) return true;
+  return !!pair.useExerciseDefault && !!ex && ex.defaultDisplayDuration === 0;
+}
 function getPairQuestions(pair) {
   return (pair.questions && pair.questions.length) ? pair.questions : [{questionText: pair.questionText || '', choices: pair.choices || []}];
 }

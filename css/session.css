@@ -985,3 +985,127 @@ body.is-fullscreen #seq-pause-continue {
   font-size: 2.6rem; font-weight: 800; letter-spacing: .08em;
   color: var(--success); text-transform: uppercase;
 }
+
+/* ── CLAVIER VIRTUEL OUVERT (saisie libre sur tablette) ─────────────────────
+   Classe posée par syncKeyboardMode() (session.js). La carte est calée sur la
+   zone visible au-dessus du clavier (--kb-top / --kb-height) et compactée pour
+   que l'item reste visible au-dessus du champ de saisie. */
+body.keyboard-open #view-exercise .screen {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: var(--kb-top, 0px);
+  height: var(--kb-height, 100vh);
+  max-width: none;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  padding: 12px 16px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+body.keyboard-open #view-exercise .progress-section,
+body.keyboard-open #view-exercise .btn-quit-exercise,
+body.keyboard-open #view-exercise .btn-stop-exercise,
+body.keyboard-open #view-exercise .btn-pause-exercise,
+body.keyboard-open #view-exercise .btn-prev-item,
+body.keyboard-open #view-exercise .btn-fullscreen,
+body.keyboard-open #sequence-timer-bar,
+body.keyboard-open #keyboard-hint {
+  display: none !important;
+}
+
+body.keyboard-open .sequence-container {
+  flex: 1;
+  min-height: 0;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+body.keyboard-open #sequence-display {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  gap: 10px;
+}
+
+body.keyboard-open #sequence-display.has-layout-break {
+  flex-wrap: wrap;
+}
+
+/* Taille du texte plafonnée selon la hauteur restante au-dessus du clavier. */
+body.keyboard-open .sequence-item-box,
+body.keyboard-open .sequence-text-display {
+  min-height: 0;
+  height: auto;
+  padding: 8px 16px;
+  line-height: 1.2;
+  overflow: hidden;
+  font-size: min(var(--base-font-size, 32px), calc(var(--kb-height, 400px) * 0.14));
+}
+
+body.keyboard-open .sequence-text-display {
+  flex: 1;
+}
+
+body.keyboard-open .item-char-sized {
+  font-size: min(var(--base-font-size), calc(var(--kb-height, 400px) * 0.14)) !important;
+}
+
+body.keyboard-open .seq-sound-wrapper,
+body.keyboard-open .seq-sound-wrapper .sequence-item-box {
+  min-height: 0;
+}
+
+body.keyboard-open .seq-item-sound-btn {
+  width: 40px;
+  height: 40px;
+  font-size: 1.1rem;
+  bottom: 6px;
+  right: 6px;
+}
+
+body.keyboard-open .sequence-item-box.item-arrow-glyph .item-arrow-svg,
+body.keyboard-open .sequence-text-display.item-arrow-glyph .item-arrow-svg {
+  width: calc(var(--kb-height, 400px) * 0.18);
+  height: calc(var(--kb-height, 400px) * 0.18);
+}
+
+body.keyboard-open .sequence-question {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+body.keyboard-open #seq-write-zone {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  max-width: 560px;
+  flex-shrink: 0;
+}
+
+body.keyboard-open #seq-write-zone input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+}
+
+body.keyboard-open #seq-write-validate {
+  padding: 10px 20px;
+}
+
+body.keyboard-open #seq-write-feedback {
+  flex-basis: 100%;
+}
+
+body.keyboard-open #seq-show-again-btn {
+  flex-shrink: 0;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}

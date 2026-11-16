@@ -305,6 +305,7 @@ function startSequenceQuestion(pair, qIdx, isRetry, isAfterReplay) {
     const writeFeedback = document.getElementById('seq-write-feedback');
     writeInput.value             = '';
     writeInput.disabled          = false;
+    writeInput.readOnly          = false;
     writeInput.style.borderColor = 'var(--border)';
     writeFeedback.style.display  = 'none';
     writeFeedback.innerHTML      = '';
@@ -640,6 +641,36 @@ function goToPreviousItem() {
 
 document.getElementById('btn-prev-item').addEventListener('click', goToPreviousItem);
 
+// ── Clavier virtuel (tablette) ────────────────────────────────────────────────
+// Le clavier recouvre une bonne partie de l'écran et le navigateur fait défiler
+// la page pour garder le champ visible : l'item sort alors de l'écran. Tant que
+// le clavier est ouvert pendant une saisie libre, la carte de l'exercice est
+// calée sur la zone encore visible et compactée (cf. body.keyboard-open, session.css).
+let _kbBaseHeight = 0;
+function _visibleHeight() { return window.visualViewport ? window.visualViewport.height : window.innerHeight; }
+function syncKeyboardMode() {
+  const input = document.getElementById('seq-write-input');
+  const typing = document.activeElement === input && input.offsetParent !== null;
+  const h = _visibleHeight();
+  // Hauteur de référence (clavier fermé), mise à jour hors saisie : suit les rotations.
+  if (!typing || h > _kbBaseHeight) _kbBaseHeight = h;
+  const open = typing && h < _kbBaseHeight - 120;
+  document.body.classList.toggle('keyboard-open', open);
+  if (open) {
+    const root = document.documentElement.style;
+    root.setProperty('--kb-top', (window.visualViewport ? window.visualViewport.offsetTop : 0) + 'px');
+    root.setProperty('--kb-height', h + 'px');
+  }
+}
+_kbBaseHeight = _visibleHeight();
+document.addEventListener('focusin',  syncKeyboardMode);
+document.addEventListener('focusout', () => setTimeout(syncKeyboardMode, 0));
+window.addEventListener('resize', syncKeyboardMode);
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', syncKeyboardMode);
+  window.visualViewport.addEventListener('scroll', syncKeyboardMode);
+}
+
 function handleSequenceWrite(typed, correctAnswers, pair, questions, qIdx, isRetry) {
   if (isWaiting) return;
   isWaiting = true;
@@ -649,7 +680,9 @@ function handleSequenceWrite(typed, correctAnswers, pair, questions, qIdx, isRet
   responses.push({ pairId: pair.id, type: 'sequence', questionIndex: qIdx, chosen: typed, isCorrect, correctAnswer, correctAnswers, isRetry: !!isRetry, isExample: pairIndex < currentExampleCount, timeMs: Date.now() - pairStartTime });
   const writeInput    = document.getElementById('seq-write-input');
   const writeFeedback = document.getElementById('seq-write-feedback');
-  writeInput.disabled = true;
+  // readOnly plutôt que disabled : le champ garde le focus, le clavier de la
+  // tablette reste ouvert pendant le retour au lieu de se fermer puis rouvrir.
+  writeInput.readOnly = true;
   document.getElementById('seq-write-validate').disabled = true;
   writeInput.style.borderColor = isCorrect ? 'var(--success)' : 'var(--danger)';
   if (!isCorrect) {
@@ -658,7 +691,7 @@ function handleSequenceWrite(typed, correctAnswers, pair, questions, qIdx, isRet
   }
   const delay = isCorrect ? 700 : 1800;
   afterFeedback(() => {
-    writeInput.disabled = false;
+    writeInput.readOnly = false;
     document.getElementById('seq-write-validate').disabled = false;
     resolveQuestion(isCorrect, q, pair, questions, qIdx, isRetry);
   }, delay);

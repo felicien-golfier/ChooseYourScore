@@ -257,7 +257,7 @@ function renderPairsList(ex) {
       durLabel = 'Direct';
     } else if (pair.useExerciseDefault) {
       const exDur = ex.defaultDisplayDuration;
-      durLabel = exDur != null ? 'Défaut (' + (exDur / 1000) + ' s)' : 'Défaut';
+      durLabel = exDur == null ? 'Défaut' : 'Défaut (' + formatExerciseDuration(exDur) + ')';
     } else {
       const dur = pair.displayDuration != null ? pair.displayDuration : 1000;
       durLabel = (dur / 1000) + ' s';
@@ -362,8 +362,9 @@ document.getElementById('exercise-instruction').addEventListener('input', () => 
 document.getElementById('exercise-default-duration').addEventListener('input', () => {
   const ex = getSelectedEx(); if (!ex) return;
   const val = parseFloat(document.getElementById('exercise-default-duration').value);
-  ex.defaultDisplayDuration = (!isNaN(val) && val > 0) ? Math.round(val * 1000) : null;
+  ex.defaultDisplayDuration = (!isNaN(val) && val >= 0) ? Math.round(val * 1000) : null;
   saveExercises();
+  renderPairsList(ex);
 });
 
 document.getElementById('exercise-pause-between').addEventListener('change', function() {
@@ -467,7 +468,22 @@ function pickOption(id, val) {
   for (const o of document.getElementById(id).options) { if (o.value===val) { o.selected=true; return; } }
 }
 
-document.getElementById('btn-modal-save').addEventListener('click', () => {
+// Durée par défaut de l'exercice en texte (0 = les items restent affichés).
+function formatExerciseDuration(ms) {
+  return ms === 0 ? 'reste affiché' : (ms / 1000) + ' s';
+}
+
+// Une paire neuve sans aucun contenu (ni item, ni question remplie) n'a pas lieu d'être gardée.
+function isPairEmpty(pair) {
+  const itemsEmpty = !pair.items || pair.items.every(i => !i || (typeof i === 'string' ? !i :
+    (!i.text && !i.imageUrl && !i.videoUrl && !i.audioUrl && (i.type || 'text') === 'text')));
+  const questionsEmpty = (pair.questions || []).every(q => !q.questionText && !q.namingWord &&
+    !(q.choices || []).some(c => c));
+  return itemsEmpty && questionsEmpty;
+}
+
+// Enregistrer, Échap et clic sur le fond passent tous par ici : fermer la fenêtre enregistre.
+function savePairModal() {
   const ex = getSelectedEx(); if (!ex) { closeModal(); return; }
   const pair = ex.pairs.find(p => p.id === editingPairId); if (!pair) { closeModal(); return; }
   const seqData = readSequenceModal();
@@ -482,16 +498,18 @@ document.getElementById('btn-modal-save').addEventListener('click', () => {
   delete pair.questionText; delete pair.choices;
   delete pair.left; delete pair.right; delete pair.correct;
   delete pair.direction; delete pair.bgColor; delete pair.rule; delete pair.numOptions;
+  if (editingPairIsNew && isPairEmpty(pair)) ex.pairs = ex.pairs.filter(p => p.id !== editingPairId);
   saveExercises(); renderExerciseEditor(); closeModal();
-});
+}
 
-// Annuler, Échap et clic sur le fond passent tous par ici.
+document.getElementById('btn-modal-save').addEventListener('click', savePairModal);
+
+// Seul le bouton Annuler abandonne les modifications.
 function cancelPairModal() {
   const ex = getSelectedEx();
   if (ex && editingPairIsNew) {
     const pair = ex.pairs.find(p => p.id === editingPairId);
-    const isEmpty = pair && (!pair.items || pair.items.every(i => !i || (!i.text && !i.imageUrl && !i.videoUrl && !i.audioUrl && i.type === 'text')));
-    if (isEmpty) { ex.pairs = ex.pairs.filter(p => p.id !== editingPairId); saveExercises(); renderExerciseEditor(); }
+    if (pair && isPairEmpty(pair)) { ex.pairs = ex.pairs.filter(p => p.id !== editingPairId); saveExercises(); renderExerciseEditor(); }
   }
   closeModal();
 }
@@ -807,7 +825,8 @@ document.getElementById('sim-audio-play').addEventListener('click', () => {
   if (simModalAudio) playAudioUrl(simModalAudio);
 });
 
-document.getElementById('sim-save').addEventListener('click', () => {
+// Enregistrer, Échap et clic sur le fond passent tous par ici : fermer la fenêtre enregistre.
+function saveSeqItemModal() {
   const item = readItemModal();
   if (pendingOverrideCallback) {
     pendingOverrideCallback(item);
@@ -820,10 +839,11 @@ document.getElementById('sim-save').addEventListener('click', () => {
     closeSeqItemModal();
     refreshSequenceItemInputs();
   }
-});
+}
+document.getElementById('sim-save').addEventListener('click', saveSeqItemModal);
 document.getElementById('sim-cancel').addEventListener('click', closeSeqItemModal);
 document.getElementById('seq-item-modal').addEventListener('click', e => {
-  if (e.target === document.getElementById('seq-item-modal') && Date.now() - _seqItemModalOpenedAt > 350) closeSeqItemModal();
+  if (e.target === document.getElementById('seq-item-modal') && Date.now() - _seqItemModalOpenedAt > 350) saveSeqItemModal();
 });
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -1366,7 +1386,7 @@ function fillSequenceModal(pair) {
   const hasExDefault = ex && ex.defaultDisplayDuration != null;
   const useExDefault = hasExDefault && (pair.useExerciseDefault === true || pair.useExerciseDefault === undefined);
   document.getElementById('seq-exercise-default-row').style.display = '';
-  document.getElementById('seq-exercise-default-value').textContent = hasExDefault ? (ex.defaultDisplayDuration / 1000) : '—';
+  document.getElementById('seq-exercise-default-value').textContent = hasExDefault ? formatExerciseDuration(ex.defaultDisplayDuration) : '—';
   document.getElementById('seq-use-exercise-duration').checked = useExDefault;
   document.getElementById('seq-duration-row').style.display = useExDefault ? 'none' : '';
   const visMode = pair.visibilityMode || (pair.hideItems !== false ? 'always_hide' : 'always_show');
@@ -1530,12 +1550,12 @@ document.getElementById('seq-add-question-btn').addEventListener('click', () => 
 });
 
 document.getElementById('pair-modal').addEventListener('click', e => {
-  if (e.target === document.getElementById('pair-modal') && Date.now() - _pairModalOpenedAt > 350) cancelPairModal();
+  if (e.target === document.getElementById('pair-modal') && Date.now() - _pairModalOpenedAt > 350) savePairModal();
 });
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
-  if (document.getElementById('seq-item-modal').style.display === 'flex') closeSeqItemModal();
-  else if (document.getElementById('pair-modal').style.display === 'flex') cancelPairModal();
+  if (document.getElementById('seq-item-modal').style.display === 'flex') saveSeqItemModal();
+  else if (document.getElementById('pair-modal').style.display === 'flex') savePairModal();
 });
 
 // ═══════════════════════════════════════════════════════════════════════════════
